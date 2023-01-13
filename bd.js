@@ -7,6 +7,7 @@ const pool = new Pool({
   // польз.подкл.к БД(postgres),пароль от СУБД,host,port по умолч при устан 5432,назв.БД
   user: "postgres",
   password: "Qaz123PoS!",
+  // email: { type: String, required: true, unique: true },
   host: "localhost",
   port: "5432",
   database: "node_postgres",

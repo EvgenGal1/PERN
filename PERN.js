@@ -18,6 +18,12 @@ const PORT = /* config.get("port") */ process.env.PORT || 5005;
 const app = express();
 // парсим json сервером
 app.use(express.json());
+// ! от ошб
+// app.use(
+//   express.urlencoded({
+//     extended: true,
+//   })
+// );
 // прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
 app.use("/PERN", userRoutes);
 
