@@ -6,6 +6,7 @@ const express = require("express");
 // const config = require("config");
 // подкл. ф.настр.маршрутов
 const userRoutes = require("./routes/user.routes");
+const postRoutes = require("./routes/post.routes");
 // // подкл. mongoDB ч/з mongoose для базы данных
 // const mongoose = require("mongoose");
 // // от ошибки устаревшего кода
@@ -26,6 +27,7 @@ app.use(express.json());
 // );
 // прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
 app.use("/PERN", userRoutes);
+app.use("/PERN", postRoutes);
 
 // тест1
 // app.get("/", (req, res) => {
