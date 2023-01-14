@@ -2,7 +2,7 @@
   "name": "pern_start",
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
-  "main": "PERN.js",
+  "main": "./server/PERN.js",
   "scripts": {
     "start": "node PERN.js",
     "server": "nodemon PERN.js"
