@@ -1,7 +1,7 @@
 // fn|запросы по взаимодейств.с польз.
 
 // подкл.конфиг.БД для записи получ.данн.в БД
-const bd = require("../bd");
+const db = require("../db");
 // // подкл.модели пользователей и ролей
 // const User = require("../models/User");
 // const Role = require("../models/Role");
@@ -44,7 +44,7 @@ class UserControllers {
       // const hashedPassword = await bcrypt.hash(password, 12 /* salt */);
 
       // async созд.польз. с пропис.SQL запроса(вставки,табл.с полями,значен.перем.,возврат к польз.после созд., + масс.перем.)
-      const newPerson = await bd.query(
+      const newPerson = await db.query(
         // `INSERT INTO person (name, surname, email, psw) VALUES ($1, $2, $3, $4) RETURNING *`,
         `INSERT INTO person (name, surname, email) VALUES ($1, $2, $3) RETURNING *`,
         [name, surname, email /* , password */ /* hashedPassword */]
@@ -65,7 +65,7 @@ class UserControllers {
   // async возрат всех польз. с SQL запросом ПОЛУЧЕНИЯ ВСЕХ
   async getUser(req, res) {
     try {
-      const allUser = await bd.query(`SELECT * FROM person`);
+      const allUser = await db.query(`SELECT * FROM person`);
       // возвращ. весь массив
       res.json(allUser.rows);
     } catch (error) {}
@@ -77,7 +77,7 @@ class UserControllers {
       // из парам.запр.получ.id
       const id = req.params.id;
       // получ.по id
-      const idUser = await bd.query(`SELECT * FROM person WHERE id = $1`, [id]);
+      const idUser = await db.query(`SELECT * FROM person WHERE id = $1`, [id]);
       // возвращ.только польз.(rows) на клиента
       res.json(idUser.rows[0]);
     } catch (error) {}
@@ -89,7 +89,7 @@ class UserControllers {
       // получ.все данн.с fronta
       const { id, name, surname, email /* , password */ } = req.body;
       // измен.поля, возвращ.т.к. UPDATE этого не делает
-      const updUser = await bd.query(
+      const updUser = await db.query(
         `UPDATE person set name = $1, surname = $2, email = $3 WHERE id = $4 RETURNING *`,
         [name, surname, email, id /* , password */ /* hashedPassword */]
       );
@@ -105,7 +105,7 @@ class UserControllers {
       const id = req.params.id;
       const { name, surname, email /* , password */ } = req.body;
       // удал.по id
-      const idUser = await bd.query(`DELETE FROM person WHERE id = $1`, [id]);
+      const idUser = await db.query(`DELETE FROM person WHERE id = $1`, [id]);
       // возвращ.только польз.(rows) на клиента
       // res.json(idUser.rows[0]);
       // ИЛИ сообщ. что удалён
