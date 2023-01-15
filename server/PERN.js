@@ -7,6 +7,10 @@ require("dotenv").config();
 const express = require("express");
 // подкл.конфиг.БД
 const sequelize = require("./db");
+// подкл.моделей(табл)
+const models = require("./models/models");
+// подкл.cors для отправ.запр.с брауз.
+// const cors = require("cors");
 
 // подкл. ф.настр.маршрутов
 // const userRoutes = require("./routes/user.routes");
