@@ -7,10 +7,13 @@ const userСontrollers = require("../controllers/user.controllers");
 // подкл. валидацию
 const { check } = require("express-validator");
 
+// const authMiddleware = require('../middleware/authMiddleware')
+
 // созд. объ.кл.Маршрутизатор. Возможно прослуш.запросов (GET, POST, DELETE,..)
 const router = new Router();
 
-// опред.марщрутов для отраб.
+// ^ ++++ UlbiTV. NPg
+// опред.марщрутов|мтд. для отраб.
 router.post(
   "/user",
   // масс. middleware для валидации. `Проверка`(чего,ошб.).валидатор(на email) | ~кастом - проверка(чего).условие.смс ошб.
@@ -33,6 +36,12 @@ router.get("/user", userСontrollers.getUser);
 router.get("/user/:id", userСontrollers.getOneUser);
 router.put("/user", userСontrollers.updateUser);
 router.delete("/user/:id", userСontrollers.deleteUser);
+
+// ^ ++++ UlbiTV.PERNstore
+// опред.марщрутов|мтд. для отраб. Ригистр.,Авториз.,проверка на Авториз. по jvt токену
+router.post("/registration" /* , user.controller.registration */);
+router.post("/login" /* , user.controller.login */);
+router.get("/auth" /* , authMiddleware, user.controller.check */);
 
 // экспорт объ.Маршрутизатора
 module.exports = router;

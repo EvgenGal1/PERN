@@ -1,7 +1,7 @@
 // модели данных табл.
 
 // подкл.конфиг.БД
-const sequelize = require("../db");
+const { sequelize } = require("../db");
 // подкл.кл.типы полей
 const { DataTypes } = require("sequelize");
 
@@ -10,6 +10,9 @@ const { DataTypes } = require("sequelize");
 const User = sequelize.define("user", {
   // id тип.целое число,перв.ключ,авто.добавка
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  // добавил name, удалить можно через pgAdmin, залить сначала удалив табл.с привязками DROP TABLE IF EXISTS users CASCADE;
+  /* fullName */ /* required: true, */
+  name: { type: DataTypes.STRING, unique: true },
   // email тип.стр.,уникальное
   email: { type: DataTypes.STRING, unique: true },
   // password тип.стр.
