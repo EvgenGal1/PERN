@@ -1,17 +1,30 @@
 // fn|запросы по взаимодейств.с польз.
 
+// ^ ++++ UlbiTV. NPg
 // подкл.конфиг.БД для записи получ.данн.в БД
-const db = require("../db");
-// // подкл.модели пользователей и ролей
-// const User = require("../models/User");
-// const Role = require("../models/Role");
+// const db = require("../db");
+const { pool } = require("../db");
 // подкл. библ. для шифрование пароля нов.польз.
 const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 
+// ^ ++++ UlbiTV.PERNstore
+// const jwt = require('jsonwebtoken')
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const { User, Basket } = require("../models/models");
+
+// const generateJwt = (id, email, role) => {
+//   return jwt.sign(
+//       {id, email, role},
+//       process.env.SECRET_KEY,
+//       {expiresIn: '24h'}
+//   )
+// }
+
 // обьяв.кл.(для компановки) с неск.мтд
 class UserControllers {
+  // ^ ++++ UlbiTV. NPg
   // async созд.польз. по SQL запросу ВСТАВКИ, /* валидации, шифр.пароля, */ проверками
   async createUser(req, res) {
     // базов.логика с обраб.ошб.
@@ -44,7 +57,7 @@ class UserControllers {
       // const hashedPassword = await bcrypt.hash(password, 12 /* salt */);
 
       // async созд.польз. с пропис.SQL запроса(вставки,табл.с полями,значен.перем.,возврат к польз.после созд., + масс.перем.)
-      const newPerson = await db.query(
+      const newPerson = await pool.query(
         // `INSERT INTO person (name, surname, email, psw) VALUES ($1, $2, $3, $4) RETURNING *`,
         `INSERT INTO person (name, surname, email) VALUES ($1, $2, $3) RETURNING *`,
         [name, surname, email /* , password */ /* hashedPassword */]
@@ -65,7 +78,7 @@ class UserControllers {
   // async возрат всех польз. с SQL запросом ПОЛУЧЕНИЯ ВСЕХ
   async getUser(req, res) {
     try {
-      const allUser = await db.query(`SELECT * FROM person`);
+      const allUser = await pool.query(`SELECT * FROM person`);
       // возвращ. весь массив
       res.json(allUser.rows);
     } catch (error) {}
@@ -77,7 +90,9 @@ class UserControllers {
       // из парам.запр.получ.id
       const id = req.params.id;
       // получ.по id
-      const idUser = await db.query(`SELECT * FROM person WHERE id = $1`, [id]);
+      const idUser = await pool.query(`SELECT * FROM person WHERE id = $1`, [
+        id,
+      ]);
       // возвращ.только польз.(rows) на клиента
       res.json(idUser.rows[0]);
     } catch (error) {}
@@ -89,7 +104,7 @@ class UserControllers {
       // получ.все данн.с fronta
       const { id, name, surname, email /* , password */ } = req.body;
       // измен.поля, возвращ.т.к. UPDATE этого не делает
-      const updUser = await db.query(
+      const updUser = await pool.query(
         `UPDATE person set name = $1, surname = $2, email = $3 WHERE id = $4 RETURNING *`,
         [name, surname, email, id /* , password */ /* hashedPassword */]
       );
@@ -105,13 +120,51 @@ class UserControllers {
       const id = req.params.id;
       const { name, surname, email /* , password */ } = req.body;
       // удал.по id
-      const idUser = await db.query(`DELETE FROM person WHERE id = $1`, [id]);
+      const idUser = await pool.query(`DELETE FROM person WHERE id = $1`, [id]);
       // возвращ.только польз.(rows) на клиента
       // res.json(idUser.rows[0]);
       // ИЛИ сообщ. что удалён
       res.json(`Пользователь удалён  ${name} ${surname}.`);
     } catch (error) {}
   }
+
+  // ^ ++++ UlbiTV.PERNstore
+  // async registration(req, res, next) {
+  //   const { email, password, role } = req.body;
+  //   if (!email || !password) {
+  //     return next(ApiError.badRequest("Некорректный email или password"));
+  //   }
+  //   const candidate = await User.findOne({ where: { email } });
+  //   if (candidate) {
+  //     return next(
+  //       ApiError.badRequest("Пользователь с таким email уже существует")
+  //     );
+  //   }
+  //   const hashPassword = await bcrypt.hash(password, 5);
+  //   const user = await User.create({ email, role, password: hashPassword });
+  //   const basket = await Basket.create({ userId: user.id });
+  //   const token = generateJwt(user.id, user.email, user.role);
+  //   return res.json({ token });
+  // }
+
+  // async login(req, res, next) {
+  //   const { email, password } = req.body;
+  //   const user = await User.findOne({ where: { email } });
+  //   if (!user) {
+  //     return next(ApiError.internal("Пользователь не найден"));
+  //   }
+  //   let comparePassword = bcrypt.compareSync(password, user.password);
+  //   if (!comparePassword) {
+  //     return next(ApiError.internal("Указан неверный пароль"));
+  //   }
+  //   const token = generateJwt(user.id, user.email, user.role);
+  //   return res.json({ token });
+  // }
+
+  // async check(req, res, next) {
+  //   const token = generateJwt(req.user.id, req.user.email, req.user.role);
+  //   return res.json({ token });
+  // }
 }
 
 // экспорт объ.кл.
