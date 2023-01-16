@@ -39,9 +39,9 @@ router.delete("/user/:id", userСontrollers.deleteUser);
 
 // ^ ++++ UlbiTV.PERNstore
 // опред.марщрутов|мтд. для отраб. Ригистр.,Авториз.,проверка на Авториз. по jvt токену
-router.post("/registration" /* , user.controller.registration */);
-router.post("/login" /* , user.controller.login */);
-router.get("/auth" /* , authMiddleware, user.controller.check */);
+router.post("/registration", userСontrollers.registration);
+router.post("/login", userСontrollers.login);
+router.get("/auth", /* authMiddleware, */ userСontrollers.check);
 
 // экспорт объ.Маршрутизатора
 module.exports = router;
