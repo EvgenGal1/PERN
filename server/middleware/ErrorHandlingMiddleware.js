@@ -1,3 +1,5 @@
+// middlware по ошб.
+
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 

@@ -13,6 +13,8 @@ const { validationResult } = require("express-validator");
 // const jwt = require('jsonwebtoken')
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
 const { User, Basket } = require("../models/models");
+// подкл.обраб.ошиб.
+const ApiError = require("../error/ApiError");
 
 // const generateJwt = (id, email, role) => {
 //   return jwt.sign(
@@ -171,6 +173,10 @@ class UserControllers {
     // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
     // res.json("asdf");
     const query = req.query;
+    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
+    if (!query.id) {
+      return next(ApiError.badRequest("Не задан ID"));
+    }
     res.json(query.id);
   }
 }

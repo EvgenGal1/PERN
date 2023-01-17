@@ -11,14 +11,15 @@ const { sequelize } = require("./db");
 const models = require("./models/models");
 // подкл.cors для отправ.запр.с брауз.
 const cors = require("cors");
+// подкл.middlware по ошб.
+const errorHandlerMW = require("./middleware/ErrorHandlingMiddleware");
 
 // подкл.общ.ф.настр.маршрутизаторов(UlbiTV.PERNstore) + отд.ф.для UlbiTV.NPg;
 const allRoutes = require("./routes/all.routes");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
 
-// в конст PORT запис.порт из config (сист.перем.) или 5000
-// const PORT = config.get("port") || 7531;
+// в конст PORT запис.порт из перек.опкруж. (| сист.перем. - config.get("port")) или 5000
 const PORT = process.env.PORT || 7531;
 
 // созд.server
@@ -33,6 +34,8 @@ app.use(cors());
 //     extended: true,
 //   })
 // );
+// Обраб.ошб.,последний Middlware
+app.use(errorHandlerMW);
 
 // тест1 - проверка в Postman|браузере
 // app.get("/", (req, res) => {
