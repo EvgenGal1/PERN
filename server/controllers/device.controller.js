@@ -63,7 +63,7 @@ class DeviceController {
     //     offset,
     //   });
     // }
-    return res.json(devices);
+    // return res.json(devices);
   }
 
   // fn получ.1го устройства по id
@@ -74,6 +74,21 @@ class DeviceController {
     //   include: [{ model: DeviceInfo, as: "info" }],
     // });
     // return res.json(device);
+  }
+
+  // ^ нужно прописать удалени конкретного и всех
+
+  async update(req, res) {
+    //     const brands = await Brand.findAll()
+    //     return res.json(brands)
+  }
+  async delAll(req, res) {
+    //     const brands = await Brand.findAll()
+    //     return res.json(brands)
+  }
+  async delOne(req, res) {
+    //     const brands = await Brand.findAll()
+    //     return res.json(brands)
   }
 }
 
