@@ -61,7 +61,7 @@ const Rating = sequelize.define("rating", {
 });
 
 // Информация об устройстве
-const DeviceInfos = sequelize.define("device_infos", {
+const DeviceInfo = sequelize.define("device_info", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, allowNull: false },
   description: { type: DataTypes.STRING, allowNull: false },
@@ -98,8 +98,9 @@ Rating.belongsTo(Device);
 Device.hasMany(BacketDevice);
 BacketDevice.belongsTo(Device);
 
-Device.hasMany(DeviceInfos);
-DeviceInfos.belongsTo(Device);
+// + назв.поля у масс.харак-ик
+Device.hasMany(DeviceInfo, { as: "info" });
+DeviceInfo.belongsTo(Device);
 
 // связь м/у Типом и Брендом много ко многим `через` созд.промежут.табл.с инфо о принадл.кто к кому
 Type.belongsToMany(Brand, { through: TypeBrand });
@@ -111,7 +112,7 @@ module.exports = {
   Backet,
   BacketDevice,
   Device,
-  DeviceInfos,
+  DeviceInfo,
   Type,
   Brand,
   Rating,
