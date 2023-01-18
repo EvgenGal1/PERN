@@ -3,24 +3,23 @@ const { Brand } = require("../models/models");
 
 class BrandController {
   async create(req, res) {
-    // const {name} = req.body
-    // const brand = await Brand.create({name})
-    // return res.json(brand)
+    const { name } = req.body;
+    const brand = await Brand.create({ name });
+    return res.json(brand);
   }
 
   async getAll(req, res) {
-    // const brands = await Brand.findAll()
-    // return res.json(brands)
+    const brands = await Brand.findAll();
+    return res.json(brands);
   }
 
   // fn получ.1го устройства по id
   async getOne(req, res) {
-    // const { id } = req.params;
-    // const device = await Device.findOne({
-    //   where: { id },
-    //   include: [{ model: DeviceInfo, as: "info" }],
-    // });
-    // return res.json(device);
+    const { id } = req.params;
+    const brand = await Brand.findOne({
+      where: { id },
+    });
+    return res.json(brand);
   }
 
   // ^ нужно прописать удалени конкретного и всех

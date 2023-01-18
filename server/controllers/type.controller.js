@@ -20,8 +20,6 @@ class TypeController {
     const { id } = req.params;
     const type = await Type.findOne({
       where: { id },
-      // с этим отв.нет
-      // include: [{ model: Type, as: "info" }],
     });
     return res.json(type);
   }
@@ -61,6 +59,7 @@ class TypeController {
       //   });
       // }
     } catch (error) {
+      // ! не раб
       const { id, name } = req.body;
       // const { id, name } = req.params;
       // общ.отв. на серв.ошб. в json смс
