@@ -17,6 +17,7 @@
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.8",
     "cors": "^2.8.5",
@@ -24,6 +25,7 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "express-validator": "^6.14.2",
+    "jsonwebtoken": "^9.0.0",
     "notenv": "^2.0.3",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
