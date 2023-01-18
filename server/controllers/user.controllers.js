@@ -10,19 +10,28 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
 // ^ ++++ UlbiTV.PERNstore
-// const jwt = require('jsonwebtoken')
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User, Basket } = require("../models/models");
+// подкл.ф.контролера для генерац.web токена
+const jwt = require("jsonwebtoken");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const { User, Backet } = require("../models/models");
 
-// const generateJwt = (id, email, role) => {
-//   return jwt.sign(
-//       {id, email, role},
-//       process.env.SECRET_KEY,
-//       {expiresIn: '24h'}
-//   )
-// }
+// fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
+const generateJwt = (id, email, role) => {
+  // подписываем передан.парам.
+  return jwt.sign(
+    // payload(центр.часть токена) данн.польз.
+    { id, /* name, */ email, role },
+    // проверка валид.ч/з секрет.ключ(в перем.окруж.)
+    process.env.SECRET_KEY,
+    // опции
+    {
+      // вр.раб.токена
+      expiresIn: "24h",
+    }
+  );
+};
 
 // обьяв.кл.(для компановки) с неск.мтд
 class UserControllers {
@@ -132,21 +141,69 @@ class UserControllers {
 
   // ^ ++++ UlbiTV.PERNstore
   async registration(req, res, next) {
-    //   const { email, password, role } = req.body;
-    //   if (!email || !password) {
-    //     return next(ApiError.badRequest("Некорректный email или password"));
-    //   }
-    //   const candidate = await User.findOne({ where: { email } });
-    //   if (candidate) {
-    //     return next(
-    //       ApiError.badRequest("Пользователь с таким email уже существует")
-    //     );
-    //   }
-    //   const hashPassword = await bcrypt.hash(password, 5);
-    //   const user = await User.create({ email, role, password: hashPassword });
-    //   const basket = await Basket.create({ userId: user.id });
-    //   const token = generateJwt(user.id, user.email, user.role);
-    //   return res.json({ token });
+    // базов.логика с обраб.ошб.
+    try {
+      // проверка вход.полей на валидацию
+      const errorsValid = validationResult(req);
+      // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
+      if (!errorsValid.isEmpty()) {
+        return res.status(400).json({
+          message: "Некорректые данные при регистрации",
+          errors: errorsValid.array(),
+        });
+      }
+
+      // Получ.из тела.
+      // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
+      const { id, /* name, */ email, password, role } = req.body;
+
+      // проверка отсутств.email и psw с возврат.ошб.
+      if (!email || !password /* || !name */) {
+        return next(ApiError.badRequest("Некорректный email или password"));
+      }
+      // проверка сущест.email
+      const candidate = await User.findOne({ where: { email } });
+      if (candidate) {
+        return next(
+          ApiError.badRequest(`Пользователь с email ${email} уже существует`)
+        );
+      }
+
+      // hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
+      // const salt = await bcrypt.getSalt(12);
+      const hashPassword = await bcrypt.hash(password, 5);
+
+      // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль совпад.с шифрованым)
+      const user = await User.create({
+        /* name, */
+        email,
+        role,
+        password: hashPassword,
+        // fullName,
+        // avatarUrl,
+      });
+      // СОЗД.КАРЗИНУ. id можно получ.из СОЗД.НОВ.ПОЛЬЗ
+      const basket = await Backet.create({ userId: user.id });
+
+      // передаём данн.польз в fn генер.токена. и получ.роли на front(в fn по умолч.передаётся из User)
+      const token = generateJwt(
+        user.id,
+        /* user.name, */
+        user.email,
+        user.role
+      );
+
+      // возвращ.токен
+      return res.json({ token });
+    } catch (error) {
+      // общ.отв. на серв.ошб. в json смс
+      // res
+      //   .status(500)
+      //   .json({ message: `Не удалось зарегистрироваться - ${error}.` });
+      return next(
+        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      );
+    }
   }
 
   async login(req, res, next) {
