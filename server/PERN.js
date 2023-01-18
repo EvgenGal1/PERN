@@ -13,6 +13,10 @@ const models = require("./models/models");
 const cors = require("cors");
 // подкл.middlware по ошб.
 const errorHandlerMW = require("./middleware/ErrorHandlingMiddleware");
+// подк.загрузчик файлов
+const fileupload = require("express-fileupload");
+// подкл.для созд.пути
+const path = require("path");
 
 // подкл.общ.ф.настр.маршрутизаторов(UlbiTV.PERNstore) + отд.ф.для UlbiTV.NPg;
 const allRoutes = require("./routes/all.routes");
@@ -26,6 +30,10 @@ const PORT = process.env.PORT || 7531;
 const app = express();
 // возм.парсить json
 app.use(express.json());
+// указ.ф.из static/ раздавать как статику(для получения)
+app.use(express.static(path.resolve(__dirname, "static")));
+// регистр.загрузчика файлов с передачей пуст.объ
+app.use(fileupload({}));
 // передача cors в app
 app.use(cors());
 // ?! от ошб ?
