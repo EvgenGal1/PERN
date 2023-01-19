@@ -14,7 +14,7 @@ const cors = require("cors");
 // подкл.middlware по ошб.
 const errorHandlerMW = require("./middleware/ErrorHandlingMiddleware");
 // подк.загрузчик файлов
-const fileupload = require("express-fileupload");
+const fileUpload = require("express-fileupload");
 // подкл.для созд.пути
 const path = require("path");
 
@@ -28,20 +28,26 @@ const PORT = process.env.PORT || 7531;
 
 // созд.server
 const app = express();
+// передача cors в app
+app.use(cors());
 // возм.парсить json
 app.use(express.json());
 // указ.ф.из static/ раздавать как статику(для получения)
 app.use(express.static(path.resolve(__dirname, "static")));
 // регистр.загрузчика файлов с передачей пуст.объ
-app.use(fileupload({}));
-// передача cors в app
-app.use(cors());
+app.use(fileUpload({}));
 // ?! от ошб ?
 // app.use(
 //   express.urlencoded({
 //     extended: true,
 //   })
 // );
+// прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
+app.use("/PERN", allRoutes);
+app.use("/PERN", userRoutes);
+app.use("/PERN", postRoutes);
+// app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
+
 // Обраб.ошб.,последний Middlware
 app.use(errorHandlerMW);
 
@@ -57,13 +63,6 @@ app.use(errorHandlerMW);
 //   // .status(200)
 //   // .json({ message: `Работает по адресу http://localhost:${PORT}/` });
 // });
-
-// прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
-app.use("/PERN", allRoutes);
-app.use("/PERN", userRoutes);
-app.use("/PERN", postRoutes);
-
-// app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
 
 // Запуск Сервера | const start = async () => {}
 // async function start() {

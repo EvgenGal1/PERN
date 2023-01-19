@@ -54,18 +54,18 @@ class UserControllers {
       const { name, surname, email /* , password */ } = req.body;
       // console.log(name, surname); // тест2
 
-      // // проверка существ.email по совпад.ключ и значен.
-      // const candidate = await User.findOne({ email });
-      // // е/и польз.есть - возвращ.Ответ в смс ошб.
-      // if (candidate) {
-      //   return res
-      //     .status(400)
-      //     .json({ message: `Такой пользователь уже есть - ${candidate}.` });
-      // }
+      // проверка существ.email по совпад.ключ и значен.
+      const candidate = await User.findOne({ email });
+      // е/и польз.есть - возвращ.Ответ в смс ошб.
+      if (candidate) {
+        return res
+          .status(400)
+          .json({ message: `Такой пользователь уже есть - ${candidate}.` });
+      }
 
       // `ждём` hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
       // const salt = await bcrypt.getSalt(12);
-      // const hashedPassword = await bcrypt.hash(password, 12 /* salt */);
+      const hashedPassword = await bcrypt.hash(password, 12 /* salt */);
 
       // async созд.польз. с пропис.SQL запроса(вставки,табл.с полями,значен.перем.,возврат к польз.после созд., + масс.перем.)
       const newPerson = await pool.query(
@@ -161,11 +161,14 @@ class UserControllers {
       if (!email || !password || !username) {
         return next(ApiError.badRequest("Некорректный email или password"));
       }
-      // проверка сущест.email
-      const candidate = await User.findOne({ where: { email } });
+      // проверка сущест.username и email
+      const candidate = await User.findOne({ where: { username, email } });
+      console.log("candidate ", candidate);
       if (candidate) {
         return next(
-          ApiError.badRequest(`Пользователь с email ${email} уже существует`)
+          ApiError.badRequest(
+            `Пользователь ${username} <${email}> уже существует`
+          )
         );
       }
 
@@ -201,35 +204,50 @@ class UserControllers {
     }
   }
 
+  // АВТОРИЗАЦИЯ
   async login(req, res, next) {
-    //   const { email, password } = req.body;
-    //   const user = await User.findOne({ where: { email } });
-    //   if (!user) {
-    //     return next(ApiError.internal("Пользователь не найден"));
-    //   }
-    //   let comparePassword = bcrypt.compareSync(password, user.password);
-    //   if (!comparePassword) {
-    //     return next(ApiError.internal("Указан неверный пароль"));
-    //   }
-    //   const token = generateJwt(user.id, user.email, user.role);
-    //   return res.json({ token });
+    try {
+      const { username, email, password } = req.body;
+
+      // ^ улучшить до общей проверки
+      // проверка сущест.username и email
+      const eml = await User.findOne({ where: { email } });
+      const user = await User.findOne({ where: { username, email } });
+      if (!eml /* !user.email */) {
+        return next(
+          ApiError.internal(`Пользователь c Email <${email}> не найден`)
+        );
+      }
+      if (!user /* !user.username */) {
+        return next(
+          ApiError.internal(`Пользователь с Именем ${username} не найден`)
+        );
+      }
+      // проверка `сравнивания` пароля с шифрованым
+      let comparePassword = bcrypt.compareSync(password, user.password);
+      if (!comparePassword) {
+        return next(ApiError.internal("Указан неверный пароль"));
+      }
+      const token = generateJwt(user.id, user.username, user.email, user.role);
+      return res.json({ token });
+    } catch (error) {}
   }
 
-  // проверка авторизации польз.
+  // проверка авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
   async check(req, res, next) {
-    //   const token = generateJwt(req.user.id, req.user.email, req.user.role);
-    //   return res.json({ token });
+    // res.json({ message: "Раб cgeck" });
+    const token = generateJwt(req.user.id, req.user.email, req.user.role);
+    return res.json({ token });
 
     // ? здесь? универс.обраб.ошиб.(handler).
-
     // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
     // res.json("asdf");
-    const query = req.query;
+    // const query = req.query;
     // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
-    if (!query.id) {
-      return next(ApiError.badRequest("Не задан ID"));
-    }
-    res.json(query);
+    // if (!query.id) {
+    //   return next(ApiError.badRequest("Не задан ID"));
+    // }
+    // res.json(query);
   }
 }
 
