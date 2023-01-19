@@ -12,7 +12,7 @@ const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   // добавил name, удалить можно через pgAdmin, залить сначала удалив табл.с привязками DROP TABLE IF EXISTS users CASCADE;
   /* fullName */ /* required: true, */
-  name: { type: DataTypes.STRING /* , unique: true */ },
+  username: { type: DataTypes.STRING, unique: true },
   // email тип.стр.,уникальное
   email: { type: DataTypes.STRING, unique: true },
   // password тип.стр.

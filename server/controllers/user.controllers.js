@@ -18,11 +18,11 @@ const ApiError = require("../error/ApiError");
 const { User, Backet } = require("../models/models");
 
 // fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
-const generateJwt = (id, email, role) => {
+const generateJwt = (id, username, email, role) => {
   // подписываем передан.парам.
   return jwt.sign(
     // payload(центр.часть токена) данн.польз.
-    { id, /* name, */ email, role },
+    { id, username, email, role },
     // проверка валид.ч/з секрет.ключ(в перем.окруж.)
     process.env.SECRET_KEY,
     // опции
@@ -155,10 +155,10 @@ class UserControllers {
 
       // Получ.из тела.
       // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
-      const { id, /* name, */ email, password, role } = req.body;
+      const { id, username, email, password, role } = req.body;
 
       // проверка отсутств.email и psw с возврат.ошб.
-      if (!email || !password /* || !name */) {
+      if (!email || !password || !username) {
         return next(ApiError.badRequest("Некорректный email или password"));
       }
       // проверка сущест.email
@@ -175,7 +175,7 @@ class UserControllers {
 
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль совпад.с шифрованым)
       const user = await User.create({
-        /* name, */
+        username,
         email,
         role,
         password: hashPassword,
@@ -186,12 +186,7 @@ class UserControllers {
       const basket = await Backet.create({ userId: user.id });
 
       // передаём данн.польз в fn генер.токена. и получ.роли на front(в fn по умолч.передаётся из User)
-      const token = generateJwt(
-        user.id,
-        /* user.name, */
-        user.email,
-        user.role
-      );
+      const token = generateJwt(user.id, user.username, user.email, user.role);
 
       // возвращ.токен
       return res.json({ token });
