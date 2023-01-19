@@ -7,7 +7,9 @@ const userСontrollers = require("../controllers/user.controllers");
 // подкл. валидацию
 const { check } = require("express-validator");
 
-// const authMiddleware = require('../middleware/authMiddleware')
+// ^ ++++ UlbiTV.PERNstore
+// подкл.декодер.токен,проверка валидности
+const authMiddleware = require("../middleware/authMiddleware");
 
 // созд. объ.кл.Маршрутизатор. Возможно прослуш.запросов (GET, POST, DELETE,..)
 const router = new Router();
@@ -22,7 +24,7 @@ router.post(
     // ! врем.откл. в Postman приходят ошб. на пароль когда его даже нет в ~модели запроса
     // check("password")
     //   // .not()
-    //   .isIn(["123", "password123", "god123", "qwerty123", "123qwerty"])
+    //   .isIn(["123", "12345", "password123", "god123", "qwerty123", "123qwerty"])
     //   .withMessage("Не используйте обычные значения в качестве пароля")
     //   .isLength({ min: 6 })
     //   .withMessage("Минимальная длина пароля 6 символов")
@@ -38,14 +40,34 @@ router.put("/user", userСontrollers.updateUser);
 router.delete("/user/:id", userСontrollers.deleteUser);
 
 // ^ ++++ UlbiTV.PERNstore
-// опред.марщрутов|мтд. для отраб. Ригистр.,Авториз.,проверка на Авториз. по jvt токену
+// опред.марщрутов|мтд. для отраб. Ригистр.,Авториз.,проверка на Авториз. по jwt токену(2ой парам.)
 router.post(
   "/registration",
-  [check("email", "Некорректый email").isEmail()],
+  [
+    check("email", "Некорректый email").isEmail(),
+    check("password")
+      .not()
+      .isIn([
+        "123qwe",
+        "123qwerty",
+        "qwe123",
+        "qwerty123",
+        "123456",
+        "password123",
+        "god123",
+      ])
+      .withMessage("Не используйте обычные значения в качестве пароля")
+      .isLength({ min: 6 })
+      .withMessage("Минимальная длина пароля 6 символов")
+      .isLength({ max: 20 })
+      .withMessage("Максимальная длина пароля 6 символов")
+      .matches(/\d/)
+      .withMessage("Пароль должен содержать число"),
+  ],
   userСontrollers.registration
 );
 router.post("/login", userСontrollers.login);
-router.get("/auth", /* authMiddleware, */ userСontrollers.check);
+router.get("/auth", authMiddleware, userСontrollers.check);
 
 // экспорт объ.Маршрутизатора
 module.exports = router;
