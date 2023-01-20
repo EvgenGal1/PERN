@@ -5,7 +5,19 @@ const { sequelize } = require("../db");
 // подкл.кл.типы полей
 const { DataTypes } = require("sequelize");
 
-// ОПИСАНИЕ МОДЕЛЕЙ
+const Role = sequelize.define("role", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  // по умолч. роль USER и уникальна
+  // value: { type: String, unique: true, default: "USER" },
+  value: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+    defaultValue: "USER",
+  },
+});
+
+// ОПИСАНИЕ МОДЕЛЕЙ (User, Backet, BacketDevice, Device, Type, Brand, Rating, DeviceInfo, TypeBrand, Role)
 // Юзер, определить(назв.,поля{})
 const User = sequelize.define("user", {
   // id тип.целое число,перв.ключ,авто.добавка
@@ -19,6 +31,8 @@ const User = sequelize.define("user", {
   password: { type: DataTypes.STRING },
   // роль тип.стр.,знач.по умолч.USER
   role: { type: DataTypes.STRING, defaultValue: "USER" },
+  // для Прилож.Сокращ.Ссылок. Свой масс.ссылок,Types связка мод.польз. и записей в БД, ref привязка к коллекции
+  Links: [{ type: DataTypes.ObjectId, /* ref: */ defaultValue: "Link" }],
 });
 
 // Корзина
@@ -75,6 +89,12 @@ const TypeBrand = sequelize.define("type_brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
+// связующая табл.|модель для Type|Brand. Внешн.ключи sequelize.`определит`
+const UserRole = sequelize.define("user_role", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  role: { type: DataTypes.STRING },
+});
+
 // польз.и корзина связь один к одному(одна корзина) | корзина принадлеж.польз.
 User.hasOne(Backet);
 Backet.belongsTo(User);
@@ -109,6 +129,7 @@ Brand.belongsToMany(Type, { through: TypeBrand });
 //экспорт моделей
 module.exports = {
   User,
+  Role,
   Backet,
   BacketDevice,
   Device,
