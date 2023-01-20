@@ -60,7 +60,7 @@ class UserControllers {
       if (candidate) {
         return res
           .status(400)
-          .json({ message: `Такой пользователь уже есть - ${candidate}.` });
+          .json({ message: `Такой пользователь уже есть - ${email}.` });
       }
 
       // `ждём` hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
@@ -140,10 +140,11 @@ class UserControllers {
   }
 
   // ^ ++++ UlbiTV.PERNstore
+  // РЕГИСТРАЦИЯ
   async registration(req, res, next) {
     // базов.логика с обраб.ошб.
     try {
-      // проверка вход.полей на валидацию
+      // проверка вход.полей на валидацию // ^ UlbiTV. NPg
       const errorsValid = validationResult(req);
       // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
       if (!errorsValid.isEmpty()) {
@@ -173,8 +174,8 @@ class UserControllers {
       }
 
       // hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
-      // const salt = await bcrypt.getSalt(12);
-      const hashPassword = await bcrypt.hash(password, 5);
+      // const salt = await bcrypt.getSalt(12); | hashSync
+      const hashPassword = await bcrypt.hash(password, 5); // hashSync
 
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль совпад.с шифрованым)
       const user = await User.create({
@@ -192,7 +193,10 @@ class UserControllers {
       const token = generateJwt(user.id, user.username, user.email, user.role);
 
       // возвращ.токен
-      return res.json({ token });
+      return res.json({
+        token,
+        message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
+      });
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
       // res
@@ -207,37 +211,56 @@ class UserControllers {
   // АВТОРИЗАЦИЯ
   async login(req, res, next) {
     try {
+      // проверка вход.полей на валидацию // ^ UlbiTV. NPg
+      const errorsValid = validationResult(req);
+      // е/и проверка не прошла(не `пусто`) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
+      if (!errorsValid.isEmpty()) {
+        return res.status(400).json({
+          message: "Некорректые данные при регистрации",
+          errors: errorsValid.array(),
+        });
+      }
+
       const { username, email, password } = req.body;
 
       // ^ улучшить до общей проверки
       // проверка сущест.username и email
-      const eml = await User.findOne({ where: { email } });
-      const user = await User.findOne({ where: { username, email } });
-      if (!eml /* !user.email */) {
-        return next(
-          ApiError.internal(`Пользователь c Email <${email}> не найден`)
-        );
-      }
+      const user = await User.findOne({ where: { username } });
       if (!user /* !user.username */) {
         return next(
           ApiError.internal(`Пользователь с Именем ${username} не найден`)
         );
       }
+      // const eml = await User.findOne({ where: { email } });
+      // if (!eml /* !user.email */) {
+      //   return next(
+      //     ApiError.internal(`Пользователь c Email <${email}> не найден`)
+      //   );
+      // }
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
       if (!comparePassword) {
         return next(ApiError.internal("Указан неверный пароль"));
       }
       const token = generateJwt(user.id, user.username, user.email, user.role);
-      return res.json({ token });
+      return res.json({ token, message: `Зашёл ${username} <${email}>` });
     } catch (error) {}
   }
 
+  // ПРОВЕРКА
   // проверка авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
   async check(req, res, next) {
     // res.json({ message: "Раб cgeck" });
-    const token = generateJwt(req.user.id, req.user.email, req.user.role);
-    return res.json({ token });
+    const token = generateJwt(
+      req.user.id,
+      req.user.username,
+      req.user.email,
+      req.user.role
+    );
+    return res.json({
+      token,
+      message: `Проверен ${req.user.username} <${req.user.email}>`,
+    });
 
     // ? здесь? универс.обраб.ошиб.(handler).
     // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
@@ -248,6 +271,42 @@ class UserControllers {
     //   return next(ApiError.badRequest("Не задан ID"));
     // }
     // res.json(query);
+  }
+
+  // async ПОЛУЧЕНИЯ по ID с SQL
+  async userPERN(req, res) {
+    try {
+      // из парам.запр.получ.id
+      const id = req.params.id;
+      // const { id, username, email, password, role } = req.body;
+      // получ.по id
+      const user = await User.findOne({ where: { id } });
+      // const idUser = await pool.query(`SELECT * FROM person WHERE id = $1`, [
+      //   id,
+      // ]);
+      // возвращ.только польз.(rows) на клиента
+      // res.json(idUser.rows[0]);
+      res.json({ /* message: "? Раб", */ user });
+    } catch (error) {}
+  }
+
+  async usersPERN(req, res) {
+    try {
+      const users = await User
+        .findAll
+        // { where: { id } }
+        ();
+
+      // const { id } = req.body;
+      // const idUser = await User.findAll({ where: { id } });
+      // возвращ. весь массив
+      res.json({
+        // idUser,
+        number: `${users.id} ? Раб`,
+        // message: "? Раб",
+        users,
+      });
+    } catch (error) {}
   }
 }
 
