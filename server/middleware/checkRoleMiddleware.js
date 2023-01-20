@@ -16,11 +16,22 @@ module.exports = function (role) {
       }
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
       // проверка роли из токена с переданой в middleware
-      if (decoded.role !== role) {
-        return res
-          .status(403)
-          .json({ message: `Нет доступа у Роли ${decoded.role}` });
+      // if (decoded.role !== role) {
+      if (decoded.role) {
+        if (decoded.role == "USER") {
+          return res
+            .status(403)
+            .json({ message: `Нет доступа у Роли ${decoded.role} USER` });
+        }
+        if (decoded.role !== role) {
+          return res
+            .status(403)
+            .json({ message: `Нет доступа у Роли ${decoded.role}` });
+        }
+      } else {
+        return res.status(403).json({ message: `Нет доступа` });
       }
+
       req.user = decoded;
       next();
     } catch (e) {
