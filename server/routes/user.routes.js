@@ -25,7 +25,7 @@ router.post(
   // ! не раб из Переезд в exprsValid
   // exprsValid
   [
-    // доп.
+    // валидация. normalize не пропускает RU email е/и записаны в ВерБлюд стиле.
     check("email", "Некорректый email").isEmail().normalizeEmail(),
     check("password")
       .not()
@@ -60,7 +60,7 @@ router.post(
   "/registration",
   // exprsValid
   [
-    // доп.
+    // валидация. normalize не пропускает RU email е/и записаны в ВерБлюд стиле.
     check("email", "Некорректый email").isEmail().normalizeEmail(),
     check("password")
       .not()
@@ -86,40 +86,21 @@ router.post(
 router.post(
   "/login",
   // exprsValid
-  [
-    // доп.
-    check("email", "Некорректый email").isEmail().normalizeEmail(),
-    check("password")
-      .not()
-      .isIn([
-        "123qwe",
-        "123qwerty",
-        "qwe123",
-        "qwerty123",
-        "123456",
-        "password123",
-        "god123",
-      ])
-      .withMessage("Не используйте обычные значения в качестве пароля")
-      .isLength({ min: 6 })
-      .withMessage("Минимальная длина пароля 6 символов")
-      .isLength({ max: 20 })
-      .withMessage("Максимальная длина пароля 6 символов")
-      .matches(/\d/)
-      .withMessage("Пароль должен содержать число"),
-  ],
+  [check("email", "Некорректый email").isEmail().normalizeEmail()],
   userСontrollers.login
 );
 router.get("/auth", authMiddleware, userСontrollers.check);
 
 router.get(
   "/userPERN/:id",
-  checkRole("ADMIN", "SUPERADMIN"),
+  authMiddleware,
+  // checkRole("SUPERADMIN", "ADMIN", "MODER"),
   userСontrollers.userPERN
 );
 router.get(
   "/userPERN",
-  checkRole(/* "ADMIN", */ "SUPERADMIN"),
+  // authMiddleware,
+  checkRole(["SUPERADMIN"]), //, "SUPERADMIN"
   userСontrollers.usersPERN
 );
 

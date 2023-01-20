@@ -225,25 +225,32 @@ class UserControllers {
 
       // ^ улучшить до общей проверки
       // проверка сущест.username и email
-      const user = await User.findOne({ where: { username } });
+      // const user = await User.findOne({ where: { email } });
+      // if (!user) {
+      //   return next(ApiError.internal("Пользователь не найден"));
+      // }
+      const user = await User.findOne({ where: { /* email */ username } });
       if (!user /* !user.username */) {
         return next(
           ApiError.internal(`Пользователь с Именем ${username} не найден`)
         );
       }
-      // const eml = await User.findOne({ where: { email } });
-      // if (!eml /* !user.email */) {
-      //   return next(
-      //     ApiError.internal(`Пользователь c Email <${email}> не найден`)
-      //   );
-      // }
+      const eml = await User.findOne({ where: { email } });
+      if (!eml /* !user.email */) {
+        return next(
+          ApiError.internal(`Пользователь c Email <${email}> не найден`)
+        );
+      }
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
       if (!comparePassword) {
         return next(ApiError.internal("Указан неверный пароль"));
       }
       const token = generateJwt(user.id, user.username, user.email, user.role);
-      return res.json({ token, message: `Зашёл ${username} <${email}>` });
+      return res.json({
+        token,
+        message: `Зашёл ${username} <${email}>. ${user.role}`,
+      });
     } catch (error) {}
   }
 
