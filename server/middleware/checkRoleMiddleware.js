@@ -17,33 +17,27 @@ module.exports = function (role) {
       }
 
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      req.userId = decoded._id;
+      // req.id = decoded.id;
 
-      // раскодир.токен.`проверять`на валидность. const опред.с др.именем т.к. role уже есть
-      // получ.масс.Ролей
-      const { roles: userRoles } = jwt.verify(token, process.env.SECRET_KEY);
+      // раскодир.токен.`проверять`на валидность. const опред.с др.именем т.к. role уже есть. получ.масс.Ролей
+      const { role: userRoles } = jwt.verify(token, process.env.SECRET_KEY);
 
-      // проверка масс.разреш.Ролей с разреш.для этой fn
+      // проверка масс.польз.Ролей с масс.разреш.Ролей для этой fn
       // перем.для определения
-      // let hasRoles = false;
-      // // итерац.по Ролям.польз.
-      // userRoles.forEach((roles) => {
-      //   // е/и масс.разреш.Ролей содерж Роль польз.
-      //   if (role.includes(roles)) {
-      //     // перем.в true
-      //     hasRoles = true;
-      //   }
-      // });
-      let hasRole = false;
-      userRoles.forEach((roles) => {
-        if (role.includes(roles)) {
-          hasRole = true;
+      let hasRoles = false;
+      // итерац.по Ролям.польз.
+      [userRoles].forEach((Urol) => {
+        // е/и масс.разреш.Ролей содерж Роль польз.
+        if (role.includes(Urol)) {
+          // перем.в true
+          hasRoles = true;
         }
       });
-      if (!hasRole) {
-        return res
-          .status(403)
-          .json({ message: `Нет доступа у Роли ${decoded.role}` });
+      if (!hasRoles) {
+        return res.status(403).json({
+          message: `Нет доступа у Роли ${decoded.role} или ошб.Ролей`,
+          // message: `Нет доступа у Роли ${decoded.role}`,
+        });
       }
       // req.user = decoded;
       next();
