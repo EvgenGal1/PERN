@@ -158,13 +158,20 @@ class UserControllers {
       // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
       const { id, username, email, password, role } = req.body;
 
-      // проверка отсутств.email и psw с возврат.ошб.
-      if (!email || !password || !username) {
-        return next(ApiError.badRequest("Некорректный email или password"));
+      // проверка отсутств.user.
+      if (!username) {
+        return next(ApiError.badRequest(`Некорректный username`));
       }
+      // ? нужно Доп.проверка отсутств email,psw е/и errorsValid не отраб
+      if (!email) {
+        return next(ApiError.badRequest(`Некорректный email`));
+      }
+      if (!password) {
+        return next(ApiError.badRequest(`Некорректный password`));
+      }
+
       // проверка сущест.username и email
       const candidate = await User.findOne({ where: { username, email } });
-      console.log("candidate ", candidate);
       if (candidate) {
         return next(
           ApiError.badRequest(
@@ -223,22 +230,18 @@ class UserControllers {
 
       const { username, email, password } = req.body;
 
-      // ^ улучшить до общей проверки
+      // ^ улучшить до общей проверки (!eml.email - так висит)
       // проверка сущест.username и email
-      // const user = await User.findOne({ where: { email } });
-      // if (!user) {
-      //   return next(ApiError.internal("Пользователь не найден"));
-      // }
-      const user = await User.findOne({ where: { /* email */ username } });
-      if (!user /* !user.username */) {
+      const user = await User.findOne({ where: { username /* email */ } });
+      if (!user /* !user.username */ /* || !== username */) {
         return next(
           ApiError.internal(`Пользователь с Именем ${username} не найден`)
         );
       }
       const eml = await User.findOne({ where: { email } });
-      if (!eml /* !user.email */) {
+      if (!eml /* !eml.email */) {
         return next(
-          ApiError.internal(`Пользователь c Email <${email}> не найден`)
+          ApiError.internal(`Пользователь с Email <${email}> не найден`)
         );
       }
       // проверка `сравнивания` пароля с шифрованым
@@ -249,7 +252,7 @@ class UserControllers {
       const token = generateJwt(user.id, user.username, user.email, user.role);
       return res.json({
         token,
-        message: `Зашёл ${username} <${email}>. ${user.role}`,
+        message: `Зашёл ${username} <${email}>. id${user.id}_${user.role}`,
       });
     } catch (error) {}
   }
@@ -285,34 +288,16 @@ class UserControllers {
     try {
       // из парам.запр.получ.id
       const id = req.params.id;
-      // const { id, username, email, password, role } = req.body;
-      // получ.по id
       const user = await User.findOne({ where: { id } });
-      // const idUser = await pool.query(`SELECT * FROM person WHERE id = $1`, [
-      //   id,
-      // ]);
-      // возвращ.только польз.(rows) на клиента
-      // res.json(idUser.rows[0]);
-      res.json({ /* message: "? Раб", */ user });
+      res.json(user);
+      // res.json({ user }); // в объ.user{}
     } catch (error) {}
   }
 
   async usersPERN(req, res) {
     try {
-      const users = await User
-        .findAll
-        // { where: { id } }
-        ();
-
-      // const { id } = req.body;
-      // const idUser = await User.findAll({ where: { id } });
-      // возвращ. весь массив
-      res.json({
-        // idUser,
-        number: `${users.id} ? Раб`,
-        // message: "? Раб",
-        users,
-      });
+      const users = await User.findAndCountAll();
+      res.json(users);
     } catch (error) {}
   }
 }

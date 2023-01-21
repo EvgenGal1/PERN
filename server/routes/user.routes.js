@@ -83,24 +83,25 @@ router.post(
   ],
   userСontrollers.registration
 );
+
 router.post(
   "/login",
   // exprsValid
   [check("email", "Некорректый email").isEmail().normalizeEmail()],
   userСontrollers.login
 );
+
 router.get("/auth", authMiddleware, userСontrollers.check);
 
 router.get(
   "/userPERN/:id",
-  authMiddleware,
-  // checkRole("SUPERADMIN", "ADMIN", "MODER"),
+  checkRole(["SUPERADMIN", "ADMIN", "MODER"]),
   userСontrollers.userPERN
 );
+
 router.get(
   "/userPERN",
-  // authMiddleware,
-  checkRole(["SUPERADMIN"]), //, "SUPERADMIN"
+  checkRole("SUPERADMIN", "ADMIN", "MODER"),
   userСontrollers.usersPERN
 );
 
