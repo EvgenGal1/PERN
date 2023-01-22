@@ -24,15 +24,25 @@ const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   // добавил name, удалить можно через pgAdmin, залить сначала удалив табл.с привязками DROP TABLE IF EXISTS users CASCADE;
   /* fullName */ /* required: true, */
-  username: { type: DataTypes.STRING, unique: true },
+  username: { type: DataTypes.STRING, unique: true, required: true },
   // email тип.стр.,уникальное
-  email: { type: DataTypes.STRING, unique: true },
+  email: { type: DataTypes.STRING, unique: true, required: true },
   // password тип.стр.
-  password: { type: DataTypes.STRING },
+  password: { type: DataTypes.STRING, required: true },
   // роль тип.стр.,знач.по умолч.USER
-  role: { type: DataTypes.STRING, defaultValue: "USER" },
+  role: { type: DataTypes.STRING, defaultValue: "USER", required: true },
   // для Прилож.Сокращ.Ссылок. Свой масс.ссылок,Types связка мод.польз. и записей в БД, ref привязка к коллекции
-  Links: [{ type: DataTypes.ObjectId, /* ref: */ defaultValue: "Link" }],
+  Links: [
+    {
+      type: DataTypes.ObjectId,
+      /* ref: */ defaultValue: "Link",
+      required: true,
+    },
+  ],
+  // `активируется` - подтвержд.почты от польз.
+  isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
+  // `Ссылка активации` - хран.ссылку для актив.
+  activationLink: { type: DataTypes.STRING },
 });
 
 // Корзина
