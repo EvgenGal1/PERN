@@ -11,12 +11,14 @@ const { sequelize } = require("./db");
 const models = require("./models/models");
 // подкл.cors для отправ.запр.с брауз.
 const cors = require("cors");
-// подкл.middlware по ошб.
+// подкл.MiddlWare по ошб.
 const errorHandlerMW = require("./middleware/ErrorHandlingMiddleware");
 // подк.загрузчик файлов
 const fileUpload = require("express-fileupload");
 // подкл.для созд.пути
 const path = require("path");
+// подкл. MW по корр.раб. с cookie
+const cookieParser = require("cookie-parser");
 
 // подкл.общ.ф.настр.маршрутизаторов(UlbiTV.PERNstore) + отд.ф.для UlbiTV.NPg;
 const allRoutes = require("./routes/all.routes");
@@ -28,7 +30,7 @@ const PORT = process.env.PORT || 7531;
 
 // созд.server
 const app = express();
-// передача cors в app
+// передача cors в app для взаимодейств.server-браузер
 app.use(cors());
 // возм.парсить json
 app.use(express.json());
@@ -36,6 +38,9 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "static")));
 // регистр.загрузчика файлов с передачей пуст.объ
 app.use(fileUpload({}));
+// добав.cookieParser
+app.use(cookieParser());
+
 // ?! от ошб ?
 // app.use(
 //   express.urlencoded({
@@ -43,10 +48,10 @@ app.use(fileUpload({}));
 //   })
 // );
 // прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
+// app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
 app.use("/PERN", allRoutes);
 app.use("/PERN", userRoutes);
 app.use("/PERN", postRoutes);
-// app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
 
 // Обраб.ошб.,последний Middlware
 app.use(errorHandlerMW);
@@ -71,7 +76,7 @@ const start = async () => {
   try {
     // подкл.к БД.
     await sequelize.authenticate();
-    // сверка сост.БД со схемой данн. ~
+    // сверка сост.БД со схемой данн. ~`продолжать`
     await sequelize.sync();
 
     // `прослушка` сервера на PORT c fn колбэк cg при успехе,провер.err
