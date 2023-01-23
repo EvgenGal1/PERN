@@ -40,7 +40,6 @@ app.use(express.static(path.resolve(__dirname, "static")));
 app.use(fileUpload({}));
 // добав.cookieParser
 app.use(cookieParser());
-
 // ?! от ошб ?
 // app.use(
 //   express.urlencoded({
@@ -49,9 +48,9 @@ app.use(cookieParser());
 // );
 // прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
 // app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
+// app.use("/PERN", userRoutes);
+// app.use("/PERN", postRoutes);
 app.use("/PERN", allRoutes);
-app.use("/PERN", userRoutes);
-app.use("/PERN", postRoutes);
 
 // Обраб.ошб.,последний Middlware
 app.use(errorHandlerMW);

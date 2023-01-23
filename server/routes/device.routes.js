@@ -1,9 +1,9 @@
 const Router = require("express");
 const router = new Router();
 const deviceController = require("../controllers/device.controller");
-// подкл. middleware доступ ADMIN
-
+// подкл. middleware Ролей
 const checkRole = require("../middleware/checkRoleMiddleware");
+
 // маршруты Устройства созд.,получ.всех,получ.индив.
 router.post("/", checkRole("ADMIN"), deviceController.create);
 router.get("/", deviceController.getAll);

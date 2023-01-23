@@ -5,11 +5,15 @@ const brandController = require("../controllers/brand.controller");
 const checkRole = require("../middleware/checkRoleMiddleware");
 
 // маршруты Бренда созд.,получ.всех,получ.индив.
-router.post("/", checkRole("SUPERADMIN", "ADMIN"), brandController.create);
+router.post("/", checkRole("SUPER", "ADMIN", "MODER"), brandController.create);
 router.get("/", brandController.getAll);
 router.get("/:id", brandController.getOne);
-router.put("/", checkRole("SUPERADMIN", "ADMIN"), brandController.update);
-router.delete("/:id", checkRole("SUPERADMIN", "ADMIN"), brandController.delOne);
+router.put("/", checkRole("SUPER", "ADMIN", "MODER"), brandController.update);
+router.delete(
+  "/:id",
+  checkRole("SUPER", "ADMIN", "MODER"),
+  brandController.delOne
+);
 // router.get("/", brandController.delAll);
 
 module.exports = router;

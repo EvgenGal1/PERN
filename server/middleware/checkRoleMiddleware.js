@@ -26,9 +26,9 @@ module.exports = function (role) {
       // перем.для определения
       let hasRoles = false;
       // итерац.по Ролям.польз.
-      [userRoles].forEach((Urol) => {
+      [userRoles].forEach((uRol) => {
         // е/и масс.разреш.Ролей содерж Роль польз.
-        if (role.includes(Urol)) {
+        if (role.includes(uRol)) {
           // перем.в true
           hasRoles = true;
         }

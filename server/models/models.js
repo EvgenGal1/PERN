@@ -4,6 +4,7 @@
 const { sequelize } = require("../db");
 // подкл.кл.типы полей
 const { DataTypes } = require("sequelize");
+// const { Token } = require("./Token");
 
 const Role = sequelize.define("role", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -15,6 +16,14 @@ const Role = sequelize.define("role", {
     allowNull: false,
     defaultValue: "USER",
   },
+});
+
+const Token = sequelize.define("token", {
+  // ссылка на id польз.
+  userId: { type: DataTypes.INTEGER /* ObjectId */ /* , ref: "user" */ },
+  // `обновлять` токен созд.в БД
+  refreshToken: { type: DataTypes.STRING, required: true },
+  // ipАдрес входа, `Отпечаток пальца` браузера,..
 });
 
 // ОПИСАНИЕ МОДЕЛЕЙ (User, Backet, BacketDevice, Device, Type, Brand, Rating, DeviceInfo, TypeBrand, Role)
@@ -32,17 +41,12 @@ const User = sequelize.define("user", {
   // роль тип.стр.,знач.по умолч.USER
   role: { type: DataTypes.STRING, defaultValue: "USER", required: true },
   // для Прилож.Сокращ.Ссылок. Свой масс.ссылок,Types связка мод.польз. и записей в БД, ref привязка к коллекции
-  Links: [
-    {
-      type: DataTypes.ObjectId,
-      /* ref: */ defaultValue: "Link",
-      required: true,
-    },
-  ],
+  // Links: [{type: DataTypes.ObjectId,ref:"Link",required: true,},],
+  Links: { type: DataTypes.STRING, defaultValue: "Link", required: true },
   // `активируется` - подтвержд.почты от польз.
   isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
   // `Ссылка активации` - хран.ссылку для актив.
-  activationLink: { type: DataTypes.STRING },
+  activationLink: { type: DataTypes.STRING, defaultValue: false },
 });
 
 // Корзина
@@ -128,6 +132,9 @@ Rating.belongsTo(Device);
 Device.hasMany(BacketDevice);
 BacketDevice.belongsTo(Device);
 
+User.hasOne(Token);
+Token.belongsTo(User);
+
 // + назв.поля у масс.харак-ик
 Device.hasMany(DeviceInfo, { as: "info" });
 DeviceInfo.belongsTo(Device);
@@ -136,10 +143,14 @@ DeviceInfo.belongsTo(Device);
 Type.belongsToMany(Brand, { through: TypeBrand });
 Brand.belongsToMany(Type, { through: TypeBrand });
 
+User.belongsToMany(Role, { through: UserRole });
+Role.belongsToMany(User, { through: UserRole });
+
 //экспорт моделей
 module.exports = {
   User,
   Role,
+  Token,
   Backet,
   BacketDevice,
   Device,

@@ -94,22 +94,6 @@ class BrandController {
       // }
       return res.json(brand);
       // return res.json(updBrands);
-
-      // ? не раб по NRJWT
-      // const updBrands = await User.findByIdAndUpdate(id, name, { new: true });
-      // return res.json(updBrands);
-      // ? не раб. Другая БД
-      // const updBrands = await pool.query(
-      //   `UPDATE brands set name = $2 WHERE id = $1 RETURNING *`,
-      //   [id, name]
-      // );
-      // res.json(updBrands);
-      // ? не раб.
-      // const updBrands = await Brand.findOne({ where: { id, name } });
-      // /* {new: true,} */
-      // return res.json({ message: `${brand.id}, ${brand.name}` });
-      // return res.json({ message: `${id}, ${name}` /* updBrands */ });
-      // handleResult(updBrands);
     } catch (error) {
       res.status(500).json(error);
     }
@@ -144,7 +128,7 @@ class BrandController {
       });
       // }
 
-      // return res.json(brand); // вернёт объ.которого уже нет || 2раза вызов по ID
+      // return res.json(brandId); // вернёт объ.которого уже нет || 2раза вызов по ID
       // return res.json(brandDel); // 1 - удалён, 0 - нет
     } catch (error) {
       res.status(500).json(error);
