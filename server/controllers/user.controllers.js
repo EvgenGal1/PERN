@@ -10,34 +10,16 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
 // ^ ++++ UlbiTV.PERNstore
-// подкл.ф.контролера для генерац.web токена
-const jwt = require("jsonwebtoken");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const { User } = require("../models/models");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User, Backet } = require("../models/models");
-
-// fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
-const generateJwt = (id, username, email, role) => {
-  // подписываем передан.парам.
-  return jwt.sign(
-    // payload(центр.часть токена) данн.польз.
-    { id, username, email, role },
-    // проверка валид.ч/з секрет.ключ(в перем.окруж.)
-    process.env.SECRET_KEY,
-    // опции
-    {
-      // вр.раб.токена
-      expiresIn: "24h",
-    }
-  );
-};
 
 // обьяв.кл.(для компановки) с неск.мтд
 class UserControllers {
   // ^ ++++ UlbiTV. NPg
   // async созд.польз. по SQL запросу ВСТАВКИ, /* валидации, шифр.пароля, */ проверками
-  async createUser(req, res) {
+  async createUserNPg(req, res) {
     // базов.логика с обраб.ошб.
     try {
       // проверка вход.полей на валидацию
@@ -51,7 +33,7 @@ class UserControllers {
       }
 
       // получ.данн.с fronta
-      const { name, surname, email /* , password */ } = req.body;
+      const { name, surname, email, password } = req.body;
       // console.log(name, surname); // тест2
 
       // проверка существ.email по совпад.ключ и значен.
@@ -69,9 +51,9 @@ class UserControllers {
 
       // async созд.польз. с пропис.SQL запроса(вставки,табл.с полями,значен.перем.,возврат к польз.после созд., + масс.перем.)
       const newPerson = await pool.query(
-        // `INSERT INTO person (name, surname, email, psw) VALUES ($1, $2, $3, $4) RETURNING *`,
-        `INSERT INTO person (name, surname, email) VALUES ($1, $2, $3) RETURNING *`,
-        [name, surname, email /* , password */ /* hashedPassword */]
+        `INSERT INTO person (name, surname, email, psw) VALUES ($1, $2, $3, $4) RETURNING *`,
+        // `INSERT INTO person (name, surname, email) VALUES ($1, $2, $3) RETURNING *`,
+        [name, surname, email, hashedPassword]
       );
       // res.json(`Создан пользователь ${name} ${surname}.`); // тест2
       // возвращ.только польз.(rows) на front
@@ -87,7 +69,7 @@ class UserControllers {
   }
 
   // async возрат всех польз. с SQL запросом ПОЛУЧЕНИЯ ВСЕХ
-  async getUser(req, res) {
+  async getUserNPg(req, res) {
     try {
       const allUser = await pool.query(`SELECT * FROM person`);
       // возвращ. весь массив
@@ -96,7 +78,7 @@ class UserControllers {
   }
 
   // async ПОЛУЧЕНИЯ по ID с SQL
-  async getOneUser(req, res) {
+  async getOneUserNPg(req, res) {
     try {
       // из парам.запр.получ.id
       const id = req.params.id;
@@ -110,7 +92,7 @@ class UserControllers {
   }
 
   // async ОБНОВЛЕНИЯ данн.польз. с SQL
-  async updateUser(req, res) {
+  async updateUserNPg(req, res) {
     try {
       // получ.все данн.с fronta
       const { id, name, surname, email /* , password */ } = req.body;
@@ -125,7 +107,7 @@ class UserControllers {
   }
 
   // async УДАЛЕНИЕ данн.польз. с SQL
-  async deleteUser(req, res) {
+  async deleteUserNPg(req, res) {
     try {
       // из парам.запр.получ.id
       const id = req.params.id;
@@ -139,166 +121,87 @@ class UserControllers {
     } catch (error) {}
   }
 
-  // ^ ++++ UlbiTV.PERNstore
-  // РЕГИСТРАЦИЯ
-  async registration(req, res, next) {
-    // базов.логика с обраб.ошб.
+  // ^ ++++ EvGen
+  async getUserPERN(req, res) {
     try {
-      // проверка вход.полей на валидацию // ^ UlbiTV. NPg
-      const errorsValid = validationResult(req);
-      // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
-      if (!errorsValid.isEmpty()) {
-        return res.status(400).json({
-          message: "Некорректые данные при регистрации",
-          errors: errorsValid.array(),
-        });
-      }
+      const users = await User.findAndCountAll();
+      return res.json(users);
+    } catch (error) {}
+  }
 
-      // Получ.из тела.
-      // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
-      const { id, username, email, password, role } = req.body;
-
-      // проверка отсутств.user.
-      if (!username) {
-        return next(ApiError.badRequest(`Некорректный username`));
+  async getOneUserPERN(req, res, next) {
+    try {
+      const { id } = req.params;
+      const userId = await User.findOne({ where: { id } });
+      if (!userId) {
+        return next(ApiError.badRequest(`Пользователь с ID ${id} не найден`));
       }
-      // ? нужно Доп.проверка отсутств email,psw е/и errorsValid не отраб
-      if (!email) {
-        return next(ApiError.badRequest(`Некорректный email`));
-      }
-      if (!password) {
-        return next(ApiError.badRequest(`Некорректный password`));
-      }
+      res.json(userId);
+    } catch (error) {}
+  }
 
-      // проверка сущест.username и email
-      const candidate = await User.findOne({ where: { username, email } });
-      if (candidate) {
-        return next(
-          ApiError.badRequest(
-            `Пользователь ${username} <${email}> уже существует`
-          )
-        );
+  async updateUserPERN(req, res, next) {
+    try {
+      const { id, username } = req.body;
+      if (!id) {
+        return next(ApiError.internal(`ID не передан`));
       }
-
-      // hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
-      // const salt = await bcrypt.getSalt(12); | hashSync
-      const hashPassword = await bcrypt.hash(password, 5); // hashSync
-
-      // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль совпад.с шифрованым)
-      const user = await User.create({
-        username,
-        email,
-        role,
-        password: hashPassword,
-        // fullName,
-        // avatarUrl,
+      const userId = await User.findOne({
+        where: { id },
       });
-      // СОЗД.КАРЗИНУ. id можно получ.из СОЗД.НОВ.ПОЛЬЗ
-      const basket = await Backet.create({ userId: user.id });
+      if (!userId) {
+        return next(ApiError.internal(`Пользователь с ID ${id} не найден`));
+      }
 
-      // передаём данн.польз в fn генер.токена. и получ.роли на front(в fn по умолч.передаётся из User)
-      const token = generateJwt(user.id, user.username, user.email, user.role);
-
-      // возвращ.токен
-      return res.json({
-        token,
-        message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
-      });
-    } catch (error) {
-      // общ.отв. на серв.ошб. в json смс
-      // res
-      //   .status(500)
-      //   .json({ message: `Не удалось зарегистрироваться - ${error}.` });
-      return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      const updUser = await User.update(
+        { username: username },
+        { where: { id: id } }
       );
+
+      const user = await User.findOne({
+        where: { id },
+      });
+
+      return res.json(user);
+      // return res.json(updUser);
+    } catch (error) {
+      res.status(500).json(error);
     }
   }
 
-  // АВТОРИЗАЦИЯ
-  async login(req, res, next) {
+  async deleteUserPERN(req, res) {
     try {
-      // проверка вход.полей на валидацию // ^ UlbiTV. NPg
-      const errorsValid = validationResult(req);
-      // е/и проверка не прошла(не `пусто`) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
-      if (!errorsValid.isEmpty()) {
-        return res.status(400).json({
-          message: "Некорректые данные при регистрации",
-          errors: errorsValid.array(),
-        });
+      const { id } = req.params;
+      if (!id) {
+        return next(ApiError.internal(`ID не передан`));
       }
 
-      const { username, email, password } = req.body;
-
-      // ^ улучшить до общей проверки (!eml.email - так висит)
-      // проверка сущест.username и email
-      const user = await User.findOne({ where: { username /* email */ } });
-      if (!user /* !user.username */ /* || !== username */) {
-        return next(
-          ApiError.internal(`Пользователь с Именем ${username} не найден`)
-        );
-      }
-      const eml = await User.findOne({ where: { email } });
-      if (!eml /* !eml.email */) {
-        return next(
-          ApiError.internal(`Пользователь с Email <${email}> не найден`)
-        );
-      }
-      // проверка `сравнивания` пароля с шифрованым
-      let comparePassword = bcrypt.compareSync(password, user.password);
-      if (!comparePassword) {
-        return next(ApiError.internal("Указан неверный пароль"));
-      }
-      const token = generateJwt(user.id, user.username, user.email, user.role);
-      return res.json({
-        token,
-        message: `Зашёл ${username} <${email}>. id${user.id}_${user.role}`,
+      // проверка наличия по ID
+      const userId = await User.findOne({
+        where: { id },
       });
-    } catch (error) {}
-  }
+      if (!userId) {
+        return next(ApiError.internal(`Пользователь с ID ${id} не найден`));
+      }
 
-  // ПРОВЕРКА
-  // проверка авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
-  async check(req, res, next) {
-    // res.json({ message: "Раб cgeck" });
-    const token = generateJwt(
-      req.user.id,
-      req.user.username,
-      req.user.email,
-      req.user.role
-    );
-    return res.json({
-      token,
-      message: `Проверен ${req.user.username} <${req.user.email}>`,
-    });
+      // УДАЛЕНИЕ
+      const userDel = await User.destroy({
+        where: { id },
+      });
 
-    // ? здесь? универс.обраб.ошиб.(handler).
-    // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
-    // res.json("asdf");
-    // const query = req.query;
-    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
-    // if (!query.id) {
-    //   return next(ApiError.badRequest("Не задан ID"));
-    // }
-    // res.json(query);
-  }
+      // ? нужно проверка удаления с const/if
+      // const User = await User.findOne({where: { id } });
+      // if (!userId) {
+      return res.json({
+        message: `Пользователь с ID ${id} УДАЛЁН`,
+      });
+      // }
 
-  // async ПОЛУЧЕНИЯ по ID с SQL
-  async userPERN(req, res) {
-    try {
-      // из парам.запр.получ.id
-      const id = req.params.id;
-      const user = await User.findOne({ where: { id } });
-      res.json(user);
-      // res.json({ user }); // в объ.user{}
-    } catch (error) {}
-  }
-
-  async usersPERN(req, res) {
-    try {
-      const users = await User.findAndCountAll();
-      res.json(users);
-    } catch (error) {}
+      // return res.json(userId); // вернёт объ.которого уже нет || 2раза вызов по ID
+      // return res.json(userDel); // 1 - удалён, 0 - нет
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
 }
 

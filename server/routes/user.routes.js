@@ -47,62 +47,36 @@ router.post(
       .withMessage("Пароль должен содержать число"),
   ],
   // fn отработки логики. trycatch переехал в controller.register
-  userСontrollers.createUser
+  userСontrollers.createUserNPg
 );
-router.get("/userNPg", userСontrollers.getUser);
-router.get("/userNPg/:id", userСontrollers.getOneUser);
-router.put("/userNPg", userСontrollers.updateUser);
-router.delete("/userNPg/:id", userСontrollers.deleteUser);
+router.get("/userNPg", userСontrollers.getUserNPg);
+router.get("/userNPg/:id", userСontrollers.getOneUserNPg);
+router.put("/userNPg", userСontrollers.updateUserNPg);
+router.delete("/userNPg/:id", userСontrollers.deleteUserNPg);
 
-// ^ ++++ UlbiTV.PERNstore
-// опред.марщрутов|мтд. для отраб. Ригистр.,Авториз.,проверка на Авториз. по jwt токену(2ой парам.)
-router.post(
-  "/registration",
-  // exprsValid
-  [
-    // валидация. normalize не пропускает RU email е/и записаны в ВерБлюд стиле.
-    check("email", "Некорректый email").isEmail().normalizeEmail(),
-    check("password")
-      .not()
-      .isIn([
-        "123qwe",
-        "123qwerty",
-        "qwe123",
-        "qwerty123",
-        "123456",
-        "password123",
-        "god123",
-      ])
-      .withMessage("Не используйте обычные значения в качестве пароля")
-      .isLength({ min: 6 })
-      .withMessage("Минимальная длина пароля 6 символов")
-      .isLength({ max: 20 })
-      .withMessage("Максимальная длина пароля 6 символов")
-      .matches(/\d/)
-      .withMessage("Пароль должен содержать число"),
-  ],
-  userСontrollers.registration
-);
-
-router.post(
-  "/login",
-  // exprsValid
-  [check("email", "Некорректый email").isEmail().normalizeEmail()],
-  userСontrollers.login
-);
-
-router.get("/auth", authMiddleware, userСontrollers.check);
-
+// ^ ++++ EvGen
 router.get(
   "/userPERN/:id",
-  checkRole(["SUPERADMIN", "ADMIN", "MODER"]),
-  userСontrollers.userPERN
+  checkRole(["SUPER", "ADMIN", "MODER"]),
+  userСontrollers.getOneUserPERN
 );
 
 router.get(
   "/userPERN",
-  checkRole("SUPERADMIN", "ADMIN", "MODER"),
-  userСontrollers.usersPERN
+  checkRole("SUPER", "ADMIN", "MODER"),
+  userСontrollers.getUserPERN
+);
+
+router.put(
+  "/userPERN",
+  checkRole("SUPER", "ADMIN", "MODER"),
+  userСontrollers.updateUserPERN
+);
+
+router.delete(
+  "/userPERN/:id",
+  checkRole("SUPER", "ADMIN", "MODER"),
+  userСontrollers.deleteUserPERN
 );
 
 // экспорт объ.Маршрутизатора
