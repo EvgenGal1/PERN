@@ -8,9 +8,13 @@ const postControllers = require("../controllers/post.controllers");
 // созд. объ.кл.Маршрутизатор. Возможно прослуш.запросов (GET, POST, DELETE,..)
 const router = new Router();
 
-// опред.марщрутов для отраб.
-router.post("/post", postControllers.createPost);
-router.get("/post", postControllers.getPostByUser);
+// опред.марщрутов для отраб.post/
+router.post("/", postControllers.createPost);
+router.get("/", postControllers.getPostById);
+router.get("/", postControllers.getAllPost);
+router.get("/:id", postControllers.getOnePost);
+router.put("/", postControllers.updPost);
+router.delete("/:id", postControllers.delPost);
 
 // экспорт объ.Маршрутизатора
 module.exports = router;
