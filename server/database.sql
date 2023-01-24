@@ -8,7 +8,7 @@ create TABLE person(
   psw VARCHAR(255),
 );
 
-create TABLE post(
+create TABLE posts(
   id SERIAL PRIMARY KEY,
   title VARCHAR(255),
   content VARCHAR(255),

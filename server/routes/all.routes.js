@@ -16,6 +16,6 @@ router.use("/user", userRouter);
 router.use("/type", typeRouter);
 router.use("/brand", brandRouter);
 router.use("/device", deviceRouter);
-router.use("/post", postRouter);
+router.use("/posts", postRouter);
 
 module.exports = router;

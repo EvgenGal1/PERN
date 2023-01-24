@@ -36,13 +36,21 @@ class UserControllers {
       const { name, surname, email, password } = req.body;
       // console.log(name, surname); // тест2
 
-      // проверка существ.email по совпад.ключ и значен.
-      const candidate = await User.findOne({ email });
-      // е/и польз.есть - возвращ.Ответ в смс ошб.
-      if (candidate) {
-        return res
-          .status(400)
-          .json({ message: `Такой пользователь уже есть - ${email}.` });
+      // получ.по email
+      const candidateEml = await pool.query(
+        `SELECT * FROM person WHERE email = $1`,
+        [email]
+      );
+      // проверка существ.email по совпад.ключ и значен. е/и польз.есть - возвращ.Ответ в смс ошб.
+      if (candidateEml.rows[0]) {
+        return res.status(400).json({ message: `Email <${email}> уже есть.` });
+      }
+      const candidateName = await pool.query(
+        `SELECT * FROM person WHERE name = $1`,
+        [name]
+      );
+      if (candidateName.rows[0]) {
+        return res.status(400).json({ message: `Имя ${name} уже занято.` });
       }
 
       // `ждём` hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
