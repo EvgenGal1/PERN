@@ -94,9 +94,7 @@ class AuthControllers {
       });
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
-      // res
-      //   .status(500)
-      //   .json({ message: `Не удалось зарегистрироваться - ${error}.` });
+      // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
       return next(
         ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
       );
@@ -145,8 +143,7 @@ class AuthControllers {
     } catch (error) {}
   }
 
-  // ПРОВЕРКА
-  // проверка авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
+  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
   async check(req, res, next) {
     // res.json({ message: "Раб cgeck" });
     const token = generateJwt(
@@ -169,6 +166,37 @@ class AuthControllers {
     //   return next(ApiError.badRequest("Не задан ID"));
     // }
     // res.json(query);
+  }
+
+  // ВЫХОД. Удален.Token.refreshToken
+  async logout(req, res, next) {
+    try {
+      res.json(["123", "456"]);
+    } catch (error) {
+      return next(
+        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      );
+    }
+  }
+
+  // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
+  async activate(req, res, next) {
+    try {
+    } catch (error) {
+      return next(
+        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      );
+    }
+  }
+
+  // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
+  async refresh(req, res, next) {
+    try {
+    } catch (error) {
+      return next(
+        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      );
+    }
   }
 }
 

@@ -46,6 +46,15 @@ router.post(
   authControllers.login
 );
 
+// ВЫХОД. Удален.Token.refreshToken
+router.get("/logout", authControllers.logout);
+
+// АКТИВАЦИЯ АКАУНТА. По ссылке в почту
+router.get("/activate/:link", authControllers.activate);
+
+// ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
+router.get("/refresh", authControllers.refresh);
+
 // ПРОВЕРКА | auth
 router.get("/", authMiddleware, authControllers.check);
 
