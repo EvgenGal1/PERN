@@ -10,7 +10,7 @@ const router = new Router();
 
 // опред.марщрутов для отраб.post/
 router.post("/", postControllers.createPost);
-router.get("/", postControllers.getPostById);
+router.get("/id", postControllers.getPostById);
 router.get("/", postControllers.getAllPost);
 router.get("/:id", postControllers.getOnePost);
 router.put("/", postControllers.updPost);
