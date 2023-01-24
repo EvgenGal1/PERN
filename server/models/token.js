@@ -4,6 +4,8 @@ const { sequelize } = require("../db");
 // подкл.кл.типы полей
 const { DataTypes } = require("sequelize");
 
+// ^ Токенов 2 вида. ACCESS(`доступ` к серверу, живёт 15мин-3сут, хран.LS) и REFRESH(`Обновлять` access, 14-60дн, хран.cookie(httpOnly)).
+
 // const Token = new Schema({ // mondoose
 const Token = sequelize.define("token", {
   // ссылка на id польз.

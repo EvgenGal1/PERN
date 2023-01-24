@@ -57,13 +57,13 @@ router.delete("/userNPg/:id", userСontrollers.deleteUserNPg);
 // ^ ++++ EvGen
 router.get(
   "/userPERN/:id",
-  checkRole(["SUPER", "ADMIN", "MODER"]),
+  // checkRole(["SUPER", "ADMIN", "MODER"]),
   userСontrollers.getOneUserPERN
 );
 
 router.get(
   "/userPERN",
-  checkRole("SUPER", "ADMIN", "MODER"),
+  // checkRole("SUPER", "ADMIN", "MODER"),
   userСontrollers.getUserPERN
 );
 
