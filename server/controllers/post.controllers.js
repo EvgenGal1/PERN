@@ -1,7 +1,5 @@
 // fn|запросы по созданию постов для польз.
 
-// подкл.конфиг.БД для записи получ.данн.в БД
-const { pool } = require("../db");
 // подкл.service по раб.с БД
 const PostService = require("../services/post.service.js");
 
@@ -22,7 +20,7 @@ class PostControllers {
       // res.json(newPost.rows[0]);
 
       // ^ + PostService
-      const newPost = await PostService.createPost(req.body);
+      const newPost = await PostService.createPost(req.body, req.files.picture);
       res.json(newPost);
     } catch (error) {
       const { title, content, picture, userId } = req.body;
@@ -110,7 +108,7 @@ class PostControllers {
       const updPost = await PostService.updPost(req.body);
       return res.json(updPost);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json(error.message);
     }
   }
 
@@ -128,7 +126,7 @@ class PostControllers {
       const delPost = await PostService.delPost(req.params.id);
       return res.json(delPost);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json(error.message);
     }
   }
 }

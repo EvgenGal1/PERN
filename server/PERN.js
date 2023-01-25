@@ -34,7 +34,7 @@ const app = express();
 app.use(cors());
 // возм.парсить json
 app.use(express.json());
-// указ.ф.из static/ раздавать как статику(для получения)
+// указ.ф.из static/ раздавать как статику(для получения) | ss.static("static"))
 app.use(express.static(path.resolve(__dirname, "static")));
 // регистр.загрузчика файлов с передачей пуст.объ
 app.use(fileUpload({}));
