@@ -1,14 +1,16 @@
 // ^ ++++ UlbiTV.PERNstore
 // подкл.ф.контролера для генерац.web токена
 const jwt = require("jsonwebtoken");
-// подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User, Backet } = require("../models/models");
 // подкл. библ. для шифрование пароля нов.польз.
 const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
+// подкл.обраб.ошиб.
+const ApiError = require("../error/ApiError.js");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const { User, Backet } = require("../models/models.js");
+
+const AuthService = require("../services/auth.service.js");
 
 // fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
 const generateJwt = (id, username, email, role) => {
@@ -58,39 +60,24 @@ class AuthControllers {
         return next(ApiError.badRequest(`Некорректный password`));
       }
 
-      // проверка сущест.username и email
-      const candidate = await User.findOne({ where: { username, email } });
-      if (candidate) {
-        return next(
-          ApiError.badRequest(
-            `Пользователь ${username} <${email}> уже существует`
-          )
-        );
-      }
-
-      // hashирование/шифрование пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
-      // const salt = await bcrypt.getSalt(12); | hashSync
-      const hashPassword = await bcrypt.hash(password, 5); // hashSync
-
-      // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль совпад.с шифрованым)
-      const user = await User.create({
+      // передача данн.в fn для Service (возвращ.2 токена, данн.польз.,есть,создан.)
+      const userData = await AuthService.registration(
         username,
         email,
-        role,
-        password: hashPassword,
-        // fullName,
-        // avatarUrl,
+        password,
+        role
+      );
+
+      // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере(https - seqyre:true))
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
       });
-      // СОЗД.КАРЗИНУ. id можно получ.из СОЗД.НОВ.ПОЛЬЗ
-      const basket = await Backet.create({ userId: user.id });
 
-      // передаём данн.польз в fn генер.токена. и получ.роли на front(в fn по умолч.передаётся из User)
-      const token = generateJwt(user.id, user.username, user.email, user.role);
-
-      // возвращ.токен
+      // возвращ.токен и инфо о польз.
       return res.json({
-        token,
-        message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
+        userData,
+        // message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
       });
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
@@ -138,7 +125,7 @@ class AuthControllers {
       const token = generateJwt(user.id, user.username, user.email, user.role);
       return res.json({
         token,
-        message: `Зашёл ${username} <${email}>. id${user.id}_${user.role}`,
+        message: `Зашёл ${username} <${email}>. ID_${user.id}-${user.role}`,
       });
     } catch (error) {}
   }

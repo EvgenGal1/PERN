@@ -46,7 +46,7 @@ const User = sequelize.define("user", {
   // `активируется` - подтвержд.почты от польз.
   isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
   // `Ссылка активации` - хран.ссылку для актив.
-  activationLink: { type: DataTypes.STRING, defaultValue: false },
+  activationLink: { type: DataTypes.STRING /* defaultValue: false */ },
 });
 
 // Корзина
