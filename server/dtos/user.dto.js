@@ -2,14 +2,18 @@
 
 // разреш.поля для FRONT
 module.exports = class UserDto {
-  email;
   id;
+  email;
+  username;
+  role;
   // флаг актив.
   isActivated;
   // констр.с парам. модели откуда достаём поля
   constructor(model) {
-    this.email = model.email;
     this.id = model.id;
+    this.email = model.email;
+    this.username = model.username;
+    this.role = model.role;
     this.isActivated = model.isActivated;
   }
 };
