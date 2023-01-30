@@ -7,7 +7,11 @@ const { DataTypes } = require("sequelize");
 // const { Token } = require("./Token");
 
 const Role = sequelize.define("role", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    /* ,autoIncrement: true  */
+  },
   // по умолч. роль USER и уникальна
   // value: { type: String, unique: true, default: "USER" },
   value: {
@@ -16,13 +20,29 @@ const Role = sequelize.define("role", {
     allowNull: false,
     defaultValue: "USER",
   },
+  // ?
+  name: {
+    type: DataTypes.STRING,
+  },
 });
 
 const Token = sequelize.define("token", {
   // ссылка на id польз.
-  userId: { type: DataTypes.INTEGER /* ObjectId */ /* , ref: "user" */ },
+  id: {
+    // userId: {
+    // user: {
+    /* STRING */ /* ObjectId */ /* , ref: "user" */
+    //
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    // autoIncrement: true,
+  },
   // `обновлять` токен созд.в БД
-  refreshToken: { type: DataTypes.STRING, required: true },
+  refreshToken: {
+    type: DataTypes.STRING,
+    // required: true
+    /* ,allowNull: false */
+  },
   // ipАдрес входа, `Отпечаток пальца` браузера,..
 });
 
@@ -31,7 +51,7 @@ const Token = sequelize.define("token", {
 const User = sequelize.define("user", {
   // id тип.целое число,перв.ключ,авто.добавка
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  // добавил name, удалить можно через pgAdmin, залить сначала удалив табл.с привязками DROP TABLE IF EXISTS users CASCADE;
+  // добавил name, удалить можно через pgAdmin, залить сначала удалив табл.с привязками DROP TABLE IF EXISTS users CASCADE ;
   /* fullName */ /* required: true, */
   username: { type: DataTypes.STRING, unique: true, required: true },
   // email тип.стр.,уникальное
@@ -39,14 +59,14 @@ const User = sequelize.define("user", {
   // password тип.стр.
   password: { type: DataTypes.STRING, required: true },
   // роль тип.стр.,знач.по умолч.USER
-  role: { type: DataTypes.STRING, defaultValue: "USER", required: true },
+  // role: { type: DataTypes.STRING, defaultValue: "USER", required: true },
   // для Прилож.Сокращ.Ссылок. Свой масс.ссылок,Types связка мод.польз. и записей в БД, ref привязка к коллекции
   // Links: [{type: DataTypes.ObjectId,ref:"Link",required: true,},],
-  Links: { type: DataTypes.STRING, defaultValue: "Link", required: true },
+  // Links: { type: DataTypes.STRING, defaultValue: "Link", required: true },
   // `активируется` - подтвержд.почты от польз.
   isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
   // `Ссылка активации` - хран.ссылку для актив.
-  activationLink: { type: DataTypes.STRING /* defaultValue: false */ },
+  activationLink: { type: DataTypes.STRING /* , defaultValue: false */ },
 });
 
 // Корзина
@@ -95,6 +115,7 @@ const DeviceInfo = sequelize.define("device_info", {
   description: { type: DataTypes.STRING, allowNull: false },
 });
 
+//
 // СВЯЗЬ МОДЕЛЕЙ ДРсДР. ИМЕЕТ(одну,много) | ПРИНАДЛЕЖИТ(одному,многим).
 // У модели вызов fn(hasOne,hasMany|belongsTo,belongsToMany)
 
@@ -103,12 +124,35 @@ const TypeBrand = sequelize.define("type_brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-// связующая табл.|модель для Type|Brand. Внешн.ключи sequelize.`определит`
+// связующая табл.|модель для User|Role. Внешн.ключи sequelize.`определит`
 const UserRole = sequelize.define("user_role", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  role: { type: DataTypes.STRING },
+  // role: { type: DataTypes.STRING },
+  // user_id: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: User,
+  //     key: "id",
+  //   },
+  // },
+  // role_id: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: Role,
+  //     key: "id",
+  //   },
+  // },
 });
 
+// связующая табл.|модель для User|Token.
+const UserToken = sequelize.define("user_token", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  // refreshToken: { type: DataTypes.STRING },
+});
+
+//
 // польз.и корзина связь один к одному(одна корзина) | корзина принадлеж.польз.
 User.hasOne(Backet);
 Backet.belongsTo(User);
@@ -132,9 +176,6 @@ Rating.belongsTo(Device);
 Device.hasMany(BacketDevice);
 BacketDevice.belongsTo(Device);
 
-User.hasOne(Token);
-Token.belongsTo(User);
-
 // + назв.поля у масс.харак-ик
 Device.hasMany(DeviceInfo, { as: "info" });
 DeviceInfo.belongsTo(Device);
@@ -143,14 +184,31 @@ DeviceInfo.belongsTo(Device);
 Type.belongsToMany(Brand, { through: TypeBrand });
 Brand.belongsToMany(Type, { through: TypeBrand });
 
+// Имя иностранного ключа в целевой таблице или объект, представляющий определение типа для иностранного столбца (см. Sedize.define для синтаксиса).При использовании объекта вы можете добавить свойство имени, чтобы установить имя столбца.По умолчанию на имя источника + первичного ключа источника
 User.belongsToMany(Role, { through: UserRole });
-Role.belongsToMany(User, { through: UserRole });
+Role.belongsToMany(User, {
+  through: UserRole,
+  //   foreignKey: "roleId",
+  // otherKey: "userId"
+});
+
+// User.hasMany(Token);
+User.hasOne(Token);
+Token.belongsTo(User);
+
+// Token.hasOne(User);
+// User.belongsTo(Token);
+
+// User.belongsToMany(Token, { through: UserToken });
+// Token.belongsToMany(User, { through: UserToken });
 
 //экспорт моделей
 module.exports = {
   User,
-  Role,
+  // Role,
   Token,
+  // UserRole,
+  // UserToken,
   Backet,
   BacketDevice,
   Device,
