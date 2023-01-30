@@ -1,92 +1,140 @@
-// ^ Service(Бизнес логика - БД и выход.парам.(НЕ req,res))
-
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
 const FileService = require("./file.service.js");
 
+// раб.с почтой
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
+
+const SENDMAIL = async (mailDetails, callback) => {
+  try {
+    const info = await transporter.sendMail(mailDetails);
+    callback(info);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const HTML_TEMPLATE = (text) => {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>NodeMailer Email Template</title>
+        <style>
+          .container {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+          .email {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+          }
+          .email-header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+          }
+          .email-body {
+            padding: 20px;
+          }
+          .email-footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="email">
+            <div class="email-header">
+              <h1>EMAIL HEADER</h1>
+            </div>
+            <div class="email-body">
+              <p>${text}</p>
+            </div>
+            <div class="email-footer">
+              <p>EMAIL FOOTER</p>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+};
+
+const message = "Hi there, you were emailed me through nodemailer";
+
+const options = {
+  from: "TESTING <evgengal.smtp@gmail.com>", // sender address
+  // from: process.env.SMTP_USER, // sender address
+  // to: "someone@gmail.com", // receiver email
+  // to: "evgenauth@gmail.com", // receiver email
+  to: "evgengalauth@yandex.ru", // receiver email
+  subject: "Активация акуанта на " /* + process.env.API_URL */, // Subject line
+  text: message,
+  html: HTML_TEMPLATE(message),
+};
+
+SENDMAIL(options, (info) => {
+  console.log("Email sent successfully");
+  console.log("MESSAGE ID: ", info.messageId);
+});
+
+// evgengalauth - smtp-psw_YA_0 - evgengalauth@yandex.ru
+
 class MailService {
-  // `Отправить действие на Почту`(email,ссылка)
-  async sendActionMail(to, Link) {}
-
-  // async createPost(post, picture) {
-  //   // сохр.в перем.назв.изо ч/з FileService
-  //   const fileName = FileService.saveFile(picture);
-  //   var onePost = await pool.query(`SELECT * FROM posts WHERE title = $1`, [
-  //     post.title,
-  //   ]);
-  //   if (onePost.rows.length > 0) {
-  //     return `Пост c Заголовком '${post.title}' уже есть`;
-  //   }
-  //   const newPost = await pool.query(
-  //     `INSERT INTO posts (title, content, picture, userId) VALUES ($1, $2, $3, $4) RETURNING *`,
-  //     [post.title, post.content, /* post.picture */ fileName, post.userId]
-  //   );
-  //   return newPost.rows[0];
+  // ч/з констр.инициализ.почтовый клиент
+  // constructor() {
+  //   // отправка писем на почту ч/з fn с опц.(host,port почт.сервера,`безопасный`,аунтетиф.)
+  //   this.transporter = nodemailer.createTransport({
+  //     service: "gmail",
+  //     host: process.env.SMTP_HOST,
+  //     port: process.env.SMTP_PORT,
+  //     secure: false,
+  //     auth: {
+  //       user: process.env.SMTP_USER,
+  //       pass: process.env.SMTP_PASSWORD,
+  //     },
+  //   });
   // }
 
-  // async getPostById(id, userId) {
-  //   var varId;
-  //   if (id) {
-  //     var varId = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-  //   }
-  //   if (userId) {
-  //     var varId = await pool.query(
-  //       `SELECT * FROM posts WHERE userId =` + userId
-  //     );
-  //   }
-  //   if (varId.rows.length < 1) {
-  //     if (id) {
-  //       return `Пост по ID ${id} не найден`;
-  //     }
-  //     if (userId) {
-  //       return `Посты у Пользователя с ID_${userId} не найдены`;
-  //     }
-  //   }
-  //   return varId.rows /* .find() */;
-  // }
+  //  --------------------------------------------------------
 
-  // async getAllPost() {
-  //   const posts = await pool.query(`SELECT * FROM posts`);
-  //   return posts.rows;
-  // }
-
-  // async getOnePost(id) {
-  //   var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-  //   if (onePost.rows.length < 1) {
-  //     return `Пост по ID ${id} не найден`;
-  //   }
-  //   return onePost.rows[0];
-  // }
-
-  // async updPost(post) {
-  //   if (!post.id) {
-  //     throw new Error("ID не указан");
-  //     // return "ID не указан";
-  //   }
-  //   var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + post.id);
-  //   if (onePost.rows.length < 1) {
-  //     return `Пост по ID ${post.id} не найден`;
-  //   }
-  //   const updPost = await pool.query(
-  //     `UPDATE posts SET title = $2 WHERE id = $1 RETURNING *`,
-  //     [post.id, post.title /* , content, picture, userId */]
-  //   );
-  //   return updPost.rows[0];
-  // }
-
-  // async delPost(id) {
-  //   if (!id) {
-  //     throw new Error("ID не указан");
-  //     // return "ID не указан";
-  //   }
-  //   var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-  //   if (onePost.rows.length < 1) {
-  //     return `Пост по ID_${id} не найден`;
-  //   }
-  //   const delPost = await pool.query(`DELETE FROM posts WHERE id =` + id);
-  //   // return delPost.rows;
-  //   return { message: `Удалён Пост по ID_${id}`, post: delPost.rows };
-  // }
+  // `Отправить смс/действие на Почту`(email,ссылка)
+  async sendActionMail(to, Link) {
+    // вызов у trnsp fn `Отправить письмо` с парам.объ.(от кого письмо,кому,тема + url сайта,текст,свёрнутый html с ссылкой активации)
+    // await this.transporter.sendMail({
+    //   from: process.env.SMTP_USER,
+    //   to,
+    //   subject: "Активация акуанта на " + process.env.API_URL,
+    //   text: "",
+    //   html: `
+    //         <div>
+    //           <h1>Для активации перейдите по ссылке</h1>
+    //           <a href="${Link}">${Link}</a>
+    //         </div>
+    //       `,
+    // });
+  }
 }
 
 module.exports = new MailService();

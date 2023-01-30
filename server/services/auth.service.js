@@ -76,6 +76,7 @@ class AuthService {
       const candidate = await User.findOne({
         where: { username, email },
       });
+
       if (candidate) {
         return `Пользователь уже существует`;
         // return next(
@@ -98,14 +99,19 @@ class AuthService {
       const user = await User.create({
         username,
         email,
-        role,
+        // role,
         password: hashPassword,
+        activationLink,
         // fullName,
         // avatarUrl,
       });
 
-      // отпр.смс на почту для актив-ии
-      await MailService.sendActionMail(email, activationLink);
+      // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
+      await MailService.sendActionMail(
+        email,
+        // activationLink
+        `${process.env.API_URL}/PERN/auth/activate/${activationLink}`
+      );
 
       // выборка полей(3шт.) для FRONT (new - созд.экземпляр класса)
       const userDto = new UserDto(user);
@@ -120,7 +126,8 @@ class AuthService {
       return {
         ...tokens,
         user: userDto,
-        message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
+        // message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
+        // message: `Пользователь создан и зарегистрирован`,
       };
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
