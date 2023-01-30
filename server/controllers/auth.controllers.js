@@ -11,6 +11,7 @@ const ApiError = require("../error/ApiError.js");
 const { User, Backet } = require("../models/models.js");
 
 const AuthService = require("../services/auth.service.js");
+const cookie = require("cookie");
 
 // fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
 const generateJwt = (id, username, email, role) => {
@@ -64,21 +65,27 @@ class AuthControllers {
       const userData = await AuthService.registration(
         username,
         email,
-        password,
-        role
+        password
+        // role
       );
 
-      // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере(https - seqyre:true))
+      // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true))
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
+        // maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
+        // secure: true - secure: false для Postman
+        // secure: false,
+        // sameSite: "none",
       });
 
       // возвращ.токен и инфо о польз.
-      return res.json({
-        userData,
+      return res.json(
+        // {
+        userData
         // message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
-      });
+        // }
+      );
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
