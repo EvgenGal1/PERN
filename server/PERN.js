@@ -22,14 +22,16 @@ const cookieParser = require("cookie-parser");
 
 // подкл.общ.ф.настр.маршрутизаторов(UlbiTV.PERNstore) + отд.ф.для UlbiTV.NPg;
 const allRoutes = require("./routes/all.routes");
-const userRoutes = require("./routes/user.routes");
-const postRoutes = require("./routes/post.routes");
+// const userRoutes = require("./routes/user.routes");
+// const postRoutes = require("./routes/post.routes");
 
 // в конст PORT запис.порт из перек.опкруж. (| сист.перем. - config.get("port")) или 5000
 const PORT = process.env.PORT || 7531;
 
 // созд.server
 const app = express();
+// добав.cookieParser
+app.use(cookieParser());
 // передача cors в app для взаимодейств.server-браузер
 app.use(cors());
 // возм.парсить json
@@ -38,8 +40,6 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "static")));
 // регистр.загрузчика файлов с передачей пуст.объ
 app.use(fileUpload({}));
-// добав.cookieParser
-app.use(cookieParser());
 // ?! от ошб ?
 // app.use(
 //   express.urlencoded({
