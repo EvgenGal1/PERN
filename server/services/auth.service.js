@@ -99,13 +99,14 @@ class AuthService {
       const user = await User.create({
         username,
         email,
-        // role,
+        role,
         password: hashPassword,
         activationLink,
         // fullName,
         // avatarUrl,
       });
 
+      // ! не раб - TypeError: Cannot read properties of undefined (reading 'refreshToken')." mail.serv что-то не вывозит
       // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
       await MailService.sendActionMail(
         email,
@@ -217,9 +218,16 @@ class AuthService {
     }
   }
 
-  // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
-  async activate(req, res, next) {
+  // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
+  async activate(/* req, res, next */ activationLink) {
     try {
+      const user = await User.findOne({ activationLink });
+      if (!user) {
+        return `Некорр ссы.актив. Пользователя НЕ существует`;
+      }
+      // флаг в tru и сохр.
+      user.isActivated = true;
+      await user.save();
     } catch (error) {
       return next(
         ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)

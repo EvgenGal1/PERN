@@ -176,9 +176,17 @@ class AuthControllers {
   // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
   async activate(req, res, next) {
     try {
+      // из стр.получ.ссы.актив.
+      const activationLink = req.params.Link;
+      await User.activate(activationLink);
+      // редирект после перехода по ссылки
+      return res.redirect(process.env.CLIENT_URL);
     } catch (error) {
       return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+        ApiError.badRequest(
+          // console.log("error ", error)
+          `НЕ удалось зарегистрироваться (activate) - ${error}.`
+        )
       );
     }
   }
@@ -188,7 +196,9 @@ class AuthControllers {
     try {
     } catch (error) {
       return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+        ApiError.badRequest(
+          `НЕ удалось зарегистрироваться (refresh) - ${error}.`
+        )
       );
     }
   }
