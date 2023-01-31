@@ -59,7 +59,7 @@ const User = sequelize.define("user", {
   // password тип.стр.
   password: { type: DataTypes.STRING, required: true },
   // роль тип.стр.,знач.по умолч.USER
-  // role: { type: DataTypes.STRING, defaultValue: "USER", required: true },
+  role: { type: DataTypes.STRING, defaultValue: "USER", required: true },
   // для Прилож.Сокращ.Ссылок. Свой масс.ссылок,Types связка мод.польз. и записей в БД, ref привязка к коллекции
   // Links: [{type: DataTypes.ObjectId,ref:"Link",required: true,},],
   // Links: { type: DataTypes.STRING, defaultValue: "Link", required: true },
@@ -147,10 +147,10 @@ const UserRole = sequelize.define("user_role", {
 });
 
 // связующая табл.|модель для User|Token.
-const UserToken = sequelize.define("user_token", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  // refreshToken: { type: DataTypes.STRING },
-});
+// const UserToken = sequelize.define("user_token", {
+//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+//   // refreshToken: { type: DataTypes.STRING },
+// });
 
 //
 // польз.и корзина связь один к одному(одна корзина) | корзина принадлеж.польз.
@@ -192,12 +192,9 @@ Role.belongsToMany(User, {
   // otherKey: "userId"
 });
 
-// User.hasMany(Token);
-User.hasOne(Token);
+User.hasMany(Token);
+// User.hasOne(Token);
 Token.belongsTo(User);
-
-// Token.hasOne(User);
-// User.belongsTo(Token);
 
 // User.belongsToMany(Token, { through: UserToken });
 // Token.belongsToMany(User, { through: UserToken });
@@ -205,9 +202,9 @@ Token.belongsTo(User);
 //экспорт моделей
 module.exports = {
   User,
-  // Role,
+  Role,
   Token,
-  // UserRole,
+  UserRole,
   // UserToken,
   Backet,
   BacketDevice,

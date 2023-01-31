@@ -5,14 +5,14 @@ module.exports = class UserDto {
   id;
   username;
   email;
-  // role;
+  role;
   isActivated;
   // констр.с парам. модели откуда достаём поля
   constructor(model) {
     this.id = model.id;
     this.username = model.username;
     this.email = model.email;
-    // this.role = model.role;
+    this.role = model.role;
     this.isActivated = model.isActivated;
   }
 };
