@@ -46,41 +46,17 @@ class AuthService {
     // базов.логика с обраб.ошб.
     try {
       // ^ UlbiTV. NPg
-      // проверка вход.полей на валидацию
-      // const errorsValid = validationResult(req);
-      // // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
-      // if (!errorsValid.isEmpty()) {
-      //   return res.status(400).json({
-      //     message: "Некорректые данные при регистрации",
-      //     errors: errorsValid.array(),
-      //   });
-      // }
-
-      // // Получ.из тела.
-      // // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
-      // const { id, username, email, password, role } = req.body;
-
-      // // проверка отсутств.user.
-      // if (!username) {
-      //   return next(ApiError.badRequest(`Некорректный username`));
-      // }
-      // // ? нужно Доп.проверка отсутств email,psw е/и errorsValid не отраб
-      // if (!email) {
-      //   return next(ApiError.badRequest(`Некорректный email`));
-      // }
-      // if (!password) {
-      //   return next(ApiError.badRequest(`Некорректный password`));
-      // }
-
       // проверка сущест.username и email
       const candidate = await User.findOne({
         where: { username, email },
       });
 
       if (candidate) {
-        return `Пользователь уже существует`;
+        return ApiError.BadRequest(
+          `Пользователь ${username} <${email}> уже существует`
+        );
         // return next(
-        //   ApiError.badRequest(
+        //   ApiError.BadRequest(
         //     `Пользователь ${username} <${email}> уже существует`
         //   )
         // );
@@ -136,9 +112,9 @@ class AuthService {
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
       // return next(
-      //   ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      return ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`);
       // );
-      return console.log(error);
+      // return console.log(error);
     }
   }
 
@@ -204,7 +180,7 @@ class AuthService {
     // const query = req.query;
     // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
     // if (!query.id) {
-    //   return next(ApiError.badRequest("Не задан ID"));
+    //   return next(ApiError.BadRequest("Не задан ID"));
     // }
     // res.json(query);
   }
@@ -215,26 +191,28 @@ class AuthService {
       res.json(["123", "456"]);
     } catch (error) {
       return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+        ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`)
       );
     }
   }
 
   // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
   async activate(/* req, res, next */ activationLink) {
-    try {
-      const user = await User.findOne({ activationLink });
-      if (!user) {
-        return `Некорр ссы.актив. Пользователя НЕ существует`;
-      }
-      // флаг в tru и сохр.
-      user.isActivated = true;
-      await user.save();
-    } catch (error) {
-      return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+    // try {
+    const user = await User.findOne({ activationLink });
+    if (!user) {
+      return ApiError.BadRequest(
+        `Некорр ссы.актив. Пользователя НЕ существует`
       );
     }
+    // флаг в tru и сохр.
+    user.isActivated = true;
+    await user.save();
+    // } catch (error) {
+    //   return next(
+    //     ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+    //   );
+    // }
   }
 
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
@@ -242,7 +220,7 @@ class AuthService {
     try {
     } catch (error) {
       return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+        ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`)
       );
     }
   }

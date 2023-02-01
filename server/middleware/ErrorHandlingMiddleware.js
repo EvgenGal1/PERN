@@ -1,14 +1,18 @@
-// middlware по ошб.
+// middlware по обраб.ошб.
 
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 
 // экспорт fn (fn явл.middlware). приним. ошб.,запр.,отв.,след.(передача управ.след.middlware)
 module.exports = function (err, req, res, next) {
-  // е/и `случай`ошб.из ApiError, возвращ.код и смс из ошб.
+  console.log(err);
+
+  // е/и ошб.явл.экземплярром из ApiError, возвращ.код, смс из ошб., масс.ошб.
   if (err instanceof ApiError) {
-    return res.status(err.status).json({ message: err.message });
+    return res
+      .status(err.status)
+      .json({ message: err.message, errors: err.errors });
   }
   // е/и ошб. НЕ из ApiError, возвращ.настр.код и смс
-  return res.status(500).json({ message: `Непредвиденная ошибка! ` });
+  return res.status(500).json({ message: `Непредвиденная ошибка! ${err}` });
 };

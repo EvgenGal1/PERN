@@ -49,7 +49,7 @@ class DeviceController {
       return res.json(device);
     } catch (e) {
       // при ошб.подкл.след.обраб.ошиб.
-      next(ApiError.badRequest(e.message));
+      next(ApiError.BadRequest(e.message));
     }
   }
 

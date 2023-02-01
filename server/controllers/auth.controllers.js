@@ -8,7 +8,7 @@ const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError.js");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User, Backet } = require("../models/models.js");
+const { User } = require("../models/models.js");
 
 const AuthService = require("../services/auth.service.js");
 const cookie = require("cookie");
@@ -39,10 +39,14 @@ class AuthControllers {
       const errorsValid = validationResult(req);
       // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
       if (!errorsValid.isEmpty()) {
-        return res.status(400).json({
-          message: "Некорректые данные при регистрации",
-          errors: errorsValid.array(),
-        });
+        // return res.status(400).json({
+        return next(
+          ApiError.BadRequest(
+            /* message: */ "Некорректые данные при регистрации",
+            /* errors: */ errorsValid.array()
+            // })
+          )
+        );
       }
 
       // Получ.из тела.
@@ -51,14 +55,14 @@ class AuthControllers {
 
       // проверка отсутств.user.
       if (!username) {
-        return next(ApiError.badRequest(`Некорректный username`));
+        return next(ApiError.BadRequest(`Некорректный username`));
       }
       // ? нужно Доп.проверка отсутств email,psw е/и errorsValid не отраб
       if (!email) {
-        return next(ApiError.badRequest(`Некорректный email`));
+        return next(ApiError.BadRequest(`Некорректный email`));
       }
       if (!password) {
-        return next(ApiError.badRequest(`Некорректный password`));
+        return next(ApiError.BadRequest(`Некорректный password`));
       }
 
       // передача данн.в fn для Service (возвращ.2 токена, данн.польз.,есть,создан.)
@@ -89,10 +93,12 @@ class AuthControllers {
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
-      return next(
-        ApiError.badRequest(
-          `НЕ удалось зарегистрироваться (registr) - ${error}.`
-        )
+      // return next(
+      next(
+        // ApiError.BadRequest(
+        `НЕ удалось зарегистрироваться (registr) - ${error}.`
+        // error
+        // )
       );
     }
   }
@@ -136,7 +142,9 @@ class AuthControllers {
         token,
         message: `Зашёл ${username} <${email}>. ID_${user.id}-${user.role}`,
       });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
@@ -159,7 +167,7 @@ class AuthControllers {
     // const query = req.query;
     // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
     // if (!query.id) {
-    //   return next(ApiError.badRequest("Не задан ID"));
+    //   return next(ApiError.BadRequest("Не задан ID"));
     // }
     // res.json(query);
   }
@@ -169,8 +177,11 @@ class AuthControllers {
     try {
       res.json(["123", "456"]);
     } catch (error) {
-      return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+      // return
+      next(
+        // ApiError.BadRequest(
+        `НЕ удалось зарегистрироваться - ${error}.`
+        // )
       );
     }
   }
@@ -181,14 +192,15 @@ class AuthControllers {
       // из стр.получ.ссы.актив.
       const activationLink = req.params.Link;
       await AuthService.activate(activationLink);
-      // редирект после перехода по ссылки
+      // редирект на FRONT после перехода по ссылки (изза разных hostов BACK)
       return res.redirect(process.env.CLIENT_URL);
     } catch (error) {
-      return next(
-        ApiError.badRequest(
-          // console.log("error ", error)
-          `НЕ удалось зарегистрироваться (activate) - ${error}.`
-        )
+      // return
+      next(
+        // ApiError.BadRequest(
+        // console.log("error ", error)
+        `НЕ удалось зарегистрироваться (activate) - ${error}.`
+        // )
       );
     }
   }
@@ -197,10 +209,11 @@ class AuthControllers {
   async refresh(req, res, next) {
     try {
     } catch (error) {
-      return next(
-        ApiError.badRequest(
-          `НЕ удалось зарегистрироваться (refresh) - ${error}.`
-        )
+      // return
+      next(
+        // ApiError.BadRequest(
+        `НЕ удалось зарегистрироваться (refresh) - ${error}.`
+        // )
       );
     }
   }

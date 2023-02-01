@@ -142,7 +142,7 @@ class UserControllers {
       const { id } = req.params;
       const userId = await User.findOne({ where: { id } });
       if (!userId) {
-        return next(ApiError.badRequest(`Пользователь с ID ${id} не найден`));
+        return next(ApiError.BadRequest(`Пользователь с ID ${id} не найден`));
       }
       res.json(userId);
     } catch (error) {}

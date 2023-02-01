@@ -2,31 +2,44 @@
 
 // класс для объедин. неск.мтд. Кл.расшир.Error
 class ApiError extends Error {
-  // в парам.приним. стат.код и смс
-  constructor(status, message) {
-    // вызов.род.констр.
+  // формат/последовательность выгрузки
+  status;
+  message;
+  errors;
+
+  // в парам.приним. стат.код, смс, ошб.(по умолч.масс.пуст)
+  constructor(status, message, errors = []) {
+    // вызов.род.констр. с передачей смс
     super();
-    // присвойка полученого
+    // super(message); // ! не раб. формат или присвойка без указания
+    // присвойка полученого в экземпляр кл.
     this.status = status;
     this.message = message;
+    this.errors = errors;
   }
 
   // СОЗД.СТАТИЧ.fn (можно вызыв.без созд.объ.обращ.на прямую к кл.)
 
+  // `Несанкционированная ошибка`
+  static UnauthorizedError() {
+    // возвращ.экземпл.текущ.кл.
+    return new ApiError(401, "Пользовательне не авторизован");
+  }
+
   // `плохой запрос`
-  static badRequest(message) {
-    // возвращ.нов.объ.с парам.(код и смс)
-    return new ApiError(404, message);
+  static BadRequest(message, errors = []) {
+    // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
+    return new ApiError(400, message, errors);
   }
 
   // `внутренний`
-  static internal(message) {
-    return new ApiError(500, message);
+  static internal(message, errors = []) {
+    return new ApiError(500, message, errors);
   }
 
   // `запрещенный` нет доступа
-  static forbidden(message) {
-    return new ApiError(403, message);
+  static forbidden(message, errors = []) {
+    return new ApiError(403, message, errors);
   }
 }
 
