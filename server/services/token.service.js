@@ -61,7 +61,7 @@ class TokenService {
     // СОЗД.НОВ.ТОКЕН
     const token = await Token.create({
       id: userId,
-      /* refreshToken: */ refreshToken,
+      refreshToken: refreshToken,
     });
     // возвращ.нов.токен
     return token;
