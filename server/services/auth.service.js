@@ -94,6 +94,7 @@ class AuthService {
 
       // генер.уник.ссылку активации ч/з fn v4(подтверждение акаунта)
       let activationLink = uuid.v4();
+      let activationLinkPath = `${process.env.API_URL}/PERN/auth/activate/${activationLink}`;
 
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль совпад.с шифрованым)
       const user = await User.create({
@@ -106,12 +107,12 @@ class AuthService {
         // avatarUrl,
       });
 
-      // ! не раб - TypeError: Cannot read properties of undefined (reading 'refreshToken')." mail.serv что-то не вывозит
       // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
       await MailService.sendActionMail(
         email,
         // activationLink
-        `${process.env.API_URL}/PERN/auth/activate/${activationLink}`
+        // `${process.env.API_URL}/PERN/auth/activate/${activationLink}`
+        activationLinkPath
       );
 
       // выборка полей(3шт.) для FRONT (new - созд.экземпляр класса)
@@ -126,6 +127,7 @@ class AuthService {
       // возвращ.2 токена, инфо о польз.
       return {
         ...tokens,
+        activationLinkPath,
         user: userDto,
         // message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
         // message: `Пользователь создан и зарегистрирован`,

@@ -90,7 +90,9 @@ class AuthControllers {
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
       return next(
-        ApiError.badRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+        ApiError.badRequest(
+          `НЕ удалось зарегистрироваться (registr) - ${error}.`
+        )
       );
     }
   }
@@ -178,7 +180,7 @@ class AuthControllers {
     try {
       // из стр.получ.ссы.актив.
       const activationLink = req.params.Link;
-      await User.activate(activationLink);
+      await AuthService.activate(activationLink);
       // редирект после перехода по ссылки
       return res.redirect(process.env.CLIENT_URL);
     } catch (error) {
