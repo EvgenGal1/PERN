@@ -30,8 +30,8 @@ router.post(
       .withMessage("Не используйте обычные значения в качестве пароля")
       .isLength({ min: 6 })
       .withMessage("Минимальная длина пароля 6 символов")
-      .isLength({ max: 20 })
-      .withMessage("Максимальная длина пароля 6 символов")
+      .isLength({ max: 32 })
+      .withMessage("Максимальная длина пароля 32 символа")
       .matches(/\d/)
       .withMessage("Пароль должен содержать число"),
   ],
