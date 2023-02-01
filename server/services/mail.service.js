@@ -1,7 +1,3 @@
-// подкл.конфиг.БД для записи получ.данн.в БД
-const { pool } = require("../db");
-const FileService = require("./file.service.js");
-
 // раб.с почтой
 const nodemailer = require("nodemailer");
 
@@ -14,7 +10,7 @@ class MailService {
       //     service: "gmail",
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: false,
+      // secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -24,30 +20,37 @@ class MailService {
 
   // `Отправить смс/действие на Почту`(email,ссылка)
   async sendActionMail(to, Link) {
-    // вызов у trnsp fn `Отправить письмо` с парам.объ.(от кого письмо,кому,тема + url сайта,текст,свёрнутый html с ссылкой активации)
-    // ! не раб - TypeError: Cannot read properties of undefined (reading 'refreshToken')." mail.serv что-то не вывозит. ji,/ghb подкл.
-    // await this.transporter.sendMail({
-    //   from: process.env.SMTP_USER,
-    //   to,
-    //   subject: "Активация акуанта на " + process.env.API_URL,
-    //   text: "",
-    //     html: `
-    //           <div>
-    //             <h1>Для активации перейдите по ссылке</h1>
-    //             <a href="${Link}">${Link}</a>
-    //           </div>
-    //         `,
-    // });
+    try {
+      // вызов у trnsp fn `Отправить письмо` с парам.объ.(от кого письмо,кому,тема + url сайта,текст,свёрнутый html с ссылкой активации)
+      // ! не раб - TypeError: Cannot read properties of undefined (reading 'refreshToken')." mail.serv что-то не вывозит. ji,/ghb подкл.
+      // ^ убрал await заработал отправка на почту
+      /* await */ this.transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: to,
+        subject: "Активация акуанта на " + process.env.API_URL,
+        text: "",
+        html: `
+          <div>
+            <h1>Для активации перейдите по ссылке</h1>
+            <a href="${Link}">${Link}</a>
+          </div>
+          `,
+      });
+    } catch (error) {
+      return console.log(error);
+    }
   }
 }
 
+module.exports = new MailService();
 //  --------------------------------------------------------
 
 // evgengalauth - smtp-psw_YA_0 - evgengalauth@yandex.ru
 
 //  --------------------------------------------------------
+// ! https://dev.to/jaydeepdey03/handling-authentication-in-nodejs-using-jwt-tokens-4jgc
 
-// ! https://nodemailer.com/about/#requirements
+// ! https://nodejsdev.ru/doc/email/
 // const transporter = nodemailer.createTransport({
 //   // service: "gmail",
 //   host: process.env.SMTP_HOST,
@@ -138,8 +141,6 @@ class MailService {
 // };
 
 // SENDMAIL(options, (info) => {
-//   console.log("Email sent successfully");
-//   console.log("MESSAGE ID: ", info.messageId);
+//   console.log("Почта отправлена успешно");
+//   console.log("Идентификатор сообщения: ", info.messageId);
 // });
-
-module.exports = new MailService();
