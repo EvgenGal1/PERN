@@ -1,5 +1,6 @@
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
+const ApiError = require("../error/ApiError");
 const { Token } = require("../models/models.js");
 
 // подкл.ф.контролера для генерац.web токена
@@ -26,6 +27,25 @@ const jwt = require("jsonwebtoken");
 
 // сохр.токенов по id при регистр/логин
 class TokenService {
+  // валид./проверка подделки/сроки жизни токена ACCESS и REFRESH
+  validateAccessToken(token) {
+    try {
+      // верифик.|раскодир.токен. `проверять` на валидность(токен, секр.ключ)
+      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY);
+      return userData;
+    } catch (error) {
+      return null;
+    }
+  }
+  validateRefreshToken(token) {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
+      return userData;
+    } catch (error) {
+      return null;
+    }
+  }
+
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
   /* async */ generateToken(payload) {
     // передаём данн.польз в fn генер.токена.
@@ -73,7 +93,17 @@ class TokenService {
 
   // Удален.REFRESH из БД
   async removeToken(refreshToken) {
-    const tokenData = await Token.deleteOne({ refreshToken: refreshToken });
+    const tokenData = await Token.destroy({
+      where: { refreshToken: refreshToken },
+    });
+    return tokenData;
+  }
+
+  // Поиск REFRESH токена в БД
+  async findToken(refreshToken) {
+    const tokenData = await Token.findOne({
+      where: { refreshToken: refreshToken },
+    });
     return tokenData;
   }
 }
