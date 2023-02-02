@@ -51,7 +51,7 @@ class AuthControllers {
 
       // Получ.из тела.
       // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
-      const { id, username, email, password, role } = req.body;
+      const { id, username, email, password } = req.body;
 
       // проверка отсутств.user.
       if (!username) {
@@ -70,26 +70,16 @@ class AuthControllers {
         username,
         email,
         password
-        // role
       );
 
-      // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true))
+      // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true; false для Postman))
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        // maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        // secure: true - secure: false для Postman
-        // secure: false,
-        // sameSite: "none",
       });
 
       // возвращ.токен и инфо о польз.
-      return res.json(
-        // {
-        userData
-        // message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
-        // }
-      );
+      return res.json(userData);
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
@@ -106,42 +96,23 @@ class AuthControllers {
   // АВТОРИЗАЦИЯ
   async login(req, res, next) {
     try {
-      // проверка вход.полей на валидацию // ^ UlbiTV. NPg
       const errorsValid = validationResult(req);
-      // е/и проверка не прошла(не `пусто`) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
       if (!errorsValid.isEmpty()) {
-        return res.status(400).json({
-          message: "Некорректые данные при регистрации",
-          errors: errorsValid.array(),
-        });
+        return next(
+          ApiError.BadRequest(
+            "Некорректые данные при регистрации",
+            errorsValid.array()
+          )
+        );
       }
-
       const { username, email, password } = req.body;
-
-      // ^ улучшить до общей проверки (!eml.email - так висит)
-      // проверка сущест.username и email
-      const user = await User.findOne({ where: { username /* email */ } });
-      if (!user /* !user.username */ /* || !== username */) {
-        return next(
-          ApiError.internal(`Пользователь с Именем ${username} не найден`)
-        );
-      }
-      const eml = await User.findOne({ where: { email } });
-      if (!eml /* !eml.email */) {
-        return next(
-          ApiError.internal(`Пользователь с Email <${email}> не найден`)
-        );
-      }
-      // проверка `сравнивания` пароля с шифрованым
-      let comparePassword = bcrypt.compareSync(password, user.password);
-      if (!comparePassword) {
-        return next(ApiError.internal("Указан неверный пароль"));
-      }
-      const token = generateJwt(user.id, user.username, user.email, user.role);
-      return res.json({
-        token,
-        message: `Зашёл ${username} <${email}>. ID_${user.id}-${user.role}`,
+      const userData = await AuthService.login(username, email, password);
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
       });
+
+      return res.json(userData);
     } catch (error) {
       next(error);
     }
@@ -172,17 +143,16 @@ class AuthControllers {
     // res.json(query);
   }
 
-  // ВЫХОД. Удален.Token.refreshToken
+  // ВЫХОД. Удал.Cookie.refreshToken
   async logout(req, res, next) {
     try {
-      res.json(["123", "456"]);
+      // получ refresh из cookie, передача в service, удал.обоих, возвращ.200|token
+      const { refreshToken } = req.cookies;
+      const token = await AuthService.logout(refreshToken);
+      res.clearCookie("refreshToken");
+      return res.json(token);
     } catch (error) {
-      // return
-      next(
-        // ApiError.BadRequest(
-        `НЕ удалось зарегистрироваться - ${error}.`
-        // )
-      );
+      next(`НЕ удалось ВЫЙТИ - ${error}.`);
     }
   }
 

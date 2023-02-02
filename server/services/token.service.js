@@ -51,20 +51,30 @@ class TokenService {
   // сохр.REFRESH токен в БД для польз.
   async saveToken(userId, refreshToken) {
     // проверка существ.токена перед сохр.в БД // ^ только для одного устр. Заход с др.устр. выбьет первое. Можно сохр по неск.токенов для польз.устр.(обнов.,удал.стар.токенов)
-    const tokenData = await Token.findOne({ id: userId });
+    const tokenData = await Token.findOne({
+      where: { userId: userId },
+    });
     // е/и нашлось перезапис refresh
     if (tokenData) {
+      tokenData.userId = userId;
       tokenData.refreshToken = refreshToken;
       // сохр. для обнов.в БД
       return tokenData.save();
     }
+
     // СОЗД.НОВ.ТОКЕН
     const token = await Token.create({
-      id: userId,
+      userId: userId,
       refreshToken: refreshToken,
     });
     // возвращ.нов.токен
     return token;
+  }
+
+  // Удален.REFRESH из БД
+  async removeToken(refreshToken) {
+    const tokenData = await Token.deleteOne({ refreshToken: refreshToken });
+    return tokenData;
   }
 }
 
