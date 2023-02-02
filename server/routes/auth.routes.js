@@ -47,7 +47,7 @@ router.post(
 );
 
 // ВЫХОД. Удален.Token.refreshToken
-router.get("/logout", authControllers.logout);
+router.post("/logout", authControllers.logout);
 
 // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
 router.get("/activate/:link", authControllers.activate);
