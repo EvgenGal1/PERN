@@ -29,13 +29,15 @@ const Role = sequelize.define("role", {
 const Token = sequelize.define("token", {
   // ссылка на id польз.
   id: {
-    // userId: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+  },
+  userId: {
     // user: {
     /* STRING */ /* ObjectId */ /* , ref: "user" */
     //
     type: DataTypes.INTEGER,
     primaryKey: true,
-    // autoIncrement: true,
   },
   // `обновлять` токен созд.в БД
   refreshToken: {
@@ -147,10 +149,10 @@ const UserRole = sequelize.define("user_role", {
 });
 
 // связующая табл.|модель для User|Token.
-// const UserToken = sequelize.define("user_token", {
-//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-//   // refreshToken: { type: DataTypes.STRING },
-// });
+const UserToken = sequelize.define("user_token", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  // refreshToken: { type: DataTypes.STRING },
+});
 
 //
 // польз.и корзина связь один к одному(одна корзина) | корзина принадлеж.польз.
@@ -185,19 +187,31 @@ Type.belongsToMany(Brand, { through: TypeBrand });
 Brand.belongsToMany(Type, { through: TypeBrand });
 
 // Имя иностранного ключа в целевой таблице или объект, представляющий определение типа для иностранного столбца (см. Sedize.define для синтаксиса).При использовании объекта вы можете добавить свойство имени, чтобы установить имя столбца.По умолчанию на имя источника + первичного ключа источника
-User.belongsToMany(Role, { through: UserRole });
+User.belongsToMany(Role, {
+  through: UserRole,
+  foreignKey: "userId",
+  otherKey: "roleId",
+});
 Role.belongsToMany(User, {
   through: UserRole,
-  //   foreignKey: "roleId",
-  // otherKey: "userId"
+  foreignKey: "roleId",
+  otherKey: "userId",
 });
 
-User.hasMany(Token);
 // User.hasOne(Token);
-Token.belongsTo(User);
+// // User.hasMany(Token);
+// Token.belongsTo(User);
 
-// User.belongsToMany(Token, { through: UserToken });
-// Token.belongsToMany(User, { through: UserToken });
+User.belongsToMany(Token, {
+  through: UserToken,
+  foreignKey: "userId",
+  otherKey: "tokenId",
+});
+Token.belongsToMany(User, {
+  through: UserToken,
+  foreignKey: "tokenId",
+  otherKey: "userId",
+});
 
 //экспорт моделей
 module.exports = {
@@ -205,7 +219,7 @@ module.exports = {
   Role,
   Token,
   UserRole,
-  // UserToken,
+  UserToken,
   Backet,
   BacketDevice,
   Device,
