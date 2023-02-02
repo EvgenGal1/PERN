@@ -148,7 +148,8 @@ class AuthControllers {
     try {
       // получ refresh из cookie, передача в service, удал.обоих, возвращ.200|token
       const { refreshToken } = req.cookies;
-      const token = await AuthService.logout(refreshToken);
+      const { username, email } = req.body;
+      const token = await AuthService.logout(refreshToken, username, email);
       res.clearCookie("refreshToken");
       return res.json(token);
     } catch (error) {
@@ -160,7 +161,7 @@ class AuthControllers {
   async activate(req, res, next) {
     try {
       // из стр.получ.ссы.актив.
-      const activationLink = req.params.Link;
+      const activationLink = req.params.link;
       await AuthService.activate(activationLink);
       // редирект на FRONT после перехода по ссылки (изза разных hostов BACK)
       return res.redirect(process.env.CLIENT_URL);
@@ -169,7 +170,7 @@ class AuthControllers {
       next(
         // ApiError.BadRequest(
         // console.log("error ", error)
-        `НЕ удалось зарегистрироваться (activate) - ${error}.`
+        `НЕ удалось АКТИВАВИРАВАТЬ (activate) - ${error}.`
         // )
       );
     }
@@ -178,11 +179,19 @@ class AuthControllers {
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
   async refresh(req, res, next) {
     try {
+      const { refreshToken } = req.cookies;
+      const { username, email } = req.body;
+      const userData = await AuthService.refresh(refreshToken, username, email);
+      res.cookie("refreshToken", userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      return res.json(userData);
     } catch (error) {
       // return
       next(
         // ApiError.BadRequest(
-        `НЕ удалось зарегистрироваться (refresh) - ${error}.`
+        `НЕ удалось ПЕРЕЗАПИСАТЬ (refresh) - ${error}.`
         // )
       );
     }

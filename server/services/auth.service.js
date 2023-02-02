@@ -85,6 +85,7 @@ class AuthService {
         activationLinkPath
       );
 
+      // ^ надо отдельн. fn - выборка,генер.2токен,сохр.refresh в БД, return
       // выборка полей(3шт.) для FRONT (new - созд.экземпляр класса)
       const userDto = new UserDto(user);
 
@@ -93,15 +94,10 @@ class AuthService {
 
       // сохр.refresh в БД
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
-      // const tokSev = await TokenService.saveToken(
-      //   userDto.id,
-      //   tokens.refreshToken
-      // );
 
       // возвращ.2 токена, инфо о польз.
       return {
         ...tokens,
-        // tokSev,
         activationLinkPath,
         user: userDto,
         message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
@@ -135,6 +131,7 @@ class AuthService {
         return ApiError.BadRequest("Указан неверный пароль");
       }
 
+      // ^ надо отдельн. fn - выборка,генер.2токен,сохр.refresh в БД, return
       const userDto = new UserDto(user);
       const tokens = TokenService.generateToken({ ...userDto });
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
@@ -174,21 +171,20 @@ class AuthService {
   }
 
   // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
-  async logout(refreshToken) {
+  async logout(refreshToken, username, email) {
+    // пров.переданого токена
+    if (!refreshToken) {
+      // return "Токен не передан";
+      return ApiError.BadRequest(`Токен от ${username} <${email}> не передан`);
+    }
     const token = await TokenService.removeToken(refreshToken);
-    return token;
+    return `Токен пользователя ${username} <${email}> удалён. Стат ${token}`;
   }
 
   // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
   async activate(activationLink) {
-    // const tokenData = await Token.findOne({
-    //   where: { userId: userId },
-    // });
-    // try {
-    // ! не раб - ссылки переходят в isActivated = true не корр./сбито а то и вовсе не переходят. На where ошб.Error: WHERE parameter \"activationLink\" has invalid \"undefined\" value."
     const user = await User.findOne({
-      activationLink,
-      // where: { activationLink: activationLink },
+      where: { activationLink: activationLink },
     });
     if (!user) {
       return ApiError.BadRequest(
@@ -206,13 +202,32 @@ class AuthService {
   }
 
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
-  async refresh(req, res, next) {
-    try {
-    } catch (error) {
-      return next(
-        ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`)
-      );
+  async refresh(refreshToken, username, email) {
+    // е/и нет то ошб.не авториз
+    if (!refreshToken) {
+      // return ApiError.UnauthorizedError();
+      return ApiError.UnauthorizedError(`${username} <${email}>`);
     }
+    // валид.токен.refresh
+    const userData = TokenService.validateRefreshToken(refreshToken);
+    // поиск токена
+    const tokenFromDB = await TokenService.findToken(refreshToken);
+    // проверка валид и поиск
+    if (!userData || !tokenFromDB) {
+      throw ApiError.UnauthorizedError();
+    }
+    // вытаск.польз.с БД по ID
+    // const user = await User.findByld(userData.id);
+    const user = await User.findByPk(userData.id);
+    // ^ надо отдельн. fn - выборка,генер.2токен,сохр.refresh в БД, return
+    const userDto = new UserDto(user);
+    const tokens = TokenService.generateToken({ ...userDto });
+    await TokenService.saveToken(userDto.id, tokens.refreshToken);
+    return {
+      ...tokens,
+      user: userDto,
+      message: `ПЕРЕЗАПИСЬ ${username} <${email}>. ID_${user.id}_${user.role}`,
+    };
   }
 }
 
