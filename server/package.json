@@ -1,12 +1,10 @@
 {
-  "name": "pern_start",
+  "name": "pern-start_back",
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
   "main": "PERN.js",
-  "scripts": {
-    "start": "node PERN.js",
-    "server": "nodemon PERN.js"
-  },
+  "author": "EvGen Gal <ZBst.1@yandex.ru>",
+  "license": "ISC",
   "keywords": [
     "PERN",
     "PostgreSQL",
@@ -14,8 +12,10 @@
     "React",
     "NodeJS"
   ],
-  "author": "EvGen Gal <ZBst.1@yandex.ru>",
-  "license": "ISC",
+  "scripts": {
+    "start": "node PERN.js",
+    "server": "nodemon PERN.js"
+  },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
