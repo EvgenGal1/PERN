@@ -55,7 +55,7 @@ router.get("/activate/:link", authControllers.activate);
 // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
 router.get("/refresh", authControllers.refresh);
 
-// ПРОВЕРКА | auth
+// ПРОВЕРКА | auth // ^ удалить или уровнять с login
 router.get("/", authMiddleware, authControllers.check);
 
 module.exports = router;

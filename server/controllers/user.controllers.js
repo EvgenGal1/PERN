@@ -15,6 +15,8 @@ const { User } = require("../models/models");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 
+const UserService = require("../services/user.service.js");
+
 // обьяв.кл.(для компановки) с неск.мтд
 class UserControllers {
   // ^ ++++ UlbiTV. NPg
@@ -130,9 +132,10 @@ class UserControllers {
   }
 
   // ^ ++++ EvGen
-  async getUserPERN(req, res) {
+  async getUserPERN(req, res, next) {
     try {
-      const users = await User.findAndCountAll();
+      // получ.всех польз.ч/з serv // ранее User.findAndCountAll();
+      const users = await UserService.getUserPERN();
       return res.json(users);
     } catch (error) {}
   }

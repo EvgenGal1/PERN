@@ -47,12 +47,12 @@ class UserService {
     return varId.rows /* .find() */;
   }
 
-  async getAllPost() {
-    const posts = await pool.query(`SELECT * FROM posts`);
-    return posts.rows;
+  async getUserPERN() {
+    const users = await User.findAll();
+    return users;
   }
 
-  async getOnePost(id) {
+  async getOneUserPERN(id) {
     var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + id);
     if (onePost.rows.length < 1) {
       return `Пост по ID ${id} не найден`;
@@ -60,7 +60,7 @@ class UserService {
     return onePost.rows[0];
   }
 
-  async updPost(post) {
+  async updateUserPERN(post) {
     if (!post.id) {
       throw new Error("ID не указан");
       // return "ID не указан";
@@ -76,7 +76,7 @@ class UserService {
     return updPost.rows[0];
   }
 
-  async delPost(id) {
+  async deleteUserPERN(id) {
     if (!id) {
       throw new Error("ID не указан");
       // return "ID не указан";
