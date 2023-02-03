@@ -1,6 +1,9 @@
 // middleware по добав.нов.устройство только ADMIN, +декодер,валид.
 
 const jwt = require("jsonwebtoken");
+// подкл.обраб.ошиб.
+const ApiError = require("../error/ApiError");
+const TokenService = require("../services/token.service.js");
 
 // экспорт fn принимающая Роль (вызов fn с передачей Роли и возврат.middleware)
 module.exports = function (role) {
@@ -10,17 +13,32 @@ module.exports = function (role) {
       next();
     }
     try {
-      // достаём токен
-      const token = req.headers.authorization.split(" ")[1]; // Bearer asfasnfkajsfnjk
-      if (!token) {
-        return res.status(401).json({ message: "Не авторизован" });
+      // провер header на наличие поля authorization
+      const authorizationHeader = req.headers.authorization;
+      if (!authorizationHeader) {
+        return next(ApiError.UnauthorizedError("_"));
+      }
+      // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
+      const accessToken = authorizationHeader.split(" ")[1]; // Bearer asfasnfkajsfnjk..
+      if (!accessToken) {
+        return next(ApiError.UnauthorizedError("=" /* , `${e}` */));
+        // return res.status(401).json({ message: "Не авторизован" });
       }
 
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      // проверка валидации
+      // const decoded = jwt.verify(token, process.env.SECRET_KEY);
       // req.id = decoded.id;
+      const decoded = TokenService.validateAccessToken(accessToken);
+      if (!decoded) {
+        return next(ApiError.UnauthorizedError("/" /* , `${e}` */));
+      }
 
       // раскодир.токен.`проверять`на валидность. const опред.с др.именем т.к. role уже есть. получ.масс.Ролей
-      const { role: userRoles } = jwt.verify(token, process.env.SECRET_KEY);
+      // const { role: userRoles } = jwt.verify(token, process.env.SECRET_KEY);
+      const { role: userRoles } = TokenService.validateAccessToken(accessToken);
+      if (!userRoles) {
+        return next(ApiError.UnauthorizedError("" /* , `${e}` */));
+      }
 
       // проверка масс.польз.Ролей с масс.разреш.Ролей для этой fn
       // перем.для определения
@@ -34,16 +52,17 @@ module.exports = function (role) {
         }
       });
       if (!hasRoles) {
-        return res.status(403).json({
-          message: `Нет доступа у Роли ${decoded.role} или ошб.Ролей`,
-          // message: `Нет доступа у Роли ${decoded.role}`,
-        });
+        return next(
+          ApiError.BadRequest(
+            `Нет доступа у Роли ${decoded.role} или ошб.Ролей`
+          )
+        );
       }
       // req.user = decoded;
       next();
     } catch (e) {
-      console.log(e);
-      res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });
+      // res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });
+      throw next(ApiError.UnauthorizedError("-", `${e}`));
     }
   };
 };

@@ -54,7 +54,7 @@ class TokenService {
       payload,
       process.env.JWT_ACCESS_SECRET_KEY,
       {
-        expiresIn: "30m",
+        expiresIn: "2h",
       }
     );
     // const refreshToken = generateJwt(payload);

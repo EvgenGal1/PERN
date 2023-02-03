@@ -21,9 +21,9 @@ class ApiError extends Error {
   // СОЗД.СТАТИЧ.fn (можно вызыв.без созд.объ.обращ.на прямую к кл.)
 
   // `Несанкционированная ошибка`
-  static UnauthorizedError(message) {
+  static UnauthorizedError(message, errors = []) {
     // возвращ.экземпл.текущ.кл.
-    return new ApiError(401, `Пользователь ${message} не авторизован`);
+    return new ApiError(401, `Пользователь ${message} не авторизован`, errors);
   }
 
   // `плохой запрос`
