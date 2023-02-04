@@ -1,10 +1,11 @@
 import React, { FC } from "react";
 import "./App.css";
+import LoginForm from "./client/src/components/LoginForm";
 
 const App: FC = () => {
   return (
     <div className="App">
-      123<p>321</p>0
+      <LoginForm />
     </div>
   );
 };

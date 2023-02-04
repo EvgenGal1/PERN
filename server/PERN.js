@@ -33,7 +33,16 @@ const app = express();
 // добав.cookieParser
 app.use(cookieParser());
 // передача cors в app для взаимодейств.server-браузер
-app.use(cors());
+app.use(
+  cors(
+    // указ.с каким domen обмен.cookie{разреш.,url front}
+    {
+      credentials: true,
+      origin: process.env.CLIENT_URL,
+      // origin: localhost/3000
+    }
+  )
+);
 // возм.парсить json
 app.use(express.json());
 // указ.ф.из static/ раздавать как статику(для получения) | ss.static("static"))
