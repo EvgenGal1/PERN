@@ -1,0 +1,150 @@
+// main > div > div > div {
+main {
+  padding: 0px 3%;
+}
+// & > div {
+div {
+  // background-color: #e9da96;
+  // padding: 15px 2%;
+  // padding: 10px 2%;
+  hr {
+    margin: 10px -3%;
+    margin: 10px 0%;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+  // отступ е/и рядом в h1 есть эл.(братские P, UL)
+  h1:has(+ p, + ul, + div, + section, + span) {
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: 18px;
+    margin: 10px 0px;
+  }
+  > div[class$="header"] {
+    // margin: 10px 0px;
+    padding: 10px 0px;
+    line-height: 22px;
+    @media (max-width: $md1NoErr) {
+      padding: 8px 0px;
+      // line-height: 20px;
+    }
+    @media (max-width: $md2NoErr) {
+      padding: 6px 0px;
+      line-height: 20px;
+    }
+    @media (max-width: $md3NoErr) {
+      padding: 4px 0px;
+      // line-height: 16px;
+    }
+  }
+  span {
+    // font-weight: bold;
+    // background: #cccccc;
+    // letter-spacing: 2px;
+    // line-height: 1.3;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & > a {
+      margin-left: 15px;
+    }
+    & > a,
+    & span > a {
+      // position: relative;
+      width: 150px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #000;
+      box-shadow: 0px 0px 0px #000 inset, 3px 3px 3px black;
+      &.active {
+        font-weight: bold;
+        color: black;
+        color: gold;
+        background: #474747;
+        background: #474b4e;
+        box-shadow: 3px 3px 3px #000 inset, 0px 0px 0px black;
+      }
+      &:hover {
+        font-weight: bold;
+        color: #000;
+        box-shadow: 1px 1px 10px #000 inset, 1px 1px 2px black !important;
+
+        // подменю при неведении
+        ul {
+          opacity: 1;
+          visibility: visible;
+          transform: translate(0px, 0px);
+          pointer-events: all;
+        }
+      }
+    }
+  }
+  & > ul li,
+  & > ol li {
+    list-style: inherit;
+  }
+  // для div в которых есть параграф|h1 и братский div
+  div:has(p):has(+ div),
+  div:has(h1):has(+ div) {
+    // line-height: 22px;
+    @include adaptiv-val("margin-top", 10, 2);
+  }
+  // для div.__descript где есть параграф|h1 и братский div
+  div[class$="__descript"]:has(h1):has(+ div),
+  div[class$="__descript"]:has(p):has(+ div) {
+    @include adaptiv-value-all("margin", 0, 0, 0, 0, 10, 2);
+    ul li {
+      text-decoration: underline;
+      &:hover {
+        font-weight: bold;
+      }
+    }
+  }
+  // div кл. на конце __content
+  div[class$="__content"] {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+  }
+  // div кл. на конце --button
+  div[class$="--button"] {
+    button {
+      // display: flex;
+      width: 150px;
+      padding: 15px 0px;
+      margin-right: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      &:hover {
+        background-color: #dfbd2e;
+        font-weight: bold;
+      }
+      @media (max-width: $md1NoErr) {
+        // button {
+        width: 125px;
+        padding: 12.5px 0px;
+        margin-right: 5px;
+        // }
+      }
+      @media (max-width: $md2NoErr) {
+        // button {
+        width: 100px;
+        padding: 10px 0px;
+        margin-right: 5px;
+        // }
+      }
+    }
+  }
+}

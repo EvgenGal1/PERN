@@ -1,0 +1,343 @@
+// accordion (раскрывашка) ----------------------------------------------------------------------------------
+.accordion {
+  position: relative;
+  transition: all 0.8s cubic-bezier(0.08, 1.09, 0.32, 1.275);
+  h1,
+  h2,
+  h3 {
+    cursor: pointer;
+  }
+  div h1:has(+ p, + ul, + div, + section, + span) {
+    margin-bottom: 0px;
+  }
+  div h1:has(+ p, + ul, + div[class="openDop"], + section, + span) {
+    margin-bottom: 10px;
+  }
+  // блок стрелки 1-го уровня
+  div[class$="__descript"] {
+    position: relative;
+    .arrowAccord {
+      top: 0;
+    }
+    div[class$="openDop"] + .arrowAccord {
+      top: calc(50% - 20px);
+    }
+  }
+  & div[class$="__descript _active"] {
+    & > .arrowAccord {
+      top: calc(100% - 40px);
+    }
+  }
+  // блок стрелки 2 уровня
+  & div[class$="__descript--"] {
+    & > .arrowAccord {
+      top: calc(50% - 0px);
+      top: 0px;
+      right: 44px;
+    }
+  }
+  & div[class$="__descript-- _active"] {
+    & > .arrowAccord {
+      top: calc(50% - 0px);
+      top: 0px;
+      right: 44px;
+    }
+  }
+  // Общий Блок стрелки аккордиона
+  .arrowAccord {
+    position: absolute;
+    // left: 50%;
+    right: 0;
+    // right: 4px;
+    // top: 0;
+    // top: 4px;
+    // width: 40px;
+    // height: 40px;
+    width: calc(22px + 30 * ((100vw - 320px) / 1600));
+    height: calc(22px + 30 * ((100vw - 320px) / 1600));
+    // width: calc(2% + 30 * ((100vw - 320px) / 1600));
+    // height: calc(60% + 30 * ((100vw - 320px) / 1600));
+    padding: 0;
+    background: inherit;
+    background: none !important;
+    border-radius: 50%;
+    transition: all 0.8s cubic-bezier(0.08, 1.09, 0.32, 1.275);
+    z-index: 1;
+    //Круг.Рамка Общ.Бл. Скрыт
+    &::before {
+      // transition: all 0.5s cubic-bezier(0.08, 1.09, 0.32, 1.275);
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      // background: none;
+      border-radius: 50%;
+      z-index: 1;
+      left: 0;
+    }
+    // блок для Стрелок + Пульсар
+    .ArrowAccord-show {
+      // Стрелки на before и after. Общ.стили
+      &::before,
+      &::after {
+        content: "";
+        width: 20px;
+        height: 4px;
+        width: 40%;
+        height: 8%;
+        position: absolute;
+        top: 50%;
+        border-radius: 6px 10px 10px 6px;
+        border-radius: 20%;
+        border-radius: 10px;
+        background-color: #8b0000;
+        transition: all 0.6s cubic-bezier(0.08, 1.09, 0.32, 1.275);
+        z-index: 2;
+      }
+      &::before {
+        transform: translate(0, -50%) rotate(45deg);
+        left: calc(50% - 32%);
+      }
+      &::after {
+        transform: translate(0, -50%) rotate(-45deg);
+        left: calc(50% - 9%);
+      }
+      // Пульсар. Скрыт
+      span {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+    // наведение на Общ.Бл
+    &:hover {
+      // background: $DarkRed !important;
+      background: DarkRed;
+      z-index: 1;
+      // Круг.Рамка показ
+      &::before {
+        width: 90%;
+        height: 90%;
+        border: 2px solid #fff000;
+        top: calc(1px + 2 * ((100vw - 320px) / 1600));
+        left: calc(1px + 2 * ((100vw - 320px) / 1600));
+      }
+      .ArrowAccord-show {
+        // Сртелки. измен. цвет, сдвиг
+        &::before,
+        &::after {
+          background-color: #fff000;
+        }
+        &::before {
+          transform: translate(0, -50%) rotate(63deg);
+        }
+        &::after {
+          transform: translate(0, -50%) rotate(-63deg);
+        }
+        // Пульсар. Показ
+        span {
+          width: 150%;
+          height: 150%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: -25%;
+          left: -25%;
+          font-style: normal;
+          font-size: calc(28px + 20 * ((100vw - 320px) / 1600));
+          font-size: calc(105% + 20 * ((100vw - 320px) / 1600));
+          line-height: 1.8;
+          color: #000;
+          background: #8b0000;
+          border-radius: 50%;
+          animation: zoomIn 2s ease-in-out 0s infinite;
+          opacity: 1;
+          visibility: visible;
+        }
+        @keyframes zoomIn {
+          0% {
+            opacity: 0;
+            -webkit-transform: scale3d(0.4, 0.4, 0.4);
+            transform: scale3d(0.4, 0.4, 0.4);
+          }
+          50% {
+            opacity: 0.5;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+      }
+    }
+  }
+  // ОТКРЫТЫЙ аккорд (+ ._active) (дочерний .arrowAccord)
+  & ._active {
+    & .arrowAccord {
+      & .ArrowAccord-show {
+        &::before,
+        &::after {
+          top: 50%;
+        }
+        &::before {
+          transform: translate(0, -50%) rotate(-45deg);
+        }
+        &::after {
+          transform: translate(0, -50%) rotate(45deg);
+        }
+        // span {
+        //   transform: rotate(180deg);
+        // }
+      }
+      &:hover {
+        & .ArrowAccord-show {
+          &::before {
+            transform: translate(0, -50%) rotate(-63deg);
+          }
+          &::after {
+            transform: translate(0, -50%) rotate(63deg);
+          }
+        }
+      }
+    }
+  }
+  // братский .arrowAccord
+  & ._active {
+    & ~ .arrowAccord {
+      & .ArrowAccord-show {
+        &::before,
+        &::after {
+          top: 50%;
+        }
+        &::before {
+          transform: translate(0, -50%) rotate(-45deg);
+        }
+        &::after {
+          transform: translate(0, -50%) rotate(45deg);
+        }
+        // span {
+        //   transform: rotate(180deg);
+        // }
+      }
+      &:hover {
+        & .ArrowAccord-show {
+          &::before {
+            transform: translate(0, -50%) rotate(-63deg);
+          }
+          &::after {
+            transform: translate(0, -50%) rotate(63deg);
+          }
+        }
+      }
+    }
+  }
+  // С ПРАВА
+  //  ----------------------------------------------------------------------------------
+  // & > div:first-child {
+  //   &::before,
+  //   &::after {
+  //     content: "";
+  //     width: 20px;
+  //     height: 4px;
+  //     position: absolute;
+  //     top: 50%;
+  //     border-radius: 6px 10px 10px 6px;
+  //     border-radius: 10px;
+  //     background-color: $DarkRed;
+  //     // transition: transform 0.3s ease 0s;
+  //     transition: all 0.6s cubic-bezier(0.08, 1.09, 0.32, 1.275);
+  //     z-index: 2;
+  //   }
+  //   &::before {
+  //     transform: translate(0, -50%) rotate(45deg);
+  //     right: 10px;
+  //     right: 14px;
+  //     // @include adaptiv-value("right", 21, 3, 3);
+  //     // right: 33px;
+  //     // transition: transform 0.3s ease-in-out;
+  //   }
+  //   &::after {
+  //     right: 21px;
+  //     right: 3px;
+  //     // @include adaptiv-value("right", 20, 2, 3);
+  //     transform: translate(0, -50%) rotate(-45deg);
+  //     // right: 44px;
+  //     // transition: transform 0.3s ease-in-out;
+  //   }
+  //   &._active {
+  //     &::before {
+  //       transform: translate(0, -50%) rotate(-45deg);
+  //     }
+  //     &::after {
+  //       transform: translate(0, -50%) rotate(45deg);
+  //     }
+  //   }
+  // }
+
+  // доп классы вкл REF | usSt  ----------------------------------------------------------------------------------
+  //   > div[class*="__content--"]:not([class^="countryflags"], [class^="clComp"], [class^="fnComp"], [class^="Keys"], [class^="Lists"], [class^="Forms"]),
+  // div[class$="__content"],
+  // div[class$="__content----"]:not([class^="Keys"], [class^="Lists"]) {
+  & > div[class*="__descript"]
+  // ,& > div[class$="__descript--"]
+  // ,& > div[class$="__descript---"]
+  // ,& > div[class$="__descript----"]
+  {
+    h1 + div,
+    h3 + div {
+      // background: #000;
+      height: 0;
+      opacity: 0;
+      visibility: hidden;
+      padding: 0;
+      margin: 0;
+      // overflow: auto;
+      // & div[class$="__content openDop"] {
+      &.openDop {
+        width: 100%;
+        height: auto;
+        padding: 10px 15px;
+        visibility: visible;
+        opacity: 1;
+        background: #555555;
+        background: rgb(119, 119, 119);
+        background: linear-gradient(
+          90deg,
+          rgba(119, 119, 119, 1) 15%,
+          rgba(85, 85, 85, 1) 40%,
+          rgba(85, 85, 85, 1) 60%,
+          rgba(119, 119, 119, 1) 85%
+        );
+        border-radius: 15px;
+        // padding-bottom: 10px;
+        // padding: inherit;
+        // margin: inherit;
+        &:has(p, div) {
+          display: none;
+          display: inline-block !important;
+        }
+      }
+    }
+  }
+  & > div[class$="__content"],
+  & > div[class$="__content--"],
+  & > div[class$="__content---"],
+  & > div[class$="__content----"] {
+    height: 0;
+    visibility: hidden;
+    opacity: 0;
+    overflow: auto;
+    transition: all 0.2s ease-in;
+    padding: 0px !important;
+    border: 0px solid #ff0000;
+    // max-height: 0;
+    // overflow: hidden;
+    // transition: all 0.5s;
+  }
+  .openCont {
+    // & div[class$="__content openCont"] {
+    // height: 185px;
+    visibility: visible;
+    opacity: 1;
+    transition: all 0.2s ease-in;
+  }
+}

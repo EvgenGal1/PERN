@@ -1,0 +1,85 @@
+// миксин - комплект свойств, с разными префиксами(для разных браузеров), в которые можно передаватть переменные (МНОГО mixinов удалил за невостребованостью)
+
+// ФриПоЖизн ==================================================================================
+// АДАПТИВНЫЕ СВОЙСТВА ----------------------------------------------------------------------------------
+// Подключение шрифта
+@mixin font($font_name, $file_name, $weight, $style) {
+  @font-face {
+    font-family: $font_name;
+    font-display: swap;
+    src: url("../fonts/#{$file_name}.woff2") format("woff2"),
+      url("../fonts/#{$file_name}.woff") format("woff");
+    font-weight: #{$weight};
+    font-style: #{$style};
+  }
+}
+// Размер в одну строку. @include size(80px, 50px);
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+// Адаптивный шрифт. @include adaptiv-font(24, 12);
+@mixin adaptiv-font($pcSize, $mobSize) {
+  $addSize: $pcSize - $mobSize;
+  $maxWidth: $maxWidth - 320;
+  font-size: calc(
+    #{$mobSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth})
+  );
+}
+
+//  Vedeev ===================================================================================
+// px в rem. перемен. $mainFontSize из vars.scss делит на переданые px превращ в rem и адаптирует под экран с помощью @media из main.scss(font-size: rem(20);)
+@function rem($pixels, $context: $mainFontSize) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+  @if (unitless($context)) {
+    $context: $context * 1px;
+  }
+  // ??? не раб - устар метод. переписать на math.div
+  // ! переписал - не проверял
+  // @return math.div(($pixels, $context) * 1rem);
+  // @return $pixels / $context * 1rem;
+  // @return math.div($pixels, $context * 1rem);
+  @return math($pixels, $context * 1);
+}
+
+//  СВОЁ ===================================================================================
+// Адаптивное свойство(сво-во, нач,сер,конеч значн). @include adaptiv-val("padding-right", 32, 15);
+@mixin adaptiv-val($property, $startSize, $minSize) {
+  $addSize: $startSize - $minSize;
+  #{$property}: calc(
+    #{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth - 320})
+  );
+}
+// Адаптивное свойство для неск значений. @include adaptiv-value-all("padding", 10, 5, 30, 10, 60, 25);
+// 1ое - сво-во, две первые цифры - начальное и конечное значение для верхн.парам., 2е по середине - нач./конеч.знач. для горинт.парам, 2е послед.цифры - нач./конеч.знач. для низа
+@mixin adaptiv-value-all(
+  $property,
+  $startSizeH,
+  $minSizeH,
+  $startSizeW,
+  $minSizeW,
+  $startSizeHBott,
+  $minSizeHBott
+) {
+  // @if $type==1 {
+  $addSizeHTop: $startSizeH - $minSizeH;
+  $addSizeW: $startSizeW - $minSizeW;
+  $addSizeHBott: $startSizeHBott - $minSizeHBott;
+
+  #{$property}-top: calc(
+    #{$minSizeH + px} + #{$addSizeHTop} * ((100vw - 320px) / #{$maxWidth - 320})
+  );
+  #{$property}-bottom: calc(
+    #{$minSizeHBott + px} + #{$addSizeHBott} *
+      ((100vw - 320px) / #{$maxWidth - 320})
+  );
+  #{$property}-left: calc(
+    #{$minSizeW + px} + #{$addSizeW} * ((100vw - 320px) / #{$maxWidth - 320})
+  );
+  #{$property}-right: calc(
+    #{$minSizeW + px} + #{$addSizeW} * ((100vw - 320px) / #{$maxWidth - 320})
+  );
+  // ??? не раб - попытка неск. условий в ошб. -  @if $startSizeHBott {} @else {} - отсутствует аргументы
+}

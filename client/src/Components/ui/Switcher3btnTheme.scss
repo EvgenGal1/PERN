@@ -1,0 +1,120 @@
+// ! https://habr.com/ru/sandbox/80843/
+span {
+  .sw3btn {
+    position: relative;
+    // display: inline-block;
+    height: 30px;
+    width: 100%;
+    width: 100px;
+    z-index: 1;
+  }
+
+  .sw3btn__dark {
+    left: 3px;
+    width: 33%;
+    height: 100%;
+  }
+
+  .sw3btn__neutral {
+    left: 31%;
+    width: 33%;
+    height: 100%;
+  }
+
+  .sw3btn__light {
+    right: 3px;
+    width: 33%;
+    height: 100%;
+  }
+
+  .sw3btn-label {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -2px;
+  }
+
+  .sw3btn input {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  .sw3btn-slider {
+    height: 100%;
+    width: 100%;
+    border-radius: 25px;
+    box-shadow: 0 0 3px #555555 inset, 0 0 10px black;
+    transition: background-color 0.2s linear 0s;
+    transition: all 0.3s ease 0s;
+    display: flex;
+    align-items: center;
+    &:before {
+      content: "🌑";
+      position: absolute;
+      top: 3px;
+      font-size: 21px;
+      transition: all 0.3s ease 0s;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    // &:after {
+    // content: "☁";
+    // position: absolute;
+    // font-size: 17px;
+    // z-index: 2;
+    // }
+  }
+  .sw3btn-radio__light:checked ~ .sw3btn-slider {
+    background-color: #ddd;
+  }
+  .sw3btn-radio__neutral:checked ~ .sw3btn-slider {
+    background: #fad201;
+  }
+  .sw3btn-radio__dark:checked ~ .sw3btn-slider {
+    background-color: #b40000;
+  }
+  .sw3btn-radio__dark ~ .sw3btn-slider {
+    background-color: #b40000;
+  }
+  .sw3btn-radio__dark:checked ~ .sw3btn-slider:before {
+    content: "🌑";
+    left: 0;
+    left: 2px;
+  }
+  .sw3btn-radio__neutral:checked ~ .sw3btn-slider:before {
+    content: "🌗";
+    left: calc(100% / 2 - 14px);
+  }
+  .sw3btn-radio__light:checked ~ .sw3btn-slider:before {
+    content: "🌕";
+    right: 0;
+    left: calc(100% - 30px);
+  }
+}
+
+// -5(3 позиции - горизонт --theme)
+// span {
+//   .sw3btn {
+//     height: var(--height);
+//   }
+//   .sw3btn-slider:before {
+//     font-size: var(--sw3btn-befo);
+//   }
+//   .sw3btn-radio__light:checked ~ .sw3btn-slider:before {
+//     left: calc(100% - var(--sw3btn-aft));
+//   }
+//   .sw3btn-radio__neutral:checked ~ .sw3btn-slider:before {
+//     left: calc(100% / 3 - var(--sw3btn-neut));
+//   }
+//   // .sw3btn-radio__dark:checked ~ .sw3btn-slider:before {
+//   // background-color: #b40000;
+//   // }
+
+//   // прописал цвет напрямую чтоб вкл после перезагр пр пустом LocalStorage
+//   .sw3btn-radio__dark ~ .sw3btn-slider:before {
+//     font-size: var(--sw3btn-befo);
+//   }
+//   // .sw3btn-slider:before {
+//   // left: var(--sw3btn-top);
+//   // }
+// }

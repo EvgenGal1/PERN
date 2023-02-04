@@ -1,0 +1,242 @@
+// обнуляющий стиль для стандартизации по всем свойствам, брайзерам и пр.
+* {
+  margin: 0px;
+  border: 0px;
+}
+*:not(ul, ol, li) {
+  padding: 0px;
+}
+*,
+*:before,
+*:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+:focus,
+:active {
+  outline: none;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  // ??? не раб - SassError: Undefined variable. - min-width: $minwidth;
+  // min-width: $minwidth;
+  position: relative;
+  width: 100%;
+  color: #000;
+}
+body {
+  font-size: 100%;
+  line-height: 1;
+  font-size: 18px;
+  // ??? не раб - SassError: Undefined variable. - font-family: $fontfamily;
+  // font-family: $fontfamily;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  &.lock {
+    overflow: hidden;
+    @media (max-width: 768px) {
+      // ??? не раб - SassError: Undefined variable. - @media (max-width: $md3+px) {
+      // @media (max-width: $md3+px) {
+      width: 100%;
+      position: fixed;
+      overflow: hidden;
+    }
+  }
+}
+
+// общ. блоков
+aside,
+nav,
+footer,
+header,
+section {
+  display: block;
+}
+
+// КНП
+input,
+button,
+textarea {
+  // ??? не раб - SassError: Undefined variable. - ont-family: $fontfamily;
+  // font-family: $fontfamily;
+}
+input::-ms-clear {
+  display: none;
+}
+input::placeholder {
+  color: #000000;
+}
+button,
+input {
+  margin: 5px 0px;
+  padding: 5px;
+  border: 1px solid #bd0000;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 200ms, transform 100ms linear;
+}
+button.primary,
+input.primary {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  border: 1px solid #bd0000;
+  box-shadow: 0 3px 5px black;
+  text-transform: uppercase;
+  &:hover {
+    // transition: transform 100ms linear;
+    box-shadow: 0 8px 10px #000000;
+    transform: translateY(-3px);
+  }
+  &:active {
+    // transition: transform 0.2s linear;
+    box-shadow: 0 1px 1px black;
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+}
+button[type="submit"]:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+  // transition: transform 0.3s linear;
+  // transform: translateY(3px);
+  // border: 1px solid transparent;
+  // opacity: 0.8;
+  //
+  transform: translateY(0);
+}
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+// ссылки
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+a,
+a:visited {
+  // text-decoration: none;
+}
+a:hover {
+  // text-decoration: none;
+}
+a:focus,
+a:active {
+  outline: none;
+}
+header a {
+  letter-spacing: 1px;
+}
+
+// списки
+ul li {
+  list-style: none;
+}
+
+// изо
+img {
+  vertical-align: top;
+}
+
+// заголовки
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  // font-weight: inherit;
+  font-size: inherit;
+  text-align: center;
+}
+
+// дл.бл
+p {
+  // letter-spacing: normal;
+}
+span {
+  font-weight: bold;
+  // background: #cccccc;
+  // letter-spacing: 3px;
+  // line-height: 1.3;
+}
+
+// модальные окна
+
+.modal {
+  z-index: 3;
+  width: 70%;
+  max-width: 500px;
+  // max-height: 300px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  padding: 40px 30px;
+  text-align: center;
+  border-radius: 10px;
+  background-color: #fff;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 01);
+  transition: all 0.5s ease-in-out;
+
+  img {
+    border-radius: 5px;
+    // width: 100%;
+  }
+
+  svg {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    height: 24px;
+    width: 24px;
+    opacity: 0.3;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// hr ----------------------------------------------------------------------------------
+hr {
+  // display: block;
+  // unicode-bidi: -webkit-isolate;
+  // unicode-bidi: -moz-isolate;
+  // unicode-bidi: isolate;
+  // -webkit-margin-before: 7px;
+  // margin-block-start: 7px;
+  // -webkit-margin-after: 7px;
+  // margin-block-end: 7px;
+  // -webkit-margin-start: auto;
+  // margin-inline-start: auto;
+  // -webkit-margin-end: auto;
+  // margin-inline-end: auto;
+  width: 100%;
+  overflow: hidden;
+  border-style: groove;
+  border-style: ridge;
+  border-color: #8b0000;
+  border-width: 5px;
+  clear: both;
+  // margin: 0 -62px;
+}
+br {
+  // width: 0;
+  // height: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

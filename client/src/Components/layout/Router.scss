@@ -1,0 +1,324 @@
+// основные стили Главных Компонентов Шаблона
+#root {
+  overflow: hidden;
+}
+
+.header,
+.footer {
+  padding: 0.5%;
+  // background-color: #777;
+  box-shadow: 0px 0px 15px 2px #000 inset;
+}
+
+// HEADER (ШАПКА) =======================================================================================
+.header {
+  .header-container {
+    padding: 1% 3%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+
+  // ЛОГО
+  .header__logo {
+    display: flex;
+    .header__img {
+      width: 50px;
+      height: 50px;
+      margin: -10px 10px -10px -10px;
+    }
+    .header__link {
+      display: flex;
+      height: 30px;
+      font-weight: bold;
+      font-size: 30px;
+      &:hover {
+        color: gold;
+        color: --DarkRed;
+      }
+    }
+  }
+  &__menu {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // ВЕРХНЕЕ МЕНЮ -------------------------------------------------
+  &__menu-top {
+    // .menu-top__span {
+    display: flex;
+    flex-wrap: wrap;
+    // затемняет сосед. эл. при наведении (меню)
+    &:hover span:not(:hover) {
+      opacity: 0.5;
+    }
+    // затемняет сосед. эл. при наведении (подменю)
+    &:hover li:not(:hover) {
+      opacity: 0.3;
+      color: white !important;
+    }
+    .menu-top__items {
+      position: relative;
+      margin-left: 15px;
+      margin-bottom: 5px;
+
+      // НАВЕДЕНИЕ на дочерние эл-ты
+      &:hover {
+        // ссылки
+        // .m-t-items__navlink {
+        // }
+        // подменю при неведении
+        .m-t-items__ul {
+          opacity: 1;
+          visibility: visible;
+          transform: translate(0px, 0px);
+          pointer-events: all;
+        }
+      }
+
+      // видимые ссылки в header --------------------------------------------------------------------
+      // NavLink (на родителя) - видимый эл. header (е/и в родителе есть <а> с .active) (сложн. перенесено на NavLink свой класс)
+      // &:has(a[class$="active"]) {
+      // }
+      // NavLink (свой клас на ссылку) - видимый эл. header (перенесено в projects.scss(общ.стили проекта) к ссылкам)
+      // .m-t-items__navlink {
+      //   &.active {
+      //   }
+      //   &:hover {
+      //   }
+      // подменю при неведении
+      //   .m-t-items__ul {
+      //   }
+      // }
+
+      // ПОДМЕНЮ
+      .m-t-items__ul {
+        // частично из ЕжеСвет
+        width: 100%;
+        position: absolute;
+        padding: 1px 3px 3px;
+        opacity: 0;
+        visibility: hidden;
+        font-size: 16px;
+        text-align: center;
+        transform: translate(0px, 10%);
+        transition: all 0.3s ease 0s;
+        pointer-events: none;
+        border: 2px solid #000;
+        background: #ccc;
+        z-index: 1;
+        .m-t-its-ul__li {
+          a {
+            display: flex;
+            justify-content: center;
+            margin-top: 2px;
+            padding: 2px 0px;
+            color: yellow;
+            background: #8d0000;
+            &:hover {
+              // color: green;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // НИЖНЕЕ МЕНЮ -------------------------------------------------
+  &__menu-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    // justify-content: space-between;
+    margin-top: 1%;
+    &:hover span:not(:hover) {
+      opacity: 0.5;
+    }
+    // перенесено в projects.scss(общ.стили проекта) к ссылкам
+    .menu-bottom__items {
+      margin-left: 15px;
+      //   &:hover {
+      //     .m-b-items__navlink {
+      //     }
+      //   }
+      //   .m-b-items__navlink {
+      //     &.active {
+      //     }
+      //   }
+    }
+  }
+}
+
+// АНИМАЦИЯ ЛОГОТИПА <logotTip(ЕжеСвет)>˅=============================================================˅
+.header__logo {
+  &:hover {
+    animation: logoImgColor 3s linear infinite 0s;
+    @keyframes logoImgColor {
+      25% {
+        background-color: red;
+      }
+      50% {
+        background-color: yellow;
+      }
+      75% {
+        background-color: blue;
+      }
+    }
+    .header__img {
+      position: inherit;
+      top: 0;
+      left: 0;
+      width: auto;
+      animation: logoImgSize 3s linear infinite 0s;
+      @keyframes logoImgSize {
+        0% {
+          transform: rotate(0deg);
+        }
+        12% {
+          transform: rotate(0.72turn) scale(0.5);
+        }
+        20% {
+          transform: rotate(1.25turn);
+        }
+        25% {
+          transform: rotate(1.25turn);
+        }
+        37% {
+          transform: rotate(1.87turn) scale(0.5);
+        }
+        45% {
+          transform: rotate(2.5turn);
+        }
+        50% {
+          transform: rotate(2.5turn);
+        }
+        62% {
+          transform: rotate(3.12turn) scale(0.5);
+        }
+        70% {
+          transform: rotate(3.75turn);
+        }
+        75% {
+          transform: rotate(3.75turn);
+        }
+        87% {
+          transform: rotate(4.37turn) scale(0.5);
+        }
+        95% {
+          transform: rotate(5turn);
+        }
+        100% {
+          transform: rotate(5turn);
+        }
+      }
+    }
+  }
+}
+
+// MAIN (ГЛАВНАЯ) =======================================================================================
+.main {
+  width: 100%;
+  // overflow: hidden;
+  // padding: 1% 3%;
+  padding: 1%;
+  background-color: antiquewhite;
+  & > div {
+    // overflow: hidden;
+    // padding: 0px 3%;
+    // width: 100%;
+  }
+}
+
+// FOOTER (ПОДВАЛ) =======================================================================================
+.footer {
+  // max-width: 1750px;
+  .footer-container {
+    padding: 1% 3%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+    .footer__menu {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+    }
+  }
+  .footer__copyright {
+    .copyright-container {
+      display: flex;
+      justify-content: space-evenly;
+      background: #555;
+    }
+  }
+}
+
+// всем кроме последнего
+// .item:not(:last-child) {
+//   margin-bottom: 20px;
+// }
+
+/* АНИМАЦИЯ СТРАНИЦ (2 способа - .page|pages) ======================================================================================= */
+.page,
+.pages {
+  /* position: absolute; */
+  left: 15px;
+  right: 15px;
+  overflow: hidden;
+
+  /* 1 способ прописать анимацию (.page - на каждое дейтвие 4шт) */
+  .page-enter {
+    opacity: 0;
+    transform: scale(1.1);
+    /* transform: translateX(-100%); */
+  }
+  .page-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    /* transform: translateX(0); */
+    transition: opacity 500ms, transform 500ms;
+  }
+  .page-exit {
+    opacity: 1;
+    transform: scale(1);
+    /* transform: translateX(0); */
+  }
+  .page-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    /* transform: translateX(100%); */
+    transition: opacity 500ms, transform 500ms;
+  }
+
+  /* 2 способ прописать анимацию (.pages - на два дейтвие. всего 4шт) */
+  .pages-enter-active {
+    /* .pages-enter { */
+    animation: fade-in 500ms forwards;
+  }
+  .pages-exit-active {
+    /* .pages-exit { */
+    animation: fade-out 500ms forwards;
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+}
