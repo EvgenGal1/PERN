@@ -2,13 +2,13 @@ import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./project/App";
-import Store from "./store/store";
+import StoreTS from "./project/client/src/store/storeTS";
 
 interface StoreSt {
-  store: Store;
+  store: StoreTS;
 }
 
-const store = new Store();
+const store = new StoreTS();
 
 export const Context = createContext<StoreSt>({
   store,

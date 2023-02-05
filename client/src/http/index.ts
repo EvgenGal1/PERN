@@ -6,11 +6,12 @@ import { config } from "process";
 // const axios = require('axios');
 
 // перем.:
-export const API_URL = "https://localhost:5050";
+export const API_URL = "http://localhost:5007/PERN/auth";
+export const DEBUG = process.env.NODE_ENV === "development";
 
-// пример axios запр. СОЗД.
+// экземпляр axios запр. СОЗД.
 const $api = axios.create({
-  // зацеп cookie авто.+баз.url
+  // авто.зацеп cookie + баз.url
   withCredentials: true,
   baseURL: API_URL,
   // interceptor`перехватчик`(раб.на кажд.res,req)
@@ -18,11 +19,23 @@ const $api = axios.create({
   // intrcep.res 200,401(>req на 2token,повтор res)
 });
 
-// intrcep.req. На кажд.req+token
-$api.interceptors.request.use((config) => {
-  // присв.header с token сохр.в LS
-  config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
-  return config;
-});
+// перехватчики.req. На кажд.req + token из LS
+$api.interceptors.request.use(
+  (config) => {
+    // config.headers.genericKey = "someGenericValue";
+    const accessToken = localStorage.getItem("tokenAccess");
+    // присв.header с token сохр.в LS
+    // config.headers.Authorization = `Bearer ${localStorage.getItem(
+    //   "tokenAccess"
+    // )}`;
+    if (accessToken) {
+      config.headers.common = { Authorization: `Bearer ${accessToken}` };
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default $api;

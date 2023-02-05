@@ -1,31 +1,34 @@
-import { IUser } from "../models/IUser";
+import { IUser } from "../../../../models/IUser";
 import { makeAutoObservable } from "mobx";
-import AuthService from "../service/auth.service";
+import AuthService from "../../../../service/auth.service";
 
 export default class Store {
+  // сохр.данн.польз.
   user = {} as IUser;
+  // перем.авториз
   isAuth = false;
 
+  // `Сделайте автоматическое наблюдаемая` для раб.mobx с кл.
   constructor() {
     makeAutoObservable(this);
   }
 
+  // мутации. замена текущ.знач.на получ.парам.
   setAuth(bool: boolean) {
     this.isAuth = bool;
   }
-
   setUser(user: IUser) {
     this.user = user;
   }
 
   // асинхр.экшн.
-  async login(username: string, email: string, password: string) {
-    console.log("username_str : " + username);
+  async login(email: string, /* username: string, */ password: string) {
+    console.log("str log email : " + email);
     try {
-      console.log("1 : " + 1);
-      const response = await AuthService.login(email, username, password);
-      console.log("2 : " + 2);
-      console.log("response login : " + response);
+      console.log("str log 1 : " + 1);
+      const response = await AuthService.login(email, /* username, */ password);
+      console.log("str log 2 : " + 2);
+      console.log("str log resp : " + response);
       localStorage.setItem("tokenAccess", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
@@ -34,14 +37,17 @@ export default class Store {
     }
   }
 
-  async registration(username: string, email: string, password: string) {
+  async registration(email: string, /* username: string, */ password: string) {
+    console.log("str reg email : " + email);
     try {
+      console.log("str reg 1 : " + 1);
       const response = await AuthService.registration(
         email,
-        username,
+        // username,
         password
       );
-      console.log("response registr : " + response);
+      console.log("str reg 2 : " + 2);
+      console.log("str reg resp : " + response);
       localStorage.setItem("tokenAccess", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
