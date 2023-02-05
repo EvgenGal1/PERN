@@ -58,7 +58,7 @@ module.exports = function (role) {
           )
         );
       }
-      // req.user = decoded;
+      req.user = decoded;
       next();
     } catch (e) {
       // res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });

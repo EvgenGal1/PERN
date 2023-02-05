@@ -43,7 +43,7 @@ const generateJwt = (id, username, email, role) => {
 
 class AuthService {
   // РЕГИСТРАЦИЯ
-  async registration(username, email, password) {
+  async registration(username, email, password, role) {
     // базов.логика с обраб.ошб.
     try {
       // ^ UlbiTV. NPg
@@ -74,6 +74,7 @@ class AuthService {
         email,
         password: hashPassword,
         activationLink,
+        role,
         // fullName,
         // avatarUrl,
       });
@@ -100,7 +101,7 @@ class AuthService {
         ...tokens,
         activationLinkPath,
         user: userDto,
-        message: `Пользователь ${username} <${email}> создан и зарегистрирован`,
+        message: `Пользователь ${username} <${email}> создан и зарегистрирован. ID_${user.id}_${user.role}`,
       };
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
@@ -143,31 +144,6 @@ class AuthService {
     } catch (error) {
       return ApiError.BadRequest(`НЕ удалось войти - ${error}.`);
     }
-  }
-
-  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
-  async check(req, res, next) {
-    // res.json({ message: "Раб cgeck" });
-    const token = generateJwt(
-      req.user.id,
-      req.user.username,
-      req.user.email,
-      req.user.role
-    );
-    return res.json({
-      token,
-      message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
-    });
-
-    // ? здесь? универс.обраб.ошиб.(handler).
-    // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
-    // res.json("asdf");
-    // const query = req.query;
-    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
-    // if (!query.id) {
-    //   return next(ApiError.BadRequest("Не задан ID"));
-    // }
-    // res.json(query);
   }
 
   // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
@@ -226,8 +202,33 @@ class AuthService {
     return {
       ...tokens,
       user: userDto,
-      message: `ПЕРЕЗАПИСЬ ${username} <${email}>. ID_${user.id}_${user.role}`,
+      message: `ПЕРЕЗАПИСЬ ${userDto.username} <${userDto.email}>. ID_${user.id}_${user.role}`,
     };
+  }
+
+  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
+  async check(req, res, next) {
+    // res.json({ message: "Раб cgeck" });
+    const token = generateJwt(
+      req.user.id,
+      req.user.username,
+      req.user.email,
+      req.user.role
+    );
+    return res.json({
+      token,
+      message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
+    });
+
+    // ? здесь? универс.обраб.ошиб.(handler).
+    // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
+    // res.json("asdf");
+    // const query = req.query;
+    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
+    // if (!query.id) {
+    //   return next(ApiError.BadRequest("Не задан ID"));
+    // }
+    // res.json(query);
   }
 }
 

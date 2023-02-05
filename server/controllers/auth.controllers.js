@@ -51,7 +51,7 @@ class AuthControllers {
 
       // Получ.из тела.
       // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
-      const { id, username, email, password } = req.body;
+      const { id, username, email, password, role } = req.body;
 
       // проверка отсутств.user.
       if (!username) {
@@ -69,7 +69,8 @@ class AuthControllers {
       const userData = await AuthService.registration(
         username,
         email,
-        password
+        password,
+        role
       );
 
       // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true; false для Postman))
@@ -118,31 +119,6 @@ class AuthControllers {
     }
   }
 
-  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
-  async check(req, res, next) {
-    // res.json({ message: "Раб cgeck" });
-    const token = generateJwt(
-      req.user.id,
-      req.user.username,
-      req.user.email,
-      req.user.role
-    );
-    return res.json({
-      token,
-      message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
-    });
-
-    // ? здесь? универс.обраб.ошиб.(handler).
-    // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
-    // res.json("asdf");
-    // const query = req.query;
-    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
-    // if (!query.id) {
-    //   return next(ApiError.BadRequest("Не задан ID"));
-    // }
-    // res.json(query);
-  }
-
   // ВЫХОД. Удал.Cookie.refreshToken
   async logout(req, res, next) {
     try {
@@ -186,7 +162,8 @@ class AuthControllers {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      return res.json(userData);
+      // return res.json(username, email);
+      return res.json(userData, username, email);
     } catch (error) {
       // return
       next(
@@ -195,6 +172,31 @@ class AuthControllers {
         // )
       );
     }
+  }
+
+  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
+  async check(req, res, next) {
+    // res.json({ message: "Раб cgeck" });
+    const token = generateJwt(
+      req.user.id,
+      req.user.username,
+      req.user.email,
+      req.user.role
+    );
+    return res.json({
+      token,
+      message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
+    });
+
+    // ? здесь? универс.обраб.ошиб.(handler).
+    // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
+    // res.json("asdf");
+    // const query = req.query;
+    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
+    // if (!query.id) {
+    //   return next(ApiError.BadRequest("Не задан ID"));
+    // }
+    // res.json(query);
   }
 }
 

@@ -10,11 +10,10 @@ const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
 // ^ ++++ UlbiTV.PERNstore
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User } = require("../models/models");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
-
+// подкл.модели пользователей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const { User } = require("../models/models");
 const UserService = require("../services/user.service.js");
 
 // обьяв.кл.(для компановки) с неск.мтд
@@ -132,23 +131,23 @@ class UserControllers {
   }
 
   // ^ ++++ EvGen
-  async getUserPERN(req, res, next) {
+  async getAllUserPERN(req, res, next) {
     try {
-      // получ.всех польз.ч/з serv // ранее User.findAndCountAll();
-      const users = await UserService.getUserPERN();
+      const users = await UserService.getAllUserPERN();
       return res.json(users);
-    } catch (error) {}
+    } catch (error) {
+      next(`НЕ удалось получить пользователей - ${error}.`);
+    }
   }
 
   async getOneUserPERN(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = await User.findOne({ where: { id } });
-      if (!userId) {
-        return next(ApiError.BadRequest(`Пользователь с ID ${id} не найден`));
-      }
-      res.json(userId);
-    } catch (error) {}
+      const userId = await UserService.getOneUserPERN(id);
+      return res.json(userId);
+    } catch (error) {
+      next(`НЕ удалось по ID - ${error}.`);
+    }
   }
 
   async updateUserPERN(req, res, next) {

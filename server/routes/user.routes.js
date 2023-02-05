@@ -65,7 +65,7 @@ router.get(
   "/userPERN",
   checkRole("SUPER", "ADMIN", "MODER"),
   // authMiddleware,
-  userСontrollers.getUserPERN
+  userСontrollers.getAllUserPERN
 );
 
 router.put(

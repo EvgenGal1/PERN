@@ -4,60 +4,23 @@
 const { pool } = require("../db");
 const FileService = require("./file.service.js");
 
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User } = require("../models/models");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const { User } = require("../models/models");
 
 class UserService {
-  async createPost(post, picture) {
-    // сохр.в перем.назв.изо ч/з FileService
-    const fileName = FileService.saveFile(picture);
-    var onePost = await pool.query(`SELECT * FROM posts WHERE title = $1`, [
-      post.title,
-    ]);
-    if (onePost.rows.length > 0) {
-      return `Пост c Заголовком '${post.title}' уже есть`;
-    }
-    const newPost = await pool.query(
-      `INSERT INTO posts (title, content, picture, userId) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [post.title, post.content, /* post.picture */ fileName, post.userId]
-    );
-    return newPost.rows[0];
-  }
-
-  async getPostById(id, userId) {
-    var varId;
-    if (id) {
-      var varId = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-    }
-    if (userId) {
-      var varId = await pool.query(
-        `SELECT * FROM posts WHERE userId =` + userId
-      );
-    }
-    if (varId.rows.length < 1) {
-      if (id) {
-        return `Пост по ID ${id} не найден`;
-      }
-      if (userId) {
-        return `Посты у Пользователя с ID_${userId} не найдены`;
-      }
-    }
-    return varId.rows /* .find() */;
-  }
-
-  async getUserPERN() {
-    const users = await User.findAll();
+  async getAllUserPERN() {
+    const users = await User.findAndCountAll();
     return users;
   }
 
   async getOneUserPERN(id) {
-    var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-    if (onePost.rows.length < 1) {
-      return `Пост по ID ${id} не найден`;
+    const userId = await User.findOne({ where: { id } });
+    if (!userId) {
+      return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
     }
-    return onePost.rows[0];
+    return userId;
   }
 
   async updateUserPERN(post) {

@@ -14,6 +14,6 @@ router.delete(
   checkRole("SUPER", "ADMIN", "MODER"),
   brandController.delOne
 );
-// router.get("/", brandController.delAll);
+// router.delete("/",   checkRole("SUPER", "ADMIN", "MODER"), brandController.delAll);
 
 module.exports = router;

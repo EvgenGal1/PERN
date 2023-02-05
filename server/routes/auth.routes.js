@@ -6,6 +6,8 @@ const { check } = require("express-validator");
 // const exprsValid = require("../middleware/exprsValid");
 // подкл.декодер.токен,проверка валидности
 const authMiddleware = require("../middleware/authMiddleware");
+// подкл. middleware доступ ADMIN
+const checkRole = require("../middleware/checkRoleMiddleware");
 
 // ^ ++++ UlbiTV.PERNstore
 // опред.марщрутов|мтд. для отраб. Ригистр.,Авториз.,проверка на Авториз. по jwt токену(2ой парам.)
