@@ -35,7 +35,7 @@ app.use(cookieParser());
 // передача cors в app для взаимодейств.server-браузер
 app.use(
   cors(
-    // указ.с каким domen обмен.cookie{разреш.,url front}
+    // указ.с каким domen обмен.cookie{разреш.cok.,url front}
     {
       credentials: true,
       origin: process.env.CLIENT_URL,
@@ -49,17 +49,17 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "static")));
 // регистр.загрузчика файлов с передачей пуст.объ
 app.use(fileUpload({}));
+// прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
+app.use("/PERN", allRoutes);
+// app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
+// app.use("/PERN", userRoutes);
+// app.use("/PERN", postRoutes);
 // ?! от ошб ?
 // app.use(
 //   express.urlencoded({
 //     extended: true,
 //   })
 // );
-// прослуш. маршруты для обраб.запросов с fronta. 1ый str. префикс для пути(/api), 2ой подкл. Маршрутизатор(middleware)
-// app.use("/auth", authRoutes /* require("./routes/auth.routes") */);
-// app.use("/PERN", userRoutes);
-// app.use("/PERN", postRoutes);
-app.use("/PERN", allRoutes);
 
 // Обраб.ошб.,последний Middlware
 app.use(errorHandlerMW);

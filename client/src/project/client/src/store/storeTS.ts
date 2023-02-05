@@ -5,7 +5,7 @@ import AuthService from "../../../../service/auth.service";
 export default class Store {
   // сохр.данн.польз.
   user = {} as IUser;
-  // перем.авториз
+  // перем.авториз.
   isAuth = false;
 
   // `Сделайте автоматическое наблюдаемая` для раб.mobx с кл.
@@ -13,7 +13,7 @@ export default class Store {
     makeAutoObservable(this);
   }
 
-  // мутации. замена текущ.знач.на получ.парам.
+  // мутации. замена текущ.знач.на получ.в парам.
   setAuth(bool: boolean) {
     this.isAuth = bool;
   }
@@ -21,32 +21,39 @@ export default class Store {
     this.user = user;
   }
 
-  // асинхр.экшн.
-  async login(email: string, username: string, password: string) {
-    try {
-      const response = await AuthService.login(email, username, password);
-      console.log(response);
-      localStorage.setItem("tokenAccess", response.data.accessToken);
-      this.setAuth(true);
-      this.setUser(response.data.user);
-    } catch (error) {
-      console.log(error /* .response?.data?.message */);
-    }
-  }
-
+  // асинхр.экшны
   async registration(email: string, username: string, password: string) {
     try {
+      // отправ.данн.на serv
       const response = await AuthService.registration(
         email,
         username,
         password
       );
-      console.log(response);
+      console.log(response?.data);
+      // запись в LS
+      localStorage.setItem("tokenAccess", response.data.accessToken);
+      // отпр.данн.в мутац.для сохр.(авториз.,токен,польз.,..)
+      this.setAuth(true);
+      this.setUser(response.data.user);
+    } catch (error: any) {
+      console.log(error?.response?.data); // все данные
+      // console.log(error.response?.data?.errors); // масс. errors
+      // console.log(error.response?.data.errors[0].msg); // из объ. по ind_0 поле msg
+      console.log(error?.response?.data?.errors?.map((item: any) => item.msg)); // из масс.errors, из всех объ., все msg
+    }
+  }
+
+  async login(email: string, username: string, password: string) {
+    try {
+      const response = await AuthService.login(email, username, password);
+      console.log(response?.data);
       localStorage.setItem("tokenAccess", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
-    } catch (error) {
-      console.log(error /* .response?.data?.message */);
+    } catch (error: any) {
+      console.log(error?.response?.data);
+      console.log(error?.response?.data?.errors?.map((item: any) => item.msg));
     }
   }
 
@@ -57,8 +64,8 @@ export default class Store {
       localStorage.removeItem("tokenAccess");
       this.setAuth(false);
       this.setUser({} as IUser);
-    } catch (error) {
-      console.log(error /* .response?.data?.message */);
+    } catch (error: any) {
+      console.log(error?.response?.data);
     }
   }
 }
