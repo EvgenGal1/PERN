@@ -10,7 +10,7 @@ export const API_URL = "http://localhost:5007/PERN/auth";
 export const DEBUG = process.env.NODE_ENV === "development";
 
 // экземпляр axios запр. СОЗД.
-const $api = axios.create({
+const api = axios.create({
   // авто.зацеп cookie + баз.url
   withCredentials: true,
   baseURL: API_URL,
@@ -20,7 +20,7 @@ const $api = axios.create({
 });
 
 // перехватчики.req. На кажд.req + token из LS
-$api.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     // config.headers.genericKey = "someGenericValue";
     const accessToken = localStorage.getItem("tokenAccess");
@@ -28,9 +28,10 @@ $api.interceptors.request.use(
     // config.headers.Authorization = `Bearer ${localStorage.getItem(
     //   "tokenAccess"
     // )}`;
-    if (accessToken) {
-      config.headers.common = { Authorization: `Bearer ${accessToken}` };
-    }
+    // if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+    // config.headers.common = { Authorization: `Bearer ${accessToken}` };
+    // }
     return config;
   },
   (error) => {
@@ -38,4 +39,4 @@ $api.interceptors.request.use(
   }
 );
 
-export default $api;
+export default api;
