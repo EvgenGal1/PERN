@@ -10,7 +10,7 @@ const ApiError = require("../error/ApiError.js");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
 const { User } = require("../models/models.js");
 
-const AuthService = require("../services/auth.service.js");
+const AuthService = require("../services/auth.service.ts");
 const cookie = require("cookie");
 
 // fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
