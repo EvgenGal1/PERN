@@ -212,9 +212,9 @@ class AuthService {
     const tokens = TokenService.generateToken({ ...userDto });
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
     return {
-      ...tokens,
-      user: userDto,
       message: `ПЕРЕЗАПИСЬ ${userDto.username} <${userDto.email}>. ID_${user.id}_${user.role}`,
+      tokens: tokens,
+      user: userDto,
     };
   }
 

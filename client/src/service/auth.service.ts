@@ -2,7 +2,6 @@ import api from "../http";
 // axios всегда возвращ.объ. Данн.хран.в date. Для указ.типа данн.
 import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/auth.response";
-import { config } from "process";
 
 export default class AuthService {
   static async registration(

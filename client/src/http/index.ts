@@ -1,9 +1,5 @@
 // ^ настр.axios
 import axios from "axios";
-import { response } from "express";
-import { request } from "http";
-import { config } from "process";
-// const axios = require('axios');
 
 // перем.:
 export const API_URL = "http://localhost:5007/PERN/auth";
