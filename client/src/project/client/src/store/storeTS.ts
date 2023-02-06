@@ -32,7 +32,7 @@ export default class Store {
       );
       console.log(response?.data);
       // запись в LS
-      localStorage.setItem("tokenAccess", response.data.accessToken);
+      localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       // отпр.данн.в мутац.для сохр.(авториз.,токен,польз.,..)
       this.setAuth(true);
       this.setUser(response.data.user);
@@ -48,7 +48,7 @@ export default class Store {
     try {
       const response = await AuthService.login(email, username, password);
       console.log(response?.data);
-      localStorage.setItem("tokenAccess", response.data.accessToken);
+      localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
     } catch (error: any) {
