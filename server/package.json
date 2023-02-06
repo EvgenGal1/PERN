@@ -2,7 +2,7 @@
   "name": "pern-start_back",
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
-  "main": "PERN.js",
+  "main": "PERN.ts",
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
   "license": "ISC",
   "keywords": [
@@ -13,10 +13,11 @@
     "NodeJS"
   ],
   "scripts": {
-    "start": "node PERN.js",
-    "server": "nodemon PERN.js"
+    "start": "node PERN.ts",
+    "server": "nodemon PERN.ts"
   },
   "dependencies": {
+    "@types/express": "^4.17.17",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.8",
@@ -31,9 +32,11 @@
     "notenv": "^2.0.3",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.28.0"
+    "sequelize": "^6.28.0",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "typescript": "^4.9.5"
   }
 }
