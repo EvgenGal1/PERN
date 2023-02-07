@@ -1,5 +1,7 @@
 import React, { FC, useState, useContext } from "react";
 import { Context } from "../../../../index";
+// обёрка прилож.для отслеж.измен.в данн.
+import { observer } from "mobx-react-lite";
 
 const LoginForm: FC = () => {
   // локалн.сост eml,unam,psw с тип.,пуст.стр.
@@ -9,6 +11,11 @@ const LoginForm: FC = () => {
   // извлек.store ч/з usConst
   const { store } = useContext(Context);
   return (
+    // {/* <h1>
+    //   {store.isAuth
+    //     ? `Пользователь авторизован ${store.user.username} <${store.user.email}>`
+    //     : "АВТОРИЗУЙТЕСЬ"}
+    // </h1> */}
     <div>
       {/* управ.inputы */}
       <input
@@ -41,4 +48,4 @@ const LoginForm: FC = () => {
   );
 };
 
-export default LoginForm;
+export default observer(LoginForm);

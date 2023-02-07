@@ -1,6 +1,9 @@
 import { IUser } from "../../../../models/IUser";
 import { makeAutoObservable } from "mobx";
 import AuthService from "../../../../service/auth.service";
+import axios from "axios";
+import { AuthResponse } from "../../../../models/response/auth.response";
+import { API_URL } from "../../../../http";
 
 export default class Store {
   // сохр.данн.польз.
@@ -64,6 +67,22 @@ export default class Store {
       localStorage.removeItem("tokenAccess");
       this.setAuth(false);
       this.setUser({} as IUser);
+    } catch (error: any) {
+      console.log(error?.response?.data);
+    }
+  }
+
+  // ПРОВЕРКА авторизации польз.
+  async checkAuth() {
+    try {
+      // использ.axios экзепляр по умалч.чтоб не нагружать интерцептор <ожид.тело отв.>(путь,авто.зацеп cookie)
+      const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
+        withCredentials: true,
+      });
+      console.log(response?.data);
+      localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
+      this.setAuth(true);
+      this.setUser(response?.data?.user);
     } catch (error: any) {
       console.log(error?.response?.data);
     }
