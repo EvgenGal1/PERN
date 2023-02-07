@@ -25,12 +25,12 @@ export default class Store {
   }
 
   // асинхр.экшны
-  async registration(email: string, username: string, password: string) {
+  async registration(username: string, email: string, password: string) {
     try {
       // отправ.данн.на serv
       const response = await AuthService.registration(
-        email,
         username,
+        email,
         password
       );
       console.log(response?.data);
@@ -47,9 +47,9 @@ export default class Store {
     }
   }
 
-  async login(email: string, username: string, password: string) {
+  async login(username: string, email: string, password: string) {
     try {
-      const response = await AuthService.login(email, username, password);
+      const response = await AuthService.login(username, email, password);
       console.log(response?.data);
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);
@@ -76,9 +76,11 @@ export default class Store {
   async checkAuth() {
     try {
       // использ.axios экзепляр по умалч.чтоб не нагружать интерцептор <ожид.тело отв.>(путь,авто.зацеп cookie)
+      console.log("store : " + 2);
       const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
         withCredentials: true,
       });
+      console.log("store : " + 3);
       console.log(response?.data);
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);

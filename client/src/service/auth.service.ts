@@ -6,8 +6,8 @@ import { AuthResponse } from "../models/response/auth.response";
 export default class AuthService {
   // стат.fn для request на server
   static async registration(
-    email: string,
     username: string,
+    email: string,
     password: string
   ): // асинхр.fn всегда возвращ.`Обещание`<для указ.тип данн.отв.<дженр указ.возвр.тип/данн.>>
   Promise<AxiosResponse<AuthResponse>> {
@@ -21,8 +21,8 @@ export default class AuthService {
   }
 
   static async login(
-    email: string,
     username: string,
+    email: string,
     password: string
   ): Promise<AxiosResponse<AuthResponse>> {
     return api.post<AuthResponse>("/login", {

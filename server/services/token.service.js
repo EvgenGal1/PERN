@@ -48,6 +48,7 @@ class TokenService {
 
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
   /* async */ generateToken(payload) {
+    console.log("gnrT ^^^^^^^^^^ ", payload);
     // передаём данн.польз в fn генер.токена.
     // const accessToken = generateJwt(payload);
     const accessToken = /* await */ jwt.sign(
