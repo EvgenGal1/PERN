@@ -1,16 +1,8 @@
 // ^ Service(Бизнес логика - БД и выход.парам.(НЕ req,res))
 
-// подкл.конфиг.БД для записи получ.данн.в БД
-// const { pool } = require("../db");
-const FileService = require("./file.service.js");
-
 // ^ ++++ UlbiTV.PERNstore
-// подкл.ф.контролера для генерац.web токена
-// const jwt = require("jsonwebtoken");
 // подкл.генир.уник.рандом.id
 const uuid = require("uuid");
-// подкл.для созд.пути
-// const path = require("path");
 // подкл. библ. для шифрование пароля нов.польз.
 const bcrypt = require("bcryptjs");
 // подкл. валидацию
@@ -23,28 +15,6 @@ const { User } = require("../models/models.js");
 const MailService = require("./mail.service.js");
 const TokenService = require("./token.service.js");
 const UserDto = require("../dtos/user.dto.js");
-// const { where } = require("sequelize");
-
-// fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
-// const generateJwt = (
-//   id: number,
-//   username: string,
-//   email: string,
-//   role: string
-// ) => {
-//   // подписываем передан.парам.
-//   return jwt.sign(
-//     // payload(центр.часть токена) данн.польз.
-//     { id, username, email, role },
-//     // проверка валид.ч/з секрет.ключ(в перем.окруж.)
-//     process.env.SECRET_KEY,
-//     // опции
-//     {
-//       // вр.раб.токена
-//       expiresIn: "24h",
-//     }
-//   );
-// };
 
 class AuthService {
   // РЕГИСТРАЦИЯ
@@ -98,7 +68,7 @@ class AuthService {
         activationLinkPath
       );
 
-      // ^ надо отдельн. fn - выборка,генер.2токен,сохр.refresh в БД, return
+      // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       // выборка полей(3шт.) для FRONT (new - созд.экземпляр класса)
       const userDto = new UserDto(user);
 
@@ -144,7 +114,7 @@ class AuthService {
         return ApiError.BadRequest("Указан неверный пароль");
       }
 
-      // ^ надо отдельн. fn - выборка,генер.2токен,сохр.refresh в БД, return
+      // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       const userDto = new UserDto(user);
       const tokens = TokenService.generateToken({ ...userDto });
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
@@ -205,9 +175,8 @@ class AuthService {
       throw ApiError.UnauthorizedError();
     }
     // вытаск.польз.с БД по ID
-    // const user = await User.findByld(userData.id);
-    const user = await User.findByPk(userData.id);
-    // ^ надо отдельн. fn - выборка,генер.2токен,сохр.refresh в БД, return
+    const user = await User.findByPk(userData.id); // findByld
+    // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
     const userDto = new UserDto(user);
     const tokens = TokenService.generateToken({ ...userDto });
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
@@ -231,17 +200,6 @@ class AuthService {
   //     token,
   //     message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
   //   });
-
-  //   // ? здесь? универс.обраб.ошиб.(handler).
-  //   // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
-  //   // res.json("asdf");
-  //   // const query = req.query;
-  //   // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
-  //   // if (!query.id) {
-  //   //   return next(ApiError.BadRequest("Не задан ID"));
-  //   // }
-  //   // res.json(query);
-  // }
 }
 
 module.exports = new AuthService();

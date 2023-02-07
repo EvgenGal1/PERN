@@ -4,6 +4,7 @@ import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/auth.response";
 
 export default class AuthService {
+  // стат.fn для request на server
   static async registration(
     email: string,
     username: string,
@@ -35,5 +36,3 @@ export default class AuthService {
     return api.post("/logout");
   }
 }
-
-// стат.fn для req на server
