@@ -29,19 +29,23 @@ const jwt = require("jsonwebtoken");
 class TokenService {
   // валид./проверка подделки/сроки жизни токена ACCESS и REFRESH
   validateAccessToken(token) {
+    console.log("SERV a.t.vAc ", token);
     try {
       // верифик.|раскодир.токен. `проверять` на валидность(токен, секр.ключ)
       const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY);
       return userData;
     } catch (error) {
+      console.log("SERV a.t.vAc ", error);
       return null;
     }
   }
   validateRefreshToken(token) {
+    console.log("SERV a.t.vRf ", token);
     try {
       const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
       return userData;
     } catch (error) {
+      console.log("SERV a.t.vRf ", error);
       return null;
     }
   }
@@ -102,6 +106,7 @@ class TokenService {
 
   // Поиск REFRESH токена в БД
   async findToken(refreshToken) {
+    console.log("SERV a.t.fT rT ", refreshToken);
     const tokenData = await Token.findOne({
       where: { refreshToken: refreshToken },
     });
