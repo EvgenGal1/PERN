@@ -179,6 +179,7 @@ class AuthService {
 
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
   async refresh(refreshToken: string /* , username: string, email: string */) {
+    console.log("SRV a.s.rf 15 ", 15);
     // е/и нет то ошб.не авториз
     if (!refreshToken) {
       // return ApiError.UnauthorizedError();
@@ -186,14 +187,18 @@ class AuthService {
     }
     // валид.токен.refresh
     const userData = TokenService.validateRefreshToken(refreshToken);
+    console.log("SRV a.s.rf userData ", userData);
     // поиск токена
     const tokenFromDB = await TokenService.findToken(refreshToken);
+    console.log("SRV a.s.rf tokenFromDB ", tokenFromDB);
     // проверка валид и поиск
     if (!userData || !tokenFromDB) {
-      throw ApiError.UnauthorizedError();
+      console.log("SRV a.s.rf 16 ", 16);
+      return ApiError.UnauthorizedError();
     }
     // вытаск.польз.с БД по ID
     const user = await User.findByPk(userData.id); // findByld
+    console.log("SRV a.s.rf user ", user);
     // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
     const userDto = new UserDto(user);
     const tokens = TokenService.generateToken({ ...userDto });
@@ -203,6 +208,12 @@ class AuthService {
       tokens: tokens,
       user: userDto,
     };
+  }
+
+  // ~ врем.из User.contrl,serv Получ.всех польз.
+  async getAllUsers() {
+    const users = await User.findAll(); // findAndCountAll
+    return users;
   }
 
   // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))

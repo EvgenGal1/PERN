@@ -60,4 +60,12 @@ router.get("/refresh", authControllers.refresh);
 // ПРОВЕРКА | auth // ^ удалить или уровнять с login
 router.get("/", authMiddleware, authControllers.check);
 
+// ~ врем.из User.contrl,serv Получ.всех польз.
+router.get(
+  "/users",
+  checkRole("SUPER", "ADMIN", "MODER"),
+  // authMiddleware,
+  authControllers.getAllUsers
+);
+
 module.exports = router;

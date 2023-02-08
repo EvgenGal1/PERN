@@ -187,16 +187,16 @@ class AuthControllers {
     try {
       const { refreshToken } = req.cookies;
       // const { username, email } = req.body;
-      console.log("SRV a.c refreshToken ", refreshToken);
+      console.log("SRV a.c.rf refreshToken ", refreshToken);
       const userData = await AuthService.refresh(
         refreshToken /* , username, email */
       );
-      console.log("SRV a.c 4 ", 4);
+      console.log("SRV a.c.rf 4 ", 4);
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      console.log("SRV a.c userData ", userData);
+      console.log("SRV a.c.rf userData ", userData);
       // return res.json(username, email);
       return res.json(userData /* , username, email */);
     } catch (error) {
@@ -232,6 +232,19 @@ class AuthControllers {
     //   return next(ApiError.BadRequest("Не задан ID"));
     // }
     // res.json(query);
+  }
+
+  // ~ врем.из User.contrl,serv Получ.всех польз.
+  async getAllUsers(req, res, next) {
+    console.log("12333333333333 ", 123333333333333);
+    try {
+      const users = await AuthService.getAllUsers();
+      // console.log("users ", users);
+      // console.log("users.user ", users.user);
+      return res.json(users);
+    } catch (error) {
+      next(`НЕ удалось получить пользователей - ${error}.`);
+    }
   }
 }
 
