@@ -10,6 +10,8 @@ export default class Store {
   user = {} as IUser;
   // перем.авториз.
   isAuth = false;
+  // загрузка от мелькание теста перед формой
+  isLoading = false;
 
   // `Сделайте автоматическое наблюдаемая` для раб.mobx с кл.
   constructor() {
@@ -22,6 +24,9 @@ export default class Store {
   }
   setUser(user: IUser) {
     this.user = user;
+  }
+  setLoading(bool: boolean) {
+    this.isLoading = bool;
   }
 
   // асинхр.экшны
@@ -74,6 +79,7 @@ export default class Store {
 
   // ПРОВЕРКА авторизации польз.
   async checkAuth() {
+    this.setLoading(true);
     try {
       // использ.axios экзепляр по умалч.чтоб не нагружать интерцептор <ожид.тело отв.>(путь,авто.зацеп cookie)
       console.log("store : " + 2);
@@ -87,6 +93,8 @@ export default class Store {
       this.setUser(response?.data?.user);
     } catch (error: any) {
       console.log(error?.response?.data);
+    } finally {
+      this.setLoading(false);
     }
   }
 }
