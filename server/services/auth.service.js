@@ -18,7 +18,7 @@ const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError.js");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User } = require("../models/models.js");
+const { User } = require("../models/modelsTS.ts");
 
 const MailService = require("./mail.service.js");
 const TokenService = require("./token.service.js");

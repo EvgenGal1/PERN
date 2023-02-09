@@ -13,7 +13,7 @@ const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 // подкл.модели пользователей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User } = require("../models/models");
+const { User } = require("../models/modelsTS.ts");
 const UserService = require("../services/user.service.js");
 
 // обьяв.кл.(для компановки) с неск.мтд

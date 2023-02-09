@@ -1,5 +1,5 @@
 const ApiError = require("../error/ApiError");
-const { Type } = require("../models/models");
+const { Type } = require("../models/modelsTS.ts");
 const TypeService = require("../services/type.service.js");
 
 // всё в упрощ.вар.

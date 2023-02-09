@@ -3,7 +3,7 @@ const uuid = require("uuid");
 // подкл.для созд.пути
 const path = require("path");
 // подкл.модели Типа, Инфо.обУстр
-const { Device, DeviceInfo } = require("../models/models");
+const { Device, DeviceInfo } = require("../models/modelsTS.ts");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 

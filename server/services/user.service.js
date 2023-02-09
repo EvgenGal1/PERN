@@ -7,7 +7,7 @@ const FileService = require("./file.service.js");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User } = require("../models/models");
+const { User } = require("../models/modelsTS.ts");
 
 class UserService {
   async getAllUserPERN() {

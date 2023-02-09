@@ -1,3 +1,5 @@
+// от ошб. перем/блок
+export {};
 // ^ ++++ UlbiTV.PERNstore
 // подкл.ф.контролера для генерац.web токена
 const jwt = require("jsonwebtoken");
@@ -8,17 +10,21 @@ const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError.js");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
-const { User } = require("../models/models.js");
+const { User } = require("../models/modelsTS.ts");
 
 const AuthService = require("../services/auth.service.ts");
 const cookie = require("cookie");
 
 // fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
-const generateJwt = (id, username, email, role) => {
+const generateJwt = (
+  id: number,
+  username: string,
+  email: string /* , role */
+) => {
   // подписываем передан.парам.
   return jwt.sign(
     // payload(центр.часть токена) данн.польз.
-    { id, username, email, role },
+    { id, username, email /* , role */ },
     // проверка валид.ч/з секрет.ключ(в перем.окруж.)
     process.env.SECRET_KEY,
     // опции
@@ -182,8 +188,8 @@ class AuthControllers {
     const token = generateJwt(
       req.user.id,
       req.user.username,
-      req.user.email,
-      req.user.role
+      req.user.email
+      // req.user.role
     );
     return res.json({
       token,

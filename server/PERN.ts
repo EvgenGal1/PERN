@@ -8,7 +8,7 @@ const express = require("express");
 // подкл.конфиг.БД
 const { sequelize } = require("./db");
 // подкл.моделей(табл)
-const models = require("./models/models");
+const models = require("./models/modelsTS.ts");
 // подкл.cors для отправ.запр.с брауз.
 const cors = require("cors");
 // подкл.MiddlWare по ошб.

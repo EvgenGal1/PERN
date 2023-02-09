@@ -1,4 +1,4 @@
-const { Brand } = require("../models/models");
+const { Brand } = require("../models/modelsTS.ts");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 
