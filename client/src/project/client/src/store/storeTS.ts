@@ -82,11 +82,9 @@ export default class Store {
     this.setLoading(true);
     try {
       // использ.axios экзепляр по умалч.чтоб не нагружать интерцептор <ожид.тело отв.>(путь,авто.зацеп cookie)
-      console.log("store : " + 2);
       const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
         withCredentials: true,
       });
-      console.log("store : " + 3);
       console.log(response?.data);
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);

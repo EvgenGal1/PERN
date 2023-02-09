@@ -35,7 +35,6 @@ class UserControllers {
 
       // получ.данн.с fronta
       const { name, surname, email, password } = req.body;
-      // console.log(name, surname); // тест2
 
       // получ.по email
       const candidateEml = await pool.query(

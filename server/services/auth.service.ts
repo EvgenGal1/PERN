@@ -21,13 +21,11 @@ class AuthService {
   async registration(
     username: string,
     email: string,
-    password: string,
-    role: string
+    password: string
+    // role: string
   ) {
     // базов.логика с обраб.ошб.
     try {
-      console.log("username ", username);
-      console.log("email ", email);
       // ^ UlbiTV. NPg
       // проверка сущест.username и email
       const candidate = await User.findOne({
@@ -56,7 +54,7 @@ class AuthService {
         email,
         password: hashPassword,
         activationLink,
-        role,
+        // role,
         // fullName,
         // avatarUrl,
       });
@@ -78,7 +76,6 @@ class AuthService {
       // сохр.refresh в БД
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
 
-      console.log("SRV a.s activationLinkPath : " + activationLinkPath);
       // возвращ.2 токена, инфо о польз.
       return {
         activationLinkPath,
@@ -95,7 +92,6 @@ class AuthService {
 
   // АВТОРИЗАЦИЯ
   async login(username: string, email: string, password: string) {
-    console.log("SERV a.r.l 7 ", 7);
     try {
       // ^ улучшить до общей проверки (!eml.email - так висит)
       // проверка сущест.username и email
@@ -105,35 +101,20 @@ class AuthService {
           `Пользователь с Именем ${username} не найден`
         );
       }
-      console.log("SERV a.r.l user : " + user);
-      console.log("SERV a.r.l user.uN : " + user.username);
       const eml = await User.findOne({ where: { email } });
       if (!eml /* !eml.email */) {
         return ApiError.BadRequest(`Пользователь с Email <${email}> не найден`);
       }
-      console.log("SERV a.r.l 12 ", 12);
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
 
-      console.log("SERV a.r.l user.p ", user.password);
-      console.log("SERV a.r.l password ", password);
       if (!comparePassword) {
-        console.log("SERV a.r.l 14 ", 14);
         return ApiError.BadRequest("Указан неверный пароль");
       }
 
-      console.log("SERV a.r.l 13 ", 13);
       // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       const userDto = new UserDto(user);
-      console.log("SERV a.S.l userDto : " + userDto);
       const tokens = TokenService.generateToken({ ...userDto });
-      console.log(
-        "=====================SERV a.s.l t.rf : " + tokens.refreshToken
-      );
-      console.log("=====================SERV a.s.l tokens : " + tokens);
-      console.log(
-        "=====================SERV a.s.l t.ac : " + tokens.accessToken
-      );
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
       return {
         message: `Зашёл ${username} <${email}>. ID_${user.id}_${user.role}`,
@@ -167,7 +148,7 @@ class AuthService {
         `Некорр ссы.актив. Пользователя НЕ существует`
       );
     }
-    // флаг в tru и сохр.
+    // флаг в true и сохр.
     user.isActivated = true;
     /* await */ user.save();
     // } catch (error) {
@@ -179,7 +160,6 @@ class AuthService {
 
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
   async refresh(refreshToken: string /* , username: string, email: string */) {
-    console.log("SRV a.s.rf 15 ", 15);
     // е/и нет то ошб.не авториз
     if (!refreshToken) {
       // return ApiError.UnauthorizedError();
@@ -187,18 +167,14 @@ class AuthService {
     }
     // валид.токен.refresh
     const userData = TokenService.validateRefreshToken(refreshToken);
-    console.log("SRV a.s.rf userData ", userData);
     // поиск токена
     const tokenFromDB = await TokenService.findToken(refreshToken);
-    console.log("SRV a.s.rf tokenFromDB ", tokenFromDB);
     // проверка валид и поиск
     if (!userData || !tokenFromDB) {
-      console.log("SRV a.s.rf 16 ", 16);
       return ApiError.UnauthorizedError();
     }
     // вытаск.польз.с БД по ID
     const user = await User.findByPk(userData.id); // findByld
-    console.log("SRV a.s.rf user ", user);
     // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
     const userDto = new UserDto(user);
     const tokens = TokenService.generateToken({ ...userDto });

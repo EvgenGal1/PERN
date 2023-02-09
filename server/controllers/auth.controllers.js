@@ -51,7 +51,7 @@ class AuthControllers {
 
       // Получ.из тела.
       // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
-      const { id, username, email, password, role } = req.body;
+      const { id, username, email, password /* , role */ } = req.body;
 
       // проверка отсутств.user.
       if (!username) {
@@ -69,8 +69,8 @@ class AuthControllers {
       const userData = await AuthService.registration(
         username,
         email,
-        password,
-        role
+        password
+        // role
       );
 
       // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true; false для Postman))
@@ -96,7 +96,6 @@ class AuthControllers {
 
   // АВТОРИЗАЦИЯ
   async login(req, res, next) {
-    console.log("SERV a.c.l 6 ", 6);
     try {
       const errorsValid = validationResult(req);
       if (!errorsValid.isEmpty()) {
@@ -108,37 +107,11 @@ class AuthControllers {
         );
       }
       const { username, email, password } = req.body;
-      console.log("SERV a.c.l psw ", password);
-      console.log("SERV a.c.l username ", username);
       const userData = await AuthService.login(username, email, password);
-      // console.log("SERV a.c.l  userData.t ", userData.tokens);
-      // console.log(
-      //   "SERV a.c.l cookie ",
-      //   res.cookie("refreshToken", userData.refreshToken, {
-      //     maxAge: 30 * 24 * 60 * 60 * 1000,
-      //     httpOnly: true,
-      //   })
-      // );
-      // console.log("SERV a.c.l uD.rfT 8 ", userData.refreshToken);
-      // console.log("SERV a.c.l uD.rfT 9 ", userData.tokens.tokens.refreshToken);
-      // console.log("SERV a.c.l uD.rfT 10 ------ ", userData.tokens.tokens.tkrf);
-      // console.log(
-      //   "SERV a.c.l uD.t.rfT 11 ------ ",
-      //   userData.tokens.refreshToken
-      // );
       res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      // let cok = false;
-      // let cokStrt = res.cookie("refreshToken", userData.tokens.refreshToken, {
-      //   maxAge: 30 * 24 * 60 * 60 * 1000,
-      //   httpOnly: true,
-      // });
-      // if (cokStrt) {
-      //   cok = true;
-      // }
-      // console.log("++++++++++++ cok ", cok);
 
       return res.json(userData);
     } catch (error) {
@@ -162,9 +135,7 @@ class AuthControllers {
 
   // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
   async activate(req, res, next) {
-    console.log("SERV a.c 5 ", 5);
     try {
-      console.log("SERV a.c activationLink ", req.params.link);
       // из стр.получ.ссы.актив.
       const activationLink = req.params.link;
       await AuthService.activate(activationLink);
@@ -183,20 +154,16 @@ class AuthControllers {
 
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
   async refresh(req, res, next) {
-    console.log("SRV a.c 3 ", 3);
     try {
       const { refreshToken } = req.cookies;
       // const { username, email } = req.body;
-      console.log("SRV a.c.rf refreshToken ", refreshToken);
       const userData = await AuthService.refresh(
         refreshToken /* , username, email */
       );
-      console.log("SRV a.c.rf 4 ", 4);
-      res.cookie("refreshToken", userData.refreshToken, {
+      res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      console.log("SRV a.c.rf userData ", userData);
       // return res.json(username, email);
       return res.json(userData /* , username, email */);
     } catch (error) {
@@ -236,11 +203,8 @@ class AuthControllers {
 
   // ~ врем.из User.contrl,serv Получ.всех польз.
   async getAllUsers(req, res, next) {
-    console.log("12333333333333 ", 123333333333333);
     try {
       const users = await AuthService.getAllUsers();
-      // console.log("users ", users);
-      // console.log("users.user ", users.user);
       return res.json(users);
     } catch (error) {
       next(`НЕ удалось получить пользователей - ${error}.`);

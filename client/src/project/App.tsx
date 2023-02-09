@@ -15,12 +15,10 @@ const App: FC = () => {
 
   // вызов экшн checkAuth, е/и есть в LS, при 1ом запуске(usEf пуст масс.завис.)
   useEffect(() => {
-    console.log(1);
     if (localStorage.getItem("tokenAccess")) {
       store.checkAuth();
     }
   }, []);
-  console.log("Ap localStorage ", localStorage.getItem("tokenAccess"));
 
   // fn получ.польз.
   async function getUsers() {
@@ -35,7 +33,7 @@ const App: FC = () => {
 
   // при перезагрузке от мелькания текста перед формой
   if (store.isLoading) {
-    return <div>Загрузка...</div>;
+    return <div style={{ background: "red" }}>Загрузка...</div>;
   }
 
   // е/и не авториз.
@@ -43,14 +41,15 @@ const App: FC = () => {
     return (
       <>
         <LoginForm />
-        <div>
+        {/* откл. всё равно нет доступа у не авториз. */}
+        {/* <div>
           <button onClick={getUsers}>Получить пользователей</button>
           {users.map((user) => (
             <div key={user.email}>
               {user.username} &lt;{user.email}&gt;
             </div>
           ))}
-        </div>
+        </div> */}
       </>
     );
   }

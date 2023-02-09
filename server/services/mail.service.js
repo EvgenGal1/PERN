@@ -82,9 +82,6 @@ class MailService {
     };
 
     try {
-      // вызов у trnsp fn `Отправить письмо` с парам.объ.(от кого письмо,кому,тема + url сайта,текст,свёрнутый html с ссылкой активации)
-      // ! не раб - TypeError: Cannot read properties of undefined (reading 'refreshToken')." mail.serv что-то не вывозит. ji,/ghb подкл.
-      // ^ убрал await заработал отправка на почту
       /* await */ this.transporter.sendMail({
         from: process.env.SMTP_USER,
         to: to,
@@ -106,35 +103,6 @@ class MailService {
 }
 
 module.exports = new MailService();
-//  --------------------------------------------------------
-
-// evgengalauth - smtp-psw_YA_0 - evgengalauth@yandex.ru
-
-//  --------------------------------------------------------
-// ! https://dev.to/jaydeepdey03/handling-authentication-in-nodejs-using-jwt-tokens-4jgc
-
-// ! https://nodejsdev.ru/doc/email/
-// const transporter = nodemailer.createTransport({
-//   // service: "gmail",
-//   host: process.env.SMTP_HOST,
-//   port: process.env.SMTP_PORT,
-//   secure: false,
-//   auth: {
-//     user: process.env.SMTP_USER,
-//     pass: process.env.SMTP_PASSWORD,
-//   },
-// });
-
-// const options = {
-//   from: "TESTING <ZBst.1@yandex.ru>", // <evgengal.smtp@gmail.com>" // sender address
-//   // from: process.env.SMTP_USER, // sender address
-//   // to: "someone@gmail.com", // receiver email
-//   // to: "evgenauth@gmail.com", // receiver email
-//   to: "evgengalauth@yandex.ru", // receiver email
-//   subject: "Активация акуанта на " /* + process.env.API_URL */, // Subject line
-//   text: message,
-//   html: HTML_TEMPLATE(message),
-// };
 
 // ^ проверка на ошб. с логоах ?
 // const SENDMAIL = async (mailDetails, callback) => {
