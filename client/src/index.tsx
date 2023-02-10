@@ -1,8 +1,12 @@
 import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+
+import { App } from "./projects/App";
 import "./index.css";
-import App from "./project/App";
-import StoreTS from "./project/client/src/store/storeTS";
+
+// NRJWT
+import StoreTS from "./projects/client/src/store/storeTS";
 
 // inrf для полей контекста
 interface intrfStoreTS {
@@ -23,7 +27,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Context.Provider value={{ store }}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Context.Provider>
   </React.StrictMode>
 );

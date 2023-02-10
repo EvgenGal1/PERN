@@ -50,7 +50,7 @@ const Layout = () => {
           padding: "0px 5%",
         }}
       >
-        {/* // ^ зараб - после добавления обёртки transitions.animated.location, при наведение на .menu-top__items, блоки .m-t-items__ul видны только в header. е/и курсор уйдёт с header, то hover откл - исправл. доав. к .m-t-items__ul z-индекса в css */}
+        {/* // ^ зараб - после добавления обёртки transitions.animated.location, при наведение на .menu-top__items, блоки .m-t-items__ul видны только в header. е/и курсор уйдёт с header, то hover откл - исправл. добав. к .m-t-items__ul z-индекса в css */}
         {transitions((props, item) => (
           <animated.div style={props}>
             <div

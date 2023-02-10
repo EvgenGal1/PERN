@@ -71,13 +71,21 @@ export function Header() {
           <div className="header__menu">
             {/* ВЕРХНЕЕ МЕНЮ */}
             <nav className="header__menu-top menu-top flex flex-wrap justify-between items-center text-white">
-              {/* <span className="menu-top__items m-t-items">
+              {/* NewPro */}
+              <span className="menu-top__items m-t-items">
                 <NavLink to="/NewPro" className="m-t-items__navlink activ-prob">
                   NewPro
                 </NavLink>
-              </span> */}
-              {/* ПРОЕКТЫ ExpsMiniProjs */}
-              {/* ПРОЕКТЫ BeginrProjts */}
+              </span>
+              {/* NRJWT */}
+              <span className="menu-top__items m-t-items">
+                <NavLink to="/NRJWT" className="m-t-items__navlink activ-prob">
+                  NRJWT
+                </NavLink>
+              </span>
+              {/* 
+              ПРОЕКТЫ ExpsMiniProjs
+              ПРОЕКТЫ BeginrProjts
               <span className="menu-top__items m-t-items">
                 <NavLink
                   to="/BeginrProjts"
@@ -85,7 +93,6 @@ export function Header() {
                 >
                   BeginrProjts
                 </NavLink>
-                {/* // ^ данная вложеность и переход на стр. возможен е/и сами влож.стр. добав. в общ. Routes, на один уровень с верхним NavLink */}
                 <ul className="m-t-items__ul m-t-its-ul">
                   <li className="m-t-its-ul__li">
                     <Link to="/BegPrj_Modal" className="">
@@ -104,7 +111,7 @@ export function Header() {
                   </li>
                 </ul>
               </span>
-              {/* ПРОЕКТЫ UlbiTV */}
+              ПРОЕКТЫ UlbiTV
               <span className="menu-top__items m-t-items">
                 <NavLink to="/UlbiTV" className="m-t-items__navlink activ-prob">
                   UlbiTV
@@ -122,7 +129,7 @@ export function Header() {
                   </li>
                 </ul>
               </span>
-              {/* ПРОЕКТЫ с ФОРМАМИ */}
+              ПРОЕКТЫ с ФОРМАМИ
               <span className="menu-top__items m-t-items">
                 <NavLink to="/FORMS" className="m-t-items__navlink activ-prob">
                   FORMS
@@ -140,7 +147,7 @@ export function Header() {
                   </li>
                 </ul>
               </span>
-              {/* ПРОЕКТЫ с ЕЖЕДНЕВНИКОМ */}
+              ПРОЕКТЫ с ЕЖЕДНЕВНИКОМ
               <span className="menu-top__items m-t-items">
                 <NavLink
                   to="/DailyPlanner"
@@ -170,7 +177,8 @@ export function Header() {
                     </Link>
                   </li>
                 </ul>
-              </span>
+              </span> 
+              */}
               {/* Prob0 */}
               <span className="menu-top__items m-t-items">
                 <NavLink to="/Prob0" className="m-t-items__navlink activ-prob">
@@ -190,6 +198,7 @@ export function Header() {
                   </li>
                 </ul>
               </span>
+              {/* AboutMe */}
               <span className="menu-top__items m-t-items">
                 <NavLink to="AboutMe" className="m-t-items__navlink">
                   AboutMe
