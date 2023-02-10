@@ -1,8 +1,13 @@
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // раб.с почтой
 const nodemailer = require("nodemailer");
 
 // ! UTVJWT
 class MailService {
+  transporter: any;
+
   // ч/з констр.инициализ.почтовый клиент
   constructor() {
     // отправка писем на почту ч/з fn с опц.(host,port почт.сервера,`безопасный`,аунтетиф.)

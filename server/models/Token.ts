@@ -1,3 +1,6 @@
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // const { Schema, model } = require("mongoose");
 // подкл.конфиг.БД
 const { sequelize } = require("../db");

@@ -1,3 +1,6 @@
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 const Router = require("express");
 const router = new Router();
 const brandController = require("../controllers/brand.controller");

@@ -1,8 +1,11 @@
 // ^ Service(Бизнес логика - БД и выход.парам.(НЕ req,res))
 
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
-const FileService = require("./file.service.js");
+const FileService = require("./file.service.ts");
 
 class PostService {
   async createPost(post, picture) {

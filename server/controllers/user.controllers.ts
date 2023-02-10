@@ -1,4 +1,7 @@
-// fn|запросы по взаимодейств.с польз.
+// ^^ fn|запросы по взаимодейств.с польз.
+
+// от ошб.повтор.объяв.перем в блоке
+export {};
 
 // ^ ++++ UlbiTV. NPg
 // подкл.конфиг.БД для записи получ.данн.в БД
@@ -14,7 +17,7 @@ const { validationResult } = require("express-validator");
 const ApiError = require("../error/ApiError");
 // подкл.модели пользователей. Можно разнести на отдельн.ф(User.js,Role.js,..)
 const { User } = require("../models/modelsTS.ts");
-const UserService = require("../services/user.service.js");
+const UserService = require("../services/user.service.ts");
 
 // обьяв.кл.(для компановки) с неск.мтд
 class UserControllers {
@@ -151,7 +154,7 @@ class UserControllers {
 
   async updateUserPERN(req, res, next) {
     try {
-      const { id, username } = req.body;
+      const { id, username, title } = req.body;
       if (!id) {
         return next(ApiError.internal(`ID не передан`));
       }
@@ -162,23 +165,20 @@ class UserControllers {
         return next(ApiError.internal(`Пользователь с ID ${id} не найден`));
       }
 
-      const updUser = await User.update(
-        { username: username },
-        { where: { id: id } }
-      );
+      const updUser = await UserService.updateUserPERN(id, username, title);
+      // const updUser = await User.update(
+      //   { username: username },
+      //   { where: { id: id } }
+      // );
 
-      const user = await User.findOne({
-        where: { id },
-      });
-
-      return res.json(user);
+      return res.json(updUser);
       // return res.json(updUser);
     } catch (error) {
       res.status(500).json(error);
     }
   }
 
-  async deleteUserPERN(req, res) {
+  async deleteUserPERN(req, res, next) {
     try {
       const { id } = req.params;
       if (!id) {
@@ -194,9 +194,10 @@ class UserControllers {
       }
 
       // УДАЛЕНИЕ
-      const userDel = await User.destroy({
-        where: { id },
-      });
+      const delUser = await UserService.deleteUserPERN(id);
+      // const userDel = await User.destroy({
+      //   where: { id },
+      // });
 
       // ? нужно проверка удаления с const/if
       // const User = await User.findOne({where: { id } });

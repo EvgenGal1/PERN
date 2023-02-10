@@ -1,5 +1,8 @@
 // ^ Service(Бизнес логика - БД и выход.парам.(НЕ req,res))
 
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // ^ ++++ UlbiTV.PERNstore
 // подкл.генир.уник.рандом.id
 const uuid = require("uuid");
@@ -8,13 +11,13 @@ const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError.js");
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const ApiError = require("../error/ApiError.ts");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
 const { User } = require("../models/modelsTS.ts");
 // Путь импорта может закончиться только расширением .ts '.
-const MailService = require("./mail.service.js");
-const TokenService = require("./token.service.js");
-const UserDto = require("../dtos/user.dto.js");
+const MailService = require("./mail.service.ts");
+const TokenService = require("./token.service.ts");
+const UserDto = require("../dtos/user.dto.ts");
 
 class AuthService {
   // РЕГИСТРАЦИЯ
@@ -192,7 +195,7 @@ class AuthService {
     return users;
   }
 
-  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
+  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.)) // ^ удалить, разобрать или уровнять с login / refresh
   // async check(req, res, next) {
   //   // res.json({ message: "Раб cgeck" });
   //   const token = generateJwt(

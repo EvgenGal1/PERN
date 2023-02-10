@@ -1,10 +1,11 @@
 // middlware декодер.токен,проверка валидности
 
-// подкл.ф.контролера для генерац.web токена
-const jwt = require("jsonwebtoken");
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
-const TokenService = require("../services/token.service.js");
+const TokenService = require("../services/token.service.ts");
 
 module.exports = function (req, res, next) {
   // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)

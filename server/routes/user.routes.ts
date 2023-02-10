@@ -1,4 +1,7 @@
-// маршрутизатор запросов пользователей
+// ^^ маршрутизатор запросов пользователей
+
+// от ошб.повтор.объяв.перем в блоке
+export {};
 
 // подкл. Маршрутизатор
 const Router = require("express");
@@ -6,7 +9,7 @@ const Router = require("express");
 const userСontrollers = require("../controllers/user.controllers");
 // подкл. валидацию
 const { check } = require("express-validator");
-const exprsValid = require("../middleware/exprsValid");
+const exprsValid = require("../middleware/exprsValid.js");
 
 // ^ ++++ UlbiTV.PERNstore
 // подкл.декодер.токен,проверка валидности

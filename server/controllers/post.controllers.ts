@@ -1,7 +1,10 @@
-// fn|запросы по созданию постов для польз.
+// ^^ fn|запросы по созданию постов для польз.
+
+// от ошб.повтор.объяв.перем в блоке
+export {};
 
 // подкл.service по раб.с БД
-const PostService = require("../services/post.service.js");
+const PostService = require("../services/post.service.ts");
 
 // обьяв.кл.(для компановки) с неск.мтд
 class PostControllers {

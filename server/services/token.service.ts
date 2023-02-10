@@ -1,6 +1,9 @@
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
-const ApiError = require("../error/ApiError");
+const ApiError = require("../error/ApiError.ts");
 const { Token } = require("../models/modelsTS.ts");
 
 // подкл.ф.контролера для генерац.web токена

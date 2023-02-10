@@ -1,3 +1,6 @@
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 const { Brand } = require("../models/modelsTS.ts");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");

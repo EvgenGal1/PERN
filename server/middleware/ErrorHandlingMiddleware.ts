@@ -1,5 +1,8 @@
 // middlware по обраб.ошб.
 
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 

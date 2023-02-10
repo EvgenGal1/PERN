@@ -3,12 +3,12 @@
 // класс для объедин. неск.мтд. Кл.расшир.Error
 class ApiError extends Error {
   // формат/последовательность выгрузки
-  status;
-  message;
-  errors;
+  status: number;
+  message: string;
+  errors: any;
 
   // в парам.приним. стат.код, смс, ошб.(по умолч.масс.пуст)
-  constructor(status, message, errors = []) {
+  constructor(status: number, message: string, errors = []) {
     // вызов.род.констр. с передачей смс
     super();
     // super(message); // ! не раб. формат или присвойка без указания

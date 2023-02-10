@@ -1,5 +1,6 @@
-// от ошб. перем/блок
+// от ошб.повтор.объяв.перем в блоке
 export {};
+
 // ^ ++++ UlbiTV.PERNstore
 // подкл.ф.контролера для генерац.web токена
 const jwt = require("jsonwebtoken");
@@ -8,32 +9,12 @@ const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError.js");
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.js,Role.js,..)
+const ApiError = require("../error/ApiError.ts");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
 const { User } = require("../models/modelsTS.ts");
 
 const AuthService = require("../services/auth.service.ts");
 const cookie = require("cookie");
-
-// fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
-const generateJwt = (
-  id: number,
-  username: string,
-  email: string /* , role */
-) => {
-  // подписываем передан.парам.
-  return jwt.sign(
-    // payload(центр.часть токена) данн.польз.
-    { id, username, email /* , role */ },
-    // проверка валид.ч/з секрет.ключ(в перем.окруж.)
-    process.env.SECRET_KEY,
-    // опции
-    {
-      // вр.раб.токена
-      expiresIn: "24h",
-    }
-  );
-};
 
 class AuthControllers {
   // ^ ++++ UlbiTV.PERNstore
@@ -182,31 +163,6 @@ class AuthControllers {
     }
   }
 
-  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.))
-  async check(req, res, next) {
-    // res.json({ message: "Раб cgeck" });
-    const token = generateJwt(
-      req.user.id,
-      req.user.username,
-      req.user.email
-      // req.user.role
-    );
-    return res.json({
-      token,
-      message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
-    });
-
-    // ? здесь? универс.обраб.ошиб.(handler).
-    // Из стр.запроса получ.парам.стр.и отправ обрат.на польз.
-    // res.json("asdf");
-    // const query = req.query;
-    // тест4 - http://localhost:5007/PERN/user/auth без id не пройдёт (`плохой запрос`)
-    // if (!query.id) {
-    //   return next(ApiError.BadRequest("Не задан ID"));
-    // }
-    // res.json(query);
-  }
-
   // ~ врем.из User.contrl,serv Получ.всех польз.
   async getAllUsers(req, res, next) {
     try {
@@ -216,6 +172,21 @@ class AuthControllers {
       next(`НЕ удалось получить пользователей - ${error}.`);
     }
   }
+
+  // ПРОВЕРКА авторизации польз.(генер.нов.токет и отправ.на клиента(постоянная перезапись при использ.)) // ^ удалить, разобрать или уровнять с login / refresh
+  // async check(req, res, next) {
+  //   // res.json({ message: "Раб cgeck" });
+  //   const token = generateJwt(
+  //     req.user.id,
+  //     req.user.username,
+  //     req.user.email
+  //     // req.user.role
+  //   );
+  //   return res.json({
+  //     token,
+  //     message: `Проверен ${req.user.username} <${req.user.email}>. id${req.user.id}_${req.user.role}`,
+  //   });
+  // }
 }
 
 // экспорт объ.кл.

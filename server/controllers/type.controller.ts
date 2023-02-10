@@ -1,6 +1,9 @@
+// от ошб.повтор.объяв.перем в блоке
+export {};
+
 const ApiError = require("../error/ApiError");
 const { Type } = require("../models/modelsTS.ts");
-const TypeService = require("../services/type.service.js");
+const TypeService = require("../services/type.service.ts");
 
 // всё в упрощ.вар.
 class TypeController {
