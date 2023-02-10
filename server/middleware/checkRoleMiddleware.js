@@ -1,14 +1,21 @@
 // middleware по добав.нов.устройство только ADMIN, +декодер,валид.
 
-const jwt = require("jsonwebtoken");
+// от ошб.повтор.объяв.перем в блоке
+// export {};
+
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
-const TokenService = require("../services/token.service.js");
+const TokenService = require("../services/token.service");
+
+// interface T {
+//   string: string;
+// }
 
 // экспорт fn принимающая Роль (вызов fn с передачей Роли и возврат.middleware)
-module.exports = function (role) {
+module.exports = function (role /* : Array<T> */ /* : string */) {
   // возвращ. сам middleware
   return function (req, res, next) {
+    // ~ console.log("role ", role); // [ 'SUPER', 'ADMIN', 'MODER' ]
     if (req.method === "OPTIONS") {
       next();
     }
@@ -36,21 +43,23 @@ module.exports = function (role) {
       // раскодир.токен.`проверять`на валидность. const опред.с др.именем т.к. role уже есть. получ.масс.Ролей
       // const { role: userRoles } = jwt.verify(token, process.env.SECRET_KEY);
       const { role: userRoles } = TokenService.validateAccessToken(accessToken);
+      // ~ console.log("userRoles ", userRoles); // от польз. ~ USER
       if (!userRoles) {
-        return next(ApiError.UnauthorizedError("" /* , `${e}` */));
+        return next(ApiError.UnauthorizedError("НЕТ РОЛИ" /* , `${e}` */));
       }
-
       // проверка масс.польз.Ролей с масс.разреш.Ролей для этой fn
       // перем.для определения
       let hasRoles = false;
       // итерац.по Ролям.польз.
       [userRoles].forEach((uRol) => {
+        // ~ console.log("uRol ", userRoles, uRol); // от польз. ~ USER
         // е/и масс.разреш.Ролей содерж Роль польз.
         if (role.includes(uRol)) {
           // перем.в true
           hasRoles = true;
         }
       });
+      // ! ошб. - НЕ воспринимает все позиции, только первую если передавать role из auth.rout без []. Попробовать редачить в checkRole
       if (!hasRoles) {
         return next(
           ApiError.BadRequest(
