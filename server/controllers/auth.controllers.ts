@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError.ts");
+const ApiError = require("../error/ApiError.js");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
 const { User } = require("../models/modelsTS.ts");
 

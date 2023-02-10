@@ -4,7 +4,7 @@
 // export {};
 
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
+const ApiError = require("../error/ApiError.js");
 const TokenService = require("../services/token.service");
 
 // interface T {
@@ -23,12 +23,12 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       // провер header на наличие поля authorization
       const authorizationHeader = req.headers.authorization;
       if (!authorizationHeader) {
-        return next(ApiError.UnauthorizedError("_"));
+        return next(ApiError.UnauthorizedError("authoriz undf"));
       }
       // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
       const accessToken = authorizationHeader.split(" ")[1]; // Bearer asfasnfkajsfnjk..
       if (!accessToken) {
-        return next(ApiError.UnauthorizedError("=" /* , `${e}` */));
+        return next(ApiError.UnauthorizedError("Токен err" /* , `${e}` */));
         // return res.status(401).json({ message: "Не авторизован" });
       }
 
@@ -37,7 +37,9 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       // req.id = decoded.id;
       const decoded = TokenService.validateAccessToken(accessToken);
       if (!decoded) {
-        return next(ApiError.UnauthorizedError("/" /* , `${e}` */));
+        return next(
+          ApiError.UnauthorizedError("Токен не валид" /* , `${e}` */)
+        );
       }
 
       // раскодир.токен.`проверять`на валидность. const опред.с др.именем т.к. role уже есть. получ.масс.Ролей
@@ -71,7 +73,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       next();
     } catch (e) {
       // res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });
-      throw next(ApiError.UnauthorizedError("-", `${e}`));
+      throw next(ApiError.UnauthorizedError("!", `${e}`));
     }
   };
 };

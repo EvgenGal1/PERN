@@ -1,11 +1,11 @@
 // middlware декодер.токен,проверка валидности
 
 // от ошб.повтор.объяв.перем в блоке
-export {};
+// export {};
 
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
-const TokenService = require("../services/token.service.ts");
+const TokenService = require("../services/token.service");
 
 module.exports = function (req, res, next) {
   // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)

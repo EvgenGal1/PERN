@@ -1,14 +1,14 @@
 // middlware по обраб.ошб.
 
 // от ошб.повтор.объяв.перем в блоке
-export {};
+// export {};
 
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 
 // экспорт fn (fn явл.middlware). приним. ошб.,запр.,отв.,след.(передача управ.след.middlware)
 module.exports = function (err, req, res, next) {
-  console.log(err);
+  console.log("err" + err);
 
   // е/и ошб.явл.экземплярром из ApiError, возвращ.код, смс из ошб., масс.ошб.
   if (err instanceof ApiError) {
