@@ -13,6 +13,8 @@ const NRJWT: FC = () => {
   const { store } = useContext(Context);
   // лог.сост для польз. Тип масс.польз.Пуст.масс.
   const [users, setUsers] = useState<IUser[]>([]);
+  // сост.отраж.списка
+  const [show, setShow] = useState(false);
 
   // вызов экшн checkAuth, е/и есть в LS, при 1ом запуске(usEf пуст масс.завис.)
   useEffect(() => {
@@ -23,10 +25,13 @@ const NRJWT: FC = () => {
 
   // fn получ.польз.
   async function getUsers() {
-    const response = await UserService.fetchUser();
-    // возращ.с serv помещ.в сост.
-    setUsers(response.data);
     try {
+      setShow((prev) => !prev);
+      if (show) {
+        const response = await UserService.fetchUser();
+        // возращ.с serv помещ.в сост.
+        setUsers(response.data);
+      }
     } catch (error) {
       console.log("CLT.Ap.gUs error ", error);
     }
@@ -73,15 +78,17 @@ const NRJWT: FC = () => {
       <button onClick={() => store.logout()}>Выйти</button>
       {/* получ.список польз */}
       <div>
-        <button onClick={getUsers}>Получить пользователей</button>
-        {
-          // error ? error :
-          users.map((user) => (
-            <div key={user.email}>
-              {user.username} &lt;{user.email}&gt;
-            </div>
-          ))
-        }
+        <button onClick={getUsers}>
+          {show ? "Убрать список" : "Получить пользователей"}
+        </button>
+        {show
+          ? // error ? error :
+            users.map((user) => (
+              <div key={user.email}>
+                {user.username} &lt;{user.email}&gt;
+              </div>
+            ))
+          : ""}
       </div>
     </div>
   );
