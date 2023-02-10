@@ -12,7 +12,7 @@ const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 
-// ^ ++++ UlbiTV.PERNstore
+// ^ ++++ UlbiTV.PERNstore и EvGen
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
 // подкл.модели пользователей. Можно разнести на отдельн.ф(User.js,Role.js,..)
@@ -145,36 +145,33 @@ class UserControllers {
   async getOneUserPERN(req, res, next) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return next(ApiError.internal(`ID не передан`));
+      }
       const userId = await UserService.getOneUserPERN(id);
       return res.json(userId);
     } catch (error) {
-      next(`НЕ удалось по ID - ${error}.`);
+      next(`НЕ нашлось по ID - ${error}.`);
     }
   }
 
   async updateUserPERN(req, res, next) {
     try {
-      const { id, username, title } = req.body;
-      if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+      const { id, username, email, password, role, isActivated } = req.body;
+      if (!username) {
+        return next(ApiError.internal(`Имя не передано`));
       }
-      const userId = await User.findOne({
-        where: { id },
-      });
-      if (!userId) {
-        return next(ApiError.internal(`Пользователь с ID ${id} не найден`));
-      }
-
-      const updUser = await UserService.updateUserPERN(id, username, title);
-      // const updUser = await User.update(
-      //   { username: username },
-      //   { where: { id: id } }
-      // );
-
-      return res.json(updUser);
-      // return res.json(updUser);
+      const userUpd = await UserService.updateUserPERN(
+        id,
+        username,
+        email,
+        password,
+        role,
+        isActivated
+      );
+      return res.json(userUpd);
     } catch (error) {
-      res.status(500).json(error);
+      next(`НЕ обновлён - ${error}.`);
     }
   }
 
@@ -184,17 +181,11 @@ class UserControllers {
       if (!id) {
         return next(ApiError.internal(`ID не передан`));
       }
-
+      const delUser = await UserService.deleteUserPERN(id);
       // проверка наличия по ID
       const userId = await User.findOne({
         where: { id },
       });
-      if (!userId) {
-        return next(ApiError.internal(`Пользователь с ID ${id} не найден`));
-      }
-
-      // УДАЛЕНИЕ
-      const delUser = await UserService.deleteUserPERN(id);
       // const userDel = await User.destroy({
       //   where: { id },
       // });
@@ -202,15 +193,13 @@ class UserControllers {
       // ? нужно проверка удаления с const/if
       // const User = await User.findOne({where: { id } });
       // if (!userId) {
-      return res.json({
-        message: `Пользователь с ID ${id} УДАЛЁН`,
-      });
+      return res.json(delUser);
       // }
 
       // return res.json(userId); // вернёт объ.которого уже нет || 2раза вызов по ID
       // return res.json(userDel); // 1 - удалён, 0 - нет
     } catch (error) {
-      res.status(500).json(error);
+      next(`НЕ удалён - ${error}.`);
     }
   }
 }

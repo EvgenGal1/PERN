@@ -10,7 +10,6 @@ class TypeController {
   async create(req, res, next) {
     try {
       const { name } = req.body;
-      // созд.Тип
       const type = await TypeService.create(name);
       return res.json(type);
     } catch (error) {
@@ -20,22 +19,24 @@ class TypeController {
 
   async getAll(req, res, next) {
     // `найти все`
-    const types = await Type.findAll();
-    return res.json(types);
+    // const types = await Type.findAll();
+    // return res.json(types);
+    try {
+      const types = await TypeService.getAll();
+      return res.json(types);
+    } catch (error) {
+      next(`НЕ удалось получить Типы - ${error}.`);
+    }
   }
 
   async getOne(req, res, next) {
     try {
       const { id } = req.params;
-      const typeVerif = await Type.findOne({ where: { id } });
-      if (!typeVerif) {
-        return next(ApiError.BadRequest(`Тип по ID_${id} не найден`));
-      }
-      const type = await Type.findOne({
-        where: { id },
-      });
-      return res.json(type);
-    } catch (error) {}
+      const typeId = await TypeService.getOne(id);
+      return res.json(typeId);
+    } catch (error) {
+      next(`НЕ удалось по ID - ${error}.`);
+    }
   }
 
   // ! не раб

@@ -8,16 +8,15 @@ export {};
 const uuid = require("uuid");
 // подкл. библ. для шифрование пароля нов.польз.
 const bcrypt = require("bcryptjs");
-// подкл. валидацию
-const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError.js");
+// выборка полей
+const UserDto = require("../dtos/user.dto.ts");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
 const { User } = require("../models/modelsTS.ts");
 // Путь импорта может закончиться только расширением .ts '.
 const MailService = require("./mail.service.ts");
 const TokenService = require("./token.service.ts");
-const UserDto = require("../dtos/user.dto.ts");
 
 class AuthService {
   // РЕГИСТРАЦИЯ
@@ -70,7 +69,7 @@ class AuthService {
       );
 
       // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
-      // выборка полей(3шт.) для FRONT (new - созд.экземпляр класса)
+      // выборка полей(~3шт.) для FRONT (new - созд.экземпляр класса)
       const userDto = new UserDto(user);
 
       // созд./получ. 2 токена. Разворач.нов.объ.

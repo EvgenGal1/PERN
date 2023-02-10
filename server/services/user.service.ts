@@ -9,51 +9,90 @@ const FileService = require("./file.service.ts");
 
 // подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
+// выборка полей
+const UserDto = require("../dtos/user.dto.ts");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
 const { User } = require("../models/modelsTS.ts");
 
 class UserService {
   async getAllUserPERN() {
-    const users = await User.findAll(); // findAndCountAll в ошб.
-    return users;
+    try {
+      const users = await User.findAndCountAll(); // findAndCountAll в ошб.
+      const userDto = new UserDto(users.rows[0]); // [0] только первый обраб. Возм.нужен перебор ~map
+      // ! ошб. - выгрузает всё из табл. Доработать чтоб выгружал ч/з ВЕЩ
+      console.log("===============================userDto : " + { ...userDto });
+      console.log(
+        "===============================...userDto rows : " +
+          { ...userDto.rows }
+      );
+      console.log(
+        "===============================userDto rows : " + userDto.rows
+      );
+      return {
+        message: `Количесто ${users.count}`,
+        userDto,
+        2: 2,
+        ...userDto,
+        3: 3,
+        usersS: userDto.rows /* , typesCoun */,
+        users,
+      };
+    } catch (error) {
+      return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
+    }
   }
 
   async getOneUserPERN(id: number) {
-    const userId = await User.findOne({ where: { id } });
-    if (!userId) {
-      return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
+    try {
+      const userId = await User.findOne({ where: { id } });
+      if (!userId) {
+        return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
+      }
+      const userDto = new UserDto(userId);
+      return /* { message: `Пользователь ${userDto.username}`, */ userDto /* } */;
+    } catch (error) {
+      return ApiError.BadRequest(`Ошибка на одного - ${error}.`);
     }
-    return userId;
   }
 
-  async updateUserPERN(id: number, username: string, title: string) {
-    if (!id) {
-      throw new Error("ID не указан");
-      // return "ID не указан";
+  async updateUserPERN(
+    id: number,
+    username: string,
+    email: string,
+    password: string,
+    role: string,
+    isActivated: boolean
+  ) {
+    try {
+      const user = await User.findOne({ where: { username } });
+      if (!user) {
+        return ApiError.BadRequest(
+          `Пользователь с Именем ${username} не найден`
+        );
+      }
+      const updUser = await User.update(
+        { id, username, email, password, role, isActivated },
+        { where: { username: username } }
+      );
+      const userNew = await User.findOne({ where: { username } });
+      const userDto = new UserDto(userNew);
+      return /* {message: `Пользователь ${username} обновлён. Код_${updUser}`, */ userDto /* } */;
+    } catch (error) {
+      return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
     }
-    var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-    if (onePost.rows.length < 1) {
-      return `Пост по ID ${id} не найден`;
-    }
-    const updPost = await pool.query(
-      `UPDATE posts SET title = $2 WHERE id = $1 RETURNING *`,
-      [id, title /* , content, picture, userId */]
-    );
-    return updPost.rows[0];
   }
 
   async deleteUserPERN(id: number) {
-    if (!id) {
-      throw new Error("ID не указан");
-      // return "ID не указан";
+    try {
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
+      }
+      var deletUser = await User.destroy({ where: { id } });
+      return /* {message: `Пользователь по ID_${id}`,deletUserS: */ `КОД_${deletUser}` /* } */;
+    } catch (error) {
+      return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
     }
-    var onePost = await pool.query(`SELECT * FROM posts WHERE id =` + id);
-    if (onePost.rows.length < 1) {
-      return `Пост по ID_${id} не найден`;
-    }
-    const delPost = await pool.query(`DELETE FROM posts WHERE id =` + id);
-    // return delPost.rows;
-    return { message: `Удалён Пост по ID_${id}`, post: delPost.rows };
   }
 }
 
