@@ -182,22 +182,7 @@ class UserControllers {
         return next(ApiError.internal(`ID не передан`));
       }
       const delUser = await UserService.deleteUserPERN(id);
-      // проверка наличия по ID
-      const userId = await User.findOne({
-        where: { id },
-      });
-      // const userDel = await User.destroy({
-      //   where: { id },
-      // });
-
-      // ? нужно проверка удаления с const/if
-      // const User = await User.findOne({where: { id } });
-      // if (!userId) {
       return res.json(delUser);
-      // }
-
-      // return res.json(userId); // вернёт объ.которого уже нет || 2раза вызов по ID
-      // return res.json(userDel); // 1 - удалён, 0 - нет
     } catch (error) {
       next(`НЕ удалён - ${error}.`);
     }

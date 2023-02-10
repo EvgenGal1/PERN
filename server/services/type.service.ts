@@ -53,16 +53,22 @@ class TypeService {
   }
 
   // ! не раб
-  async update(req, res, next) {
-    // try {
-    //   // const { id, name } = req.body;
-    //   const { id, name } = req.params;
-    //   const types = await Type.update(
-    //     // { where: { id, name } }
-    //     { id, name }
-    //   );
-    //   return res.json(types);
-    // } catch (error) {}
+  async update(id: number, name: string) {
+    try {
+      const typeId = await Type.findOne({ where: { id } });
+      if (!typeId) {
+        return ApiError.BadRequest(`Тип по ID_${id} не найден`);
+      }
+      const updType = await Type.update(
+        { /* id, */ name },
+        { where: { id: id } }
+      );
+      const typeNew = await Type.findOne({ where: { id } });
+      // const typeDto = new UserDto(userNew);
+      return /* {message: `Тип ${name} обновлён. Код_${updType}`, */ /* typeDto */ typeNew /* } */;
+    } catch (error) {
+      return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
+    }
   }
 
   // ! не раб
@@ -72,26 +78,16 @@ class TypeService {
     // return res.json(types);
   }
 
-  async delOne(req, res, next) {
+  async delOne(id: number) {
     try {
-      const { id, name } = req.params;
-      const type = await Type.destroy({
-        where: { id },
-      });
-      res.json(type);
-      // if (type) {
-      // res
-      //   // return res.status(500)
-      //   .json({
-      //     /*  type, */ message: `Тип удалён. id - ${id}. name - ${name}`,
-      //   });
-      // }
+      const type = await Type.findOne({ where: { id } });
+      if (!type) {
+        return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
+      }
+      var deletType = await Type.destroy({ where: { id } });
+      return /* {message: `Тип по ID_${id}`,deletType: */ `КОД_${deletType}` /* } */;
     } catch (error) {
-      // ! не раб
-      const { id, name } = req.body;
-      // const { id, name } = req.params;
-      // общ.отв. на серв.ошб. в json смс
-      res.json(`Не удоль удалить Тип ${name} ${id}.`);
+      return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
     }
   }
 }

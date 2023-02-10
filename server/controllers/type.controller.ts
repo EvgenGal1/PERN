@@ -50,6 +50,17 @@ class TypeController {
     //   );
     //   return res.json(types);
     // } catch (error) {}
+
+    try {
+      const { id, name } = req.body;
+      if (!id) {
+        return next(ApiError.internal(`ID не передан`));
+      }
+      const typeUpd = await TypeService.update(id, name);
+      return res.json(typeUpd);
+    } catch (error) {
+      next(`НЕ обновлён - ${error}.`);
+    }
   }
 
   // ! не раб
@@ -61,24 +72,14 @@ class TypeController {
 
   async delOne(req, res, next) {
     try {
-      const { id, name } = req.params;
-      const type = await Type.destroy({
-        where: { id },
-      });
-      res.json(type);
-      // if (type) {
-      // res
-      //   // return res.status(500)
-      //   .json({
-      //     /*  type, */ message: `Тип удалён. id - ${id}. name - ${name}`,
-      //   });
-      // }
+      const { id } = req.params;
+      if (!id) {
+        return next(ApiError.internal(`ID не передан`));
+      }
+      const delType = await TypeService.delOne(id);
+      return res.json(delType);
     } catch (error) {
-      // ! не раб
-      const { id, name } = req.body;
-      // const { id, name } = req.params;
-      // общ.отв. на серв.ошб. в json смс
-      res.json(`Не удоль удалить Тип ${name} ${id}.`);
+      next(`НЕ удалён - ${error}.`);
     }
   }
 }
