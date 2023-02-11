@@ -189,10 +189,14 @@ class AuthService {
     }
     // валид.токен.refresh
     const userData = TokenService.validateRefreshToken(refreshToken);
+    console.log("===============a.S.rf userData : " + userData);
+    console.log(userData);
     // поиск токена
     const tokenFromDB = await TokenService.findToken(refreshToken);
+    console.log(tokenFromDB);
     // проверка валид и поиск
     if (!userData || !tokenFromDB) {
+      console.log("---------------a.S.rf err : " + "err");
       return ApiError.UnauthorizedError();
     }
     // вытаск.польз.с БД по ID

@@ -149,6 +149,9 @@ class AuthControllers {
       const userData = await AuthService.refresh(
         refreshToken /* , username, email */
       );
+      console.log(
+        "userData.tokens.refreshToken : " + userData.tokens.refreshToken
+      );
       res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
@@ -157,11 +160,7 @@ class AuthControllers {
       return res.json(userData /* , username, email */);
     } catch (error) {
       // return
-      next(
-        // ApiError.BadRequest(
-        `НЕ удалось ПЕРЕЗАПИСАТЬ (refresh) - ${error}.`
-        // )
-      );
+      next(`НЕ удалось ПЕРЕЗАПИСАТЬ (refresh) - ${error}.`);
     }
   }
 

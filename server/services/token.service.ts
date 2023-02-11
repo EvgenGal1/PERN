@@ -115,6 +115,7 @@ class TokenService {
     const tokenData = await Token.findOne({
       where: { refreshToken: refreshToken },
     });
+    console.log("tokenData : " + tokenData);
     return tokenData;
   }
 }
