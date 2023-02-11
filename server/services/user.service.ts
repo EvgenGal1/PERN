@@ -20,23 +20,24 @@ class UserService {
       const users = await User.findAndCountAll(); // findAndCountAll в ошб.
       const userDto = new UserDto(users.rows[0]); // [0] только первый обраб. Возм.нужен перебор ~map
       // ! ошб. - выгрузает всё из табл. Доработать чтоб выгружал ч/з ВЕЩ
-      console.log("===============================userDto : " + { ...userDto });
-      console.log(
-        "===============================...userDto rows : " +
-          { ...userDto.rows }
-      );
-      console.log(
-        "===============================userDto rows : " + userDto.rows
-      );
-      return {
-        message: `Количесто ${users.count}`,
-        userDto,
-        2: 2,
-        ...userDto,
-        3: 3,
-        usersS: userDto.rows /* , typesCoun */,
-        users,
-      };
+      // console.log("===============================userDto : " + { ...userDto });
+      // console.log(
+      //   "===============================...userDto rows : " +
+      //     { ...userDto.rows }
+      // );
+      // console.log(
+      //   "===============================userDto rows : " + userDto.rows
+      // );
+      return users.rows;
+      // {
+      //   message: `Количесто ${users.count}`,
+      //   userDto,
+      //   2: 2,
+      //   ...userDto,
+      //   3: 3,
+      //   usersS: userDto.rows /* , typesCoun */,
+      //   users,
+      // };
     } catch (error) {
       return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
     }

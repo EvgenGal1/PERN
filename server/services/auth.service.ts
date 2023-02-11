@@ -30,18 +30,30 @@ class AuthService {
     try {
       // ^ UlbiTV. NPg
       // проверка сущест.username и email
-      const candidate = await User.findOne({
-        where: { username, email },
-      });
-
-      if (candidate) {
+      // const candidate = await User.findOne({
+      //   where: { username, email },
+      // });
+      // if (candidate) {
+      //   return ApiError.BadRequest(
+      //     `Пользователь ${username} <${email}> уже существует`
+      //   );
+      //   // return next(ApiError.BadRequest(`Пользователь уже существует`));
+      //   // throw new Error(`Пользователь уже существует`);
+      // }
+      const userName = await User.findOne({ where: { username } });
+      if (userName) {
         return ApiError.BadRequest(
-          `Пользователь ${username} <${email}> уже существует`
+          `Пользователь с Именем ${username} уже существует`
         );
-        // return next(ApiError.BadRequest(`Пользователь уже существует`));
-        // throw new Error(`Пользователь уже существует`);
+      }
+      const eml = await User.findOne({ where: { email } });
+      if (eml) {
+        return ApiError.BadRequest(
+          `Пользователь с Email <${email}> уже существует`
+        );
       }
 
+      console.log("7777777777777777777777777777 : " + 7);
       // hashирование(не шифрование) пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
       // const salt = await bcrypt.getSalt(12); | hashSync
       const hashPassword = await bcrypt.hash(password, 5); // hashSync
@@ -60,19 +72,20 @@ class AuthService {
         // fullName,
         // avatarUrl,
       });
-
+      console.log("88888888888888888888888 : " + 8);
       // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
       await MailService.sendActionMail(
         email,
         // activationLink // `${process.env.API_URL}/PERN/auth/activate/${activationLink}`
         activationLinkPath
       );
-
+      console.log("999999999999999999999999999999 : " + 9);
       // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       // выборка полей(~3шт.) для FRONT (new - созд.экземпляр класса)
       const userDto = new UserDto(user);
 
       // созд./получ. 2 токена. Разворач.нов.объ.
+      console.log("++++++++++++++++++++++++++++1 : " + userDto);
       const tokens = TokenService.generateToken({ ...userDto });
 
       // сохр.refresh в БД
@@ -95,32 +108,39 @@ class AuthService {
   // АВТОРИЗАЦИЯ
   async login(username: string, email: string, password: string) {
     try {
+      console.log("===================== a.S.l : " + 1);
       // ^ улучшить до общей проверки (!eml.email - так висит)
       // проверка сущест.username и email
       const user = await User.findOne({ where: { username /* email */ } });
+      console.log("===================== a.S.l user : " + user);
       if (!user /* !user.username */ /* || !== username */) {
+        console.log("===================== a.S.l uS : " + "uS eRRorrr");
         return ApiError.BadRequest(
           `Пользователь с Именем ${username} не найден`
         );
       }
+      console.log("===================== a.S.l : " + 1.1);
       const eml = await User.findOne({ where: { email } });
       if (!eml /* !eml.email */) {
         return ApiError.BadRequest(`Пользователь с Email <${email}> не найден`);
       }
+      console.log("===================== a.S.l : " + 2);
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
-
       if (!comparePassword) {
+        console.log("===================== a.S.l PSW : " + "eRRorrr");
         return ApiError.BadRequest("Указан неверный пароль");
       }
+      console.log("===================== a.S.l : " + 3);
 
       // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       const userDto = new UserDto(user);
+      console.log("===========================1 : " + userDto);
       const tokens = TokenService.generateToken({ ...userDto });
+      console.log("===========================2 : " + tokens.refreshToken);
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
       return {
         message: `Зашёл ${username} <${email}>. ID_${user.id}_${user.role}`,
-        tkrf: tokens.refreshToken,
         tokens: tokens,
         user: userDto,
       };

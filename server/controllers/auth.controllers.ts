@@ -60,6 +60,7 @@ class AuthControllers {
         // role
       );
 
+      console.log("000000000000000000000 : " + userData);
       // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true; false для Postman))
       res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -94,6 +95,7 @@ class AuthControllers {
         );
       }
       const { username, email, password } = req.body;
+      console.log("=========================== : " + username);
       const userData = await AuthService.login(username, email, password);
       res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,

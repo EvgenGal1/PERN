@@ -73,7 +73,7 @@ router.get(
 
 router.put(
   "/userPERN",
-  checkRole("SUPER", "ADMIN", "MODER"),
+  // checkRole("SUPER", "ADMIN", "MODER"),
   userСontrollers.updateUserPERN
 );
 

@@ -64,7 +64,7 @@ router.get("/refresh", authControllers.refresh);
 router.get(
   "/users",
   // ! ошб. - НЕ воспринимает все позиции, только первую если передавать без []. Попробовать редачить в checkRole
-  checkRole(["SUPER", "ADMIN", "MODER" /* "USER", */]),
+  checkRole(/* [ */ "SUPER", "ADMIN", "MODER" /* "USER", */ /* ] */),
   // authMiddleware,
   authControllers.getAllUsers
 );
