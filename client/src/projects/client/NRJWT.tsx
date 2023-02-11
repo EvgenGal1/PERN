@@ -15,32 +15,25 @@ const NRJWT: FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   // сост.отраж.списка
   const [show, setShow] = useState(false);
-  console.log("show 0 ", show);
+  // сост.error
+  const [err, setErr] = useState(null);
 
   // вызов экшн checkAuth, е/и есть в LS, при 1ом запуске(usEf пуст масс.завис.)
   useEffect(() => {
     if (localStorage.getItem("tokenAccess")) {
       store.checkAuth();
     }
-    // setShow((prev) => !prev);
-    // setShow(false);
   }, []);
 
   // fn получ.польз.
   async function getUsers() {
-    console.log("show 1 ", show);
+    setErr(null);
     try {
-      setShow((prev) => !prev);
-      // setShow(true);
-      console.log("show 2 ", show);
-      if (show) {
-        const response = await UserService.fetchUser();
-        // возращ.с serv помещ.в сост.
-        setUsers(response.data);
-      }
-      // setShow(false);
-      // return;
+      const response = await UserService.fetchUser();
+      // возращ.с serv помещ.в сост.
+      setUsers(response.data);
     } catch (error: any) {
+      setErr(error?.response?.data?.message);
       console.log(error);
       console.log(error?.response?.data);
     }
@@ -54,18 +47,9 @@ const NRJWT: FC = () => {
   // е/и не авториз.
   if (!store.isAuth) {
     return (
-      <>
-        <LoginForm />
-        {/* откл. всё равно нет доступа у не авториз. */}
-        {/* <div>
-          <button onClick={getUsers}>Получить пользователей</button>
-          {users.map((user) => (
-            <div key={user.email}>
-              {user.username} &lt;{user.email}&gt;
-            </div>
-          ))}
-        </div> */}
-      </>
+      <LoginForm />
+      // {/* // откл. всё равно нет доступа у не авториз.
+      // <div><button onClick={getUsers}>Получить пользователей</button>{users.map((user)=> (<div key={user.email}>{user.username} &lt;{user.email}&gt;</div>))}</div> */}
     );
   }
 
@@ -89,28 +73,24 @@ const NRJWT: FC = () => {
       <div>
         <button
           onClick={() => {
-            // setShow((prev) => !prev);
-            // setShow(true);
-            // setTimeout(() => {
+            setShow(!show);
             getUsers();
-            // }, 1000);
           }}
         >
           {show ? "Убрать список" : "Получить пользователей"}
         </button>
-        {show
-          ? // error ? error :
-            users.map((user) => (
-              <div key={user.email}>
-                {user.username} &lt;{user.email}&gt;
-              </div>
-            ))
-          : ""}
+        {show && // show ? users.map : errors
+          users.map((user) => (
+            <div key={user.email}>
+              {user.username} &lt;{user.email}&gt;
+            </div>
+          ))}
+        {show && <div>{err}</div>}
       </div>
     </div>
   );
 };
 
 // export default NRJWT;
-// обёрка прилож.в observer отслеж.измен.в данн.
+// обёрка прилож.в observer отслеж.измен.в данн. ?в state
 export default observer(NRJWT);
