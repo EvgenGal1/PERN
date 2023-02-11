@@ -3,14 +3,14 @@ import axios from "axios";
 import { AuthResponse } from "../models/response/auth.response";
 
 // перем.:
-export const API_URL = "http://localhost:5007/PERN/auth";
+export const API_URL = "http://localhost:5007/PERN"; // /auth
 // export const DEBUG = process.env.NODE_ENV === "development";
 
 // экземпляр axios запр. СОЗД.
 const api = axios.create({
   // авто.зацеп cookie + баз.url
   withCredentials: true,
-  baseURL: API_URL,
+  baseURL: /* process.env. */ API_URL,
 });
 
 // interceptor`перехватчик`(раб.на кажд.res,req)
@@ -44,9 +44,12 @@ api.interceptors.response.use(
       // `повтор` запроса. От повторных нов.вызовов.исход.запроса
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
-          withCredentials: true,
-        });
+        const response = await axios.get<AuthResponse>(
+          `${/* process.env. */ API_URL}/auth//refresh`,
+          {
+            withCredentials: true,
+          }
+        );
         localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
         // в экземпляр перехватчика передаём вызов исход.запроса (данн.для запроса)
         return api.request(originalRequest);

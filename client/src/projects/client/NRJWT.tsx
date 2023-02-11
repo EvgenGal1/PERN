@@ -15,25 +15,34 @@ const NRJWT: FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   // сост.отраж.списка
   const [show, setShow] = useState(false);
+  console.log("show 0 ", show);
 
   // вызов экшн checkAuth, е/и есть в LS, при 1ом запуске(usEf пуст масс.завис.)
   useEffect(() => {
     if (localStorage.getItem("tokenAccess")) {
       store.checkAuth();
     }
+    // setShow((prev) => !prev);
+    // setShow(false);
   }, []);
 
   // fn получ.польз.
   async function getUsers() {
+    console.log("show 1 ", show);
     try {
       setShow((prev) => !prev);
+      // setShow(true);
+      console.log("show 2 ", show);
       if (show) {
         const response = await UserService.fetchUser();
         // возращ.с serv помещ.в сост.
         setUsers(response.data);
       }
-    } catch (error) {
-      console.log("CLT.Ap.gUs error ", error);
+      // setShow(false);
+      // return;
+    } catch (error: any) {
+      console.log(error);
+      console.log(error?.response?.data);
     }
   }
 
@@ -78,7 +87,15 @@ const NRJWT: FC = () => {
       <button onClick={() => store.logout()}>Выйти</button>
       {/* получ.список польз */}
       <div>
-        <button onClick={getUsers}>
+        <button
+          onClick={() => {
+            // setShow((prev) => !prev);
+            // setShow(true);
+            // setTimeout(() => {
+            getUsers();
+            // }, 1000);
+          }}
+        >
           {show ? "Убрать список" : "Получить пользователей"}
         </button>
         {show

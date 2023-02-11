@@ -45,6 +45,7 @@ export default class Store {
       this.setAuth(true);
       this.setUser(response?.data?.user);
     } catch (error: any) {
+      console.log(error);
       console.log(error?.response?.data); // все данные
       // console.log(error.response?.data?.errors); // масс. errors
       // console.log(error.response?.data.errors[0].msg); // из объ. по ind_0 поле msg
@@ -60,6 +61,7 @@ export default class Store {
       this.setAuth(true);
       this.setUser(response.data.user);
     } catch (error: any) {
+      console.log(error?.response);
       console.log(error?.response?.data);
       console.log(error?.response?.data?.errors?.map((item: any) => item.msg));
     }
@@ -82,10 +84,12 @@ export default class Store {
     this.setLoading(true);
     try {
       // использ.axios экзепляр по умалч.чтоб не нагружать интерцептор <ожид.тело отв.>(путь,авто.зацеп cookie)
-      const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
-        // process.env.CLIENT_URL
-        withCredentials: true,
-      });
+      const response = await axios.get<AuthResponse>(
+        `${/* process.env. */ API_URL}/auth/refresh`,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(response?.data);
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);

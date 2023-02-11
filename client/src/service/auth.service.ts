@@ -12,7 +12,7 @@ export default class AuthService {
   ): // асинхр.fn всегда возвращ.`Обещание`<для указ.тип данн.отв.<дженр указ.возвр.тип/данн.>>
   Promise<AxiosResponse<AuthResponse>> {
     // экземпляр axios запр.post<дженр тип.данн.>(адрес,тело)
-    return api.post<AuthResponse>("/registration", {
+    return api.post<AuthResponse>("/auth/registration", {
       email,
       username,
       password,
@@ -25,7 +25,7 @@ export default class AuthService {
     email: string,
     password: string
   ): Promise<AxiosResponse<AuthResponse>> {
-    return api.post<AuthResponse>("/login", {
+    return api.post<AuthResponse>("/auth/login", {
       email,
       username,
       password,
@@ -33,6 +33,6 @@ export default class AuthService {
   }
 
   static async logout(): Promise<void> {
-    return api.post("/logout");
+    return api.post("/auth/logout");
   }
 }
