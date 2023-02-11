@@ -73,8 +73,8 @@ class TypeService {
 
   async delOne(id: number) {
     try {
-      const typeId = await Type.findOne({ where: { id } });
-      if (!typeId) {
+      const type = await Type.findOne({ where: { id } });
+      if (!type) {
         return ApiError.BadRequest(`Тип с ID ${id} не найден`);
       }
       var deletType = await Type.destroy({ where: { id } });
