@@ -72,10 +72,10 @@ const NRJWT: FC = () => {
             handleClickRef();
           }}
         >
-          FullCalendar descript
+          NRJWT
         </h1>
         <div className={openArrowAccord ? "openDop" : ""}>
-          <div>Проект на основе NRJWT (Учебное пособие)</div>
+          <div>Проект на основе NRJWT</div>
           <p>https://www.youtube.com/watch?v=fN25fMQZ2v0</p>
           {/* // !!! не раб - эл. наплывают др на друга. Причины пока не понятны */}
           {/* <p style={{ color: "red", backgroundColor: "#111" }}>
