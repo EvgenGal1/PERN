@@ -1,3 +1,22 @@
 .NRJWT {
   text-align: center;
+  &__content-- {
+    width: 75%;
+    margin: 0 auto;
+    .boards {
+      align-items: center;
+      flex-direction: column;
+      .board {
+        width: 45%;
+        .items {
+          // width: 100%;
+          .item {
+            &:hover {
+              transform: scale(1.025);
+            }
+          }
+        }
+      }
+    }
+  }
 }

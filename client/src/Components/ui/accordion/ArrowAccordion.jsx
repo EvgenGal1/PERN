@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import "./ArrowAccordion.scss";
 
-export const ArrowAccordionFnComp = ({
+/* export */ const ArrowAccordionFnComp = ({
   openArrowAccord,
   setOpenArrowAccord,
 }) => {
@@ -30,4 +30,4 @@ export const ArrowAccordionFnComp = ({
     </>
   );
 };
-// export {ArrowAccordion}
+export default ArrowAccordionFnComp;

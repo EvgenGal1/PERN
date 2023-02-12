@@ -81,6 +81,8 @@ input {
   cursor: pointer;
   transition: background-color 200ms, transform 100ms linear;
 }
+button.btn {
+}
 button.primary,
 input.primary {
   padding: 10px 15px;
@@ -239,4 +241,81 @@ br {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+// DIV | SELECTOR | SPAN ----------------------------------------------------------------------------------
+// .board ----------------------------------------------------------------------------------
+.boards {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-start;
+  .board {
+    min-width: 250px;
+    // min-height: 250px;
+    height: auto;
+    padding: 10px 10px 20px;
+    margin: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border: 5px solid darkred;
+    border-radius: 12px;
+    cursor: pointer;
+
+    &__title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+  }
+
+  .items {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+
+    .item {
+      // width: 100%;
+      // height: 100%;
+      padding: 10px;
+      margin: 5px 0px;
+      text-align: center;
+      transition: 0.2s;
+      cursor: pointer;
+      // background: #ff0;
+      border-radius: 5px;
+      border: 2px solid darkred;
+      box-shadow: 3px 3px 7px 0px #555;
+      box-shadow: 3px 3px 7px 0px #000;
+      &:last-child {
+        // margin: 5px 0px 0px;
+      }
+
+      &:hover {
+        font-weight: bold;
+        // background: gold !important;
+        background: gold;
+        // увелич. важность т.к. в коде использ.цвета
+        box-shadow: 5px 5px 10px 3px #555 !important;
+        box-shadow: 5px 5px 10px 3px #000 !important;
+        transform: scale(1.1);
+        transition: 0.2s;
+      }
+    }
+  }
+}
+
+// .err ----------------------------------------------------------------------------------
+.err {
+  color: darkred;
+  margin-top: 10px;
+  &::before {
+    display: inline;
+    content: "⚠ ";
+  }
 }

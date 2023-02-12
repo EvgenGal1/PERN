@@ -1,14 +1,24 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import "./NRJWT.scss";
 
-import LoginForm from "./src/components/LoginForm";
+import ArrowAccordionFnComp from "../../Components/ui/accordion/ArrowAccordion.jsx";
+
 import { Context } from "../../index";
 // обёрка прилож.для отслеж.измен.в данн.
 import { observer } from "mobx-react-lite";
 import { IUser } from "../../models/IUser";
 import UserService from "../../service/user.service";
+// подкл.Комп.
+import LoginForm from "./src/components/LoginForm";
+import UserAutoriz from "./src/components/UserAutoriz";
+import UserList from "./src/components/UsersList";
 
 const NRJWT: FC = () => {
+  const [openArrowAccord, setOpenArrowAccord] = useState(false);
+  const handleClickRef = () => {
+    setOpenArrowAccord(!openArrowAccord);
+  };
+
   // извлек.store ч/з usConst
   const { store } = useContext(Context);
   // лог.сост для польз. Тип масс.польз.Пуст.масс.
@@ -54,38 +64,39 @@ const NRJWT: FC = () => {
   }
 
   return (
-    <div className="NRJWT">
-      {/* е/и авториз. */}
-      <h1>
-        {store.isAuth
-          ? `Пользователь авторизован ${store.user.username} <${store.user.email}>`
-          : "АВТОРИЗУЙТЕСЬ"}
-      </h1>
-      {/* актв.акаунт. */}
-      <h2>
-        {store.user.isActivated
-          ? "Аккаунт подтверждён по почте"
-          : "ПОДТВЕРДИТЕ АККАУНТ в ПОЧТЕ"}
-      </h2>
-      {/* кнп.выйти */}
-      <button onClick={() => store.logout()}>Выйти</button>
-      {/* получ.список польз */}
-      <div>
-        <button
+    <div className="UlbiTV NRJWT accordion">
+      <div className="NRJWT__descript">
+        <h1
+          className={openArrowAccord ? "_active" : ""}
           onClick={() => {
-            setShow(!show);
-            getUsers();
+            handleClickRef();
           }}
         >
-          {show ? "Убрать список" : "Получить пользователей"}
-        </button>
-        {show && // show ? users.map : errors
-          users.map((user) => (
-            <div key={user.email}>
-              {user.username} &lt;{user.email}&gt;
-            </div>
-          ))}
-        {show && <div>{err}</div>}
+          FullCalendar descript
+        </h1>
+        <div className={openArrowAccord ? "openDop" : ""}>
+          <div>Проект на основе NRJWT (Учебное пособие)</div>
+          <p>https://www.youtube.com/watch?v=fN25fMQZ2v0</p>
+          {/* // !!! не раб - эл. наплывают др на друга. Причины пока не понятны */}
+          {/* <p style={{ color: "red", backgroundColor: "#111" }}>
+            !!! не раб - ошб.
+          </p> */}
+        </div>
+        <ArrowAccordionFnComp
+          openArrowAccord={openArrowAccord}
+          setOpenArrowAccord={setOpenArrowAccord}
+        />
+      </div>
+      <div
+        className="NRJWT__content-- openCont"
+        // className={`NRJWT__content--${
+        //   openArrowAccord ? " openCont" : ""
+        // }`}
+      >
+        {/* е/и авториз. */}
+        <UserAutoriz /* store={store} */ /* storeAyth={store.isAuth} */ />
+        {/* получ.список польз */}
+        <UserList /* setShow={show} */ />
       </div>
     </div>
   );
