@@ -10,6 +10,9 @@ class TypeController {
   async create(req, res, next) {
     try {
       const { name } = req.body;
+      if (!name) {
+        return next(ApiError.internal(`Name не передан`));
+      }
       const type = await TypeService.create(name);
       return res.json(type);
     } catch (error) {
@@ -32,6 +35,9 @@ class TypeController {
   async getOne(req, res, next) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return next(ApiError.internal(`ID не передан`));
+      }
       const typeId = await TypeService.getOne(id);
       return res.json(typeId);
     } catch (error) {
@@ -39,22 +45,11 @@ class TypeController {
     }
   }
 
-  // ! не раб
   async update(req, res, next) {
-    // try {
-    //   // const { id, name } = req.body;
-    //   const { id, name } = req.params;
-    //   const types = await Type.update(
-    //     // { where: { id, name } }
-    //     { id, name }
-    //   );
-    //   return res.json(types);
-    // } catch (error) {}
-
     try {
       const { id, name } = req.body;
-      if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+      if (!id || !name) {
+        return next(ApiError.internal(`ID или Name не передан`));
       }
       const typeUpd = await TypeService.update(id, name);
       return res.json(typeUpd);

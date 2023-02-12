@@ -4,22 +4,23 @@
 export {};
 
 const ApiError = require("../error/ApiError");
-const { Type } = require("../models/modelsTS.ts");
+const { Brand } = require("../models/modelsTS.ts");
 
-class TypeService {
+class BrandService {
   async create(name: string) {
     try {
-      const typeVerif = await Type.findOne({
+      const brandVerif = await Brand.findOne({
         where: { name },
       });
-      if (typeVerif) {
-        return ApiError.BadRequest(`Тип ${name} уже существует`); // throw не раб
+      if (brandVerif) {
+        return ApiError.BadRequest(`Бренд ${name} уже существует`); // throw не раб
       }
-      const type = await Type.create({ name });
-      return {
-        message: `Тип ${name} создан.`,
-        type,
-      };
+      const brand = await Brand.create({ name });
+      return brand;
+      // {
+      //   message: `Бренд ${name} создан.`,
+      //   brand,
+      // };
     } catch (error) {
       return ApiError.BadRequest(`Ошибка создания - ${error}.`);
     }
@@ -27,13 +28,13 @@ class TypeService {
 
   async getAll() {
     try {
-      const types = await Type.findAndCountAll(); // findAndCountAll иногда в ошб.
-      return types.rows; // масс.объ.
+      const brands = await Brand.findAndCountAll(); // findAndCountAll иногда в ошб.
+      return brands.rows; // масс.объ.
       /* return {
-        message: `Количесто ${types.count}`,
-        messageCount: types.count,
-        typess: types.rows,
-        types,
+        message: `Количесто ${brands.count}`,
+        messageCount: brands.count,
+        brandss: brands.rows,
+        brands,
       }; */
     } catch (error) {
       return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
@@ -42,11 +43,11 @@ class TypeService {
 
   async getOne(id: number) {
     try {
-      const typeId = await Type.findOne({ where: { id } });
-      if (!typeId) {
-        return ApiError.BadRequest(`Тип по ID_${id} не найден`);
+      const brandId = await Brand.findOne({ where: { id } });
+      if (!brandId) {
+        return ApiError.BadRequest(`Бренд по ID_${id} не найден`);
       }
-      return /* {message: typeId.name, */ typeId /* } */;
+      return /* {message: brandId.name, */ brandId /* } */;
     } catch (error) {
       return ApiError.BadRequest(`Ошибка на одного - ${error}.`);
     }
@@ -55,17 +56,17 @@ class TypeService {
   // ! не раб
   async update(id: number, name: string) {
     try {
-      const typeId = await Type.findOne({ where: { id } });
-      if (!typeId) {
-        return ApiError.BadRequest(`Тип по ID_${id} не найден`);
+      const brandId = await Brand.findOne({ where: { id } });
+      if (!brandId) {
+        return ApiError.BadRequest(`Бренд по ID_${id} не найден`);
       }
-      const updType = await Type.update(
+      const updBrand = await Brand.update(
         { /* id, */ name },
         { where: { id: id } }
       );
-      const typeNew = await Type.findOne({ where: { id } });
-      // const typeDto = new UserDto(userNew);
-      return /* {message: `Тип ${name} обновлён. Код_${updType}`, */ /* typeDto */ typeNew /* } */;
+      const brandNew = await Brand.findOne({ where: { id } });
+      // const brandDto = new UserDto(userNew);
+      return /* {message: `Бренд ${name} обновлён. Код_${updBrand}`, */ /* brandDto */ brandNew /* } */;
     } catch (error) {
       return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
     }
@@ -73,12 +74,12 @@ class TypeService {
 
   async delOne(id: number) {
     try {
-      const type = await Type.findOne({ where: { id } });
-      if (!type) {
-        return ApiError.BadRequest(`Тип с ID ${id} не найден`);
+      const brand = await Brand.findOne({ where: { id } });
+      if (!brand) {
+        return ApiError.BadRequest(`Бренд с ID ${id} не найден`);
       }
-      var deletType = await Type.destroy({ where: { id } });
-      return /* {message: `Тип по ID_${id}`,deletType: */ `КОД_${deletType}` /* } */;
+      var deletBrand = await Brand.destroy({ where: { id } });
+      return /* {message: `Бренд по ID_${id}`,deletBrand: */ `КОД_${deletBrand}` /* } */;
     } catch (error) {
       return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
     }
@@ -86,9 +87,9 @@ class TypeService {
 
   async delAll(req, res, next) {
     // const id = req.query.id;
-    // const types = await Type.destroy();
-    // return res.json(types);
+    // const brands = await Brand.destroy();
+    // return res.json(brands);
   }
 }
 
-module.exports = new TypeService();
+module.exports = new BrandService();

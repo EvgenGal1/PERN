@@ -1,147 +1,78 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-const { Brand } = require("../models/modelsTS.ts");
-// подкл.обраб.ошиб.
 const ApiError = require("../error/ApiError");
+const { Brand } = require("../models/modelsTS.ts");
+const BrandService = require("../services/brand.service.ts");
 
+// всё в упрощ.вар.
 class BrandController {
   async create(req, res, next) {
     try {
       const { name } = req.body;
-
-      // проверки на Пустое/Занятое значения
-      const nameAll = await Brand.findOne({
-        where: { name },
-      });
-      if (name === "") {
-        return next(ApiError.internal(`ПУСТОЕ Значение`));
+      if (!name) {
+        return next(ApiError.internal(`Name не передан`));
       }
-      if (nameAll) {
-        return next(ApiError.internal(`Значение ${nameAll.name} ЗАНЯТО`));
-      }
-
-      const brand = await Brand.create({ name });
+      const brand = await BrandService.create(name);
       return res.json(brand);
     } catch (error) {
-      return next(ApiError.internal(`Ошб. - ${error}.`));
+      next(`НЕ удалось добавить Бренд - ${error}.`);
     }
   }
 
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
-      const brands = await Brand.findAndCountAll();
+      const brands = await BrandService.getAll();
       return res.json(brands);
     } catch (error) {
-      res.status(500).json(error);
+      next(`НЕ удалось получить Бренды - ${error}.`);
     }
   }
 
-  // fn получ.1го устройства по id
   async getOne(req, res, next) {
     try {
       const { id } = req.params;
-      // ? нужно это проверять
-      // if (!id) {
-      //   return next(ApiError.internal(`ID не указан`));
-      // }
-      const brand = await Brand.findOne({
-        where: { id },
-      });
-      if (!brand) {
-        return next(ApiError.internal(`Бренд с ID ${id} не найден`));
-      }
-      // const brand = await Brand.findById(id);
-      return res.json(brand);
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  }
-
-  // ^ нужно прописать удалени конкретного и всех
-  async update(req, res, next) {
-    try {
-      // const brand = req.body;
-      const { id, name } = req.body;
       if (!id) {
         return next(ApiError.internal(`ID не передан`));
       }
-
-      const brandId = await Brand.findOne({
-        where: { id },
-      });
-      if (!brandId) {
-        return next(ApiError.internal(`Бренд с ID ${id} не найден`));
-      }
-
-      const updBrands = await Brand.update(
-        // ! ошб. "generatedMessage": false,
-        // id,name,{ new: true }
-        // ! ошб. "generatedMessage": false,"code":"ERR_ASSERTION",...
-        // name, id
-        // ! ошб. "generatedMessage": false,...
-        // { where: { name, id } }
-        // ^ обновил но вернул ток 1
-        { name: name },
-        {
-          where: {
-            id: id,
-          },
-        }
-      );
-      const brand = await Brand.findOne({
-        where: { id },
-      });
-      // if (updBrands === 1) {
-      //   return res.json(brand);
-      // }
-      return res.json(brand);
-      // return res.json(updBrands);
+      const brandId = await BrandService.getOne(id);
+      return res.json(brandId);
     } catch (error) {
-      res.status(500).json(error);
+      next(`НЕ удалось по ID - ${error}.`);
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const { id, name } = req.body;
+      if (!id || !name) {
+        return next(ApiError.internal(`ID или Name не передан`));
+      }
+      const brandUpd = await BrandService.update(id, name);
+      return res.json(brandUpd);
+    } catch (error) {
+      next(`НЕ обновлён - ${error}.`);
     }
   }
 
   async delOne(req, res, next) {
     try {
-      // проверка отсутств.ID
-      const { id, name } = req.params;
+      const { id } = req.params;
       if (!id) {
         return next(ApiError.internal(`ID не передан`));
       }
-
-      // проверка наличия ID
-      const brandId = await Brand.findOne({
-        where: { id },
-      });
-      if (!brandId) {
-        return next(ApiError.internal(`Бренд с ID ${id} не найден`));
-      }
-
-      // УДАЛЕНИЕ
-      const brandDel = await Brand.destroy({
-        where: { id },
-      });
-
-      // ? нужно проверка удаления с const/if
-      // const brand = await Brand.findOne({where: { id } });
-      // if (!brand) {
-      return res.json({
-        message: `Элемент ${brandId.name} с ID ${id} УДАЛЁН`,
-      });
-      // }
-
-      // return res.json(brandId); // вернёт объ.которого уже нет || 2раза вызов по ID
-      // return res.json(brandDel); // 1 - удалён, 0 - нет
+      const delBrand = await BrandService.delOne(id);
+      return res.json(delBrand);
     } catch (error) {
-      res.status(500).json(error);
+      next(`НЕ удалён - ${error}.`);
     }
   }
 
-  // async delAll(req, res) {
-  //     const brands = await Brand.findAll()
-  //     return res.json(brands)
-  // }
+  async delAll(req, res, next) {
+    // const id = req.query.id;
+    // const brands = await Brand.destroy();
+    // return res.json(brands);
+  }
 }
 
 module.exports = new BrandController();

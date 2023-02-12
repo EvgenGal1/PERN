@@ -11,8 +11,12 @@ const checkRole = require("../middleware/checkRoleMiddleware");
 router.post("/", checkRole("SUPER", "ADMIN", "MODER"), deviceController.create);
 router.get("/", deviceController.getAll);
 router.get("/:id", deviceController.getOne);
-// router.put("/",  checkRole("SUPER", "ADMIN", "MODER"), deviceController.update);
-// router.get("/",  checkRole("SUPER", "ADMIN", "MODER"), deviceController.delAll);
-// router.delete("/:id",  checkRole("SUPER", "ADMIN", "MODER"), deviceController.delOne);
+router.put("/", checkRole("SUPER", "ADMIN", "MODER"), deviceController.update);
+router.get("/", checkRole("SUPER", "ADMIN", "MODER"), deviceController.delAll);
+router.delete(
+  "/:id",
+  checkRole("SUPER", "ADMIN", "MODER"),
+  deviceController.delOne
+);
 
 module.exports = router;
