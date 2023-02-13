@@ -35,20 +35,6 @@ const NRJWT: FC = () => {
     }
   }, []);
 
-  // fn получ.польз.
-  async function getUsers() {
-    setErr(null);
-    try {
-      const response = await UserService.fetchUser();
-      // возращ.с serv помещ.в сост.
-      setUsers(response.data);
-    } catch (error: any) {
-      setErr(error?.response?.data?.message);
-      console.log(error);
-      console.log(error?.response?.data);
-    }
-  }
-
   // при перезагрузке от мелькания текста перед формой
   if (store.isLoading) {
     return <div style={{ background: "red" }}>Загрузка...</div>;

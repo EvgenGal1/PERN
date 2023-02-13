@@ -11,6 +11,7 @@ export interface FormInp {
   styleInp: string;
   onChanInp: Function;
   onClikInp: Function;
+  plch: string;
   hr: boolean;
   stBtn: string;
   setStBtn: string;
@@ -18,6 +19,12 @@ export interface FormInp {
   onChanBtn: Function;
   onClikBtn: Function;
   childBtn: string | number;
+  input2: string;
+  val2: string;
+  plch2: string;
+  input3: string;
+  val3: string;
+  plch3: string;
 }
 
 export const FormInpBtnJTS = ({
@@ -29,6 +36,7 @@ export const FormInpBtnJTS = ({
   styleInp,
   onChanInp,
   onClikInp,
+  plch,
   hr,
   stBtn,
   setStBtn,
@@ -36,21 +44,32 @@ export const FormInpBtnJTS = ({
   onChanBtn,
   onClikBtn,
   childBtn,
+  input2,
+  val2,
+  plch2,
+  input3,
+  val3,
+  plch3,
 }: FormInp) => {
+  let inp = (
+    <input
+      type={type ? type : "text"}
+      name={name ? name : "name"}
+      // value={e.target.value}
+      value={val === null ? "" : val}
+      className="form__field"
+      // onClick={(e) => addNewItem()}
+      onChange={(e) => onChanInp(e.target.value)}
+      placeholder={plch === null ? "" : plch}
+      style={styleInp ? { outline: "2px solid #f00" } : { outline: "none" }}
+    />
+  );
   return (
     <>
       {" "}
       <form className="form">
-        <input
-          type={type ? type : "text"}
-          name={name ? name : "name"}
-          // value={e.target.value}
-          value={val === null ? "" : val}
-          className="form__field"
-          // onClick={(e) => addNewItem()}
-          onChange={(e) => onChanInp(e.target.value)}
-          style={styleInp ? { outline: "2px solid #f00" } : { outline: "none" }}
-        />
+        inp
+        {input2 && inp}
         <button
           className="btn btn--primary btn--inside uppercase"
           onClick={() => onClikBtn(val)}

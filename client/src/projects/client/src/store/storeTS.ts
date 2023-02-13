@@ -12,7 +12,8 @@ export default class Store {
   isAuth = false;
   // загрузка от мелькание теста перед формой
   isLoading = false;
-
+  // перем.ошб.
+  isErr = "";
   // `Сделайте автоматическое наблюдаемая` для раб.mobx с кл.
   constructor() {
     makeAutoObservable(this);
@@ -27,6 +28,10 @@ export default class Store {
   }
   setLoading(bool: boolean) {
     this.isLoading = bool;
+  }
+  setErr(any: any) {
+    this.isErr = any;
+    console.log("st isErr : " + this.isErr);
   }
 
   // асинхр.экшны
@@ -45,6 +50,11 @@ export default class Store {
       this.setAuth(true);
       this.setUser(response?.data?.user);
     } catch (error: any) {
+      // this.setErr(error);
+      this.setErr(error?.response?.data?.errors?.[1].msg);
+      console.log(
+        "errors?.[0].msg : " + error?.response?.data?.errors?.[1].msg
+      );
       console.log(error);
       console.log(error?.response?.data); // все данные
       // console.log(error.response?.data?.errors); // масс. errors
@@ -60,9 +70,19 @@ export default class Store {
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
+      // return console.log(response?.data);
+
+      // const response = await UserService.fetchUser();
+      // // // возращ.с serv помещ.в сост.
+      // // setLog(log);
+      // setUsers(response.data);
     } catch (error: any) {
+      this.setErr(error?.response?.data?.errors?.[0].msg);
+      console.log("1 : " + 1);
+      console.log("CLT. st.l " + error);
       console.log(error?.response);
       console.log(error?.response?.data);
+      console.log(error?.response?.data?.message);
       console.log(error?.response?.data?.errors?.map((item: any) => item.msg));
     }
   }
