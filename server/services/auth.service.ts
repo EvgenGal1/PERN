@@ -204,6 +204,7 @@ class AuthService {
     // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
     const userDto = new UserDto(user);
     const tokens = TokenService.generateToken({ ...userDto });
+    console.log("---------------a.S.rf tokens.rf : " + tokens.refreshToken);
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
     return {
       message: `ПЕРЕЗАПИСЬ ${userDto.username} <${userDto.email}>. ID_${user.id}_${user.role}`,

@@ -314,6 +314,24 @@ code {
 .err {
   color: darkred;
   margin-top: 10px;
+
+  font-weight: bold;
+  border: 3px solid;
+  border: 5px solid linear-gradient(45deg, yellow, 10px, black 20px);
+  border-image: linear-gradient(to left, #ff0000, #0000ff) 1 1;
+  border-image: repeating-linear-gradient(
+      6deg,
+      yellow,
+      0px,
+      yellow 5px,
+      darkred 0px,
+      black 10px
+    )
+    1 1;
+  /* background: linear-gradient(to right, red, purple); */
+  padding: 10px;
+  /* background: repeating-linear-gradient(45deg, yellow, orange 10px, darkred 10px, black 20px); */
+
   &::before {
     display: inline;
     content: "⚠ ";
