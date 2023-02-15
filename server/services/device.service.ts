@@ -10,7 +10,7 @@ class DeviceService {
   async create(
     name: string,
     price: number,
-    brandId: number,
+    deviceId: number,
     typeId: number,
     info
   ) {
@@ -24,7 +24,7 @@ class DeviceService {
       const device = await Device.create({
         name,
         price,
-        brandId,
+        deviceId,
         typeId,
         info,
       });
@@ -38,12 +38,17 @@ class DeviceService {
     }
   }
 
-  async getAll(brandId: number, typeId: number, limit: number, offset: number) {
+  async getAll(
+    deviceId: number,
+    typeId: number,
+    limit: number,
+    offset: number
+  ) {
     try {
       let devices;
       // проверки с обращ.к БД с поиском всех
       // нет ничего
-      if (!brandId && !typeId) {
+      if (!deviceId && !typeId) {
         // `найти и подсчитать все` findAndCountAll
         devices = await Device.findAndCountAll({
           // к кажд.запр.добав. лимит и отступ
@@ -52,15 +57,15 @@ class DeviceService {
         });
       }
       // есть Бренд
-      if (brandId && !typeId) {
+      if (deviceId && !typeId) {
         devices = await Device.findAndCountAll({
-          where: { brandId },
+          where: { deviceId },
           limit,
           offset,
         });
       }
       // есть Тип
-      if (!brandId && typeId) {
+      if (!deviceId && typeId) {
         devices = await Device.findAndCountAll({
           where: { typeId },
           limit,
@@ -68,9 +73,9 @@ class DeviceService {
         });
       }
       // Оба есть
-      if (brandId && typeId) {
+      if (deviceId && typeId) {
         devices = await Device.findAndCountAll({
-          where: { typeId, brandId },
+          where: { typeId, deviceId },
           limit,
           offset,
         });
