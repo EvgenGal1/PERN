@@ -28,6 +28,7 @@ class DeviceService {
         typeId,
         info,
       });
+      console.log("SRV.dev.serv info : " + info);
       return device;
       // {
       //   message: `Устройство ${name} создан.`,
