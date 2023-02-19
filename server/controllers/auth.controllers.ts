@@ -66,7 +66,7 @@ class AuthControllers {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-
+      console.log("SRV.a.cntrl uD.rfT : " + userData.tokens.refreshToken);
       // возвращ.токен и инфо о польз.
       return res.json(userData);
     } catch (error) {
