@@ -78,10 +78,10 @@ class TokenService {
     const tokenData = await Token.findOne({
       where: { userId: userId /* , refreshToken: refreshToken */ },
     });
-    console.log("3333333333333333 : " + 3);
+    console.log("SRV.t.serv 3 : " + 3);
     // е/и нашлось перезапис refresh
     if (tokenData) {
-      console.log("444444444444444444444 : " + 4);
+      console.log("SRV.t.serv 4 : " + 4);
       /* const tokenUpd = */ await Token.update(
         { /* userId, */ refreshToken },
         { where: { userId: userId } }
@@ -92,7 +92,7 @@ class TokenService {
       // сохр. для обнов.в БД
       return tokenData.save();
     }
-    console.log("5555555555555555 : " + 5);
+    console.log("SRV.t.serv 5 : " + 5);
     // СОЗД.НОВ.ТОКЕН
     const token = await Token.create({
       userId: userId,
