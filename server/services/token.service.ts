@@ -98,6 +98,7 @@ class TokenService {
       userId: userId,
       refreshToken: refreshToken,
     });
+    console.log("SRV.t.serv 6 : " + 6);
     // возвращ.нов.токен
     return token;
   }
