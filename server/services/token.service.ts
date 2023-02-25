@@ -105,6 +105,7 @@ class TokenService {
 
   // Удален.REFRESH из БД
   async removeToken(refreshToken) {
+    console.log("SRV.t.serv 7 : " + 7);
     const tokenData = await Token.destroy({
       where: { refreshToken: refreshToken },
     });
