@@ -114,6 +114,7 @@ class TokenService {
 
   // Поиск REFRESH токена в БД
   async findToken(refreshToken) {
+    console.log("SRV.t.serv 8 : " + 8);
     const tokenData = await Token.findOne({
       where: { refreshToken: refreshToken },
     });
