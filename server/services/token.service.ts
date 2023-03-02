@@ -69,6 +69,8 @@ class TokenService {
         expiresIn: "30d",
       }
     );
+    console.log("SRV.t.serv acTk 10 : " + accessToken);
+    console.log("SRV.t.serv rfTk 11 : " + refreshToken);
     return { accessToken, refreshToken };
   }
 
