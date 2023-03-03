@@ -18,6 +18,7 @@ module.exports = function (req, res, next) {
     if (!authorizationHeader) {
       return next(ApiError.UnauthorizedError("_"));
     }
+    console.log("SRV.aMW authHead : " + authorizationHeader);
     // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
     const accessToken = authorizationHeader.split(" ")[1]; // Bearer asfasnfkajsfnjk..
     if (!accessToken) {
