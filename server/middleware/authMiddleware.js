@@ -30,8 +30,9 @@ module.exports = function (req, res, next) {
     // const decoded = jwt.verify(token, process.env.SECRET_KEY);
     // req.id = decoded.id;
     const decoded = TokenService.validateAccessToken(accessToken);
-    console.log("SRV.aMW decoded : " + decoded);
+    console.log("SRV.aMW decoded 1 : " + decoded);
     if (!decoded) {
+      console.log("SRV.aMW decoded 2 : " + decoded);
       return next(ApiError.UnauthorizedError("" /* , `${e}` */));
     }
 
