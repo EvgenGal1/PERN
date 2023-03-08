@@ -115,6 +115,7 @@ class AuthControllers {
       const { refreshToken } = req.cookies;
       const { username, email } = req.body;
       const token = await AuthService.logout(refreshToken, username, email);
+      console.log("SRV.a.cntrl logout.rfT : " + token);
       res.clearCookie("refreshToken");
       return res.json(token);
     } catch (error) {
