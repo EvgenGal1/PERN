@@ -42,6 +42,7 @@ class AuthControllers {
 
       // проверка отсутств.user.
       if (!username) {
+        console.log("SRV.a.registr email : " + email);
         return next(ApiError.BadRequest(`Некорректный username`));
       }
       // ? нужно Доп.проверка отсутств email,psw е/и errorsValid не отраб
