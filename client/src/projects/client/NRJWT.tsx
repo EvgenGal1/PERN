@@ -27,6 +27,8 @@ const NRJWT: FC = () => {
   const [show, setShow] = useState(false);
   // сост.error
   const [err, setErr] = useState(null);
+  // показ.блок для НЕ/авториз.
+  const [shwIsAuth, setShwIsAuth] = useState(false);
 
   // вызов экшн checkAuth, е/и есть в LS, при 1ом запуске(usEf пуст масс.завис.)
   useEffect(() => {
@@ -40,13 +42,14 @@ const NRJWT: FC = () => {
     return <div style={{ background: "red" }}>Загрузка...</div>;
   }
 
-  // е/и не авториз.
+  // е/и не авториз.<LoginForm />
   if (!store.isAuth) {
-    return (
-      <LoginForm />
-      // {/* // откл. всё равно нет доступа у не авториз.
-      // <div><button onClick={getUsers}>Получить пользователей</button>{users.map((user)=> (<div key={user.email}>{user.username} &lt;{user.email}&gt;</div>))}</div> */}
-    );
+    // setShwIsAuth(false);
+    // return (
+    // <LoginForm />
+    // {/* // откл. всё равно нет доступа у не авториз.
+    // <div><button onClick={getUsers}>Получить пользователей</button>{users.map((user)=> (<div key={user.email}>{user.username} &lt;{user.email}&gt;</div>))}</div> */}
+    // );
   }
 
   return (
@@ -79,10 +82,17 @@ const NRJWT: FC = () => {
         //   openArrowAccord ? " openCont" : ""
         // }`}
       >
-        {/* е/и авториз. */}
-        <UserAutoriz /* store={store} */ /* storeAyth={store.isAuth} */ />
-        {/* получ.список польз */}
-        <UserList /* setShow={show} */ />
+        {shwIsAuth ? (
+          // е/и авториз.
+          <>
+            <UserAutoriz /* store={store} */ /* storeAyth={store.isAuth} */ />
+            {/* получ.список польз */}
+            <UserList /* setShow={show} */ />
+          </>
+        ) : (
+          // е/и не авториз.
+          <LoginForm />
+        )}
       </div>
     </div>
   );

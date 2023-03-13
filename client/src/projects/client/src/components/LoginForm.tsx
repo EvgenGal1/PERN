@@ -71,13 +71,19 @@ const LoginForm: FC = () => {
     }
   }
 
+  // будущая общ. fn для loginRegistr
+  async function loginRegistr(/* e: React.FormEvent<HTMLFormElement> */) {
+    // e.preventDefault();
+    console.log("e ", 123);
+  }
+
   return (
     // {/* <h1>
     //   {store.isAuth
     //     ? `Пользователь авторизован ${store.user.username} <${store.user.email}>`
     //     : "АВТОРИЗУЙТЕСЬ"}
     // </h1> */}
-    <div>
+    <form /* onSubmit={(e) => loginRegistr()} */>
       {/* управ.inputы */}
       <input
         value={username}
@@ -85,6 +91,11 @@ const LoginForm: FC = () => {
         type="username"
         placeholder="Имя"
       />
+      {/* попытка обраб.ошб. Выводит, но нет распределения по inputам */}
+      {/* {store.isErr && (
+        <p className="error-msg">{store.isErr || "Error! В lastName"}</p>
+      )} */}
+      {/* store.isErr */}
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -98,21 +109,37 @@ const LoginForm: FC = () => {
         placeholder="Пароль"
       />
       {/* btnы по клик вызов экшн из store с перед.парам. */}
-      <button
-        onClick={() => login() /* store.login(username, email, password) */}
-      >
-        Логин
-      </button>
-      <button
-        onClick={
-          () => registr() /* store.registration(username, email, password) */
-        }
-      >
-        Регистрации
-      </button>
+      <div className="management">
+        <button
+          name="login"
+          onClick={(e) => {
+            e.preventDefault();
+            login();
+          }}
+          // onClick={() => login() /* store.login(username, email, password) */}
+        >
+          Логин
+        </button>
+        <button
+          name="registr"
+          // className="btn--primary"
+          onClick={(e) => {
+            e.preventDefault();
+            registr();
+          }}
+          // onClick={() => registr() /* store.registration(username, email, password) */}
+        >
+          Регистрации
+        </button>
+      </div>
       {/* // ^ сделать появл.доп.input, при опред.комбин.клвш., у ADMIN|MODER|SUPER для ввода доп.полей(role,img,возвраст,..)  */}
-      {err && <div className="err">{/* err */ store.isErr}</div>}
-    </div>
+      {/*  */}
+      {/* // ^ Лучше использовать react-hook-form */}
+      {/* {err && <div className="err">{store.isErr}</div>} */}
+      {store.isErr && (
+        <p className="error-msg">{store.isErr || "Error! В lastName"}</p>
+      )}
+    </form>
   );
 };
 
