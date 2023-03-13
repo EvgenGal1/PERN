@@ -59,66 +59,6 @@ section {
   display: block;
 }
 
-// КНП
-input,
-button,
-textarea {
-  // ??? не раб - SassError: Undefined variable. - ont-family: $fontfamily;
-  // font-family: $fontfamily;
-}
-input::-ms-clear {
-  display: none;
-}
-input::placeholder {
-  color: #000000;
-}
-button,
-input {
-  margin: 5px 0px;
-  padding: 5px;
-  border: 1px solid #bd0000;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 200ms, transform 100ms linear;
-}
-button.btn {
-}
-button.primary,
-input.primary {
-  padding: 10px 15px;
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: 10px;
-  border: 1px solid #bd0000;
-  box-shadow: 0 3px 5px black;
-  text-transform: uppercase;
-  &:hover {
-    // transition: transform 100ms linear;
-    box-shadow: 0 8px 10px #000000;
-    transform: translateY(-3px);
-  }
-  &:active {
-    // transition: transform 0.2s linear;
-    box-shadow: 0 1px 1px black;
-    transform: translateY(0);
-    opacity: 0.8;
-  }
-}
-button[type="submit"]:active,
-input[type="button"]:active,
-input[type="submit"]:active {
-  // transition: transform 0.3s linear;
-  // transform: translateY(3px);
-  // border: 1px solid transparent;
-  // opacity: 0.8;
-  //
-  transform: translateY(0);
-}
-button::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-
 // ссылки
 a {
   color: inherit;
@@ -310,7 +250,90 @@ code {
   }
 }
 
-// .err ----------------------------------------------------------------------------------
+// КНП ----------------------------------------------------------------------------------
+input,
+button,
+textarea {
+  // ??? не раб - SassError: Undefined variable. - ont-family: $fontfamily;
+  // font-family: $fontfamily;
+}
+input::-ms-clear {
+  display: none;
+}
+input::placeholder {
+  color: #000000;
+}
+button,
+input {
+  margin: 5px 0px;
+  padding: 5px;
+  border: 1px solid #bd0000;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 200ms, transform 100ms linear;
+}
+button.btn {
+}
+button.primary,
+input.primary {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  border: 1px solid #bd0000;
+  box-shadow: 0 3px 5px black;
+  text-transform: uppercase;
+  &:hover {
+    // transition: transform 100ms linear;
+    box-shadow: 0 8px 10px #000000;
+    transform: translateY(-3px);
+  }
+  &:active {
+    // transition: transform 0.2s linear;
+    box-shadow: 0 1px 1px black;
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+}
+button[type="submit"]:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+  // transition: transform 0.3s linear;
+  // transform: translateY(3px);
+  // border: 1px solid transparent;
+  // opacity: 0.8;
+  //
+  transform: translateY(0);
+}
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+// FORM ----------------------------------------------------------------------------------
+form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid darkred;
+  border: 1px solid #490005;
+}
+
+// ОШИБКИ .err, err-msg ----------------------------------------------------------------------------------
+.error-msg {
+  // color: #490005;
+  padding: 5px;
+  border: 3px solid;
+  &::before {
+    color: #490005;
+    display: inline;
+    content: "⚠ ";
+  }
+}
+
 .err {
   color: darkred;
   margin-top: 10px;

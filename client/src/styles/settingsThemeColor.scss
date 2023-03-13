@@ -155,6 +155,7 @@ body[data-theme="light"] {
         }
       }
       form {
+        background-color: var(--ui-bg);
         input {
           &:hover {
             background-color: var(--act-bg-hov);
@@ -199,13 +200,25 @@ body[data-theme="light"] {
     .modal {
       background-color: var(--ui-bg);
     }
+
+    // перепись цвета КНП для Цв.Тем
+    .sw3btn-radio__light:checked ~ .sw3btn-slider {
+      background-color: var(--ui-act-bg);
+    }
+    .sw3btn-radio__dark:checked ~ .sw3btn-slider {
+      background-color: var(--act-dark);
+    }
+    .sw3btn-radio__neutral:checked ~ .sw3btn-slider {
+      background-color: var(--MelonYellow);
+    }
   }
 }
 
 // СТИЛИ ПРОЕКТОВ
 :root {
   body {
-    // выбор по атребуту для примен. стилей когда стран. откр. не в родителе (по общ. имени класса)
+    // выбор по атребуту для примен. стилей когда стр. откр. не в родителе (по общ. имени класса)
+    // UlbiTV ----------------------------------------------------------------------------------
     div[class^="UlbiTV"] {
       /* &_DrADr */
       .boards .board,
@@ -223,7 +236,7 @@ body[data-theme="light"] {
       }
       // }
     }
-    // BegPrj
+    // BegPrj ----------------------------------------------------------------------------------
     .BegPrj {
       &_Modal {
         .modal {
@@ -271,13 +284,6 @@ body[data-theme="light"] {
         }
       }
       // }
-    }
-    //
-    .sw3btn-radio__dark:checked ~ .sw3btn-slider {
-      background-color: var(--act-dark);
-    }
-    .sw3btn-radio__neutral:checked ~ .sw3btn-slider {
-      background-color: var(--MelonYellow);
     }
     // DayPlanToDo
     .DayPlanToDo,
