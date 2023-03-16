@@ -51,6 +51,7 @@ class AuthControllers {
         return next(ApiError.BadRequest(`Некорректный email`));
       }
       if (!password) {
+        console.log("SRV.a.registr password : " + password);
         return next(ApiError.BadRequest(`Некорректный password`));
       }
 
