@@ -47,7 +47,7 @@ router.post(
 router.post(
   "/login",
   // exprsValid
-  [check("email", "Некорректый email").isEmail().normalizeEmail()],
+  [check("email", "Некорректый email на входе").isEmail().normalizeEmail()],
   authControllers.login
 );
 

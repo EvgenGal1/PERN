@@ -42,10 +42,14 @@ class AuthService {
       // }
       const userName = await User.findOne({ where: { username } });
       if (userName) {
-        return ApiErrorJS.BadRequest(
+        console.log("SRV.a.serv registr userName : " + username);
+        // ! ошб. выводит username и падает в undf reading 'refr|tokens'
+        /* throw */ /* return */ ApiErrorJS.BadRequest(
           `Пользователь с Именем ${username} уже существует`
         );
+        return;
       }
+      console.log("SRV.a.serv registr userName > eml : " + username, email);
       const eml = await User.findOne({ where: { email } });
       if (eml) {
         return ApiErrorJS.BadRequest(
@@ -123,7 +127,9 @@ class AuthService {
       }
       console.log("===================== a.S.l : " + 1.1);
       const eml = await User.findOne({ where: { email } });
+      console.log("===================== a.S.l eml : " + eml);
       if (!eml /* !eml.email */) {
+        console.log("===================== a.S.l uS : " + "здесь eml null");
         return ApiErrorJS.BadRequest(
           `Пользователь с Email <${email}> не найден`
         );

@@ -39,7 +39,7 @@ class AuthControllers {
       // Получ.из тела.
       // ^ Роль второстепена(не прописана), приним.из запрос. для созд.отдельно польз.и админов
       const { id, username, email, password /* , role */ } = req.body;
-
+      console.log("SRV.a.cntrl registr req.body : " + req);
       // проверка отсутств.user.
       if (!username) {
         console.log("SRV.a.registr username : " + username);
@@ -54,7 +54,7 @@ class AuthControllers {
         console.log("SRV.a.registr password : " + password);
         return next(ApiErrorJS.BadRequest(`Некорректный password`));
       }
-
+      console.log("SRV.a.cntrl registr перед userData : " + 0);
       // передача данн.в fn для Service (возвращ.2 токена, данн.польз.,есть,создан.)
       const userData = await AuthService.registration(
         username,
@@ -63,23 +63,26 @@ class AuthControllers {
         // role
       );
 
-      console.log("000000000000000000000 : " + userData);
+      console.log(
+        "SRV.a.cntrl registr uD.rfT : " + userData.tokens.refreshToken
+      );
+      console.log("SRV.a.cntrl registr 0000000 : " + userData);
       // сохр.refresh в cookах (ключ.сохр., refresh токен, опц.:вр.хран.,не возмж.измен.в браузере,(https - secure:true; false для Postman))
       res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       });
-      console.log("SRV.a.cntrl uD.rfT : " + userData.tokens.refreshToken);
       // возвращ.токен и инфо о польз.
       return res.json(userData);
     } catch (error) {
+      console.log("SRV.a.cntrl registr catch : " + error);
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
       // return next(
       next(
         // ApiErrorJS.BadRequest(
-        `НЕ удалось зарегистрироваться (registr) - ${error}.`
-        // error
+        // `НЕ удалось зарегистрироваться (registr) - ${error}.`
+        error
         // )
       );
     }
@@ -122,7 +125,10 @@ class AuthControllers {
       res.clearCookie("refreshToken");
       return res.json(token);
     } catch (error) {
-      next(`НЕ удалось ВЫЙТИ - ${error}.`);
+      next(
+        // `НЕ удалось ВЫЙТИ - ${error}.`
+        error
+      );
     }
   }
 
@@ -139,7 +145,8 @@ class AuthControllers {
       next(
         // ApiErrorJS.BadRequest(
         // console.log("error ", error)
-        `НЕ удалось АКТИВАВИРАВАТЬ (activate) - ${error}.`
+        // `НЕ удалось АКТИВАВИРАВАТЬ (activate) - ${error}.`
+        error
         // )
       );
     }
@@ -164,7 +171,10 @@ class AuthControllers {
       return res.json(userData /* , username, email */);
     } catch (error) {
       // return
-      next(`НЕ удалось ПЕРЕЗАПИСАТЬ (refresh) - ${error}.`);
+      next(
+        // `НЕ удалось ПЕРЕЗАПИСАТЬ (refresh) - ${error}.`
+        error
+      );
     }
   }
 
@@ -174,7 +184,10 @@ class AuthControllers {
       const users = await AuthService.getAllUsers();
       return res.json(users);
     } catch (error) {
-      next(`НЕ удалось получить пользователей - ${error}.`);
+      next(
+        // `НЕ удалось получить пользователей - ${error}.`
+        error
+      );
     }
   }
 

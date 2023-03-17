@@ -8,6 +8,7 @@ const ApiErrorJS = require("../error/ApiErrorJS");
 const TokenService = require("../services/token.service");
 
 module.exports = function (req, res, next) {
+  console.log("SRV.authMW ", 987);
   // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)
   if (req.method === "OPTIONS") {
     next();
