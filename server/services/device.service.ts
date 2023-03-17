@@ -3,7 +3,7 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const { Device, DeviceInfo } = require("../models/modelsTS.ts");
 
 class DeviceService {
@@ -19,7 +19,7 @@ class DeviceService {
         where: { name },
       });
       if (deviceVerif) {
-        return ApiError.BadRequest(`Устройство ${name} уже существует`); // throw не раб
+        return ApiErrorJS.BadRequest(`Устройство ${name} уже существует`); // throw не раб
       }
       const device = await Device.create({
         name,
@@ -35,7 +35,7 @@ class DeviceService {
       //   device,
       // };
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка создания - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка создания - ${error}.`);
     }
   }
 
@@ -90,7 +90,7 @@ class DeviceService {
         devices,
       }; */
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на всех - ${error}.`);
     }
   }
 
@@ -107,11 +107,11 @@ class DeviceService {
         ],
       });
       if (!deviceId) {
-        return ApiError.BadRequest(`Устройство по ID_${id} не найден`);
+        return ApiErrorJS.BadRequest(`Устройство по ID_${id} не найден`);
       }
       return /* {message: deviceId.name, */ deviceId /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на одного - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на одного - ${error}.`);
     }
   }
 
@@ -120,7 +120,7 @@ class DeviceService {
     try {
       const deviceId = await Device.findOne({ where: { id } });
       if (!deviceId) {
-        return ApiError.BadRequest(`Устройство по ID_${id} не найден`);
+        return ApiErrorJS.BadRequest(`Устройство по ID_${id} не найден`);
       }
       const updDevice = await Device.update(
         { /* id, */ name },
@@ -130,7 +130,7 @@ class DeviceService {
       // const deviceDto = new UserDto(userNew);
       return /* {message: `Устройство ${name} обновлён. Код_${updDevice}`, */ /* deviceDto */ deviceNew /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка обновления - ${error}.`);
     }
   }
 
@@ -138,12 +138,12 @@ class DeviceService {
     try {
       const device = await Device.findOne({ where: { id } });
       if (!device) {
-        return ApiError.BadRequest(`Устройство с ID ${id} не найден`);
+        return ApiErrorJS.BadRequest(`Устройство с ID ${id} не найден`);
       }
       var deletDevice = await Device.destroy({ where: { id } });
       return /* {message: `Устройство по ID_${id}`,deletDevice: */ `КОД_${deletDevice}` /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на удаления - ${error}.`);
     }
   }
 

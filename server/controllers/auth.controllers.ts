@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError.js");
+const ApiErrorJS = require("../error/ApiErrorJS");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
 const { User } = require("../models/modelsTS.ts");
 
@@ -28,7 +28,7 @@ class AuthControllers {
       if (!errorsValid.isEmpty()) {
         // return res.status(400).json({
         return next(
-          ApiError.BadRequest(
+          ApiErrorJS.BadRequest(
             /* message: */ "Некорректые данные при регистрации",
             /* errors: */ errorsValid.array()
             // })
@@ -43,16 +43,16 @@ class AuthControllers {
       // проверка отсутств.user.
       if (!username) {
         console.log("SRV.a.registr username : " + username);
-        return next(ApiError.BadRequest(`Некорректный username`));
+        return next(ApiErrorJS.BadRequest(`Некорректный username`));
       }
       // ? нужно Доп.проверка отсутств email,psw е/и errorsValid не отраб
       if (!email) {
         console.log("SRV.a.registr email : " + email);
-        return next(ApiError.BadRequest(`Некорректный email`));
+        return next(ApiErrorJS.BadRequest(`Некорректный email`));
       }
       if (!password) {
         console.log("SRV.a.registr password : " + password);
-        return next(ApiError.BadRequest(`Некорректный password`));
+        return next(ApiErrorJS.BadRequest(`Некорректный password`));
       }
 
       // передача данн.в fn для Service (возвращ.2 токена, данн.польз.,есть,создан.)
@@ -77,7 +77,7 @@ class AuthControllers {
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
       // return next(
       next(
-        // ApiError.BadRequest(
+        // ApiErrorJS.BadRequest(
         `НЕ удалось зарегистрироваться (registr) - ${error}.`
         // error
         // )
@@ -91,7 +91,7 @@ class AuthControllers {
       const errorsValid = validationResult(req);
       if (!errorsValid.isEmpty()) {
         return next(
-          ApiError.BadRequest(
+          ApiErrorJS.BadRequest(
             "Некорректые данные при регистрации",
             errorsValid.array()
           )
@@ -137,7 +137,7 @@ class AuthControllers {
     } catch (error) {
       // return
       next(
-        // ApiError.BadRequest(
+        // ApiErrorJS.BadRequest(
         // console.log("error ", error)
         `НЕ удалось АКТИВАВИРАВАТЬ (activate) - ${error}.`
         // )

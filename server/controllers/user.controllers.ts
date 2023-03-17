@@ -14,7 +14,7 @@ const { validationResult } = require("express-validator");
 
 // ^ ++++ UlbiTV.PERNstore и EvGen
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 // подкл.модели пользователей. Можно разнести на отдельн.ф(User.js,Role.js,..)
 const { User } = require("../models/modelsTS.ts");
 const UserService = require("../services/user.service.ts");
@@ -146,7 +146,7 @@ class UserControllers {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const userId = await UserService.getOneUserPERN(id);
       return res.json(userId);
@@ -159,7 +159,7 @@ class UserControllers {
     try {
       const { id, username, email, password, role, isActivated } = req.body;
       if (!username) {
-        return next(ApiError.internal(`Имя не передано`));
+        return next(ApiErrorJS.internal(`Имя не передано`));
       }
       const userUpd = await UserService.updateUserPERN(
         id,
@@ -179,7 +179,7 @@ class UserControllers {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const delUser = await UserService.deleteUserPERN(id);
       return res.json(delUser);

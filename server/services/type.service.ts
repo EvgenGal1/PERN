@@ -3,7 +3,7 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const { Type } = require("../models/modelsTS.ts");
 
 class TypeService {
@@ -13,7 +13,7 @@ class TypeService {
         where: { name },
       });
       if (typeVerif) {
-        return ApiError.BadRequest(`Тип ${name} уже существует`); // throw не раб
+        return ApiErrorJS.BadRequest(`Тип ${name} уже существует`); // throw не раб
       }
       const type = await Type.create({ name });
       return {
@@ -21,7 +21,7 @@ class TypeService {
         type,
       };
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка создания - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка создания - ${error}.`);
     }
   }
 
@@ -36,7 +36,7 @@ class TypeService {
         types,
       }; */
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на всех - ${error}.`);
     }
   }
 
@@ -44,11 +44,11 @@ class TypeService {
     try {
       const typeId = await Type.findOne({ where: { id } });
       if (!typeId) {
-        return ApiError.BadRequest(`Тип по ID_${id} не найден`);
+        return ApiErrorJS.BadRequest(`Тип по ID_${id} не найден`);
       }
       return /* {message: typeId.name, */ typeId /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на одного - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на одного - ${error}.`);
     }
   }
 
@@ -57,7 +57,7 @@ class TypeService {
     try {
       const typeId = await Type.findOne({ where: { id } });
       if (!typeId) {
-        return ApiError.BadRequest(`Тип по ID_${id} не найден`);
+        return ApiErrorJS.BadRequest(`Тип по ID_${id} не найден`);
       }
       const updType = await Type.update(
         { /* id, */ name },
@@ -67,7 +67,7 @@ class TypeService {
       // const typeDto = new UserDto(userNew);
       return /* {message: `Тип ${name} обновлён. Код_${updType}`, */ /* typeDto */ typeNew /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка обновления - ${error}.`);
     }
   }
 
@@ -75,12 +75,12 @@ class TypeService {
     try {
       const typeId = await Type.findOne({ where: { id } });
       if (!typeId) {
-        return ApiError.BadRequest(`Тип с ID ${id} не найден`);
+        return ApiErrorJS.BadRequest(`Тип с ID ${id} не найден`);
       }
       var deletType = await Type.destroy({ where: { id } });
       return /* {message: `Тип по ID_${id}`,deletType: */ `КОД_${deletType}` /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на удаления - ${error}.`);
     }
   }
 

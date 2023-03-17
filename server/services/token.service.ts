@@ -3,7 +3,7 @@ export {};
 
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
-const ApiError = require("../error/ApiError.js");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const { Token } = require("../models/modelsTS.ts");
 
 // подкл.ф.контролера для генерац.web токена

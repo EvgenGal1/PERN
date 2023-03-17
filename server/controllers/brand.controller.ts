@@ -1,7 +1,7 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const { Brand } = require("../models/modelsTS.ts");
 const BrandService = require("../services/brand.service.ts");
 
@@ -11,7 +11,7 @@ class BrandController {
     try {
       const { name } = req.body;
       if (!name) {
-        return next(ApiError.internal(`Name не передан`));
+        return next(ApiErrorJS.internal(`Name не передан`));
       }
       const brand = await BrandService.create(name);
       return res.json(brand);
@@ -33,7 +33,7 @@ class BrandController {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const brandId = await BrandService.getOne(id);
       return res.json(brandId);
@@ -46,7 +46,7 @@ class BrandController {
     try {
       const { id, name } = req.body;
       if (!id || !name) {
-        return next(ApiError.internal(`ID или Name не передан`));
+        return next(ApiErrorJS.internal(`ID или Name не передан`));
       }
       const brandUpd = await BrandService.update(id, name);
       return res.json(brandUpd);
@@ -59,7 +59,7 @@ class BrandController {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const delBrand = await BrandService.delOne(id);
       return res.json(delBrand);

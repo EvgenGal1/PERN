@@ -8,7 +8,7 @@ const path = require("path");
 // подкл.модели Типа, Инфо.обУстр
 const { Device, DeviceInfo } = require("../models/modelsTS.ts");
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const FileService = require("../services/file.service.ts");
 const DeviceService = require("../services/device.service.ts");
 
@@ -18,10 +18,10 @@ class DeviceController {
       // из тела запр. получ. назв.,цену,id-бренда,типа,назв.поля(info) у масс.характиристик из связи modal.Device-Info
       let { name, price, brandId, typeId, info } = req.body;
       if (!name) {
-        return next(ApiError.internal(`Name не передан`));
+        return next(ApiErrorJS.internal(`Name не передан`));
       }
       if (!price) {
-        return next(ApiError.internal(`Price не передан`));
+        return next(ApiErrorJS.internal(`Price не передан`));
       }
       // получ изо
       const { img } = req.files;
@@ -60,7 +60,7 @@ class DeviceController {
     } catch (error) {
       // при ошб.подкл.след.обраб.ошиб.
       next(`НЕ удалось добавить Бренд - ${error}.`);
-      // next(ApiError.BadRequest(e.message));
+      // next(ApiErrorJS.BadRequest(e.message));
     }
   }
 
@@ -94,7 +94,7 @@ class DeviceController {
       // получ.ID из парам.запроса(парам.пропис.в router)
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const deviceId = await DeviceService.getOne(id);
       return res.json(deviceId);
@@ -109,7 +109,7 @@ class DeviceController {
     try {
       const { id, name } = req.body;
       if (!id || !name) {
-        return next(ApiError.internal(`ID или Name не передан`));
+        return next(ApiErrorJS.internal(`ID или Name не передан`));
       }
       const deviceUpd = await DeviceService.update(id, name);
       return res.json(deviceUpd);
@@ -125,7 +125,7 @@ class DeviceController {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const delDevice = await DeviceService.delOne(id);
       return res.json(delDevice);

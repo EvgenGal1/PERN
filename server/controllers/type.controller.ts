@@ -1,7 +1,7 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const { Type } = require("../models/modelsTS.ts");
 const TypeService = require("../services/type.service.ts");
 
@@ -11,7 +11,7 @@ class TypeController {
     try {
       const { name } = req.body;
       if (!name) {
-        return next(ApiError.internal(`Name не передан`));
+        return next(ApiErrorJS.internal(`Name не передан`));
       }
       const type = await TypeService.create(name);
       return res.json(type);
@@ -36,7 +36,7 @@ class TypeController {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const typeId = await TypeService.getOne(id);
       return res.json(typeId);
@@ -49,7 +49,7 @@ class TypeController {
     try {
       const { id, name } = req.body;
       if (!id || !name) {
-        return next(ApiError.internal(`ID или Name не передан`));
+        return next(ApiErrorJS.internal(`ID или Name не передан`));
       }
       const typeUpd = await TypeService.update(id, name);
       return res.json(typeUpd);
@@ -62,7 +62,7 @@ class TypeController {
     try {
       const { id } = req.params;
       if (!id) {
-        return next(ApiError.internal(`ID не передан`));
+        return next(ApiErrorJS.internal(`ID не передан`));
       }
       const delType = await TypeService.delOne(id);
       return res.json(delType);

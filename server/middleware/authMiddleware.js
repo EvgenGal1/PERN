@@ -4,7 +4,7 @@
 // export {};
 
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const TokenService = require("../services/token.service");
 
 module.exports = function (req, res, next) {
@@ -16,13 +16,13 @@ module.exports = function (req, res, next) {
     // провер header на наличие поля authorization
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
-      return next(ApiError.UnauthorizedError("_"));
+      return next(ApiErrorJS.UnauthorizedError("_"));
     }
     console.log("SRV.aMW authHead : " + authorizationHeader);
     // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
     const accessToken = authorizationHeader.split(" ")[1]; // Bearer asfasnfkajsfnjk..
     if (!accessToken) {
-      return next(ApiError.UnauthorizedError("" /* , `${e}` */));
+      return next(ApiErrorJS.UnauthorizedError("" /* , `${e}` */));
       // return res.status(401).json({ message: "Не авторизован" });
     }
 
@@ -33,7 +33,7 @@ module.exports = function (req, res, next) {
     console.log("SRV.aMW decoded 1 : " + decoded);
     if (!decoded) {
       console.log("SRV.aMW decoded 2 : " + decoded);
-      return next(ApiError.UnauthorizedError("" /* , `${e}` */));
+      return next(ApiErrorJS.UnauthorizedError("" /* , `${e}` */));
     }
 
     // к запросу в поле user добав.раскодированые данн.
@@ -43,6 +43,6 @@ module.exports = function (req, res, next) {
   } catch (e) {
     // проверка по токену на авториз.
     // res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });
-    return next(ApiError.UnauthorizedError(e));
+    return next(ApiErrorJS.UnauthorizedError(e));
   }
 };

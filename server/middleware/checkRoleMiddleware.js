@@ -4,7 +4,7 @@
 // export {};
 
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError.js");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const TokenService = require("../services/token.service");
 
 // interface T {
@@ -23,12 +23,12 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       // провер header на наличие поля authorization
       const authorizationHeader = req.headers.authorization;
       if (!authorizationHeader) {
-        return next(ApiError.UnauthorizedError("authoriz undf"));
+        return next(ApiErrorJS.UnauthorizedError("authoriz undf"));
       }
       // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
       const accessToken = authorizationHeader.split(" ")[1]; // Bearer asfasnfkajsfnjk..
       if (!accessToken) {
-        return next(ApiError.UnauthorizedError("Токен err" /* , `${e}` */));
+        return next(ApiErrorJS.UnauthorizedError("Токен err" /* , `${e}` */));
         // return res.status(401).json({ message: "Не авторизован" });
       }
 
@@ -38,7 +38,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       const decoded = TokenService.validateAccessToken(accessToken);
       if (!decoded) {
         return next(
-          ApiError.UnauthorizedError("Токен не валид" /* , `${e}` */)
+          ApiErrorJS.UnauthorizedError("Токен не валид" /* , `${e}` */)
         );
       }
 
@@ -47,7 +47,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       const { role: userRoles } = TokenService.validateAccessToken(accessToken);
       // ~ console.log("userRoles ", userRoles); // от польз. ~ USER
       if (!userRoles) {
-        return next(ApiError.UnauthorizedError("НЕТ РОЛИ" /* , `${e}` */));
+        return next(ApiErrorJS.UnauthorizedError("НЕТ РОЛИ" /* , `${e}` */));
       }
       // проверка масс.польз.Ролей с масс.разреш.Ролей для этой fn
       // перем.для определения
@@ -64,7 +64,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       // ! ошб. - НЕ воспринимает все позиции, только первую если передавать role из auth.rout без []. Попробовать редачить в checkRole
       if (!hasRoles) {
         return next(
-          ApiError.BadRequest(
+          ApiErrorJS.BadRequest(
             `Нет доступа у Роли ${decoded.role} или ошб.Ролей`
           )
         );
@@ -73,7 +73,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       next();
     } catch (e) {
       // res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });
-      throw next(ApiError.UnauthorizedError("!", `${e}`));
+      throw next(ApiErrorJS.UnauthorizedError("!", `${e}`));
     }
   };
 };

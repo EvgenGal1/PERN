@@ -9,7 +9,7 @@ const uuid = require("uuid");
 // подкл. библ. для шифрование пароля нов.польз.
 const bcrypt = require("bcryptjs");
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError.js");
+const ApiErrorJS = require("../error/ApiErrorJS");
 // выборка полей
 const UserDto = require("../dtos/user.dto.ts");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
@@ -34,21 +34,21 @@ class AuthService {
       //   where: { username, email },
       // });
       // if (candidate) {
-      //   return ApiError.BadRequest(
+      //   return ApiErrorJS.BadRequest(
       //     `Пользователь ${username} <${email}> уже существует`
       //   );
-      //   // return next(ApiError.BadRequest(`Пользователь уже существует`));
+      //   // return next(ApiErrorJS.BadRequest(`Пользователь уже существует`));
       //   // throw new Error(`Пользователь уже существует`);
       // }
       const userName = await User.findOne({ where: { username } });
       if (userName) {
-        return ApiError.BadRequest(
+        return ApiErrorJS.BadRequest(
           `Пользователь с Именем ${username} уже существует`
         );
       }
       const eml = await User.findOne({ where: { email } });
       if (eml) {
-        return ApiError.BadRequest(
+        return ApiErrorJS.BadRequest(
           `Пользователь с Email <${email}> уже существует`
         );
       }
@@ -101,7 +101,7 @@ class AuthService {
     } catch (error) {
       // общ.отв. на серв.ошб. в json смс
       // res.status(500).json({message:`Не удалось зарегистрироваться - ${error}.`});
-      return ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`);
+      return ApiErrorJS.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`);
     }
   }
 
@@ -112,24 +112,28 @@ class AuthService {
       // ^ улучшить до общей проверки (!eml.email - так висит)
       // проверка сущест.username и email
       const user = await User.findOne({ where: { username /* email */ } });
-      console.log("===================== a.S.l user : " + user);
+      console.log("===================== a.S.l user : " + "user");
       if (!user /* !user.username */ /* || !== username */) {
-        console.log("===================== a.S.l uS : " + "uS eRRorrr");
-        return ApiError.BadRequest(
+        console.log("===================== a.S.l uS : " + "здесь user null");
+        /* return */ ApiErrorJS.BadRequest(
           `Пользователь с Именем ${username} не найден`
         );
+        console.log("после BadRequest : " + "после BadRequest");
+        return;
       }
       console.log("===================== a.S.l : " + 1.1);
       const eml = await User.findOne({ where: { email } });
       if (!eml /* !eml.email */) {
-        return ApiError.BadRequest(`Пользователь с Email <${email}> не найден`);
+        return ApiErrorJS.BadRequest(
+          `Пользователь с Email <${email}> не найден`
+        );
       }
       console.log("===================== a.S.l : " + 2);
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
       if (!comparePassword) {
         console.log("===================== a.S.l PSW : " + "eRRorrr");
-        return ApiError.BadRequest("Указан неверный пароль");
+        return ApiErrorJS.BadRequest("Указан неверный пароль");
       }
       console.log("===================== a.S.l : " + 3);
 
@@ -145,7 +149,7 @@ class AuthService {
         user: userDto,
       };
     } catch (error) {
-      return ApiError.BadRequest(`НЕ удалось войти - ${error}.`);
+      return ApiErrorJS.BadRequest(`НЕ удалось войти - ${error}.`);
     }
   }
 
@@ -154,7 +158,9 @@ class AuthService {
     // пров.переданого токена
     if (!refreshToken) {
       // return "Токен не передан";
-      return ApiError.BadRequest(`Токен от ${username} <${email}> не передан`);
+      return ApiErrorJS.BadRequest(
+        `Токен от ${username} <${email}> не передан`
+      );
     }
     const token = await TokenService.removeToken(refreshToken);
     return `Токен пользователя ${username} <${email}> удалён. Стат ${token}`;
@@ -166,7 +172,7 @@ class AuthService {
       where: { activationLink: activationLink },
     });
     if (!user) {
-      return ApiError.BadRequest(
+      return ApiErrorJS.BadRequest(
         `Некорр ссы.актив. Пользователя НЕ существует`
       );
     }
@@ -175,7 +181,7 @@ class AuthService {
     /* await */ user.save();
     // } catch (error) {
     //   return next(
-    //     ApiError.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`)
+    //     ApiErrorJS.BadRequest(`НЕ удалось зарегистрироваться - ${error}.`)
     //   );
     // }
   }
@@ -184,8 +190,8 @@ class AuthService {
   async refresh(refreshToken: string /* , username: string, email: string */) {
     // е/и нет то ошб.не авториз
     if (!refreshToken) {
-      // return ApiError.UnauthorizedError();
-      return ApiError.UnauthorizedError();
+      // return ApiErrorJS.UnauthorizedError();
+      return ApiErrorJS.UnauthorizedError();
     }
     // валид.токен.refresh
     const userData = TokenService.validateRefreshToken(refreshToken);
@@ -197,7 +203,7 @@ class AuthService {
     // проверка валид и поиск
     if (!userData || !tokenFromDB) {
       console.log("---------------a.S.rf err : " + "err");
-      return ApiError.UnauthorizedError();
+      return ApiErrorJS.UnauthorizedError();
     }
     // вытаск.польз.с БД по ID
     const user = await User.findByPk(userData.id); // findByld

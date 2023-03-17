@@ -8,7 +8,7 @@ const { pool } = require("../db");
 const FileService = require("./file.service.ts");
 
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 // выборка полей
 const UserDto = require("../dtos/user.dto.ts");
 // подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
@@ -39,7 +39,7 @@ class UserService {
       //   users,
       // };
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на всех - ${error}.`);
     }
   }
 
@@ -47,12 +47,12 @@ class UserService {
     try {
       const userId = await User.findOne({ where: { id } });
       if (!userId) {
-        return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
+        return ApiErrorJS.BadRequest(`Пользователь с ID ${id} не найден`);
       }
       const userDto = new UserDto(userId);
       return /* { message: `Пользователь ${userDto.username}`, */ userDto /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на одного - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на одного - ${error}.`);
     }
   }
 
@@ -67,7 +67,7 @@ class UserService {
     try {
       const user = await User.findOne({ where: { username } });
       if (!user) {
-        return ApiError.BadRequest(
+        return ApiErrorJS.BadRequest(
           `Пользователь с Именем ${username} не найден`
         );
       }
@@ -79,7 +79,7 @@ class UserService {
       const userDto = new UserDto(userNew);
       return /* {message: `Пользователь ${username} обновлён. Код_${updUser}`, */ userDto /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка обновления - ${error}.`);
     }
   }
 
@@ -87,12 +87,12 @@ class UserService {
     try {
       const user = await User.findOne({ where: { id } });
       if (!user) {
-        return ApiError.BadRequest(`Пользователь с ID ${id} не найден`);
+        return ApiErrorJS.BadRequest(`Пользователь с ID ${id} не найден`);
       }
       var deletUser = await User.destroy({ where: { id } });
       return /* {message: `Пользователь по ID_${id}`,deletUserS: */ `КОД_${deletUser}` /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на удаления - ${error}.`);
     }
   }
 }

@@ -3,7 +3,7 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 const { Brand } = require("../models/modelsTS.ts");
 
 class BrandService {
@@ -13,7 +13,7 @@ class BrandService {
         where: { name },
       });
       if (brandVerif) {
-        return ApiError.BadRequest(`Бренд ${name} уже существует`); // throw не раб
+        return ApiErrorJS.BadRequest(`Бренд ${name} уже существует`); // throw не раб
       }
       const brand = await Brand.create({ name });
       return brand;
@@ -22,7 +22,7 @@ class BrandService {
       //   brand,
       // };
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка создания - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка создания - ${error}.`);
     }
   }
 
@@ -37,7 +37,7 @@ class BrandService {
         brands,
       }; */
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на всех - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на всех - ${error}.`);
     }
   }
 
@@ -45,11 +45,11 @@ class BrandService {
     try {
       const brandId = await Brand.findOne({ where: { id } });
       if (!brandId) {
-        return ApiError.BadRequest(`Бренд по ID_${id} не найден`);
+        return ApiErrorJS.BadRequest(`Бренд по ID_${id} не найден`);
       }
       return /* {message: brandId.name, */ brandId /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на одного - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на одного - ${error}.`);
     }
   }
 
@@ -58,7 +58,7 @@ class BrandService {
     try {
       const brandId = await Brand.findOne({ where: { id } });
       if (!brandId) {
-        return ApiError.BadRequest(`Бренд по ID_${id} не найден`);
+        return ApiErrorJS.BadRequest(`Бренд по ID_${id} не найден`);
       }
       const updBrand = await Brand.update(
         { /* id, */ name },
@@ -68,7 +68,7 @@ class BrandService {
       // const brandDto = new UserDto(userNew);
       return /* {message: `Бренд ${name} обновлён. Код_${updBrand}`, */ /* brandDto */ brandNew /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка обновления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка обновления - ${error}.`);
     }
   }
 
@@ -76,12 +76,12 @@ class BrandService {
     try {
       const brand = await Brand.findOne({ where: { id } });
       if (!brand) {
-        return ApiError.BadRequest(`Бренд с ID ${id} не найден`);
+        return ApiErrorJS.BadRequest(`Бренд с ID ${id} не найден`);
       }
       var deletBrand = await Brand.destroy({ where: { id } });
       return /* {message: `Бренд по ID_${id}`,deletBrand: */ `КОД_${deletBrand}` /* } */;
     } catch (error) {
-      return ApiError.BadRequest(`Ошибка на удаления - ${error}.`);
+      return ApiErrorJS.BadRequest(`Ошибка на удаления - ${error}.`);
     }
   }
 
