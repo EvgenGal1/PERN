@@ -214,7 +214,7 @@ export function Header() {
                   }}
                   className="menu-bottom__items m-b-items"
                 >
-                  <a className="m-b-items__navlink" href="/#">
+                  <a className="m-b-items__navlink" href="#!">
                     1
                   </a>
                 </span>
