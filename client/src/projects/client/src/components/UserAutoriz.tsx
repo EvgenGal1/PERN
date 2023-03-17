@@ -19,7 +19,7 @@ const UserAutoriz: FC = (storeAyth) => {
     //     ? `Пользователь авторизован ${store.user.username} <${store.user.email}>`
     //     : "АВТОРИЗУЙТЕСЬ"}
     // </h1> */}
-    <div className="form">
+    <div className="form auth-form">
       <h1>
         {store.isAuth
           ? `Пользователь авторизован ${store.user.username} <${store.user.email}>`

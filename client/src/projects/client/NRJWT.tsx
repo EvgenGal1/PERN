@@ -45,6 +45,7 @@ const NRJWT: FC = () => {
   // е/и не авториз.<LoginForm />
   if (!store.isAuth) {
     // setShwIsAuth(false);
+    console.log("shwIsAuth ", shwIsAuth);
     // return (
     // <LoginForm />
     // {/* // откл. всё равно нет доступа у не авториз.
@@ -82,16 +83,16 @@ const NRJWT: FC = () => {
         //   openArrowAccord ? " openCont" : ""
         // }`}
       >
-        {shwIsAuth ? (
+        {!store.isAuth /* shwIsAuth */ ? (
+          // е/и не авториз.
+          <LoginForm />
+        ) : (
           // е/и авториз.
           <>
             <UserAutoriz /* store={store} */ /* storeAyth={store.isAuth} */ />
             {/* получ.список польз */}
             <UserList /* setShow={show} */ />
           </>
-        ) : (
-          // е/и не авториз.
-          <LoginForm />
         )}
       </div>
     </div>
