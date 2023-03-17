@@ -1,7 +1,7 @@
 // универс.обраб.ошиб.(handler)
 
 // класс для объедин. неск.мтд. Кл.расшир.Error
-class ApiError extends Error {
+class ApiErrorJS extends Error {
   // формат/последовательность выгрузки
   status; /* : number; */
   message; /* : string; */
@@ -23,24 +23,29 @@ class ApiError extends Error {
   // `Несанкционированная ошибка`
   static UnauthorizedError(message /* : string */, errors = []) {
     // возвращ.экземпл.текущ.кл.
-    return new ApiError(401, `Пользователь не авторизован. ${message}`, errors);
+    return new ApiErrorJS(
+      401,
+      `Пользователь не авторизован. ${message}`,
+      errors
+    );
   }
 
   // `плохой запрос`
   static BadRequest(message /* : string */, errors = []) {
     // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
-    return new ApiError(400, message, errors);
+    return new ApiErrorJS(400, message, errors);
   }
 
   // `внутренний`
   static internal(message /* : string */, errors = []) {
-    return new ApiError(500, message, errors);
+    return new ApiErrorJS(500, message, errors);
   }
 
   // `запрещенный` нет доступа
   static forbidden(message /* : string */, errors = []) {
-    return new ApiError(403, message, errors);
+    return new ApiErrorJS(403, message, errors);
   }
 }
 
-module.exports = ApiError;
+module.exports = ApiErrorJS;
+// const apiErrorInstance = new ApiErrorJS();

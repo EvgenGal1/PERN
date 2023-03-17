@@ -12,7 +12,7 @@ const models = require("./models/modelsTS.ts");
 // подкл.cors для отправ.запр.с брауз.
 const cors = require("cors");
 // подкл.MiddlWare по ошб.
-const errorHandlerMW = require("./middleware/ErrorHandlingMiddleware");
+const errorHandlerMW = require("./middleware/ErrorHandlingMiddlewareJS");
 // подк.загрузчик файлов
 const fileUpload = require("express-fileupload");
 // подкл.для созд.пути

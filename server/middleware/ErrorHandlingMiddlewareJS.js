@@ -4,14 +4,14 @@
 // export {};
 
 // подкл.обраб.ошиб.
-const ApiError = require("../error/ApiError");
+const ApiErrorJS = require("../error/ApiErrorJS");
 
 // экспорт fn (fn явл.middlware). приним. ошб.,запр.,отв.,след.(передача управ.след.middlware)
 module.exports = function (err, req, res, next) {
   console.log("err" + err);
 
-  // е/и ошб.явл.экземплярром из ApiError, возвращ.код, смс из ошб., масс.ошб.
-  if (err instanceof ApiError) {
+  // е/и ошб.явл.экземплярром из ApiErrorJS, возвращ.код, смс из ошб., масс.ошб.
+  if (err instanceof ApiErrorJS) {
     console.log("????????????????????????? err 1 ", err);
     return (
       res
@@ -21,6 +21,6 @@ module.exports = function (err, req, res, next) {
     );
   }
   console.log("????????????????????????? err 2 ", err);
-  // е/и ошб. НЕ из ApiError, возвращ.настр.код и смс
-  return res.status(500).json({ message: `Непредвиденная ошибка! ${err}` });
+  // е/и ошб. НЕ из ApiErrorJS, возвращ.настр.код и смс
+  return res.status(505).json({ message: `Непредвиденная ошибка! ${err}` });
 };
