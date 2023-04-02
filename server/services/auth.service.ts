@@ -4,17 +4,18 @@
 export {};
 
 // ^ ++++ UlbiTV.PERNstore
-// подкл.генир.уник.рандом.id
-const uuid = require("uuid");
+// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
+// Путь импорта может закончиться только расширением .ts '.
+const { User } = require("../models/modelsTS.ts");
 // подкл. библ. для шифрование пароля нов.польз.
 const bcrypt = require("bcryptjs");
+// подкл.генир.уник.рандом.id
+const uuid = require("uuid");
 // подкл.обраб.ошиб.
 const ApiErrorJS = require("../error/ApiErrorJS");
 // выборка полей
 const UserDto = require("../dtos/user.dto.ts");
-// подкл.модели пользователей и ролей. Можно разнести на отдельн.ф(User.ts,Role.ts,..)
-const { User } = require("../models/modelsTS.ts");
-// Путь импорта может закончиться только расширением .ts '.
+// serv
 const MailService = require("./mail.service.ts");
 const TokenService = require("./token.service.ts");
 
@@ -112,42 +113,42 @@ class AuthService {
   // АВТОРИЗАЦИЯ
   async login(username: string, email: string, password: string) {
     try {
-      console.log("===================== a.S.l : " + 1);
+      console.log("=== a.S.l : " + 1);
       // ^ улучшить до общей проверки (!eml.email - так висит)
       // проверка сущест.username и email
       const user = await User.findOne({ where: { username /* email */ } });
-      console.log("===================== a.S.l user : " + "user");
+      console.log("=== a.S.l user : " + "user");
       if (!user /* !user.username */ /* || !== username */) {
-        console.log("===================== a.S.l uS : " + "здесь user null");
-        /* return */ ApiErrorJS.BadRequest(
+        console.log("==== a.S.l uS : " + "здесь user null");
+        return ApiErrorJS.BadRequest(
           `Пользователь с Именем ${username} не найден`
         );
         console.log("после BadRequest : " + "после BadRequest");
         return;
       }
-      console.log("===================== a.S.l : " + 1.1);
+      console.log("=== a.S.l : " + 1.1);
       const eml = await User.findOne({ where: { email } });
-      console.log("===================== a.S.l eml : " + eml);
+      console.log("=== a.S.l eml : " + eml);
       if (!eml /* !eml.email */) {
-        console.log("===================== a.S.l uS : " + "здесь eml null");
+        console.log("==== a.S.l uS : " + "здесь 2 eml null");
         return ApiErrorJS.BadRequest(
           `Пользователь с Email <${email}> не найден`
         );
       }
-      console.log("===================== a.S.l : " + 2);
+      console.log("=== a.S.l : " + 2);
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
       if (!comparePassword) {
-        console.log("===================== a.S.l PSW : " + "eRRorrr");
+        console.log("=== PSW : " + "eRRorrr");
         return ApiErrorJS.BadRequest("Указан неверный пароль");
       }
-      console.log("===================== a.S.l : " + 3);
+      console.log("=== : " + 3);
 
       // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       const userDto = new UserDto(user);
-      console.log("===========================1 : " + userDto);
+      console.log("==== : " + userDto);
       const tokens = TokenService.generateToken({ ...userDto });
-      console.log("===========================2 : " + tokens.refreshToken);
+      console.log("===2 : " + tokens.refreshToken);
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
       return {
         message: `Зашёл ${username} <${email}>. ID_${user.id}_${user.role}`,

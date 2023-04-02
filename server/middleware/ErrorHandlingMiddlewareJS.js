@@ -24,5 +24,5 @@ module.exports = function (err, req, res, next) {
   // е/и ошб. НЕ из ApiErrorJS, возвращ.настр.код и смс
   return res
     .status(505)
-    .json({ message: `(~SRV.ErrHandlMW)Непредвиденная ошибка! ${err}` });
+    .json({ message: `(~SRV.ErrHandlMW)Непредвиденная ошибка! + err: ${err}` });
 };

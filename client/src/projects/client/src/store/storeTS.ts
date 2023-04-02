@@ -31,7 +31,7 @@ export default class Store {
   }
   setErr(any: any) {
     this.isErr = any;
-    console.log("st isErr : " + this.isErr);
+    console.log("CLT.st isErr : " + this.isErr);
   }
 
   // асинхр.экшны
@@ -66,7 +66,7 @@ export default class Store {
   async login(username: string, email: string, password: string) {
     try {
       const response = await AuthService.login(username, email, password);
-      console.log(response?.data);
+      console.log("CLT. login l " + response?.data);
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
@@ -78,7 +78,6 @@ export default class Store {
       // setUsers(response.data);
     } catch (error: any) {
       this.setErr(error?.response?.data?.errors?.[0].msg);
-      console.log("1 : " + 1);
       console.log("CLT. st.l " + error);
       console.log(error?.response);
       console.log(error?.response?.data);
@@ -114,6 +113,7 @@ export default class Store {
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);
       this.setUser(response?.data?.user);
+      // this.setLoading(false);
     } catch (error: any) {
       console.log(/* "Данные НЕ введены - " +  */ error?.response?.data);
     } finally {

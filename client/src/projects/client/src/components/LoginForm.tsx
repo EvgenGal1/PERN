@@ -35,7 +35,7 @@ const LoginForm: FC = () => {
       // const response = await UserService.fetchUser();
       const log = await store.login(username, email, password);
       // setErr
-      console.log("log ", log);
+      console.log("LF log ", log);
       // const response = await UserService.fetchUser();
       // // возращ.с serv помещ.в сост.
       // setLog(log);
@@ -59,6 +59,7 @@ const LoginForm: FC = () => {
     }
   }
 
+  // РЕГИСТРАЦИЯ
   async function registr() {
     setErr("");
     try {

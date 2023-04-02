@@ -26,8 +26,8 @@ class ApiErrorTS extends Error {
     // возвращ.экземпл.текущ.кл.
     return new ApiErrorTS(
       401,
-      `Пользователь не авторизован. ${message}`,
-      errors
+      `Пользователь не авторизован. ` /* ${message} ,
+      errors */
     );
   }
 

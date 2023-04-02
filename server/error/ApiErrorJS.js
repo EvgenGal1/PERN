@@ -37,16 +37,16 @@ module.exports = class ApiErrorJS extends Error {
   static BadRequest(message /* : string */, errors = []) {
     console.log("SRV.ApiErrJS BadRequest 1 ", 123);
     // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
-    /* return */ new ApiErrorJS(400, message, errors);
+    // /* return */ new ApiErrorJS(400, message, errors);
     console.log("SRV.ApiErrJS BadRequest 2 ", 2345);
     console.log("SRV.ApiErrJS BadRequest 3 err ", errors);
     console.log(
       "SRV.ApiErrJS BadRequest 4 msg|err ",
-      "msg " + message,
-      "err " + errors
+      "err " + errors,
+      "msg " + message
     );
     // ! ошб. выводит cg и падает в cg SRV.a.cntrl registr catch и undf reading 'refr|tokens'
-    return;
+    return new ApiErrorJS(400, message, errors);
   }
 
   // `внутренний`
