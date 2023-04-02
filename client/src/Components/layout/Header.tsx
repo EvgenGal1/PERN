@@ -61,10 +61,11 @@ export function Header() {
             <Link to="/" className="header__link">
               <img
                 className="header__img"
-                src={require("../../img/logo/ЕжеСветRedBlackWhiteEff.png")}
+                // src={require("../../img/logo/ЕжеСветRedBlackWhiteEff.png")}
+                src={require("../../img/logo/PERN.png")}
                 alt=""
               />
-              <h3>НОВ.ПРОЕКТ</h3>
+              <h3>.E.R.N.</h3>
             </Link>
           </div>
           {/* ОБЩ. МЕНЮ */}

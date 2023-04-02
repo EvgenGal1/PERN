@@ -25,13 +25,15 @@
   .header__logo {
     display: flex;
     .header__img {
-      width: 50px;
-      height: 50px;
-      margin: -10px 10px -10px -10px;
+      width: 30px;
+      height: 30px;
+      // margin: -10px 10px -10px -10px;
     }
     .header__link {
       display: flex;
-      height: 30px;
+      justify-content: center;
+      align-items: center;
+      // height: 30px;
       font-weight: bold;
       font-size: 30px;
       &:hover {
@@ -152,8 +154,15 @@
 
 // АНИМАЦИЯ ЛОГОТИПА <logotTip(ЕжеСвет)>˅=============================================================˅
 .header__logo {
+  h3 {
+    // position: absolute;
+    font-size: 45px;
+    opacity: 0;
+    visibility: hidden;
+    // transform: translateX(10%);
+  }
   &:hover {
-    animation: logoImgColor 3s linear infinite 0s;
+    // animation: logoImgColor 3s linear infinite 0s;
     @keyframes logoImgColor {
       25% {
         background-color: red;
@@ -165,53 +174,79 @@
         background-color: blue;
       }
     }
+    h3 {
+      // transform: scale(1.2) translateX(0);
+      // transition: 0.5s;
+      opacity: 1;
+      visibility: visible;
+      color: #1857a4;
+
+      animation: /* rotate(45deg) */ logoh3Show 0.5s linear;
+    }
+    @keyframes logoh3Show {
+      0% {
+        transform: /* scale(1) translateX(0px)  */ rotate(0deg);
+      }
+      20% {
+        transform: /* scale(1) translateX(0px)  */ rotate(-25deg);
+      }
+      50% {
+        transform: /* scale(2) translateX(50px) */ rotate(25deg);
+      }
+      100% {
+        transform: /* scale(1) translateX(0px)  */ rotate(0deg);
+      }
+    }
     .header__img {
       position: inherit;
       top: 0;
       left: 0;
       width: auto;
-      animation: logoImgSize 3s linear infinite 0s;
-      @keyframes logoImgSize {
-        0% {
-          transform: rotate(0deg);
-        }
-        12% {
-          transform: rotate(0.72turn) scale(0.5);
-        }
-        20% {
-          transform: rotate(1.25turn);
-        }
-        25% {
-          transform: rotate(1.25turn);
-        }
-        37% {
-          transform: rotate(1.87turn) scale(0.5);
-        }
-        45% {
-          transform: rotate(2.5turn);
-        }
-        50% {
-          transform: rotate(2.5turn);
-        }
-        62% {
-          transform: rotate(3.12turn) scale(0.5);
-        }
-        70% {
-          transform: rotate(3.75turn);
-        }
-        75% {
-          transform: rotate(3.75turn);
-        }
-        87% {
-          transform: rotate(4.37turn) scale(0.5);
-        }
-        95% {
-          transform: rotate(5turn);
-        }
-        100% {
-          transform: rotate(5turn);
-        }
-      }
+      transform: scale(1.2);
+      transition: 0.3s;
+      // ВРАЩЕНИЕ в 4х смены позиции с увеличением по часовой
+      // animation: logoImgSize 0.5s linear infinite 0s;
+      // @keyframes logoImgSize {
+      //   // 0% {
+      //   //   transform: rotate(0deg);
+      //   // }
+      //   // 12% {
+      //   //   transform: rotate(0.72turn) scale(0.5);
+      //   // }
+      //   // 20% {
+      //   //   transform: rotate(1.25turn);
+      //   // }
+      //   // 25% {
+      //   //   transform: rotate(1.25turn);
+      //   // }
+      //   // 37% {
+      //   //   transform: rotate(1.87turn) scale(0.5);
+      //   // }
+      //   // 45% {
+      //   //   transform: rotate(2.5turn);
+      //   // }
+      //   // 50% {
+      //   //   transform: rotate(2.5turn);
+      //   // }
+      //   // 62% {
+      //   //   transform: rotate(3.12turn) scale(0.5);
+      //   // }
+      //   // 70% {
+      //   //   transform: rotate(3.75turn);
+      //   // }
+      //   // 75% {
+      //   //   transform: rotate(3.75turn);
+      //   // }
+      //   // 87% {
+      //   //   transform: rotate(4.37turn) scale(0.5);
+      //   // }
+      //   // 95% {
+      //   //   transform: rotate(5turn);
+      //   // }
+      //   // 100% {
+      //   //   transform: rotate(5turn);
+      //   // }
+      // }
     }
   }
 }
