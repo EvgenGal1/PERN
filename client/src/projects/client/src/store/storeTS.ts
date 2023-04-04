@@ -115,6 +115,7 @@ export default class Store {
       this.setUser(response?.data?.user);
       // this.setLoading(false);
     } catch (error: any) {
+      console.log(error);
       console.log(/* "Данные НЕ введены - " +  */ error?.response?.data);
     } finally {
       this.setLoading(false);
