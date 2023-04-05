@@ -109,6 +109,7 @@ export default class Store {
           withCredentials: true,
         }
       );
+      console.log(response);
       console.log(response?.data);
       localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
       this.setAuth(true);
