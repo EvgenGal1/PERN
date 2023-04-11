@@ -4,17 +4,17 @@
 module.exports = class ApiErrorJS extends Error {
   // формат/последовательность выгрузки
   status; /* : number; */
-  /* message;  */ /* : string; */
+  message; /* : string; */
   errors; /* : any; */
 
   // в парам.приним. стат.код, смс, ошб.(по умолч.масс.пуст)
   constructor(status /* : number */, message /* : string */, errors = []) {
     // вызов.род.констр. с передачей смс
-    super(message);
+    super();
     // super(message); // ! не раб. формат или присвойка без указания
     // присвойка полученого в экземпляр кл.
     this.status = status;
-    // this.message = message;
+    this.message = message;
     this.errors = errors;
     // console.log("SRV.ApiErrJS constructor ", 000123);
   }
@@ -35,10 +35,8 @@ module.exports = class ApiErrorJS extends Error {
 
   // `плохой запрос`
   static BadRequest(message /* : string */, errors = []) {
-    console.log("SRV.ApiErrJS BadRequest 1 ", 123);
     // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
     // /* return */ new ApiErrorJS(400, message, errors);
-    console.log("SRV.ApiErrJS BadRequest 2 ", 2345);
     console.log("SRV.ApiErrJS BadRequest 3 err ", errors);
     console.log(
       "SRV.ApiErrJS BadRequest 4 msg|err ",

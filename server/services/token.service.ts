@@ -31,7 +31,7 @@ const jwt = require("jsonwebtoken");
 // сохр.токенов по id при регистр/логин
 class TokenService {
   // валид./проверка подделки/сроки жизни токена ACCESS и REFRESH
-  validateAccessToken(token) {
+  validateAccessToken(token: string) {
     try {
       // верифик.|раскодир.токен. `проверять` на валидность(токен, секр.ключ)
       const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY);
@@ -51,7 +51,7 @@ class TokenService {
   }
 
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
-  /* async */ generateToken(payload) {
+  /* async */ generateToken(payload: any) {
     // передаём данн.польз в fn генер.токена.
     // const accessToken = generateJwt(payload);
     const accessToken = /* await */ jwt.sign(
@@ -89,7 +89,7 @@ class TokenService {
         { /* userId, */ refreshToken },
         { where: { userId: userId } }
       );
-      return;
+      // return;
       tokenData.userId = userId;
       tokenData.refreshToken = refreshToken;
       // сохр. для обнов.в БД
@@ -107,7 +107,7 @@ class TokenService {
   }
 
   // Удален.REFRESH из БД
-  async removeToken(refreshToken) {
+  async removeToken(refreshToken: string) {
     console.log("SRV.t.serv 7 : " + 7);
     const tokenData = await Token.destroy({
       where: { refreshToken: refreshToken },
@@ -116,7 +116,7 @@ class TokenService {
   }
 
   // Поиск REFRESH токена в БД
-  async findToken(refreshToken) {
+  async findToken(refreshToken: string) {
     console.log("SRV.t.serv 8 : " + 8);
     const tokenData = await Token.findOne({
       where: { refreshToken: refreshToken },

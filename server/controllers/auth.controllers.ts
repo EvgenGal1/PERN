@@ -29,7 +29,7 @@ class AuthControllers {
         // return res.status(400).json({
         return next(
           ApiErrorJS.BadRequest(
-            /* message: */ "Некорректые данные при регистрации",
+            /* message: */ "Некорректые данные при регистрации (SRV.AuCntrl.registr)",
             /* errors: */ errorsValid.array()
             // })
           )
@@ -91,17 +91,19 @@ class AuthControllers {
   // АВТОРИЗАЦИЯ
   async login(req, res, next) {
     try {
+      console.log("SRV.a.cntrl login.req : " + req);
+      console.log("SRV.a.cntrl login.res : " + res);
       const errorsValid = validationResult(req);
       if (!errorsValid.isEmpty()) {
         return next(
           ApiErrorJS.BadRequest(
-            "Некорректые данные при регистрации",
+            "Некорректые данные при регистрации (SRV.AuCntrl.ligin)",
             errorsValid.array()
           )
         );
       }
       const { username, email, password } = req.body;
-      console.log("=========================== : " + username);
+      console.log("SRV.a.cntrl login.usNm : " + username);
       const userData = await AuthService.login(username, email, password);
       res.cookie("refreshToken", userData.tokens.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,

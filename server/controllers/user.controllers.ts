@@ -31,7 +31,7 @@ class UserControllers {
       // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
       if (!errorsValid.isEmpty()) {
         return res.status(400).json({
-          message: "Некорректые данные при регистрации",
+          message: "Некорректые данные при регистрации (SRV.UsCntrl.crUs)",
           errors: errorsValid.array(),
         });
       }

@@ -17,12 +17,14 @@ module.exports = function (err, req, res, next) {
       res
         .status(err.status)
         // .json(err)
-        .json({ message: err.message, errors: err.errors })
+        .json({ message: err.message /* , errors: err.errors */ })
     );
   }
   console.log("????????????????????????? err 2 ", err);
   // е/и ошб. НЕ из ApiErrorJS, возвращ.настр.код и смс
   return res
     .status(505)
-    .json({ message: `(~SRV.ErrHandlMW)Непредвиденная ошибка! + err: ${err}` });
+    .json({
+      message: `(~SRV.ErrHandlMW) Непредвиденная ошибка! + err: ${err}`,
+    });
 };

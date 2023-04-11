@@ -113,42 +113,42 @@ class AuthService {
   // АВТОРИЗАЦИЯ
   async login(username: string, email: string, password: string) {
     try {
-      console.log("=== a.S.l : " + 1);
+      console.log("SRV. a.S.l : " + 1);
       // ^ улучшить до общей проверки (!eml.email - так висит)
       // проверка сущест.username и email
       const user = await User.findOne({ where: { username /* email */ } });
-      console.log("=== a.S.l user : " + "user");
+      console.log("SRV. a.S.l user : " + "user");
       if (!user /* !user.username */ /* || !== username */) {
-        console.log("==== a.S.l uS : " + "здесь user null");
+        console.log("SRV. a.S.l uS : " + "здесь user null");
         return ApiErrorJS.BadRequest(
           `Пользователь с Именем ${username} не найден`
         );
         console.log("после BadRequest : " + "после BadRequest");
         return;
       }
-      console.log("=== a.S.l : " + 1.1);
+      console.log("SRV. a.S.l : " + 1.1);
       const eml = await User.findOne({ where: { email } });
-      console.log("=== a.S.l eml : " + eml);
+      console.log("SRV. a.S.l eml : " + eml);
       if (!eml /* !eml.email */) {
-        console.log("==== a.S.l uS : " + "здесь 2 eml null");
+        console.log("SRV. a.S.l uS : " + "здесь 2 eml null");
         return ApiErrorJS.BadRequest(
           `Пользователь с Email <${email}> не найден`
         );
       }
-      console.log("=== a.S.l : " + 2);
+      console.log("SRV. usDTO a.S.l : " + 2);
       // проверка `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
       if (!comparePassword) {
-        console.log("=== PSW : " + "eRRorrr");
+        console.log("SRV. usDTO PSW : " + "eRRorrr");
         return ApiErrorJS.BadRequest("Указан неверный пароль");
       }
-      console.log("=== : " + 3);
+      console.log("SRV. usDTO : " + 3);
 
       // ^ надо отдельн.fn ниже - выборка,генер.2токен,сохр.refresh в БД, return
       const userDto = new UserDto(user);
-      console.log("==== : " + userDto);
+      console.log("SRV. usDTO : " + userDto);
       const tokens = TokenService.generateToken({ ...userDto });
-      console.log("===2 : " + tokens.refreshToken);
+      console.log("SRV. 2 : " + tokens.refreshToken);
       await TokenService.saveToken(userDto.id, tokens.refreshToken);
       return {
         message: `Зашёл ${username} <${email}>. ID_${user.id}_${user.role}`,
@@ -170,7 +170,7 @@ class AuthService {
       );
     }
     const token = await TokenService.removeToken(refreshToken);
-    return `Токен пользователя ${username} <${email}> удалён. Стат ${token}`;
+    return `Токен ${refreshToken} пользователя ${username} <${email}> удалён. Стат ${token}`;
   }
 
   // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
