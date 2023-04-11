@@ -3,7 +3,7 @@ import axios from "axios";
 import { AuthResponse } from "../models/response/auth.response";
 
 // перем.:
-export const API_URL = "http://localhost:5007/PERN"; // /auth
+export const API_URL = "http://localhost:5010/PERN"; // /auth
 // export const DEBUG = process.env.NODE_ENV === "development";
 
 // экземпляр axios запр. СОЗД.
@@ -18,15 +18,17 @@ const api = axios.create({
 api.interceptors.request.use(
   // парам.callback - config(с баз.полями)
   (config) => {
+    console.log("config : " + config);
     const accessToken = localStorage.getItem("tokenAccess");
     // присв.header с token из.в LS
-    // if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-    // config.headers.common = { Authorization: `Bearer ${accessToken}` };}
+    if (accessToken) {
+      // config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.common = { Authorization: `Bearer ${accessToken}` };
+    }
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error || error.response || error.message);
   }
 );
 
@@ -50,7 +52,7 @@ api.interceptors.response.use(
             withCredentials: true,
           }
         );
-        localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
+        localStorage.setItem("tokenAccess", response.data.accessToken);
         // в экземпляр перехватчика передаём вызов исход.запроса (данн.для запроса)
         return api.request(originalRequest);
       } catch (error) {

@@ -45,13 +45,14 @@ export default class Store {
       );
       console.log(response?.data);
       // запись в LS
-      localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
+      localStorage.setItem("tokenAccess", response.data.accessToken);
       // отпр.данн.в мутац.для сохр.(авториз.,токен,польз.,..)
       this.setAuth(true);
       this.setUser(response?.data?.user);
     } catch (error: any) {
       // this.setErr(error);
-      this.setErr(error?.response?.data?.errors?.[1].msg);
+      // this.setErr(error?.response?.data?.errors?.[1].msg);
+      this.setErr(error?.response?.data?.message);
       console.log(
         "errors?.[0].msg : " + error?.response?.data?.errors?.[1].msg
       );
@@ -66,8 +67,10 @@ export default class Store {
   async login(username: string, email: string, password: string) {
     try {
       const response = await AuthService.login(username, email, password);
-      console.log("CLT. login l " + response?.data);
-      localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
+      console.log("CLT. login response " + response);
+      console.log("CLT. login data " + response?.data);
+      console.log("CLT. login accessToken " + response?.data?.accessToken);
+      localStorage.setItem("tokenAccess", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
       // return console.log(response?.data);
@@ -77,7 +80,8 @@ export default class Store {
       // // setLog(log);
       // setUsers(response.data);
     } catch (error: any) {
-      this.setErr(error?.response?.data?.errors?.[0].msg);
+      // this.setErr(error?.response?.data?.errors?.[0].msg);
+      this.setErr(error?.response?.data?.message);
       console.log("CLT. st.l " + error);
       console.log(error?.response);
       console.log(error?.response?.data);
@@ -111,7 +115,7 @@ export default class Store {
       );
       console.log(response);
       console.log(response?.data);
-      localStorage.setItem("tokenAccess", response.data.tokens.accessToken);
+      localStorage.setItem("tokenAccess", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response?.data?.user);
       // this.setLoading(false);
@@ -120,6 +124,7 @@ export default class Store {
       console.log(/* "Данные НЕ введены - " +  */ error?.response?.data);
     } finally {
       this.setLoading(false);
+      console.log("00987");
     }
   }
 }
