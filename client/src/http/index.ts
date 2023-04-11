@@ -18,8 +18,9 @@ const api = axios.create({
 api.interceptors.request.use(
   // парам.callback - config(с баз.полями)
   (config) => {
-    console.log("config : " + config);
+    console.log("CLT.http/ind.intercep.req config : " + config);
     const accessToken = localStorage.getItem("tokenAccess");
+    console.log("CLT.http/ind.intercep.req accessToken : " + accessToken);
     // присв.header с token из.в LS
     if (accessToken) {
       // config.headers.Authorization = `Bearer ${accessToken}`;
@@ -28,6 +29,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log("error : " + error);
     return Promise.reject(error || error.response || error.message);
   }
 );
