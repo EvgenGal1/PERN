@@ -17,6 +17,7 @@ interface intrfStoreTS {
 const store = new StoreTS();
 
 // созд.Context для использ.store в комп.ч/з useContext
+// export const Context = createContext({ store });
 export const Context = createContext<intrfStoreTS>({
   store,
 });
