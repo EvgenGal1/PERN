@@ -124,7 +124,7 @@ export default class Store {
       console.log(/* "Данные НЕ введены - " +  */ error?.response?.data);
     } finally {
       this.setLoading(false);
-      console.log("00987");
+      // console.log("00987");
     }
   }
 }

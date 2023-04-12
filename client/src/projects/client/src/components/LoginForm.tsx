@@ -20,7 +20,7 @@ const LoginForm: FC = () => {
   // сост.error
   const [err, setErr] = useState<string>(/* <AuthResponse> */ "");
   /* null */
-  console.log("err ", err);
+  // console.log("LF err ", err);
   // сост.отраж.списка
   const [show, setShow] = useState(false);
 
