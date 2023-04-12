@@ -2,8 +2,12 @@ import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-import { App } from "./projects/App";
+// ^ NRJWT (СТАРЫЙ ПОДХОД)
+// import { App } from "./projects/App";
 import "./index.css";
+// ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
+import App from "./App";
+import { AppContextProvider } from "./Components/layout/AppContext";
 
 // ^ NRJWT
 import StoreTS from "./projects/client/src/store/storeTS";
@@ -23,7 +27,7 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  // ^ ДО слияния tokmakov|UlbiTV
+  // ^ ДО слияния tokmakov|UlbiTV. СТАРЫЙ ПОДХОД
   // <React.StrictMode>
   //   <Context.Provider value={{ store }}>
   //     <BrowserRouter>
@@ -33,10 +37,8 @@ root.render(
   // </React.StrictMode>
   // ^ слияние tokmakov|UlbiTV. НОВЫЙ ПОДХОД
   <React.StrictMode>
-    <Context.Provider value={{ store }}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Context.Provider>
+    <AppContextProvider>
+      <App />
+    </AppContextProvider>
   </React.StrictMode>
 );
