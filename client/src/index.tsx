@@ -3,10 +3,11 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 // ^ NRJWT (СТАРЫЙ ПОДХОД)
-// import { App } from "./projects/App";
+import { App } from "./projects/App";
+// import { Router } from "./Components/layout/Router";
 import "./index.css";
 // ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
-import App from "./App";
+import AppNew from "./App";
 import { AppContextProvider } from "./Components/layout/AppContext";
 
 // ^ NRJWT
@@ -38,6 +39,7 @@ root.render(
   // ^ слияние tokmakov|UlbiTV. НОВЫЙ ПОДХОД
   <React.StrictMode>
     <AppContextProvider>
+      <AppNew />
       <App />
     </AppContextProvider>
   </React.StrictMode>
