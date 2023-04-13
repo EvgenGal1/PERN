@@ -10,10 +10,10 @@ import { Routes, Route /* , useLocation */ } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 // Страницы
-import { Prob0 } from "../pages/Prob0";
-import { Prob1 } from "../pages/Prob1";
-import { Prob2 } from "../pages/Prob2";
-import { AboutMe } from "../pages/AboutMe";
+import { Prob0 } from "../pages/starPodhod/Prob0";
+import { Prob1 } from "../pages/starPodhod/Prob1";
+import { Prob2 } from "../pages/starPodhod/Prob2";
+import { AboutMe } from "../pages/starPodhod/AboutMe";
 // НОВ.ПРОЕКТ
 import { NewPro } from "../../projects/NewPro/NewPro";
 // NRJWT
@@ -29,7 +29,7 @@ import {
   ABOUTME_ROUTE,
   NRJWT_ROUTE,
 } from "../../utils/constsStar";
-import { Main } from "../pages/Main";
+import { Main } from "../pages/starPodhod/Main";
 
 // для аним ч/з react-transition-group
 // import "./Router.scss";

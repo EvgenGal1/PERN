@@ -100,7 +100,7 @@ body[data-theme="light"] {
     *:not(a):not(ul) {
       border-color: var(--bord-hr) !important;
     }
-    hr {
+    hr.hr {
       border-color: var(--bord-hr);
     }
 
@@ -203,6 +203,7 @@ body[data-theme="light"] {
       background-color: var(--ui-bg);
     }
 
+    // ПЕРЕКЛЮЧАТЕЛИ ----------------------------------------------------------------------------------
     // перепись цвета КНП для Цв.Тем
     .sw3btn-radio__light:checked ~ .sw3btn-slider {
       background-color: var(--ui-act-bg);
@@ -310,133 +311,4 @@ body[data-theme="light"] {
       background-color: var(--ui-bg);
     }
   }
-}
-
-:root {
-  //
-  //
-  --probCol: antiquewhite;
-  --probCol: bisque;
-  --probCol: moccasin;
-  --probCol: wheat;
-  --probCol: #d2b48c;
-  --probCol: slategrey;
-  --probCol: silver;
-  --probCol: peachpuff;
-  --probCol: lightsteelblue;
-  --probCol: lightslategrey;
-  --probCol: darkgrey;
-  --probCol: rosybrown;
-  --probCol: sienna;
-  --probCol: #79553d; // Бежево-коричневый
-  --probCol: #3d2b1f; // Бистр
-  --probCol: #755c48; // Бледно-коричневый
-  --probCol: #321414; // Ивово-коричневый
-  --probCol: #371f1c; // Темный серо-красно-коричневый
-  --probCol: #45161c; // Бурый
-  --probCol: #490005; // Глубокий красно-коричневый
-  --probCol: #4f0014; // Очень глубокий красный
-  --probCol: #480607; // Болгарский розовый
-  --probCol: #65000b; // Розовый лес
-  --probCol: #721422; // Перламутрово-рубиновый
-  --probCol: #7f180d; // Насыщенный красно-коричневый
-  --probCol: #800000; // Коричнево-малиновый
-  --probCol: #9b111e; // Рубиново-красный
-  --probCol: #b32428; // Ориент красный
-  --probCol: #5e2129; // Винно-красный
-  --probCol: #734222; // Глиняный коричневый
-  --probCol: #593315; // Глубокий желто-коричневый
-  --probCol: #712f26; // Золотисто-каштановый
-  --probCol: #79443b; // Известковая глина
-  --probCol: #633a34; // Каштаново-коричневый
-  --probCol: #a25f2a; // Камелопардовый
-  --probCol: #884535; // Кирпичный
-  --probCol: #b94e48; // Сочный каштановый Крайола
-  --probCol: #af4035; // Средний карминный
-  --probCol: #503d33; // Коричневато-серый
-  --probCol: #442d25; // Кофейный
-  --probCol: #4e3b31; // Темный терракотовый
-  --probCol: #592321; // Красно-коричневый
-  --probCol: #4c2f27; // Махагон коричневый
-  --probCol: #8e402a; // Медно-коричневый
-  --probCol: #904d30; // Терракотовый
-  --probCol: #753313; //   Насыщенный коричневый
-  --probCol: #642424; //   Оксид красный
-  --probCol: #59351f; // Олень коричневый
-  --probCol: #4d4234; // Оливковый серый
-  --probCol: #a65e2e; // Оранжево-коричневый
-  --probCol: #5b3a29; //   Орехово-коричневый
-  --probCol: #3f2512; // Темный желтовато-коричневый
-  --probCol: #32221a; //   Темный серо-коричневый
-  --probCol: #320a18; // Очень темный красный
-  --probCol: #6c3b2a; // Сигнальный коричневый
-  --probCol: #45322e; // Шоколадно-коричневый
-  --probCol: #714b23; // Сырая умбра
-  --probCol: #464451; // Антрацитовый
-  --probCol: #817066; // Средний серый
-  --probCol: #fcdd76; // Песочный
-  --probCol: #967117; // Песочный серо-коричневый
-  --probCol: #cd853f; // Перу
-  --probCol: #2c5545; //   Сосновый зеленый
-  --probCol: #d68a59; //   Сырая охра
-  --probCol: #909090; // Телегрей
-  --probCol: #ff7e00; // Темный янтарь
-  --probCol: #cc5500; // Жженый апельсин (Выгоревший оранжевый)
-  --probCol: #f39f18;
-  --probCol: #e4a010;
-  --probCol: #b57900;
-  //
-  --probCol: #490005; // Глубокий красно-коричневый
-  --probCol: #4f0014; // Очень глубокий красный
-  --probCol: #480607; // Болгарский розовый
-  --probCol: #65000b; // Розовый лес
-  --probCol: #3d2b1f; // Бистр
-  --probCol: #4c2f27; // Махагон коричневый
-  --probCol: #9b111e; // Рубиново-красный
-  --probCol: #442d25; // Кофейный
-  --probCol: #464451; // Антрацитовый
-  --probCol: #5b3a29; //   Орехово-коричневый
-  //
-  // --ui-bg dark
-  // --probCol: #6c3b2a;
-  // --probCol: #5b3a29;
-  // --probCol: #59351f;
-  // --probCol: #321414;
-  // --probCol: #371f1c;
-  //
-  // --ui-bg natur
-  // --probCol: #6c3b2a;
-  // --probCol: #45322e;
-  // --probCol: #714b23;
-  // --probCol: #817066;
-  // --probCol: #464451;
-  // --probCol: #5b3a29;
-  // --probCol: #4e3b31;
-  // --probCol: #503d33;
-  // --probCol: #755c48;
-  // --probCol: #79553d;
-  //
-  // background-color: #87a96b; //   Спаржа Крайола
-  // background-color: #317f43; //   Сигнальный зеленый
-  // background-color: #08457e; // Темно-лазурный
-  // background-color: #000080; //   Темно-синий
-  // background-color: #0067a5; // Средний персидский синий
-  // background-color: #1974d2; // Темно-синий Крайола
-  // background-color: #00008b; // Темный ультрамариновый
-  // background-color: #6a5acd; // Аспидно-синий
-  // background-color: #3e5f8a; // Бриллиантово-синий
-  // background-color: #0095b6; // Воды пляжа Бонди
-  // background-color: #2b6cc4; // Светлый джинсовый
-  // background-color: #007dff; // Синий Градуса
-  // background-color: #2a52be; // Синяя лазурь (Лазурно-голубой)
-  // background-color: #003399; // Синяя пыль
-  // background-color: #1b5583; // Капри синий
-  // background-color: #0047ab; // Кобальт синий (Кобальтовый)
-  // background-color: #4169e1; // Королевский синий
-  // background-color: #082567; // Сапфировый
-  // background-color: #9370d8; // Средний пурпурный
-  // background-color: #9932cc; // Темная орхидея
-  // background-color: #660066; //   Сливовый
-  // background-color: #8e4585; // Сливовый Крайола
-  // background-color: #1d1e33; //   Сапфирово-синий
 }

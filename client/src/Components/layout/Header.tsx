@@ -3,11 +3,24 @@ import { NavLink, Link } from "react-router-dom";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
 import { useAllKeysPress } from "../../scripts/hooks/useAllKeysPress";
+// переключатель видимости Доп.Меню
+import { Switcher1btn } from "../ui/switcher/Switcher1btn";
+
+// переключатель черно-белый
+import { Switcher2btn } from "../ui/switcher/Switcher2btn";
 
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
 import { useTheme } from "../../scripts/hooks/useTheme";
-// переключатель для тем
-import { Switcher3btnTheme } from "../ui/Switcher3btnTheme";
+// переключатель для Цв.Тем
+import { Switcher3btn } from "../ui/switcher/Switcher3btn";
+
+// хук для Размеров (Большой, Средний, Маленький,Выключен)
+import { useSize } from "../../scripts/hooks/useSize";
+// переключатель для размеров
+import { Switcher4btn } from "../ui/switcher/Switcher4btn";
+
+// подсказка по наведению мыши
+import { TitleEl } from "../ui/hintTemplates/TitleEl";
 
 export function Header() {
   // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
@@ -38,19 +51,17 @@ export function Header() {
     }
   }, [combinePress, pressCombine]);
 
-  // ЛОГИКА переключателя Цветовых Тем (dark/light/natural)
-  // стат./fn Цветовых Тем (Тёмная/Сетлая/Средняя)
-  // eslint-disable-next-line no-unused-vars
-  const { theme, setTheme } = useTheme();
-  const handleDarkTheme = () => {
-    setTheme("dark");
-  };
-  const handleLightTheme = () => {
-    setTheme("light");
-  };
-  const handleNaturalTheme = () => {
-    setTheme("natural");
-  };
+  // сост. подсказки по наведению мыши
+  const [isHovering, setIsHovering] = useState("");
+  useEffect(() => {
+    // console.log("isHovering ", isHovering);
+  }, [isHovering]);
+
+  // подкл. логики переключателя Цветовых Тем (dark/light/natural)
+  useTheme();
+
+  // подкл. логики переключателя Размеров (big/mid/small/off)
+  useSize();
 
   return (
     <>
@@ -84,102 +95,6 @@ export function Header() {
                   NRJWT
                 </NavLink>
               </span>
-              {/* 
-              ПРОЕКТЫ ExpsMiniProjs
-              ПРОЕКТЫ BeginrProjts
-              <span className="menu-top__items m-t-items">
-                <NavLink
-                  to="/BeginrProjts"
-                  className="m-t-items__navlink activ-prob"
-                >
-                  BeginrProjts
-                </NavLink>
-                <ul className="m-t-items__ul m-t-its-ul">
-                  <li className="m-t-its-ul__li">
-                    <Link to="/BegPrj_Modal" className="">
-                      Modal
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/BegPrj_Quiz" className="">
-                      Quiz
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/BegPrj_Users" className="">
-                      Users
-                    </Link>
-                  </li>
-                </ul>
-              </span>
-              ПРОЕКТЫ UlbiTV
-              <span className="menu-top__items m-t-items">
-                <NavLink to="/UlbiTV" className="m-t-items__navlink activ-prob">
-                  UlbiTV
-                </NavLink>
-                <ul className="m-t-items__ul m-t-its-ul">
-                  <li className="m-t-its-ul__li">
-                    <Link to="/UlbiTV_MiniDrADr" className="">
-                      MiniDrADr
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/UlbiTV_DrADr" className="">
-                      DrADr
-                    </Link>
-                  </li>
-                </ul>
-              </span>
-              ПРОЕКТЫ с ФОРМАМИ
-              <span className="menu-top__items m-t-items">
-                <NavLink to="/FORMS" className="m-t-items__navlink activ-prob">
-                  FORMS
-                </NavLink>
-                <ul className="m-t-items__ul m-t-its-ul">
-                  <li className="m-t-its-ul__li">
-                    <Link to="/FormMN" className="">
-                      FormMN
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/FormDoc" className="">
-                      FormDoc
-                    </Link>
-                  </li>
-                </ul>
-              </span>
-              ПРОЕКТЫ с ЕЖЕДНЕВНИКОМ
-              <span className="menu-top__items m-t-items">
-                <NavLink
-                  to="/DailyPlanner"
-                  className="m-t-items__navlink activ-prob"
-                >
-                  DailyPlanner
-                </NavLink>
-                <ul className="m-t-items__ul m-t-its-ul">
-                  <li className="m-t-its-ul__li">
-                    <Link to="/FullCalendarFC" className="">
-                      FullCalendar
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/DayPlanToDo" className="">
-                      DayPlanToDo
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/MyDPTD" className="">
-                      MyDPTD
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/ToDoReactIcon" className="">
-                      ToDoReactIcon
-                    </Link>
-                  </li>
-                </ul>
-              </span> 
-              */}
               {/* Prob0 */}
               <span className="menu-top__items m-t-items">
                 <NavLink to="/Prob0" className="m-t-items__navlink activ-prob">
@@ -210,44 +125,81 @@ export function Header() {
             {pressCombine && (
               <nav className="header__menu-bottom menu-bottom flex flex-wrap justify-between items-center mt-4">
                 <span
-                  onClick={() => {
-                    setPressCombine(false);
-                  }}
                   className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw1bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                  onClick={() => {
+                    setIsHovering("");
+                  }}
                 >
-                  <a className="m-b-items__navlink" href="#!">
-                    1
-                  </a>
+                  <Switcher1btn setPressCombine={setPressCombine} />
+                  {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
                 </span>
-                <span className="menu-bottom__items m-b-items">
-                  <a className="m-b-items__navlink" href="/package.json#">
-                    2
-                  </a>
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw2bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                >
+                  <Switcher2btn />
+                  {isHovering === "sw2bnt" && <TitleEl text={"не занят"} />}
                 </span>
-                <span className="menu-bottom__items m-b-items">
-                  <a className="m-b-items__navlink" href="/#">
-                    3
-                  </a>
+                {/* переключатель Цветовых Тем (dark/light/natural) */}
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw3bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                >
+                  <Switcher3btn />
+                  {isHovering === "sw3bnt" && <TitleEl text={"Цв.Темы"} />}
                 </span>
-                <span className="menu-bottom__items m-b-items">
-                  <Switcher3btnTheme
-                    handleDarkTheme={handleDarkTheme}
-                    handleLightTheme={handleLightTheme}
-                    handleNaturalTheme={handleNaturalTheme}
-                  />
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw4bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                >
+                  <Switcher4btn />
+                  {isHovering === "sw4bnt" && <TitleEl text={"Размеры"} />}
                 </span>
-                {/* <MultiKeysPressed
-                  keys={["Alt", "a"]}
-                  // keys={["Alt", "Control", "Shift"]}
-                  // keys={["Shift", "x", "z"]}
-                  // keys={["q", "w", "e"]}
-                  keysPressed={keysPressed}
-                  emoji="WIN"
-                /> */}
               </nav>
             )}
-            {/* {pressKeyL && pressKeyJ && pressKeyG && ( */}
           </div>
+          {/* врем.кнп.для упрощ.вкл.доп.меню */}
+          {!pressCombine && (
+            <>
+              <div
+                className="miniArrow"
+                onClick={() => {
+                  setPressCombine(!pressCombine);
+                  setIsHovering("");
+                }}
+                onMouseEnter={() => {
+                  setIsHovering("sw1bnt");
+                }}
+                onMouseLeave={() => {
+                  setIsHovering("");
+                }}
+              >
+                &lt;
+                {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
+              </div>
+            </>
+          )}
         </div>
       </header>
     </>

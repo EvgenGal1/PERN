@@ -54,9 +54,9 @@ $fontfamilyCurs: "cursive";
 // минимальная ширина. статична
 $minwidth: 320px;
 // полотно
-$maxWidth: 1520;
+$maxWidth: 2020; // 1520;
 // огранич контейнер
-$maxWidthContainer: 1170px;
+$maxWidthContainer: 1370; // 1170px;
 // брейкпоинты для адаптива. сработает когда есть зазор
 $md1: $maxWidthContainer + 16px;
 
@@ -171,10 +171,12 @@ $md5NoErr: 576px;
 // @import "./themeModesSettingsVars.scss";
 // изменения стилей Темы (theme) при нажате на переключатели в Доп.Меню (новое)
 @import "./settingsThemeColor.scss";
+// изменения стилей Размера (size) при нажате на переключатели в Доп.Меню (новое)
+@import "./settingsSizeDistance.scss";
 // стили scroll bara (полоса прокрутки)
 @import "./scrollBar.scss";
 // стили spoler|accordion на scss для раскрытия блока
-@import "./Accordion.scss";
+// @import "./Accordion.scss";
 // крупные визуальные эффекты CSS
 // @import "visual.scss";
 // не большие анимации, трансформации, эффекты CSS на всех страницах

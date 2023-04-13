@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 // import { ArrowAccordionFnComp } from "../../../miniBlocksComponents/includes/ArrowAccordion.jsx";
-import /* { */ ArrowAccordionFnComp /* } */ from "../ui/accordion/ArrowAccordion.jsx";
+import /* { */ ArrowAccordionFnComp /* } */ from "../../ui/accordion/ArrowAccordion.jsx";
 
 export const Main = () => {
   const [openArrowAccord, setOpenArrowAccord] = useState(false);

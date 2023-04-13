@@ -12,11 +12,11 @@ export function App() {
   return (
     <>
       <BrowserRouter>
+        <Header />
         <div className="main">
-          <Header />
           <AppRouterStar />
-          <Footer />
         </div>
+        <Footer />
       </BrowserRouter>
     </>
   );

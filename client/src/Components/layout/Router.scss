@@ -5,15 +5,16 @@
 
 .header,
 .footer {
-  padding: 0.5%;
+  padding: 1%; // 0.5%;
   // background-color: #777;
   box-shadow: 0px 0px 15px 2px #000 inset;
 }
 
 // HEADER (ШАПКА) =======================================================================================
 .header {
+  position: relative;
   .header-container {
-    padding: 1% 3%;
+    padding: 0.5%; // 1% 3%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -47,11 +48,35 @@
     flex-direction: column;
   }
 
-  // ВЕРХНЕЕ МЕНЮ -------------------------------------------------
-  &__menu-top {
-    // .menu-top__span {
+  // ВЕРХНЕЕ, НИЖНЕЕ МЕНЮ (общие стили) -------------------------------------------------
+  &__menu-top,
+  &__menu-bottom {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
+    .menu-top__items,
+    .menu-bottom__items {
+      width: 100px;
+      height: 30px;
+      font-size: 18px;
+      /* border-radius: var(--border-radius); */
+      margin-left: 30px;
+      margin: 0px 0px 0px 25px;
+      &:first-child {
+        margin-left: 15px;
+      }
+      &:has([class$="sw1btn"]) {
+        width: 30px;
+      }
+      // .sw4btn 4х кнп. (data-size - Размеры)
+      &:has([class$="sw4btn"]) {
+        width: 30px;
+        margin: 0px 14px 0px 30px;
+      }
+    }
+  }
+  // ВЕРХНЕЕ МЕНЮ -------------------------------------------------
+  &__menu-top {
     // затемняет сосед. эл. при наведении (меню)
     &:hover span:not(:hover) {
       opacity: 0.5;
@@ -63,14 +88,11 @@
     }
     .menu-top__items {
       position: relative;
-      margin-left: 15px;
-      margin-bottom: 5px;
+      // margin-left: 15px;
+      // margin-bottom: 5px;
 
       // НАВЕДЕНИЕ на дочерние эл-ты
       &:hover {
-        // ссылки
-        // .m-t-items__navlink {
-        // }
         // подменю при неведении
         .m-t-items__ul {
           opacity: 1;
@@ -79,22 +101,6 @@
           pointer-events: all;
         }
       }
-
-      // видимые ссылки в header --------------------------------------------------------------------
-      // NavLink (на родителя) - видимый эл. header (е/и в родителе есть <а> с .active) (сложн. перенесено на NavLink свой класс)
-      // &:has(a[class$="active"]) {
-      // }
-      // NavLink (свой клас на ссылку) - видимый эл. header (перенесено в projects.scss(общ.стили проекта) к ссылкам)
-      // .m-t-items__navlink {
-      //   &.active {
-      //   }
-      //   &:hover {
-      //   }
-      // подменю при неведении
-      //   .m-t-items__ul {
-      //   }
-      // }
-
       // ПОДМЕНЮ
       .m-t-items__ul {
         // частично из ЕжеСвет
@@ -110,7 +116,7 @@
         pointer-events: none;
         border: 2px solid #000;
         background: #ccc;
-        z-index: 1;
+        z-index: 3;
         .m-t-its-ul__li {
           a {
             display: flex;
@@ -130,24 +136,31 @@
 
   // НИЖНЕЕ МЕНЮ -------------------------------------------------
   &__menu-bottom {
-    display: flex;
-    flex-wrap: wrap;
+    // display: flex;
+    // flex-wrap: wrap;
     // justify-content: space-between;
-    margin-top: 1%;
-    &:hover span:not(:hover) {
+    margin-top: 7%;
+    // затемняет сосед. эл. при наведении (меню)
+    &:hover span > div:not(:hover) {
+      // &:hover span:not(:hover) {
       opacity: 0.5;
     }
-    // перенесено в projects.scss(общ.стили проекта) к ссылкам
-    .menu-bottom__items {
-      margin-left: 15px;
-      //   &:hover {
-      //     .m-b-items__navlink {
-      //     }
-      //   }
-      //   .m-b-items__navlink {
-      //     &.active {
-      //     }
-      //   }
+    // кнопки
+    div[id^="sw"] {
+      input {
+        border: 0px;
+      }
+    }
+  }
+  // МИНИ СТРЕЛКА (упрощ.откр.) -------------------------------------------------
+  .miniArrow {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+    span {
+      width: auto !important;
+      display: inline-block !important;
     }
   }
 }
@@ -162,18 +175,18 @@
     // transform: translateX(10%);
   }
   &:hover {
-    // animation: logoImgColor 3s linear infinite 0s;
-    @keyframes logoImgColor {
-      25% {
-        background-color: red;
-      }
-      50% {
-        background-color: yellow;
-      }
-      75% {
-        background-color: blue;
-      }
-    }
+    animation: logoImgColor 3s linear infinite 0s;
+    // @keyframes logoImgColor {
+    //   25% {
+    //     background-color: red;
+    //   }
+    //   50% {
+    //     background-color: yellow;
+    //   }
+    //   75% {
+    //     background-color: blue;
+    //   }
+    // }
     h3 {
       // transform: scale(1.2) translateX(0);
       // transition: 0.5s;
@@ -207,45 +220,45 @@
       // ВРАЩЕНИЕ в 4х смены позиции с увеличением по часовой
       // animation: logoImgSize 0.5s linear infinite 0s;
       // @keyframes logoImgSize {
-      //   // 0% {
-      //   //   transform: rotate(0deg);
-      //   // }
-      //   // 12% {
-      //   //   transform: rotate(0.72turn) scale(0.5);
-      //   // }
-      //   // 20% {
-      //   //   transform: rotate(1.25turn);
-      //   // }
-      //   // 25% {
-      //   //   transform: rotate(1.25turn);
-      //   // }
-      //   // 37% {
-      //   //   transform: rotate(1.87turn) scale(0.5);
-      //   // }
-      //   // 45% {
-      //   //   transform: rotate(2.5turn);
-      //   // }
-      //   // 50% {
-      //   //   transform: rotate(2.5turn);
-      //   // }
-      //   // 62% {
-      //   //   transform: rotate(3.12turn) scale(0.5);
-      //   // }
-      //   // 70% {
-      //   //   transform: rotate(3.75turn);
-      //   // }
-      //   // 75% {
-      //   //   transform: rotate(3.75turn);
-      //   // }
-      //   // 87% {
-      //   //   transform: rotate(4.37turn) scale(0.5);
-      //   // }
-      //   // 95% {
-      //   //   transform: rotate(5turn);
-      //   // }
-      //   // 100% {
-      //   //   transform: rotate(5turn);
-      //   // }
+      // 0% {
+      //   transform: rotate(0deg);
+      // }
+      // 12% {
+      //   transform: rotate(0.72turn) scale(0.5);
+      // }
+      // 20% {
+      //   transform: rotate(1.25turn);
+      // }
+      // 25% {
+      //   transform: rotate(1.25turn);
+      // }
+      // 37% {
+      //   transform: rotate(1.87turn) scale(0.5);
+      // }
+      // 45% {
+      //   transform: rotate(2.5turn);
+      // }
+      // 50% {
+      //   transform: rotate(2.5turn);
+      // }
+      // 62% {
+      //   transform: rotate(3.12turn) scale(0.5);
+      // }
+      // 70% {
+      //   transform: rotate(3.75turn);
+      // }
+      // 75% {
+      //   transform: rotate(3.75turn);
+      // }
+      // 87% {
+      //   transform: rotate(4.37turn) scale(0.5);
+      // }
+      // 95% {
+      //   transform: rotate(5turn);
+      // }
+      // 100% {
+      //   transform: rotate(5turn);
+      // }
       // }
     }
   }
@@ -254,9 +267,11 @@
 // MAIN (ГЛАВНАЯ) =======================================================================================
 .main {
   width: 100%;
+  // height: 100vh;
+  // height: calc(100vh - 248.77px);
   // overflow: hidden;
   // padding: 1% 3%;
-  // padding: 1%;
+  padding: 1%;
   background-color: antiquewhite;
   & > div {
     // overflow: hidden;
@@ -267,6 +282,11 @@
 
 // FOOTER (ПОДВАЛ) =======================================================================================
 .footer {
+  // position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
   // max-width: 1750px;
   .footer-container {
     padding: 1% 3%;
@@ -289,11 +309,6 @@
     }
   }
 }
-
-// всем кроме последнего
-// .item:not(:last-child) {
-//   margin-bottom: 20px;
-// }
 
 /* АНИМАЦИЯ СТРАНИЦ (2 способа - .page|pages) ======================================================================================= */
 .page,

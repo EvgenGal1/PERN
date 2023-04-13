@@ -17,7 +17,7 @@
   div[class$="__descript"] {
     position: relative;
     .arrowAccord {
-      top: -10px;
+      top: 0; // -10px;
     }
     div[class$="openDop"] + .arrowAccord {
       top: calc(50% - 20px);
@@ -53,8 +53,8 @@
     // top: 4px;
     // width: 40px;
     // height: 40px;
-    width: calc(10px + 30 * ((100vw - 320px) / 1600));
-    height: calc(10px + 30 * ((100vw - 320px) / 1600));
+    width: calc(12px + 30 * ((100vw - 320px) / 1600));
+    height: calc(12px + 30 * ((100vw - 320px) / 1600));
     // width: calc(2% + 30 * ((100vw - 320px) / 1600));
     // height: calc(60% + 30 * ((100vw - 320px) / 1600));
     padding: 0;
