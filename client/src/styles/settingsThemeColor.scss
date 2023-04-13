@@ -92,6 +92,8 @@ body[data-theme="light"] {
 // ОБЩИЕ СТИЛИ
 :root {
   body {
+    line-height: 1;
+    color: var(--txt-col);
     background-color: var(--fon-dark);
 
     // цвет рамки для всех кроме ссылок и списков

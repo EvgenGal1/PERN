@@ -1,13 +1,23 @@
 import React from "react";
 
-import { Router } from "../Components/layout/Router";
+import { Header } from "../Components/layout/Header";
+import /* { */ AppRouterStar /* } */ from "../Components/layout/AppRouterStar";
+import { Footer } from "../Components/layout/Footer";
+
+import { BrowserRouter } from "react-router-dom";
 
 import "../styles/styles.scss";
 
 export function App() {
   return (
     <>
-      <Router />
+      <BrowserRouter>
+        <div className="main">
+          <Header />
+          <AppRouterStar />
+          <Footer />
+        </div>
+      </BrowserRouter>
     </>
   );
 }
