@@ -15,7 +15,7 @@ for (_x in localStorage) {
 console.log("Total = " + (_lsTotal / 1024).toFixed(2) + " KB");
 
 // Hook с сайта https://usehooks.com/page/3
-export function useLocalStorageUH(key, initialValue) {
+export function useLocalStorageUH(key: any, initialValue: any) {
   // Состояние для хранения нашего значения
   // Передайте функцию начального состояния в useState, чтобы логика выполнялась только один раз
   const [storedValue, setStoredValue] = useState(() => {
@@ -34,7 +34,7 @@ export function useLocalStorageUH(key, initialValue) {
     }
   });
   // Возвратите обернутую версию функции установки useState, которая сохраняет новое значение в localStorage.
-  const setValue = (value) => {
+  const setValue = (value: any) => {
     try {
       // Разрешить значение быть функцией, чтобы у нас был тот же API, что и у useState
       const valueToStore =

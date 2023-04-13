@@ -1,0 +1,223 @@
+// размерные переменные для Разм.Раст. (Большие/Средней/Малые/Откл.) на атрибутах
+
+body {
+  --ON: initial;
+  --OFF: ;
+}
+
+[data-size="mid"] {
+  --mid: var(--ON);
+  --small: var(--OFF);
+  --big: var(--OFF);
+  --off: var(--OFF);
+}
+[data-size="small"] {
+  --small: var(--ON);
+  --mid: var(--OFF);
+  --big: var(--OFF);
+  --off: var(--OFF);
+}
+[data-size="big"] {
+  --big: var(--ON);
+  --small: var(--OFF);
+  --mid: var(--OFF);
+  --off: var(--OFF);
+}
+[data-size="off"] {
+  --off: var(--ON);
+  --small: var(--OFF);
+  --mid: var(--OFF);
+  --big: var(--OFF);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-size="off"] {
+    --big: var(--ON);
+    --small: var(--OFF);
+    --mid: var(--OFF);
+    --off: var(--OFF);
+  }
+}
+
+body {
+  --width: var(--big, 120px) var(--mid, 100px) var(--small, 80px)
+    var(--off, 80px);
+  --width-swit: var(--big, 100px) var(--mid, 95px) var(--small, 90px)
+    var(--off, 90px);
+  --height: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
+    var(--off, 25px);
+  --head-pad: var(--big, 0.7%) var(--mid, 0.5%) var(--small, 0.3%)
+    var(--off, 0%);
+  --font-size-big: var(--big, 22px) var(--mid, 18px) var(--small, 15px)
+    var(--off, 15px);
+  --font-size-mid: var(--big, 16px) var(--mid, 14px) var(--small, 11px)
+    var(--off, 11px);
+  --font-size-small: var(--big, 22px) var(--mid, 17px) var(--small, 15px)
+    var(--off, 15px);
+  --font-weight: var(--big, 700) var(--mid, 400) var(--small, 200)
+    var(--off, 200);
+  --border: var(--big, 1px solid #000) var(--mid, 1px solid #000)
+    var(--small, 0.5px solid #000) var(--off, 0px solid #000);
+  --border-radius: var(--big, 7px) var(--mid, 5px) var(--small, 2px)
+    var(--off, 0px);
+  --mar-bl: var(--big, 10px) var(--mid, 8px) var(--small, 7px) var(--off, 0px);
+  --bor-wid: var(--big, 5px) var(--mid, 5px) var(--small, 3px) var(--off, 0px);
+  --switcher-1-top: var(--big, 16%) var(--mid, 12%) var(--small, 5%)
+    var(--off, 5%);
+  --switcher-1-lab: var(--big, 32px) var(--mid, 27px) var(--small, 22px)
+    var(--off, 22px);
+  --sw2blwh-chek: var(--big, 56px) var(--mid, 48px) var(--small, 38px)
+    var(--off, 38px);
+  --sw2blwh-lef: var(--big, 19px) var(--mid, 15px) var(--small, 12px)
+    var(--off, 12px);
+  --sw2blwh-rig: var(--big, 17px) var(--mid, 13px) var(--small, 9px)
+    var(--off, 9px);
+  --sw2blwh-fo-si: var(--big, 17px) var(--mid, 15px) var(--small, 13px)
+    var(--off, 13px);
+  --sw3btn-aft: var(--big, 33.5px) var(--mid, 30px) var(--small, 26px)
+    var(--off, 26px);
+  --sw3btn-font-size: var(--big, 26px) var(--mid, 22px) var(--small, 18px)
+    var(--off, 18px);
+  --sw3btn-top: var(--big, 3px) var(--mid, 3px) var(--small, 2px)
+    var(--off, 2px);
+  --sw3btn-neut: var(--big, -2px) var(--mid, 0px) var(--small, 1px)
+    var(--off, 1px);
+  --sw3btn-befo: var(--big, 25px) var(--mid, 22px) var(--small, 19px)
+    var(--off, 19px);
+  --sw4btn-box-sh: var(--big, -24px 11px 0 #707070)
+    var(--mid, -22px -9px 0 #707070) var(--small, 20px -8.5px 0 #707070)
+    var(--off, 19.5px 8px 0 #707070);
+  --sw4btn-top: var(--big, 4px) var(--mid, -2px) var(--small, -3px)
+    var(--off, 5px);
+  --sw4btn-margin: var(--big, 0px 18px 0px 44px) var(--mid, 0px 14px 0px 42px)
+    var(--small, 0px 6px 0px 30px) var(--off, 0px 6px 0px 30px);
+  --sw4btn-left: var(--big, 0px) var(--mid, 0px) var(--small, -14px)
+    var(--off, -14px);
+  --bot-it-fir-mar: var(--big, 30px) var(--mid, 25px) var(--small, 20px)
+    var(--off, 20px);
+  --bot-it-las-mar-rig: var(--big, 14px) var(--mid, 12px) var(--small, 10px)
+    var(--off, 10px);
+  --bot-it-las-mar-lef: var(--big, 44px) var(--mid, 37px) var(--small, 30px)
+    var(--off, 30px);
+}
+
+// ОБЩИЕ СТИЛИ
+hr.hr {
+  margin-block-start: var(--mar-bl);
+  margin-block-end: var(--mar-bl);
+  border-width: var(--bor-wid);
+}
+// шапка
+header {
+  .header-container {
+    padding: var(--head-pad) !important ;
+  }
+  .header__menu {
+    &-bottom .menu-bottom__items,
+    &-top .menu-top__items {
+      width: var(--width);
+      height: var(--height);
+      font-size: var(--font-size-big);
+      // font-weight: var(--font-weight);
+      // border: var(--border);
+      border-radius: var(--border-radius);
+      margin: 0px 0px 0px var(--bot-it-fir-mar);
+      & > a {
+        width: 100%;
+        height: 100%;
+      }
+      &:not(:first-child) {
+      }
+      &:last-child {
+        // width: 30px;
+        // margin: 0px var(--bot-it-las-mar-rig) 0px var(--bot-it-las-mar-lef);
+      }
+      // .sw4btn 4х кнп. (data-size - Размеры)
+      &:has([class$="sw4btn"]) {
+        // margin: 0px 14px 0px 30px;
+        margin: var(--sw4btn-margin);
+      }
+    }
+  }
+}
+
+// ПЕРЕКЛЮЧАТЕЛИ
+// 1х кнп. (доп.меню)
+.sw1btn {
+  height: var(--height);
+  width: var(--height);
+  label {
+    & > span {
+      height: var(--height);
+      width: var(--height);
+      svg {
+        height: var(--height);
+        width: var(--height);
+      }
+    }
+  }
+}
+// 2х кнп. (черно белые)
+#sw2blwh {
+  // height: var(--height);
+  input {
+    // height: var(--height);
+    &:before {
+      left: var(--sw2blwh-lef) !important;
+      font-size: var(--sw2blwh-fo-si);
+    }
+    &:after {
+      right: var(--sw2blwh-rig) !important;
+      font-size: var(--sw2blwh-fo-si);
+    }
+    &:checked + label {
+      right: var(--sw2blwh-chek);
+    }
+    &:not(:checked) + label {
+      left: var(--sw2blwh-chek);
+    }
+  }
+}
+// 3х кнп. (data-theme - Цветовые Темы)
+.sw3btn {
+  width: var(--width) !important;
+  height: var(--height) !important;
+  .sw3btn-slider:before {
+    font-size: var(--sw3btn-befo);
+    top: var(--sw3btn-top);
+  }
+  .sw3btn-radio__light:checked ~ .sw3btn-slider:before {
+    left: calc(100% - var(--sw3btn-aft));
+  }
+  .sw3btn-radio__neutral:checked ~ .sw3btn-slider:before {
+    left: calc(100% / 3 - var(--sw3btn-neut));
+  }
+  // .sw3btn-radio__dark ~ .sw3btn-slider:before {
+  //   left: calc(100% - var(--sw3btn-aft));
+  // }
+}
+// 4х кнп. (data-size - Размеры)
+.sw4btn {
+  height: var(--height);
+  width: var(--height);
+  // .sw4btn-rotate {
+  //   height: var(--height);
+  //   width: var(--height);
+  // }
+  // .sw4btn {
+  & > input[type="radio"],
+  & i {
+    height: var(--height);
+    width: var(--height);
+  }
+  // !
+  & i {
+    &:before {
+      box-shadow: var(--sw4btn-box-sh);
+    }
+    &:after {
+      top: calc(50% - var(--sw4btn-top));
+      left: var(--sw4btn-left);
+    }
+  }
+}

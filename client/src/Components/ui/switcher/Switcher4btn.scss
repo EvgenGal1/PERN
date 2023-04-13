@@ -1,0 +1,187 @@
+.sw4btn {
+  position: relative;
+  display: inline-block;
+
+  // циферблат > стрелка
+  i {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: #ccc;
+    border-radius: 50%;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+      inset -1px -1px 2px rgba(0, 0, 0, 0.4);
+    &,
+    &:before,
+    &:after {
+      transition: all 0.3s;
+    }
+    // точки тенью
+    &:before {
+      content: " ";
+      display: block;
+      position: absolute;
+      left: 30%;
+      top: 30%;
+      width: 40%;
+      height: 40%;
+      border-radius: 50%;
+      box-shadow: -30px 0 0 var(--DullGray), 0 30px 0 var(--DullGray),
+        30px 0 0 var(--DullGray);
+      box-shadow: -30px -13px 0 var(--DullGray), -30px 13px 0 var(--DullGray),
+        30px -13px 0 var(--DullGray), 30px 13px 0 var(--DullGray);
+    }
+    // стрелка
+    &:after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: calc(50% - 1px);
+      left: 0;
+      width: 50%;
+      border-bottom: solid 3px #666;
+      transform-origin: 20px 50%;
+    }
+  }
+
+  // знаки и их расположения (первого, всех)
+  i + label {
+    align-items: flex-end;
+    // отд.правка под высоту dig значка (ставил ниже в коде в положения - & + i { & + label {line-height: inherit | 20px;} } )
+    // line-height: 20px;
+  }
+  label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: -39%;
+    top: 62%;
+    width: 40%;
+    height: 40%;
+    // display: inline-block;
+    background-color: #666666;
+    font-weight: 400;
+    text-align: center;
+    border-radius: 50px;
+    cursor: pointer;
+    & + label {
+      left: -43%;
+      top: 0%;
+      & + label {
+        right: -40% !important;
+        left: 110%;
+        top: -3%;
+        & + label {
+          right: -40% !important;
+          left: 110%;
+          top: 97%;
+          top: 63%;
+        }
+      }
+    }
+  }
+
+  // ??? не раб - разобратся как работает такая вложенность
+  // изменения при нажатии (:checked)
+  & > input[type="radio"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+
+    &:first-child {
+      z-index: 2;
+      &:checked {
+        z-index: 0;
+      }
+    }
+    // изменение цвета центр. и мини кнопок при нажатии
+    // ??? не раб - разобратся как работает такая вложенность
+    // начальная позиция на ._big attr checked в -90'град
+    &:checked {
+      & + input[type="radio"] {
+        z-index: 2;
+      }
+      // третье положение
+      & + i {
+        background: #00ba00;
+        & + label + label + label + label {
+          background-color: #b40000;
+        }
+      }
+      // второе положение
+      & + input[type="radio"] {
+        & + i {
+          background: #00008b;
+          & + label + label + label {
+            background-color: #b40000;
+          }
+        }
+        // первое положение
+        & + input[type="radio"] {
+          & + i {
+            background-color: #65000b;
+            & + label + label {
+              background-color: #b40000;
+            }
+          }
+          // ? 0 положение
+          & + input[type="radio"] {
+            & + i {
+              background-color: #f4a900; // #fad201;
+              & + label {
+                background-color: #b40000;
+              }
+            }
+          }
+        }
+      }
+    }
+    // изменение стрелки(:after) при нажатии
+    // изменения в label при нажатии
+    // ??? не раб - разобратся как работает такая вложенность
+    // начальная позиция на .--size-state-off attr checked в -90'град
+    &:checked {
+      // третье положение?
+      & + i {
+        &:after {
+          transform: rotate(150deg);
+          transform: rotate(210deg);
+        }
+      }
+      // второе положение?
+      & + input[type="radio"] {
+        & + i {
+          &:after {
+            transform: rotate(-30deg);
+            transform: rotate(150deg);
+          }
+        }
+        // первое положение?
+        & + input[type="radio"] {
+          & + i {
+            &:after {
+              transform: rotate(30deg);
+            }
+          }
+          // ? 4 положение
+          & + input[type="radio"] {
+            & + i {
+              &:after {
+                transform: rotate(-30deg);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
