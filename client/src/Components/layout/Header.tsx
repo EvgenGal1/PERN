@@ -123,7 +123,7 @@ export function Header() {
             </nav>
             {/* НИЖНЕЕ/ДОП.МЕНЮ */}
             {pressCombine && (
-              <nav className="header__menu-bottom menu-bottom flex flex-wrap justify-between items-center mt-4">
+              <nav className="header__menu-bottom menu-bottom flex flex-wrap justify-between items-center">
                 <span
                   className="menu-bottom__items m-b-items"
                   onMouseEnter={() => {

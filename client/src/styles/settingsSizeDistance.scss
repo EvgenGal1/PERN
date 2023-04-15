@@ -48,6 +48,8 @@ body {
     var(--off, 25px);
   --head-pad: var(--big, 0.7%) var(--mid, 0.5%) var(--small, 0.3%)
     var(--off, 0%);
+  --head-bot-top-mar: var(--big, 5%) var(--mid, 4%) var(--small, 3%)
+    var(--off, 3%);
   --font-size-big: var(--big, 22px) var(--mid, 18px) var(--small, 15px)
     var(--off, 15px);
   --font-size-mid: var(--big, 16px) var(--mid, 14px) var(--small, 11px)
@@ -113,6 +115,7 @@ header {
     padding: var(--head-pad) !important ;
   }
   .header__menu {
+    // общ. Верхнее/Нижнее меню
     &-bottom .menu-bottom__items,
     &-top .menu-top__items {
       width: var(--width);
@@ -137,6 +140,10 @@ header {
         // margin: 0px 14px 0px 30px;
         margin: var(--sw4btn-margin);
       }
+    }
+    // Нижнее меню
+    &-bottom {
+      margin-top: var(--head-bot-top-mar);
     }
   }
 }

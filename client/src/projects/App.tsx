@@ -13,9 +13,7 @@ export function App() {
     <>
       <BrowserRouter>
         <Header />
-        <div className="main">
-          <AppRouterStar />
-        </div>
+        <AppRouterStar />
         <Footer />
       </BrowserRouter>
     </>
