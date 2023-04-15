@@ -2,12 +2,16 @@ import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-// ^ NRJWT (СТАРЫЙ ПОДХОД)
+// ^ Мой Шаблон | СТАРЫЙ ПОДХОД
 import { App } from "./projects/App";
 // import { Router } from "./Components/layout/Router";
 import "./index.css";
+// ^ UlbiTV.PERNstore
+import UserStore from "./store/UserStore";
+import DeviceStore from "./store/DeviceStore";
+import AppUTV from "./AppUTV";
 // ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
-import AppNew from "./App";
+import AppTok from "./AppTok";
 import { AppContextProvider } from "./Components/layout/AppContext";
 
 // ^ NRJWT
@@ -19,10 +23,13 @@ interface intrfStoreTS {
 // объ.экземпл.кл.
 const store = new StoreTS();
 // созд.Context для использ.store в комп.ч/з useContext
-// export const Context = createContext({ store });
-export const Context = createContext<intrfStoreTS>({
+// export const Context = createContext({ store }); // для JS
+export const ContextNRJWT = createContext<intrfStoreTS>({
   store,
-});
+}); // для TS
+
+// ^ UlbiTV.PERNstore
+export const ContextUTVst = createContext({});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -38,9 +45,20 @@ root.render(
   // </React.StrictMode>
   // ^ слияние tokmakov|UlbiTV. НОВЫЙ ПОДХОД
   <React.StrictMode>
+    {/* // ^ tokmakov */}
     <AppContextProvider>
-      <AppNew />
-      <App />
+      <AppTok />
     </AppContextProvider>
+    <hr className="hr" />
+    {/* // ^ СТАРЫЙ ПОДХОД */}
+    <ContextNRJWT.Provider value={{ store }}>
+      <App />
+    </ContextNRJWT.Provider>
+    {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
+    {/* // ^ UlbiTV.PERNstore */}
+    {/* <hr className="hr" />
+    <ContextUTVst.Provider value={{ store }}>
+      <AppUTV />
+    </ContextUTVst.Provider> */}
   </React.StrictMode>
 );

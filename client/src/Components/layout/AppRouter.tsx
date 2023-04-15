@@ -5,16 +5,19 @@ import { publicRoutes, authRoutes, adminRoutes } from "../../routes";
 import { AppContext } from "./AppContext";
 // ^ UlbiTV.PERN.magaz
 // import { SHOP_ROUTE } from "../utils/consts";
-// import { Context } from "../index";
+import { ContextUTVst } from "../../index";
 // import {observer} from "mobx-react-lite";
 
 // !!! https://tokmakov.blog.msk.ru/blog/item/677 разобрать примеры и 673
 // const AppRouter = observer(() => {
 const AppRouter = () => {
   // врем заглушка.
-  // const isAuth = false;
-  // const isAdmin = true;
+  const isAuth = true;
+  const isAdmin = true;
   const { user }: any = useContext(AppContext);
+
+  // ^ UlbiTV.PERN.magaz
+  const { userUTV }: any = useContext(ContextUTVst);
 
   //     console.log(user)
   return (
@@ -24,15 +27,20 @@ const AppRouter = () => {
       {publicRoutes.map(({ path, Component }) => (
         <Route key={path} path={path} element={<Component />} />
       ))}
-      {user.isAuth &&
-        authRoutes.map(({ path, Component }) => (
-          <Route key={path} path={path} element={<Component />} />
-        ))}
-      {user.isAdmin &&
-        adminRoutes.map(({ path, Component }) => (
-          <Route key={path} path={path} element={<Component />} />
-        ))}
+      {
+        /* user. */ isAuth &&
+          authRoutes.map(({ path, Component }) => (
+            <Route key={path} path={path} element={<Component />} />
+          ))
+      }
+      {
+        /* user. */ isAdmin &&
+          adminRoutes.map(({ path, Component }) => (
+            <Route key={path} path={path} element={<Component />} />
+          ))
+      }
 
+      {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
       {/* // ^ UlbiTV.PERN.magaz */}
       {/* {
         user. isAuth &&

@@ -6,28 +6,31 @@ import {
   DELIVERY_ROUTE,
   CONTACTS_ROUTE,
   LOGIN_ROUTE,
+  SIGNUP_ROUTE,
+  UTV_LOGIN_ROUTE,
+  UTV_REGISTRATION_ROUTE,
   USER_ROUTE,
   ADMIN_ROUTE,
 } from "../../utils/consts";
 // ^ tokmakov.blog
 import { AppContext } from "./AppContext";
 // ^ UlbiTV.PERN.magaz
-// import { Context } from "../index";
+import { ContextUTVst } from "../../index";
 // import {observer} from "mobx-react-lite";
-// import { useHistory } from "react-router-dom";
+import { /* useHistory */ useNavigate } from "react-router-dom";
 
 const NavBar = /* observer( */ () => {
   // врем заглушка.
-  // const isAuth = true;
-  // const isAdmin = true;
+  const isAuth = false;
+  const isAdmin = true;
   const { user } = useContext(AppContext);
 
   // ^ UlbiTV.PERN.magaz
-  // const { user } = useContext(Context);
-  // const history = useHistory();
+  // const { userUTV }: any = useContext(ContextUTVst);
+  // const history = /* useHistory */ useNavigate();
   // const logOut = () => {
-  //   user.setUser({});
-  //   user.setIsAuth(false);
+  //   userUTV.setUser({});
+  //   userUTV.setIsAuth(false);
   // };
 
   return (
@@ -47,54 +50,37 @@ const NavBar = /* observer( */ () => {
             Контакты
           </NavLink>
           {/* Авториз */}
-          {user.isAuth ? (
-            <>
-              <NavLink to={USER_ROUTE} className="nav-link">
-                Личный кабинет
-              </NavLink>
-              <Button
-                variant={"outline-light"}
-                // onClick={() => history.push(ADMIN_ROUTE)}
-              >
-                Админ панель
-              </Button>
-              <Button
-                variant={"outline-light"}
-                // onClick={() => logOut()}
-                className="ml-2"
-              >
-                Выйти
-              </Button>
-            </>
-          ) : (
-            <>
-              <NavLink to={LOGIN_ROUTE} className="nav-link">
-                Войти
-              </NavLink>
-              <Button
-                variant={"outline-light"}
-                // onClick={() => history.push(LOGIN_ROUTE)}
-              >
-                Авторизация
-              </Button>
-            </>
-          )}
+          {
+            /* user. */ isAuth ? (
+              <>
+                <NavLink to={USER_ROUTE} className="nav-link">
+                  Личный кабинет
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink to={LOGIN_ROUTE} className="nav-link">
+                  Войти
+                </NavLink>
+                <NavLink to={SIGNUP_ROUTE} className="nav-link">
+                  Регистрация
+                </NavLink>
+              </>
+            )
+          }
           {/* Админ */}
-          {user.isAdmin && (
-            <>
-              <NavLink to={ADMIN_ROUTE} className="nav-link">
-                Панель управления
-              </NavLink>
-              <Button
-                variant={"outline-light"}
-                // onClick={() => history.push(ADMIN_ROUTE)}
-              >
-                Админ панель
-              </Button>
-            </>
-          )}
+          {
+            /* user. */ isAdmin && (
+              <>
+                <NavLink to={ADMIN_ROUTE} className="nav-link">
+                  Панель управления
+                </NavLink>
+              </>
+            )
+          }
         </Nav>
 
+        {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
         {/* // ^ UlbiTV.PERN.magaz */}
         {/* {user.isAuth ? (
           <Nav className="ml-auto" style={{ color: "white" }}>
@@ -116,7 +102,7 @@ const NavBar = /* observer( */ () => {
           <Nav className="ml-auto" style={{ color: "white" }}>
             <Button
               variant={"outline-light"}
-              onClick={() => history.push(LOGIN_ROUTE)}
+              onClick={() => history.push(UTV_LOGIN_ROUTE)}
             >
               Авторизация
             </Button>

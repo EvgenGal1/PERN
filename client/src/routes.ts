@@ -1,7 +1,9 @@
 import {
   SHOP_ROUTE,
   LOGIN_ROUTE,
-  REGISTRATION_ROUTE,
+  SIGNUP_ROUTE,
+  UTV_LOGIN_ROUTE,
+  UTV_REGISTRATION_ROUTE,
   DEVICE_ROUTE,
   DELIVERY_ROUTE,
   CONTACTS_ROUTE,
@@ -12,6 +14,8 @@ import {
 } from "./utils/consts";
 import Shop from "./Components/pages/public/Shop";
 import Auth from "./Components/pages/public/Auth";
+import Login from "./Components/pages/public/Login";
+import Signup from "./Components/pages/public/Signup";
 import DevicePage from "./Components/pages/public/DevicePage";
 import Delivery from "./Components/pages/public/Delivery";
 import Contacts from "./Components/pages/public/Contacts";
@@ -28,8 +32,10 @@ export const publicRoutes = [
   // объ. Ссылка отраб.стр., Комп.стр. (по url Admin вызов комп. админа)
   { /* path: "/", */ path: SHOP_ROUTE, Component: Shop },
   // login|registr один Комп. но с разным маршр. в строке запроса
-  { path: LOGIN_ROUTE, Component: Auth },
-  { path: REGISTRATION_ROUTE, Component: Auth },
+  { path: LOGIN_ROUTE, Component: Login },
+  { path: SIGNUP_ROUTE, Component: Signup },
+  { path: UTV_LOGIN_ROUTE, Component: Auth },
+  { path: UTV_REGISTRATION_ROUTE, Component: Auth },
   { path: DEVICE_ROUTE + "/:id", Component: DevicePage },
   { path: DELIVERY_ROUTE, Component: Delivery },
   { path: CONTACTS_ROUTE, Component: Contacts },
