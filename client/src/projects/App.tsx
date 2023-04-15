@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Header } from "../Components/layout/Header";
-import /* { */ AppRouterStar /* } */ from "../Components/layout/AppRouterStar";
+import AppRouterStar from "../Components/layout/AppRouterStar";
 import { Footer } from "../Components/layout/Footer";
 
 import { BrowserRouter } from "react-router-dom";

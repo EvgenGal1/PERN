@@ -1,5 +1,5 @@
 import React, { FC, useState, useContext } from "react";
-import { Context } from "../../../../index";
+import { ContextNRJWT } from "../../../../index";
 // обёрка прилож.для отслеж.измен.в данн.
 import { observer } from "mobx-react-lite";
 import { IUser } from "../../../../models/IUser";
@@ -13,7 +13,7 @@ const UserList: FC = (/* setShow */) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   // извлек.store ч/з usConst
-  const { store } = useContext(Context);
+  const { store } = useContext(ContextNRJWT);
   // лог.сост для польз. Тип масс.польз.Пуст.масс.
   const [users, setUsers] = useState<IUser[]>([]);
   // сост.error
