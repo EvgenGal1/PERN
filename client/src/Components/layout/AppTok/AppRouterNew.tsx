@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Routes, Route /* , Redirect */, useLocation } from "react-router-dom";
-import { publicRoutes, authRoutes /* , adminRoutes */ } from "./Router";
+import { publicRoutes, authRoutes, adminRoutes } from "./routes";
 // ^ tokmakov.blog
 import { AppContext } from "./AppContext";
 // ^ UlbiTV.PERN.magaz
@@ -15,9 +15,9 @@ import { useTransition, animated } from "react-spring";
 // const AppRouterStar = observer(() => {
 const AppRouterStar = () => {
   // врем заглушка.
-  const isAuth = true;
-  const isAdmin = true;
-  // const { user }: any = useContext(AppContext);
+  // const isAuth = true;
+  // const isAdmin = true;
+  const { user }: any = useContext(AppContext);
 
   // анимация страниц
   const location = useLocation();
@@ -43,28 +43,31 @@ const AppRouterStar = () => {
 
   return (
     <>
-      {transitions((props, item) => (
-        <animated.main className="main " style={props}>
-          <Routes location={item}>
-            {/* // ^ tokmakov.blog */}
-            {publicRoutes.map(({ path, Component }) => (
+      {/* {transitions((props, item) => (
+        <animated.main className="main " style={props}> */}
+
+      <main className="main">
+        <Routes /* location={item} */>
+          {/* // ^ tokmakov.blog */}
+          {publicRoutes.map(({ path, Component }) => (
+            <Route key={path} path={path} element={<Component />} />
+          ))}
+          {user.isAuth &&
+            authRoutes.map(({ path, Component }) => (
               <Route key={path} path={path} element={<Component />} />
             ))}
-            {
-              /* user. */ isAuth &&
-                authRoutes.map(({ path, Component }) => (
-                  <Route key={path} path={path} element={<Component />} />
-                ))
-            }
-            {/* {user.isAdmin &&
-              adminRoutes.map(({ path, Component }) => (
-                <Route key={path} path={path} element={<Component />} />
-            ))} */}
-            {/* // ^ UlbiTV.PERN.magaz +++ */}
-            {/* <Redirect to={SHOP_ROUTE} /> */}
-          </Routes>
-        </animated.main>
+          {user.isAdmin &&
+            adminRoutes.map(({ path, Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+          {/* // ^ UlbiTV.PERN.magaz +++ */}
+          {/* <Redirect to={SHOP_ROUTE} /> */}
+        </Routes>
+      </main>
+      {/* 
+        </animated.main> 
       ))}
+      */}
     </>
   );
 };

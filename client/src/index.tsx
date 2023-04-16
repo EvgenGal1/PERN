@@ -3,16 +3,16 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 // ^ Мой Шаблон | СТАРЫЙ ПОДХОД
-import { App } from "./projects/App";
+import { AppStar } from "./projects/AppStar";
 // import { Router } from "./Components/layout/Router";
 import "./index.css";
 // ^ UlbiTV.PERNstore
 import UserStore from "./store/UserStore";
 import DeviceStore from "./store/DeviceStore";
-import AppUTV from "./AppUTV";
+import AppUTV from "./projects/AppUTV";
 // ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
-import AppTok from "./AppTok";
-import { AppContextProvider } from "./Components/layout/AppContext";
+import AppTok from "./projects/AppTok";
+import { AppContextProvider } from "./Components/layout/AppTok/AppContext";
 
 // ^ NRJWT
 import StoreTS from "./projects/client/src/store/storeTS";
@@ -52,9 +52,9 @@ root.render(
     <hr className="hr" />
     {/* // ^ СТАРЫЙ ПОДХОД */}
     <ContextNRJWT.Provider value={{ store }}>
-      <App />
+      <AppStar />
     </ContextNRJWT.Provider>
-    {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
+    {/* // ! прописать отд. NavBar и AppRouter для AppUTV */}
     {/* // ^ UlbiTV.PERNstore */}
     {/* <hr className="hr" />
     <ContextUTVst.Provider value={{ store }}>

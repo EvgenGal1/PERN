@@ -10,11 +10,11 @@ import React, { useContext, useEffect } from "react";
 // import {fetchBrands, fetchDevices, fetchTypes} from "../http/deviceAPI";
 // import Pages from "../components/Pages";
 
-const Shop = () => {
-  return <div>Shop</div>;
+const ShopUTV = () => {
+  return <div>ShopUTV</div>;
 };
 
-// const Shop = observer(() => {
+// const ShopUTV = observer(() => {
 //     const {device} = useContext(Context)
 
 //     useEffect(() => {
@@ -49,4 +49,4 @@ const Shop = () => {
 //     );
 // });
 
-export default Shop;
+export default ShopUTV;

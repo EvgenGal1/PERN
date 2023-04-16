@@ -1,20 +1,22 @@
 import React, { useContext } from "react";
 import { Routes, Route /* , Redirect */ } from "react-router-dom";
-import { publicRoutes, authRoutes, adminRoutes } from "../../routes";
+import { publicRoutes, authRoutes, adminRoutes } from "../AppTok/routes";
 // ^ tokmakov.blog
-import { AppContext } from "./AppContext";
+// import { AppContext } from "./AppContext";
 // ^ UlbiTV.PERN.magaz
 // import { SHOP_ROUTE } from "../utils/consts";
-import { ContextUTVst } from "../../index";
+import { ContextUTVst } from "../../../index";
 // import {observer} from "mobx-react-lite";
 
 // !!! https://tokmakov.blog.msk.ru/blog/item/677 разобрать примеры и 673
 // const AppRouter = observer(() => {
 const AppRouter = () => {
   // врем заглушка.
-  const isAuth = true;
-  const isAdmin = true;
-  const { user }: any = useContext(AppContext);
+  const isAuth = false;
+  const isAdmin = false;
+
+  // ^ tokmakov.blog
+  // const { user }: any = useContext(AppContext);
 
   // ^ UlbiTV.PERN.magaz
   const { userUTV }: any = useContext(ContextUTVst);

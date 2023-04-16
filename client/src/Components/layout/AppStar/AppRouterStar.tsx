@@ -1,8 +1,11 @@
 import React, { useContext } from "react";
 import { Routes, Route /* , Redirect */, useLocation } from "react-router-dom";
-import { publicRoutes, authRoutes /* , adminRoutes */ } from "./Router";
+import {
+  publicRoutes,
+  authRoutes /* publicRoutes, authRoutes */ /* , adminRoutes */,
+} from "./Router";
 // ^ tokmakov.blog
-import { AppContext } from "./AppContext";
+// import { AppContext } from "../AppContext";
 // ^ UlbiTV.PERN.magaz
 // import { SHOP_ROUTE } from "../utils/consts";
 // import { Context } from "../index";

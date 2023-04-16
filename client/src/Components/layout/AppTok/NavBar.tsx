@@ -9,21 +9,24 @@ import {
   SIGNUP_ROUTE,
   UTV_LOGIN_ROUTE,
   UTV_REGISTRATION_ROUTE,
+  BASKET_Tok_ROUTE,
+  BASKET_UTVst_ROUTE,
   USER_ROUTE,
   ADMIN_ROUTE,
-} from "../../utils/consts";
+} from "../../../utils/consts";
 // ^ tokmakov.blog
 import { AppContext } from "./AppContext";
 // ^ UlbiTV.PERN.magaz
-import { ContextUTVst } from "../../index";
+// import { ContextUTVst } from "../../index";
 // import {observer} from "mobx-react-lite";
 import { /* useHistory */ useNavigate } from "react-router-dom";
+import Basket from "../../pages/auth/Basket";
 
 const NavBar = /* observer( */ () => {
   // врем заглушка.
-  const isAuth = false;
-  const isAdmin = true;
-  const { user } = useContext(AppContext);
+  // const isAuth = false;
+  // const isAdmin = true;
+  const { user }: any = useContext(AppContext);
 
   // ^ UlbiTV.PERN.magaz
   // const { userUTV }: any = useContext(ContextUTVst);
@@ -50,34 +53,33 @@ const NavBar = /* observer( */ () => {
             Контакты
           </NavLink>
           {/* Авториз */}
-          {
-            /* user. */ isAuth ? (
-              <>
-                <NavLink to={USER_ROUTE} className="nav-link">
-                  Личный кабинет
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink to={LOGIN_ROUTE} className="nav-link">
-                  Войти
-                </NavLink>
-                <NavLink to={SIGNUP_ROUTE} className="nav-link">
-                  Регистрация
-                </NavLink>
-              </>
-            )
-          }
+          {user.isAuth ? (
+            <>
+              <NavLink to={USER_ROUTE} className="nav-link">
+                Личный кабинет
+              </NavLink>
+              <NavLink to={BASKET_Tok_ROUTE} className="nav-link">
+                Корзина
+              </NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to={LOGIN_ROUTE} className="nav-link">
+                Войти
+              </NavLink>
+              <NavLink to={SIGNUP_ROUTE} className="nav-link">
+                Регистрация
+              </NavLink>
+            </>
+          )}
           {/* Админ */}
-          {
-            /* user. */ isAdmin && (
-              <>
-                <NavLink to={ADMIN_ROUTE} className="nav-link">
-                  Панель управления
-                </NavLink>
-              </>
-            )
-          }
+          {user.isAdmin && (
+            <>
+              <NavLink to={ADMIN_ROUTE} className="nav-link">
+                Панель управления
+              </NavLink>
+            </>
+          )}
         </Nav>
 
         {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}

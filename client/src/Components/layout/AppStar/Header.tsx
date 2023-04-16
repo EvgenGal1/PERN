@@ -2,25 +2,25 @@ import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
-import { useAllKeysPress } from "../../scripts/hooks/useAllKeysPress";
+import { useAllKeysPress } from "../../../scripts/hooks/useAllKeysPress";
 // переключатель видимости Доп.Меню
-import { Switcher1btn } from "../ui/switcher/Switcher1btn";
+import { Switcher1btn } from "../../ui/switcher/Switcher1btn";
 
 // переключатель черно-белый
-import { Switcher2btn } from "../ui/switcher/Switcher2btn";
+import { Switcher2btn } from "../../ui/switcher/Switcher2btn";
 
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
-import { useTheme } from "../../scripts/hooks/useTheme";
+import { useTheme } from "../../../scripts/hooks/useTheme";
 // переключатель для Цв.Тем
-import { Switcher3btn } from "../ui/switcher/Switcher3btn";
+import { Switcher3btn } from "../../ui/switcher/Switcher3btn";
 
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
-import { useSize } from "../../scripts/hooks/useSize";
+import { useSize } from "../../../scripts/hooks/useSize";
 // переключатель для размеров
-import { Switcher4btn } from "../ui/switcher/Switcher4btn";
+import { Switcher4btn } from "../../ui/switcher/Switcher4btn";
 
 // подсказка по наведению мыши
-import { TitleEl } from "../ui/hintTemplates/TitleEl";
+import { TitleEl } from "../../ui/hintTemplates/TitleEl";
 
 export function Header() {
   // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
@@ -73,7 +73,7 @@ export function Header() {
               <img
                 className="header__img"
                 // src={require("../../img/logo/ЕжеСветRedBlackWhiteEff.png")}
-                src={require("../../img/logo/PERN.png")}
+                src={require("../../../img/logo/PERN.png")}
                 alt=""
               />
               <h3>.E.R.N.</h3>

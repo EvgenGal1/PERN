@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import AppRouter from "./Components/layout/AppRouter";
-import NavBar from "./Components/layout/NavBar";
+import AppRouter from "../Components/layout/AppTok/AppRouterNew";
+import NavBar from "../Components/layout/AppTok/NavBar";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 

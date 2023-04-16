@@ -13,5 +13,7 @@ export const CONTACTS_ROUTE = "/contacts";
 export const NOTFOUND_ROUTE = "*";
 // Авториз. и Админ
 export const USER_ROUTE = "/user";
+export const BASKET_Tok_ROUTE = "/basket";
+export const BASKET_UTVst_ROUTE = "/basket";
 export const BASKET_ROUTE = "/basket";
 export const ADMIN_ROUTE = "/admin";
