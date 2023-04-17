@@ -19,8 +19,8 @@ import { AppContext } from "./AppContext";
 // ^ UlbiTV.PERN.magaz
 // import { ContextUTVst } from "../../index";
 // import {observer} from "mobx-react-lite";
-import { /* useHistory */ useNavigate } from "react-router-dom";
-import Basket from "../../pages/auth/Basket";
+// import { /* useHistory */ useNavigate } from "react-router-dom";
+// import Basket from "../../pages/auth/Basket";
 
 const NavBar = /* observer( */ () => {
   // врем заглушка.

@@ -1,14 +1,14 @@
 import { useContext } from "react";
 import { Table } from "react-bootstrap";
 
-import { AppContext } from "../../layout/AppTok/AppContext";
+import { AppContext } from "./AppContext";
 import BasketItem from "./BasketItem";
 
 const BasketList = () => {
-  const { basket } = useContext(AppContext);
+  const { basket }: any = useContext(AppContext);
   // общая стоимость товаров в корзине
   const cost = basket.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum: any, item: any) => sum + item.price * item.quantity,
     0
   );
   return (
@@ -25,11 +25,11 @@ const BasketList = () => {
             </tr>
           </thead>
           <tbody>
-            {basket.map((item) => (
+            {basket.map((item: any) => (
               <BasketItem key={item.product_id} {...item} />
             ))}
             <tr>
-              <th colSpan="3">Итого</th>
+              <th colSpan={3}>Итого</th>
               <th>{cost}</th>
               <th>руб.</th>
             </tr>

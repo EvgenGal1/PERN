@@ -1,4 +1,4 @@
-const BasketItem = (props) => {
+const BasketItem = (props: any) => {
   return (
     <tr>
       <td>{props.name}</td>

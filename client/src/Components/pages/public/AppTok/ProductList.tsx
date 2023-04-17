@@ -5,11 +5,11 @@ import { AppContext } from "../../../layout/AppTok/AppContext";
 import ProductItem from "./ProductItem";
 
 const ProductList = () => {
-  const { products } = useContext(AppContext);
+  const { products }: any = useContext(AppContext);
 
   return (
     <Row className="d-flex">
-      {products.map((item) => (
+      {products.map((item: any) => (
         <ProductItem key={item.id} data={item} />
       ))}
     </Row>

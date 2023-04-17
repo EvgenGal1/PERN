@@ -1,6 +1,6 @@
 import { Card, Col } from "react-bootstrap";
 
-const ProductItem = ({ data }) => {
+const ProductItem = ({ data }: any) => {
   return (
     <Col
       md={3}

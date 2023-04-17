@@ -45,6 +45,73 @@ export type MyContextTypeBasket = {
   ];
 };
 
+const ContextTypeDef = {
+  // state?: any;
+  // dispatch?: any;
+  // value?: any;
+  // user: {
+  //   email: string,
+  //   isAuth: boolean,
+  //   isAdmin: boolean,
+  // },
+  // products: [
+  //   {
+  //     id: number;
+  //     name: string;
+  //     price: number;
+  //     rating: number;
+  //     image: string;
+  //     categoryId: number;
+  //     brandId: number;
+  //   }
+  // ],
+  // categories: [
+  //   {
+  //     id: number;
+  //   }
+  // ],
+  // brands: [
+  //   {
+  //     id: number;
+  //   }
+  // ],
+  // basket: [
+  //   {
+  //     product_id: number;
+  //     name: string;
+  //     price: number;
+  //     quantity: number;
+  //   }
+  // ];
+};
+
+type UserType = {
+  email: string;
+  isAuth: boolean;
+  isAdmin: boolean;
+};
+
+type InitialStateType = {
+  user: UserType[];
+  // user: UserType;
+  // shoppingCart: number;
+};
+
+const initialState = {
+  user: [],
+  // shoppingCart: 0,
+};
+
+export interface AppContextInterface {
+  user: { email: string; isAuth: boolean; isAdmin: boolean };
+  categories: /* [ */
+  {
+    id: number;
+    name: string;
+  };
+  /* ] */
+}
+
 // const AppContext = React.createContext();
 // const AppContext = React.createContext<MyContextTypeUser,  MyContextTypeProduct,  MyContextTypeCategories,  MyContextTypeBrands>();
 // const AppContext = React.createContext(context);
@@ -57,6 +124,10 @@ const AppContext = React.createContext(
     | MyContextTypeBrands
     | MyContextTypeBasket
 );
+// const AppContext = React.createContext<ContextType>({});
+// const AppContext = createContext({ ContextTypeDef });
+// const AppContext = createContext<InitialStateType>(initialState);
+// const AppContext = createContext<AppContextInterface | null>(null);
 
 // контекст, который будем передавать
 const context = {
@@ -163,4 +234,12 @@ const AppContextProvider = (props: any) => {
   );
 };
 
-export { AppContext, AppContextProvider };
+export {
+  AppContext,
+  AppContextProvider /* ,
+  MyContextTypeUser,
+  MyContextTypeProduct,
+  MyContextTypeCategories,
+  MyContextTypeBrands,
+  MyContextTypeBasket, */,
+};

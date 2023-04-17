@@ -4,10 +4,10 @@ import { ListGroup } from "react-bootstrap";
 import { AppContext } from "../../../layout/AppTok/AppContext";
 
 const BrandBar = () => {
-  const { brands } = useContext(AppContext);
+  const { brands }: any = useContext(AppContext);
   return (
     <ListGroup horizontal>
-      {brands.map((item) => (
+      {brands.map((item: any) => (
         <ListGroup.Item
           key={item.id}
           active={false}
