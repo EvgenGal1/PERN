@@ -1,4 +1,4 @@
-import BasketList from "../../../layout/AppTok/BasketList";
+import BasketList from "./BasketList";
 import { Container } from "react-bootstrap";
 
 const Basket = () => {

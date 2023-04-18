@@ -223,8 +223,10 @@ const context = {
     { id: 4, name: "Xiaomi" },
   ],
   basket: [
-    { product_id: 1, name: "Смартфон раз", price: 56789, quantity: 2 },
-    { product_id: 8, name: "Планшет два", price: 89012, quantity: 1 },
+    { product_id: 1, name: "Смартфон", price: 55000, quantity: 2 },
+    { product_id: 2, name: "Планшет", price: 8900, quantity: 1 },
+    { product_id: 3, name: "Холодильник", price: 25000, quantity: 2 },
+    { product_id: 4, name: "Телевизор", price: 9500, quantity: 3 },
   ],
 };
 

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Table } from "react-bootstrap";
 
-import { AppContext } from "./AppContext";
+import { AppContext } from "../../../layout/AppTok/AppContext";
 import BasketItem from "./BasketItem";
 
 const BasketList = () => {
