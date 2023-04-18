@@ -7,7 +7,7 @@ import React, { useContext, useEffect } from "react";
 // import DeviceList from "../components/DeviceList";
 // import {observer} from "mobx-react-lite";
 // import {Context} from "../index";
-// import {fetchBrands, fetchDevices, fetchTypes} from "../http/deviceAPI";
+// import {fetchBrands, fetchDevices, fetchTypes} from "../http/UTV/deviceAPI";
 // import Pages from "../components/Pages";
 
 const ShopUTV = () => {

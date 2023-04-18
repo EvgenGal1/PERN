@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import AppRouter from "../Components/layout/AppUTVst/AppRouter";
+import AppRouter from "./layout/AppUTVst/AppRouter";
 // import NavBar from "../Components/layout/NavBar";
 // import { observer } from "mobx-react-lite";
 import { ContextUTVst } from "../index";
-import { check } from "../http/userAPI_UTVst";
+import { check } from "../http/UTV/userAPI_UTVst";
 import { Spinner } from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";

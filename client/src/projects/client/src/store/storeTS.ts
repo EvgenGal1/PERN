@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 import AuthService from "../../../../service/auth.service";
 import axios from "axios";
 import { AuthResponse } from "../../../../models/response/auth.response";
-import { API_URL } from "../../../../http";
+import { API_URL } from "../../../../http/UTV/index_UTV-jwt";
 
 export default class Store {
   // сохр.данн.польз.

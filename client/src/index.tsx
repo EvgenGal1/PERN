@@ -3,15 +3,15 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 // ^ Мой Шаблон | СТАРЫЙ ПОДХОД
-import { AppStar } from "./projects/AppStar";
+import { AppStar } from "./Components/AppStar";
 // import { Router } from "./Components/layout/Router";
 import "./index.css";
 // ^ UlbiTV.PERNstore
 import UserStore from "./store/UserStore";
 import DeviceStore from "./store/DeviceStore";
-import AppUTV from "./projects/AppUTV";
+import AppUTV from "./Components/AppUTV";
 // ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
-import AppTok from "./projects/AppTok";
+import AppTok from "./Components/AppTok";
 import { AppContextProvider } from "./Components/layout/AppTok/AppContext";
 
 // ^ NRJWT

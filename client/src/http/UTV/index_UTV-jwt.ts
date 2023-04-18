@@ -1,6 +1,6 @@
 // ^ настр.axios
 import axios from "axios";
-import { AuthResponse } from "../models/response/auth.response";
+import { AuthResponse } from "../../models/response/auth.response";
 
 // перем.:
 export const API_URL = "http://localhost:5010/PERN"; // /auth

@@ -1,4 +1,4 @@
-import api from "../http";
+import api from "../http/UTV/index_UTV-jwt";
 import { AxiosResponse } from "axios";
 import { IUser } from "../models/IUser";
 

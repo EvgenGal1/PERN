@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Header } from "../Components/layout/AppStar/Header";
-import AppRouterStar from "../Components/layout/AppStar/AppRouterStar";
-import { Footer } from "../Components/layout/Footer";
+import { Header } from "./layout/AppStar/Header";
+import AppRouterStar from "./layout/AppStar/AppRouterStar";
+import { Footer } from "./layout/Footer";
 
 import { BrowserRouter } from "react-router-dom";
 

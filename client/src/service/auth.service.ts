@@ -1,4 +1,4 @@
-import api from "../http";
+import api from "../http/UTV/index_UTV-jwt";
 // axios всегда возвращ.объ. Данн.хран.в date. Для указ.типа данн.
 import { AxiosResponse } from "axios";
 import { AuthResponse } from "../models/response/auth.response";
