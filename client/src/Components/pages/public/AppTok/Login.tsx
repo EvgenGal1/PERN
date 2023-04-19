@@ -16,8 +16,8 @@ const Login = () => {
   return (
     <Container className="d-flex justify-content-center">
       <Card
-        style={{ width: "50%" /* , :hover: { cursor: "pointer"} */ }}
-        className="p-2  "
+        style={{ width: "50%" /* // ! , :hover: { cursor: "pointer"} */ }}
+        className="p-2 card-form"
       >
         {/* mt-5 bg-light */}
         <h3 className="m-auto">Авторизация</h3>
@@ -35,16 +35,11 @@ const Login = () => {
           <Form.Control
             className="mt-3"
             placeholder="Введите ваш пароль..."
-            // value=""
-            // onChange={() => {
-            //   console.log("psw ", "psw");
-            // }}
-            // onChange={() => {}}
             defaultValue=""
           />
           <Row className="d-flex justify-content-between mt-3 pl-3 pr-3">
             <Button type="submit">Войти</Button>
-            <p>
+            <p className="text-center mt-2 mb-0">
               Нет аккаунта? <Link to="/signup">Зарегистрирутесь!</Link>
             </p>
           </Row>

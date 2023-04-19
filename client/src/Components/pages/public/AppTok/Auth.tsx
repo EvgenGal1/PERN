@@ -13,7 +13,7 @@ import {
 } from "../../../../utils/consts";
 
 // оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач. для renderа
-const Signup = observer(() => {
+const Auth = observer(() => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,4 +76,4 @@ const Signup = observer(() => {
   );
 });
 
-export default Signup;
+export default Auth;
