@@ -1,4 +1,4 @@
-// ОБЩИЙ доступ
+// ОБЩИЙ ДОСТУП
 export const SHOP_ROUTE = "/";
 // ^ tokmakov
 export const LOGIN_ROUTE = "/login";
@@ -11,9 +11,11 @@ export const DEVICE_ROUTE = "/device";
 export const DELIVERY_ROUTE = "/delivery";
 export const CONTACTS_ROUTE = "/contacts";
 export const NOTFOUND_ROUTE = "*";
-// Авториз. и Админ
+
+// АВТОРИЗ. и АДМИН
+// ^ tokmakov
 export const USER_ROUTE = "/user";
-export const BASKET_Tok_ROUTE = "/basket";
-export const BASKET_UTVst_ROUTE = "/basket";
 export const BASKET_ROUTE = "/basket";
 export const ADMIN_ROUTE = "/admin";
+// ^ UlbiTV
+export const BASKET_UTVst_ROUTE = "/basket";

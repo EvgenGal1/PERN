@@ -1,11 +1,85 @@
 import React from "react";
+import UserStore from "../../../store/Tok/UserStore";
+
+// ! оч.мн.проб типизировать createContext и выход парам. value
+// const ContextTypeDef = {
+//   // state?: any;
+//   // dispatch?: any;
+//   // value?: any;
+//   // user: {
+//   //   email: string,
+//   //   isAuth: boolean,
+//   //   isAdmin: boolean,
+//   // },
+//   // products: [
+//   //   {
+//   //     id: number;
+//   //     name: string;
+//   //     price: number;
+//   //     rating: number;
+//   //     image: string;
+//   //     categoryId: number;
+//   //     brandId: number;
+//   //   }
+//   // ],
+//   // categories: [
+//   //   {
+//   //     id: number;
+//   //   }
+//   // ],
+//   // brands: [
+//   //   {
+//   //     id: number;
+//   //   }
+//   // ],
+//   // basket: [
+//   //   {
+//   //     product_id: number;
+//   //     name: string;
+//   //     price: number;
+//   //     quantity: number;
+//   //   }
+//   // ];
+// };
+// type UserType = {
+//   email: string;
+//   isAuth: boolean;
+//   isAdmin: boolean;
+// };
+// type InitialStateType = {
+//   user: UserType[];
+//   // user: UserType;
+//   // shoppingCart: number;
+// };
+// const initialState = {
+//   user: [],
+//   // shoppingCart: 0,
+// };
+// export interface AppContextInterface {
+//   user: { email: string; isAuth: boolean; isAdmin: boolean };
+//   categories: // [
+//   {
+//     id: number;
+//     name: string;
+//   };
+//   // ]
+// }
+// const AppContext = React.createContext();
+// const AppContext = React.createContext<MyContextTypeUser,  MyContextTypeProduct,  MyContextTypeCategories,  MyContextTypeBrands>();
+// const AppContext = React.createContext(context);
+// const AppContext = React.createContext<IProducts>({} as IProducts);
+// const AppContext = React.createContext<ContextType>({});
+// const AppContext = createContext({ ContextTypeDef });
+// const AppContext = createContext<InitialStateType>(initialState);
+// const AppContext = createContext<AppContextInterface | null>(null);
+// ! оч.мн.проб типизировать createContext и выход парам. value
 
 export type MyContextTypeUser = {
-  user: {
+  user: /* {
     email: string;
     isAuth: boolean;
     isAdmin: boolean;
-  };
+  }; */ any;
 };
 export type MyContextTypeProduct = {
   products: [
@@ -45,77 +119,6 @@ export type MyContextTypeBasket = {
   ];
 };
 
-const ContextTypeDef = {
-  // state?: any;
-  // dispatch?: any;
-  // value?: any;
-  // user: {
-  //   email: string,
-  //   isAuth: boolean,
-  //   isAdmin: boolean,
-  // },
-  // products: [
-  //   {
-  //     id: number;
-  //     name: string;
-  //     price: number;
-  //     rating: number;
-  //     image: string;
-  //     categoryId: number;
-  //     brandId: number;
-  //   }
-  // ],
-  // categories: [
-  //   {
-  //     id: number;
-  //   }
-  // ],
-  // brands: [
-  //   {
-  //     id: number;
-  //   }
-  // ],
-  // basket: [
-  //   {
-  //     product_id: number;
-  //     name: string;
-  //     price: number;
-  //     quantity: number;
-  //   }
-  // ];
-};
-
-type UserType = {
-  email: string;
-  isAuth: boolean;
-  isAdmin: boolean;
-};
-
-type InitialStateType = {
-  user: UserType[];
-  // user: UserType;
-  // shoppingCart: number;
-};
-
-const initialState = {
-  user: [],
-  // shoppingCart: 0,
-};
-
-export interface AppContextInterface {
-  user: { email: string; isAuth: boolean; isAdmin: boolean };
-  categories: /* [ */
-  {
-    id: number;
-    name: string;
-  };
-  /* ] */
-}
-
-// const AppContext = React.createContext();
-// const AppContext = React.createContext<MyContextTypeUser,  MyContextTypeProduct,  MyContextTypeCategories,  MyContextTypeBrands>();
-// const AppContext = React.createContext(context);
-// const AppContext = React.createContext<IProducts>({} as IProducts);
 const AppContext = React.createContext(
   {} as
     | MyContextTypeUser
@@ -124,18 +127,14 @@ const AppContext = React.createContext(
     | MyContextTypeBrands
     | MyContextTypeBasket
 );
-// const AppContext = React.createContext<ContextType>({});
-// const AppContext = createContext({ ContextTypeDef });
-// const AppContext = createContext<InitialStateType>(initialState);
-// const AppContext = createContext<AppContextInterface | null>(null);
 
 // контекст, который будем передавать
 const context = {
-  user: {
+  user: /* {
     email: "ivanov@mail.ru",
     isAuth: true,
     isAdmin: true,
-  },
+  } */ new UserStore(),
   products: [
     {
       id: 1,
@@ -236,12 +235,4 @@ const AppContextProvider = (props: any) => {
   );
 };
 
-export {
-  AppContext,
-  AppContextProvider /* ,
-  MyContextTypeUser,
-  MyContextTypeProduct,
-  MyContextTypeCategories,
-  MyContextTypeBrands,
-  MyContextTypeBasket, */,
-};
+export { AppContext, AppContextProvider };

@@ -9,7 +9,7 @@ import {
   SIGNUP_ROUTE,
   UTV_LOGIN_ROUTE,
   UTV_REGISTRATION_ROUTE,
-  BASKET_Tok_ROUTE,
+  BASKET_ROUTE,
   BASKET_UTVst_ROUTE,
   USER_ROUTE,
   ADMIN_ROUTE,
@@ -58,7 +58,7 @@ const NavBar = /* observer( */ () => {
               <NavLink to={USER_ROUTE} className="nav-link">
                 Личный кабинет
               </NavLink>
-              <NavLink to={BASKET_Tok_ROUTE} className="nav-link">
+              <NavLink to={BASKET_ROUTE} className="nav-link">
                 Корзина
               </NavLink>
             </>

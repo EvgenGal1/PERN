@@ -7,8 +7,8 @@ import { AppStar } from "./Components/AppStar";
 // import { Router } from "./Components/layout/Router";
 import "./index.css";
 // ^ UlbiTV.PERNstore
-import UserStore from "./store/UserStore";
-import DeviceStore from "./store/DeviceStore";
+import UserStore from "./store/UTV/UserStore";
+import DeviceStore from "./store/UTV/DeviceStore";
 import AppUTV from "./Components/AppUTV";
 // ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
 import AppTok from "./Components/AppTok";
