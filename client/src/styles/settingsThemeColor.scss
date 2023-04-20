@@ -185,6 +185,9 @@ body[data-theme="light"] {
         &:hover {
           // background-color: var(--ui-act-col);
         }
+        &:not(form)/* :hover */ {
+          background-color: var(--ui-act-col);
+        }
       }
       // карточка с контентом (form)
       .card-form {
