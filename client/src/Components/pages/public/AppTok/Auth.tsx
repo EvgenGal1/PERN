@@ -40,7 +40,9 @@ const Auth = observer(() => {
   return (
     <Container className="d-flex justify-content-center">
       <Card
-        style={{ width: "50%" /* // ! , :hover: { cursor: "pointer"} */ }}
+        style={{
+          width: "50%",
+        }}
         className="p-2"
       >
         {/* mt-5 bg-light */}

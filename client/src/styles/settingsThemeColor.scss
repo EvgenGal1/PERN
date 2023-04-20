@@ -182,10 +182,8 @@ body[data-theme="light"] {
         background-color: var(--ui-bg);
         border-color: var(--bord-hr);
         transition: 0.5s;
-        &:hover {
-          // background-color: var(--ui-act-col);
-        }
-        &:not(form)/* :hover */ {
+        // наведения для всех кроме содерж. form
+        &:hover:not(:has(form)) {
           background-color: var(--ui-act-col);
         }
       }
@@ -254,7 +252,7 @@ body[data-theme="light"] {
       .item,
       .card {
         &:hover {
-          background-color: var(--ui-act-col);
+          // background-color: var(--ui-act-col);
         }
       }
       // }
