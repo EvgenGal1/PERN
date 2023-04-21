@@ -10,17 +10,20 @@ import {
   BASKET_ROUTE,
   ADMIN_ROUTE,
 } from "../../../utils/consts";
-import Shop from "../../pages/public/AppTok/ShopNew";
+
+import DevicePage from "../../pages/public/DevicePage";
+import Delivery from "../../pages/public/Delivery";
+import Contacts from "../../pages/public/Contacts";
+import NotFound from "../../pages/public/NotFound";
+// ^ tokmakov
+import Shop from "../../pages/public/AppTok/Shop";
 import Basket from "../../pages/public/AppTok/Basket";
 import Auth from "../../pages/public/AppTok/Auth";
 // import Login from "../../pages/public/AppTok/Login";
 // import Signup from "../../pages/public/AppTok/Signup";
-import DevicePage from "../../pages/public/DevicePage";
-import Delivery from "../../pages/public/Delivery";
-import Contacts from "../../pages/public/Contacts";
 import User from "../../pages/auth/User";
 import Admin from "../../pages/admin/Admin";
-import NotFound from "../../pages/public/NotFound";
+// ^ UlbiTV
 // import Auth_UTV from "../../pages/public/AppUTVst/Auth";
 // import BasketUtVst from "../../pages/auth/Basket";
 

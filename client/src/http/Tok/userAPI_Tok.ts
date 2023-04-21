@@ -1,5 +1,7 @@
-import { guestInstance, authInstance } from "./index_Tok";
+// ^ для работы с пользователями
 import jwt_decode from "jwt-decode";
+
+import { guestInstance, authInstance } from "./index_Tok";
 
 export const signup = async (email: string, password: string) => {
   try {
@@ -13,7 +15,7 @@ export const signup = async (email: string, password: string) => {
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
-    alert(e.response.data.message);
+    alert(e?.response?.data?.message);
     return false;
   }
 };
@@ -29,7 +31,7 @@ export const login = async (email: string, password: string) => {
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
-    alert(e.response.data.message);
+    alert(e?.response?.data?.message);
     return false;
   }
 };

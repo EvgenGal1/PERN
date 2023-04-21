@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
-import { Container, Navbar, Nav, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { Container, Navbar, Nav, Button } from "react-bootstrap";
+import { observer } from "mobx-react-lite";
+
 import {
   SHOP_ROUTE,
   DELIVERY_ROUTE,
@@ -16,13 +18,13 @@ import {
 } from "../../../utils/consts";
 // ^ tokmakov.blog
 import { AppContext } from "./AppContext";
+import CheckAuth from "./CheckAuth";
 // ^ UlbiTV.PERN.magaz
 // import { ContextUTVst } from "../../index";
-// import {observer} from "mobx-react-lite";
 // import { /* useHistory */ useNavigate } from "react-router-dom";
 // import Basket from "../../pages/auth/Basket";
 
-const NavBar = /* observer( */ () => {
+const NavBar = observer(() => {
   // врем заглушка.
   // const isAuth = false;
   // const isAdmin = true;
@@ -52,34 +54,37 @@ const NavBar = /* observer( */ () => {
           <NavLink to={CONTACTS_ROUTE} className="nav-link">
             Контакты
           </NavLink>
-          {/* Авториз */}
-          {user.isAuth ? (
-            <>
-              <NavLink to={USER_ROUTE} className="nav-link">
-                Личный кабинет
-              </NavLink>
-              <NavLink to={BASKET_ROUTE} className="nav-link">
-                Корзина
-              </NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink to={LOGIN_ROUTE} className="nav-link">
-                Войти
-              </NavLink>
-              <NavLink to={SIGNUP_ROUTE} className="nav-link">
-                Регистрация
-              </NavLink>
-            </>
-          )}
-          {/* Админ */}
-          {user.isAdmin && (
-            <>
-              <NavLink to={ADMIN_ROUTE} className="nav-link">
-                Панель управления
-              </NavLink>
-            </>
-          )}
+          {/* показ.loader до авториз. или не авториз.е/и токена нет/истёк */}
+          <CheckAuth>
+            {/* Авториз */}
+            {user.isAuth ? (
+              <>
+                <NavLink to={USER_ROUTE} className="nav-link">
+                  Личный кабинет
+                </NavLink>
+                <NavLink to={BASKET_ROUTE} className="nav-link">
+                  Корзина
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink to={LOGIN_ROUTE} className="nav-link">
+                  Войти
+                </NavLink>
+                <NavLink to={SIGNUP_ROUTE} className="nav-link">
+                  Регистрация
+                </NavLink>
+              </>
+            )}
+            {/* Админ */}
+            {user.isAdmin && (
+              <>
+                <NavLink to={ADMIN_ROUTE} className="nav-link">
+                  Панель управления
+                </NavLink>
+              </>
+            )}
+          </CheckAuth>
         </Nav>
 
         {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
@@ -113,6 +118,6 @@ const NavBar = /* observer( */ () => {
       </Container>
     </Navbar>
   );
-}; /* ) */
+});
 
 export default NavBar;

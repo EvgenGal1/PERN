@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Routes, Route /* , Redirect */, useLocation } from "react-router-dom";
+
 import { publicRoutes, authRoutes, adminRoutes } from "./routes";
 // ^ tokmakov.blog
 import { AppContext } from "./AppContext";
