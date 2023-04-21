@@ -98,6 +98,7 @@ export type MyContextTypeCategories = {
   categories: [
     {
       id: number;
+      name: string;
     }
   ];
 };
@@ -105,6 +106,7 @@ export type MyContextTypeBrands = {
   brands: [
     {
       id: number;
+      name: string;
     }
   ];
 };
