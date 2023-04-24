@@ -50,10 +50,11 @@ const Shop = observer(() => {
         catalog.count = data.count;
       })
       .finally(() => setProductsFetching(false));
-  }, [/* catalog, */ catalog?.category, catalog?.brand, catalog?.page]);
+  }, [catalog?.category, catalog?.brand, catalog?.page, catalog]);
 
   return (
     <Container>
+      <Spinner animation="border" />
       <Row className="mt-2">
         <Col md={3}>
           {categoriesFetching ? (
