@@ -54,7 +54,6 @@ const Shop = observer(() => {
 
   return (
     <Container>
-      <Spinner animation="border" />
       <Row className="mt-2">
         <Col md={3}>
           {categoriesFetching ? (

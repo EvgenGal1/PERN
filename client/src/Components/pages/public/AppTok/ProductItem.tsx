@@ -7,7 +7,7 @@ const ProductItem = ({ data }: any) => {
       className="mt-3"
       onClick={() => alert("Переход на страницу товара")}
     >
-      <Card style={{ width: 200, cursor: "pointer" }}>
+      <Card style={{ /* width: 200, */ cursor: "pointer" }}>
         <Card.Img variant="top" src="http://via.placeholder.com/200" />
         <Card.Body style={{ height: 100, overflow: "hidden" }}>
           <p>Бренд: Samsung</p>

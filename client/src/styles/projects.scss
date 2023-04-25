@@ -153,3 +153,10 @@ div {
     text-align: center;
   }
 }
+
+// правки bootstrap
+:root body .main .card {
+  @media (min-width: 992px) {
+    // background-color: #474747;
+  }
+}

@@ -98,7 +98,7 @@ body[data-theme="light"] {
 
     // цвет рамки для всех кроме ссылок и списков
     *:not(a):not(ul) {
-      border-color: var(--bord-hr) !important;
+      // border-color: var(--bord-hr) !important;
     }
     hr.hr {
       border-color: var(--bord-hr);
@@ -146,10 +146,12 @@ body[data-theme="light"] {
     .main {
       background-color: var(--fon-dark);
       transition: background-color 300ms linear;
+      // }
 
       // КНП
       input,
       button:not([class*="btn--primary"]) {
+        border-color: var(--bord-hr) /* !important */;
         background-color: var(--act-bg);
         // transition: background-color 200ms linear;
         &:hover {
@@ -215,10 +217,6 @@ body[data-theme="light"] {
       //   color: var(--activ-col) ;
       //   background-color: var(--act-bg) ;
       // }
-    }
-    // модальные окна
-    .modal {
-      background-color: var(--ui-bg);
     }
 
     // ПЕРЕКЛЮЧАТЕЛИ ----------------------------------------------------------------------------------
