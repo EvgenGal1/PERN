@@ -50,7 +50,7 @@ const Token = sequelize.define("token", {
   // ipАдрес входа, `Отпечаток пальца` браузера,..
 });
 
-// ОПИСАНИЕ МОДЕЛЕЙ (User, Backet, BacketDevice, Device, Type, Brand, Rating, DeviceInfo, TypeBrand, Role)
+// ОПИСАНИЕ МОДЕЛЕЙ (User, Basket, BasketDevice, Device, Type, Brand, Rating, DeviceInfo, TypeBrand, Role)
 // Юзер, определить(назв.,поля{})
 const User = sequelize.define("user", {
   // id тип.целое число,перв.ключ,авто.добавка
@@ -74,12 +74,12 @@ const User = sequelize.define("user", {
 });
 
 // Корзина
-const Backet = sequelize.define("backet", {
+const Basket = sequelize.define("basket", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
 // Резервное устройство
-const BacketDevice = sequelize.define("backet_device", {
+const BasketDevice = sequelize.define("basket_device", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
@@ -158,15 +158,15 @@ const UserToken = sequelize.define("user_token", {
 
 //
 // польз.и корзина связь один к одному(одна корзина) | корзина принадлеж.польз.
-User.hasOne(Backet);
-Backet.belongsTo(User);
+User.hasOne(Basket);
+Basket.belongsTo(User);
 
 // польз.и рейтинг много (наск.рейт.)
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-Backet.hasMany(BacketDevice);
-BacketDevice.belongsTo(Backet);
+Basket.hasMany(BasketDevice);
+BasketDevice.belongsTo(Basket);
 
 Type.hasMany(Device);
 Device.belongsTo(User);
@@ -177,8 +177,8 @@ Device.belongsTo(Brand);
 Device.hasMany(Rating);
 Rating.belongsTo(Device);
 
-Device.hasMany(BacketDevice);
-BacketDevice.belongsTo(Device);
+Device.hasMany(BasketDevice);
+BasketDevice.belongsTo(Device);
 
 // + назв.поля у масс.харак-ик
 Device.hasMany(DeviceInfo, { as: "info" });
@@ -222,8 +222,8 @@ module.exports = {
   Token,
   UserRole,
   UserToken,
-  Backet,
-  BacketDevice,
+  Basket,
+  BasketDevice,
   Device,
   DeviceInfo,
   Type,

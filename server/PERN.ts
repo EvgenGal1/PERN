@@ -7,8 +7,10 @@ require("dotenv").config();
 const express = require("express");
 // подкл.конфиг.БД
 const { sequelize } = require("./db");
-// подкл.моделей(табл)
+// подкл.моделей(табл. // ^ UTV)
 const models = require("./models/modelsTS.ts");
+// подкл.моделей(табл. // ^ Tok)
+import * as mapping from "./models/mapping.js";
 // подкл.cors для отправ.запр.с брауз.
 const cors = require("cors");
 // подкл.MiddlWare по ошб.
@@ -84,7 +86,7 @@ const start = async () => {
   try {
     // подкл.к БД.
     await sequelize.authenticate();
-    // сверка сост.БД со схемой данн. ~`продолжать`
+    // синхрониз.структуру БД со схемой данн.(опред.моделью) ~`синхронизировать`. Созд.табл.в БД если есть в модели
     await sequelize.sync();
 
     // `прослушка` сервера на PORT c fn колбэк cg при успехе,провер.err

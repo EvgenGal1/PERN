@@ -2,7 +2,8 @@
   "name": "pern-start_back",
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
-  "main": "PERN.ts",
+  "main": "index.js",
+  "type": "module",
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
   "license": "ISC",
   "keywords": [
@@ -13,8 +14,10 @@
     "NodeJS"
   ],
   "scripts": {
-    "start": "node PERN.ts",
-    "server": "nodemon PERN.ts"
+    "start_UTV": "node PERN.ts",
+    "server_UTV": "nodemon PERN.ts",
+    "start_Tok": "node index.js",
+    "server_Tok": "nodemon index.js"
   },
   "dependencies": {
     "@types/express": "^4.17.17",
