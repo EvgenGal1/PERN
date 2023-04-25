@@ -7,7 +7,14 @@ import { AppContext } from "../../../layout/AppTok/AppContext";
 const CategoryBar = /* observer( */ () => {
   const { categories }: any = useContext(AppContext);
   // ! ошб. Cannot read properties of undefined (reading 'categories')
-  // const { catalog }: any = useContext(AppContext);
+  const { catalog }: any = useContext(AppContext);
+  const { context }: any = useContext(AppContext);
+
+  console.log("categories ", categories);
+  console.log("catalog ", catalog);
+  // console.log("catalog.categories ", catalog.categories);
+  console.log("context ", context);
+  // console.log("context.categories ", context.categories);
 
   // const handleClick = (id: number) => {
   //   if (id === catalog.category) {
@@ -41,6 +48,6 @@ const CategoryBar = /* observer( */ () => {
       ))} */}
     </ListGroup>
   );
-}; /* ) */
+}; /* ); */
 
 export default CategoryBar;
