@@ -3,9 +3,11 @@ import express from "express";
 
 const router = new express.Router();
 
-router.get("/getall", (req, res) =>
-  res.status(200).send("Список всех категорий")
-);
+router.get("/getall", (req, res) => {
+  console.log("1 ", 1),
+    console.log("get ", res),
+    res.status(200).send("Список всех категорий");
+});
 router.get("/getone/:id([0-9]+)", (req, res) =>
   res.status(200).send("Получение одной категории")
 );
