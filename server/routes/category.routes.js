@@ -5,12 +5,14 @@ const router = new express.Router();
 
 router.get("/getall", (req, res) => {
   console.log("1 ", 1),
-    console.log("get ", res),
+    console.log("getall ", res),
     res.status(200).send("Список всех категорий");
 });
-router.get("/getone/:id([0-9]+)", (req, res) =>
-  res.status(200).send("Получение одной категории")
-);
+router.get("/getone/:id([0-9]+)", (req, res) => {
+  console.log("2 ", 2),
+    console.log("getone ", res),
+    res.status(200).send("Получение одной категории");
+});
 router.post("/create", (req, res) =>
   res.status(200).send("Создание новой категории")
 );
