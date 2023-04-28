@@ -13,9 +13,11 @@ router.get("/getone/:id([0-9]+)", (req, res) => {
     console.log("getone ", res),
     res.status(200).send("Получение одной категории");
 });
-router.post("/create", (req, res) =>
-  res.status(200).send("Создание новой категории")
-);
+router.post("/create", (req, res) => {
+  console.log("2 ", 2),
+    console.log("getone ", res),
+    res.status(200).send("Создание новой категории");
+});
 router.put("/update/:id([0-9]+)", (req, res) =>
   res.status(200).send("Обновление категории")
 );
