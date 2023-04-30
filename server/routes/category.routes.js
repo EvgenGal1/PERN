@@ -14,13 +14,15 @@ router.get("/getone/:id([0-9]+)", (req, res) => {
     res.status(200).send("Получение одной категории");
 });
 router.post("/create", (req, res) => {
-  console.log("2 ", 2),
-    console.log("getone ", res),
+  console.log("3 ", 3),
+    console.log("create ", res),
     res.status(200).send("Создание новой категории");
 });
-router.put("/update/:id([0-9]+)", (req, res) =>
-  res.status(200).send("Обновление категории")
-);
+router.put("/update/:id([0-9]+)", (req, res) => {
+  console.log("4 ", 4),
+    console.log("update ", res),
+    res.status(200).send("Обновление категории");
+});
 router.delete("/delete/:id([0-9]+)", (req, res) =>
   res.status(200).send("Удаление категории")
 );
