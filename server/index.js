@@ -5,6 +5,7 @@ import sequelize from "./sequelize.js";
 import * as mapping from "./models/mapping.js";
 import cors from "cors";
 import router from "./routes/index.js";
+import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 
 const PORT = process.env.PORT_Tok || 5000;
 
@@ -21,6 +22,9 @@ app.use(express.json());
 // });
 // обрабатываем все маршруты
 app.use("/api", router);
+
+// обработка ошибок
+app.use(ErrorHandler);
 
 const start = async () => {
   try {
