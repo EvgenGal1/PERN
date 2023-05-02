@@ -1,9 +1,10 @@
 // ^ Tok. Запуск Сервера для до СЛН. Базов.конфиг для приёма запросов
-import express from "express";
 import config from "dotenv/config";
+import express from "express";
 import sequelize from "./sequelize.js";
 import * as mapping from "./models/mapping.js";
 import cors from "cors";
+import fileUpload from "express-fileupload";
 import router from "./routes/index.js";
 import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 
@@ -12,6 +13,8 @@ const PORT = process.env.PORT_Tok || 5000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+// middleware для загрузки файлов
+app.use(fileUpload());
 // // обрабатываем GET-запрос
 // app.get("/", (req, res) => {
 //   res.status(200).send("Hello, world!");
