@@ -33,10 +33,11 @@ class Product {
   async create(req, res, next) {
     try {
       // поскольку image не допускает null, задаем пустую строку
+      const image = FileService.save(req.files?.image) ?? "";
       const {
         name,
         price,
-        image = "",
+        /* image = "", */
         categoryId = null,
         brandId = null,
       } = req.body;

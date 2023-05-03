@@ -11,8 +11,12 @@ import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 const PORT = process.env.PORT_Tok || 5000;
 
 const app = express();
+// Совместное использование ресурсов между источниками
 app.use(cors());
+// middleware для работы с json
 app.use(express.json());
+// middleware для статики (img, css)
+app.use(express.static("static"));
 // middleware для загрузки файлов
 app.use(fileUpload());
 // // обрабатываем GET-запрос
@@ -23,7 +27,7 @@ app.use(fileUpload());
 // app.post("/", (req, res) => {
 //   res.status(200).json(req.body);
 // });
-// обрабатываем все маршруты
+// обрабатываем все маршруты приложения
 app.use("/api", router);
 
 // обработка ошибок
