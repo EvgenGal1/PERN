@@ -1,10 +1,10 @@
-import { Brand as BrandMapping } from "../models/mapping.js";
+import BrandModel from "../services/Brand.js";
 import AppError from "../error/AppError_Tok.js";
 
 class Brand {
   async getAll(req, res, next) {
     try {
-      const brands = await BrandMapping.findAll();
+      const brands = await BrandModel.getAll();
       res.json(brands);
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -16,10 +16,7 @@ class Brand {
       if (!req.params.id) {
         throw new Error("Не указан id бренда");
       }
-      const brand = await BrandMapping.findByPk(req.params.id);
-      if (!brand) {
-        throw new Error("Бренд не найден в БД");
-      }
+      const brand = await BrandModel.getOne(req.params.id);
       res.json(brand);
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -28,7 +25,7 @@ class Brand {
 
   async create(req, res, next) {
     try {
-      const brand = await BrandMapping.create({ name: req.body.name });
+      const brand = await BrandModel.create(req.body);
       res.json(brand);
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -40,12 +37,7 @@ class Brand {
       if (!req.params.id) {
         throw new Error("Не указан id бренда");
       }
-      const brand = await BrandMapping.findByPk(req.params.id);
-      if (!brand) {
-        throw new Error("Бренд не найден в БД");
-      }
-      const name = req.body.name ?? brand.name;
-      await brand.update({ name });
+      const brand = await BrandModel.update(req.params.id, req.body);
       res.json(brand);
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -57,11 +49,7 @@ class Brand {
       if (!req.params.id) {
         throw new Error("Не указан id бренда");
       }
-      const brand = await BrandMapping.findByPk(req.params.id);
-      if (!brand) {
-        throw new Error("Бренд не найден в БД");
-      }
-      await brand.destroy();
+      const brand = await BrandModel.delete(req.params.id);
       res.json(brand);
     } catch (e) {
       next(AppError.badRequest(e.message));
