@@ -4,7 +4,7 @@ import FileService from "../services/File.js";
 
 class Product {
   async getAll(req, res, next) {
-    console.log("getAll ", getAll);
+    console.log("getAll ", req);
     try {
       const products = await ProductModel.getAll(req.params);
       res.json(products);
@@ -14,7 +14,7 @@ class Product {
   }
 
   async getOne(req, res, next) {
-    console.log("getOne ", getOne);
+    console.log("getOne ", req);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
@@ -27,6 +27,7 @@ class Product {
   }
 
   async create(req, res, next) {
+    console.log("create ", req);
     try {
       const product = await ProductModel.create(req.body, req.files?.image);
       res.json(product);
