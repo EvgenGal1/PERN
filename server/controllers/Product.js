@@ -37,6 +37,7 @@ class Product {
   }
 
   async update(req, res, next) {
+    console.log("update ", req);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
@@ -53,6 +54,7 @@ class Product {
   }
 
   async delete(req, res, next) {
+    console.log("delete ", req);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
