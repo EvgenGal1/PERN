@@ -3,6 +3,7 @@ import AppError from "../error/AppError_Tok.js";
 
 class Category {
   async getAll(req, res, next) {
+    console.log("cntrl.Category getAll ", req);
     try {
       const categories = await CategoryModel.getAll();
       res.json(categories);

@@ -4,7 +4,7 @@ import FileService from "../services/File.js";
 
 class Product {
   async getAll(req, res, next) {
-    console.log("getAll ", req);
+    console.log("cntrl.Product getAll ", req);
     try {
       const products = await ProductModel.getAll(req.params);
       res.json(products);
@@ -14,7 +14,7 @@ class Product {
   }
 
   async getOne(req, res, next) {
-    console.log("getOne ", req);
+    console.log("cntrl.Product getOne ", req);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
