@@ -1,14 +1,23 @@
 import { Product as ProductMapping } from "../models/mapping.js";
+import { ProductProp as ProductPropMapping } from "../models/mapping.js";
 import AppError from "../error/AppError_Tok.js";
 import FileService from "../services/File.js";
 
 class Product {
-  async getAll(params) {
-    const { categoryId, brandId } = params;
+  // async getAll(params) {
+  async getAll(options) {
+    // const { categoryId, brandId } = params;
+    const { categoryId, brandId, limit, page } = options;
+    const offset = (page - 1) * limit;
     const where = {};
     if (categoryId) where.categoryId = categoryId;
     if (brandId) where.brandId = brandId;
-    const products = await ProductMapping.findAll({ where });
+    // const products = await ProductMapping.findAll({ where });
+    const products = await ProductMapping.findAndCountAll({
+      where,
+      limit,
+      offset,
+    });
     return products;
   }
 
