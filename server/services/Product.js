@@ -22,7 +22,12 @@ class Product {
   }
 
   async getOne(id) {
-    const product = await ProductMapping.findByPk(id);
+    // const product = await ProductMapping.findByPk(id);
+    const product = await ProductMapping.findOne({
+      where: { id: id },
+      // include: [{ model: ProductPropMapping }],
+      include: [{ model: ProductPropMapping, as: "props" }],
+    });
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
@@ -40,6 +45,17 @@ class Product {
       categoryId,
       brandId,
     });
+    // свойства товара
+    if (data.props) {
+      const props = JSON.parse(data.props);
+      for (let prop of props) {
+        await ProductPropMapping.create({
+          name: prop.name,
+          value: prop.value,
+          productId: product.id,
+        });
+      }
+    }
     return product;
   }
 

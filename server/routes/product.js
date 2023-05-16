@@ -11,7 +11,7 @@ router.put("/update/:id([0-9]+)", ProductController.update);
 router.delete("/delete/:id([0-9]+)", ProductController.delete);
 
 // Расширенные под фильтрацию
-// ^ под GET тест Postman - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
+// ^ тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
 // список товаров выбранной категории и выбранного бренда
 router.get(
   "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",

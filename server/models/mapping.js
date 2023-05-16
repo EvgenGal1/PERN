@@ -101,8 +101,7 @@ Rating.belongsTo(Product);
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-// связь товара с его свойствами: у товара может быть несколько свойств, но
-// каждое свойство связано только с одним товаром
+// связь товара с его свойствами: у товара может быть несколько свойств, но каждое свойство связано только с одним товаром
 Product.hasMany(ProductProp, { as: "props", onDelete: "CASCADE" });
 ProductProp.belongsTo(Product);
 
