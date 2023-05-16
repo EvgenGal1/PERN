@@ -35,6 +35,7 @@ class Product {
   }
 
   async create(data, img) {
+    console.log("Prod.serv.data ", data);
     // поскольку image не допускает null, задаем пустую строку
     const image = FileService.save(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
@@ -47,7 +48,8 @@ class Product {
     });
     // свойства товара
     if (data.props) {
-      const props = JSON.parse(data.props);
+      // ! ошб. Unexpected token o in JSON at position 1 - коммит parse от не нужного преобразованя JSON в объ.
+      const props = /* JSON.parse( */ data.props; /* ) */
       for (let prop of props) {
         await ProductPropMapping.create({
           name: prop.name,

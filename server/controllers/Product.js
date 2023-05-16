@@ -39,6 +39,7 @@ class Product {
   async create(req, res, next) {
     console.log("create ", req);
     try {
+      console.log("Prod.ctrl. create ", req);
       const product = await ProductModel.create(req.body, req.files?.image);
       res.json(product);
     } catch (e) {
