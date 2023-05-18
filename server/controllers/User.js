@@ -1,13 +1,48 @@
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import UserModel from "../services/User.js";
 import AppError from "../error/AppError_Tok.js";
 
+const makeJwt = (id, email, role) => {
+  return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
+    expiresIn: "24h",
+  });
+};
+
 class User {
   async signup(req, res, next) {
-    res.status(200).send("Регистрация пользователя");
+    // res.status(200).send("Регистрация пользователя");
+    const { email, password, role = "USER" } = req.body;
+    try {
+      if (!email || !password) {
+        throw new Error("Пустой email или пароль");
+      }
+      if (role !== "USER") {
+        throw new Error("Возможна только роль USER");
+      }
+      const hash = await bcrypt.hash(password, 5);
+      const user = await UserModel.create({ email, password: hash, role });
+      const token = makeJwt(user.id, user.email, user.role);
+      return res.json({ token });
+    } catch (e) {
+      next(AppError.badRequest(e.message));
+    }
   }
 
   async login(req, res, next) {
-    res.status(200).send("Вход в личный кабинет");
+    // res.status(200).send("Вход в личный кабинет");
+    try {
+      const { email, password } = req.body;
+      const user = await UserModel.getByEmail(email);
+      let compare = bcrypt.compareSync(password, user.password);
+      if (!compare) {
+        throw new Error("Указан неверный пароль");
+      }
+      const token = makeJwt(user.id, user.email, user.role);
+      return res.json({ token });
+    } catch (e) {
+      next(AppError.badRequest(e.message));
+    }
   }
 
   async check(req, res, next) {
