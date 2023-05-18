@@ -5,12 +5,15 @@ import sequelize from "./sequelize.js";
 import * as mapping from "./models/mapping.js";
 import cors from "cors";
 import fileUpload from "express-fileupload";
+import cookieParser from "cookie-parser";
 import router from "./routes/index.js";
 import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 
 const PORT = process.env.PORT_Tok || 5000;
 
 const app = express();
+// MW для раб.с cookie
+app.use(cookieParser(process.env.SECRET_KEY));
 // Совместное использование ресурсов между источниками
 app.use(cors());
 // middleware для работы с json
