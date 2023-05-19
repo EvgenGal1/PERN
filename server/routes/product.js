@@ -56,6 +56,7 @@ router.get(
 // создать свойство товара
 router.post(
   "/:productId([0-9]+)/property/create",
+  // ! врем.откл.
   // authMiddleware_Tok,
   // adminMiddleware_Tok,
   ProductPropController.create
@@ -63,6 +64,7 @@ router.post(
 // обновить свойство товара
 router.put(
   "/:productId([0-9]+)/property/update/:id([0-9]+)",
+  // ! врем.откл.
   // authMiddleware_Tok,
   // adminMiddleware_Tok,
   ProductPropController.update
@@ -70,6 +72,7 @@ router.put(
 // удалить свойство товара
 router.delete(
   "/:productId([0-9]+)/property/delete/:id([0-9]+)",
+  // ! врем.откл.
   // authMiddleware_Tok,
   // adminMiddleware_Tok,
   ProductPropController.delete
