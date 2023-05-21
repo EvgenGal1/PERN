@@ -3,12 +3,12 @@ import axios from "axios";
 
 // 1ый экземпляр req на сервер от любого посетителя
 const guestInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL_TOK, // REACT_APP_API_URL,
 });
 
 // 2ый экземпляр req на сервер от авториз.посетителя
 const authInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL_TOK, // REACT_APP_API_URL,
 });
 
 // добавляем в запрос данные для авторизации с помощью перехватчика (interceptor)

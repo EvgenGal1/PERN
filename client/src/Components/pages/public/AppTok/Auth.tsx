@@ -4,7 +4,7 @@ import { Container, Row, Card, Form, Button } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { signup } from "../../../../http/Tok/userAPI_Tok";
+import { login, signup } from "../../../../http/Tok/userAPI_Tok";
 import {
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
@@ -15,6 +15,7 @@ import {
 // оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач. для renderа
 const Auth = observer(() => {
   const { user }: any = useContext(AppContext);
+  // console.log("CLT.auth - user ", user);
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
@@ -26,10 +27,23 @@ const Auth = observer(() => {
   }, [navigate, user.isAdmin, user.isAuth]);
 
   const handleSubmit = async (event: any) => {
+    console.log("CLT.Auth handleSubmit : " + 1);
     event.preventDefault();
     const email = event.target.email.value.trim();
     const password = event.target.password.value.trim();
-    const data = await signup(email, password);
+
+    // опред.метода
+    // const data = await login(email, password)
+    // const data = await signup(email, password)
+    let data;
+    if (isLogin) {
+      data = await login(email, password);
+    } else {
+      data = await signup(email, password);
+    }
+    console.log("CLT.Auth handleSubmit data : " + data);
+
+    // перенаправление е/и прошло верно
     if (data) {
       user.login(data);
       if (user.isAdmin) navigate(ADMIN_ROUTE);
