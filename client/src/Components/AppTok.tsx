@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import AppRouter from "./layout/AppTok/AppRouterNew";
+import AppRouterTok from "./layout/AppTok/AppRouterTok";
 import NavBar from "./layout/AppTok/NavBar";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -10,7 +10,7 @@ const AppTok = () => {
   return (
     <BrowserRouter>
       <NavBar />
-      <AppRouter />
+      <AppRouterTok />
     </BrowserRouter>
   );
 };
