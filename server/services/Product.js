@@ -17,6 +17,11 @@ class Product {
       where,
       limit,
       offset,
+      // для каждого товара получаем бренд и категорию
+      include: [
+        { model: BrandMapping, as: "brand" },
+        { model: CategoryMapping, as: "category" },
+      ],
     });
     return products;
   }
