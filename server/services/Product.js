@@ -1,5 +1,9 @@
-import { Product as ProductMapping } from "../models/mapping.js";
-import { ProductProp as ProductPropMapping } from "../models/mapping.js";
+import {
+  Product as ProductMapping,
+  ProductProp as ProductPropMapping,
+  Brand as BrandMapping,
+  Category as CategoryMapping,
+} from "../models/mapping.js";
 import AppError from "../error/AppError_Tok.js";
 import FileService from "../services/File.js";
 
@@ -30,8 +34,12 @@ class Product {
     // const product = await ProductMapping.findByPk(id);
     const product = await ProductMapping.findOne({
       where: { id: id },
-      // include: [{ model: ProductPropMapping }],
-      include: [{ model: ProductPropMapping, as: "props" }],
+      include: [
+        { model: ProductPropMapping, as: "props" },
+        // получать категорию и бренд
+        { model: CategoryMapping, as: "category" },
+        { model: BrandMapping, as: "brand" },
+      ],
     });
     if (!product) {
       throw new Error("Товар не найден в БД");
