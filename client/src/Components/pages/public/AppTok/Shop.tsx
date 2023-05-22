@@ -91,26 +91,27 @@ const Shop = observer(() => {
 
   useEffect(() => {
     setProductsFetching(true);
-    setTimeout(() => {
-      fetchAllProducts(
-        context?.category,
-        context?.brand,
-        context?.page,
-        context?.limit
-      )
-        .then((data) => {
-          context.products = data.rows;
-          context.count = data.count;
-        })
-        .finally(() => setProductsFetching(false));
-    }, 1000);
+    // ! врем.откл.Таймер
+    // setTimeout(() => {
+    fetchAllProducts(
+      context?.category,
+      context?.brand,
+      context?.page,
+      context?.limit
+    )
+      .then((data) => {
+        context.products = data.rows;
+        context.count = data.count;
+      })
+      .finally(() => setProductsFetching(false));
+    // }, 1000);
     // eslint-disable-next-line
   }, [context?.category, context?.brand, context?.page /* , context */]);
 
   return (
     <Container>
       <Row className="mt-2">
-        <Col md={3} /*  className="mb-3" */>
+        <Col md={3} className="mb-3">
           {categoriesFetching ? (
             <Spinner animation="border" />
           ) : (
@@ -118,8 +119,6 @@ const Shop = observer(() => {
           )}
         </Col>
         <Col md={9}>
-          {/* <BrandBar />
-          <ProductList /> */}
           <div>
             {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
           </div>

@@ -91,3 +91,8 @@ export const fetchOneProduct = async (id: number) => {
   const { data } = await guestInstance.get(`product/getone/${id}`);
   return data;
 };
+
+export const fetchProdRating = async (id: number) => {
+  const { data } = await guestInstance.get(`rating/product/${id}`);
+  return data;
+};

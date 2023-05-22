@@ -2,6 +2,7 @@ import {
   SHOP_ROUTE,
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
+  PRODUCT_ROUTE,
   DEVICE_ROUTE,
   DELIVERY_ROUTE,
   CONTACTS_ROUTE,
@@ -17,6 +18,7 @@ import Contacts from "../../pages/public/Contacts";
 import NotFound from "../../pages/public/NotFound";
 // ^ tokmakov
 import Shop from "../../pages/public/AppTok/Shop";
+import Product from "../../pages/public/AppTok/Product";
 import Basket from "../../pages/public/AppTok/Basket";
 import Auth from "../../pages/public/AppTok/Auth";
 // import Login from "../../pages/public/AppTok/Login";
@@ -37,19 +39,20 @@ export const publicRoutes = [
   // Замена 2 Комп.Login|Signup на один Комп.с разн.путями
   { path: LOGIN_ROUTE, Component: /* Login */ Auth },
   { path: SIGNUP_ROUTE, Component: /* Signup */ Auth },
+  { path: BASKET_ROUTE, Component: Basket },
+  { path: PRODUCT_ROUTE + "/:id", Component: Product },
   { path: DEVICE_ROUTE + "/:id", Component: DevicePage },
   { path: DELIVERY_ROUTE, Component: Delivery },
   { path: CONTACTS_ROUTE, Component: Contacts },
-  // { path: NOTFOUND_ROUTE, Component: NotFound },
+  { path: NOTFOUND_ROUTE, Component: NotFound },
   // login|registr один Комп. но с разным маршр. в строке запроса
   // { path: UTV_LOGIN_ROUTE, Component: Auth_UTV },
   // { path: UTV_REGISTRATION_ROUTE, Component: Auth_UTV },
 ];
 
-// Доступ для Авториз.польз.(Админ панель, Корзина, Польз.)
+// Доступ для Авториз.польз.(Корзина, Польз.)
 export const authRoutes = [
-  { path: ADMIN_ROUTE, Component: Admin },
-  { path: BASKET_ROUTE, Component: Basket },
+  // { path: BASKET_ROUTE, Component: Basket },
   { path: USER_ROUTE, Component: User },
   // { path: BASKET_UTVst_ROUTE, Component: BasketUtVst },
 ];

@@ -11,8 +11,6 @@ const BrandBar = observer(() => {
   const navigate = useNavigate();
 
   const handleClick = (id: number) => {
-    console.log("id ", id);
-    console.log("context.brand ", context.brand);
     if (id === context.brand) {
       context.brand = null;
     } else {
@@ -31,16 +29,6 @@ const BrandBar = observer(() => {
 
   return (
     <ListGroup horizontal>
-      {/* {brands.map((item: any) => (
-        <ListGroup.Item
-          key={item.id}
-          active={false}
-          onClick={() => alert("Фильтрация, только товары бренда")}
-          style={{ cursor: "pointer" }}
-        >
-          {item.name}
-        </ListGroup.Item>
-      ))} */}
       {context.brands.map((item: any) => (
         <ListGroup.Item
           key={item.id}

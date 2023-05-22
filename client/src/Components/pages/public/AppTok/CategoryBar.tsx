@@ -35,16 +35,6 @@ const CategoryBar = observer(() => {
 
   return (
     <ListGroup>
-      {/* {categories.map((item: any) => (
-        <ListGroup.Item
-          key={item.id}
-          active={false}
-          onClick={() => alert("Фильтрация, только товары категории")}
-          style={{ cursor: "pointer" }}
-        >
-          {item.name}
-        </ListGroup.Item>
-      ))} */}
       {context.categories.map((item: any) => (
         <ListGroup.Item
           key={item.id}
