@@ -160,3 +160,9 @@ div {
     // background-color: #474747;
   }
 }
+
+// Tok
+// img с прозрачным фоном
+img.card-img-top {
+  background: radial-gradient(circle, #41464b, #000);
+}
