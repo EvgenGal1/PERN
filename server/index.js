@@ -14,8 +14,8 @@ const PORT = process.env.PORT_Tok || 5000;
 const app = express();
 // MW для раб.с cookie
 app.use(cookieParser(process.env.SECRET_KEY));
-// Совместное использование ресурсов между источниками
-app.use(cors());
+// Совместное использование ресурсов между источниками + разрешить cookie от клиента
+app.use(cors({ origin: "http://localhost:3030", credentials: true }));
 // middleware для работы с json
 app.use(express.json());
 // middleware для статики (img, css)
