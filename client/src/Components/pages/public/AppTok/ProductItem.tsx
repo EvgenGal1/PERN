@@ -33,12 +33,7 @@ const ProductItem = ({ data }: any) => {
           <Card.Img variant="top" src="http://via.placeholder.com/200" />
         )}
         <Card.Body style={{ height: 100, overflow: "hidden" }}>
-          <p>
-            Бренд: {/* Samsung */}
-            {/* {data.brand.name} */}
-            {/* // ! врем.пропис. brandId. нужен brand, но его нет в data */}
-            {data.brandId}
-          </p>
+          <p>Бренд: {data.brand.name}</p>
           <strong>{data.name}</strong>
         </Card.Body>
       </Card>
