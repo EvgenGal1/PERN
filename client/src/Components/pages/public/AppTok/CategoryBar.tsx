@@ -12,10 +12,6 @@ const CategoryBar = observer(() => {
   const context: any = useContext(AppContext);
   const navigate = useNavigate();
 
-  // console.log("categories ", categories);
-  // console.log("context ", context);
-  // console.log("context.categories ", context.categories);
-
   const handleClick = (id: number) => {
     if (id === context.category) {
       context.category = null;
@@ -34,7 +30,7 @@ const CategoryBar = observer(() => {
   };
 
   return (
-    <ListGroup>
+    <ListGroup className="list-group__eg">
       {context.categories.map((item: any) => (
         <ListGroup.Item
           key={item.id}

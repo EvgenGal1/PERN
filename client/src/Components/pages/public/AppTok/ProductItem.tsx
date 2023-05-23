@@ -2,14 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Card, Col } from "react-bootstrap";
 
 const ProductItem = ({ data }: any) => {
-  console.log(
-    "process.env.REACT_APP_API_URL_TOK ",
-    process.env.REACT_APP_API_URL_TOK
-  );
-  console.log(
-    "process.env.REACT_APP_IMG_URL_TOK ",
-    process.env.REACT_APP_IMG_URL_TOK
-  );
   const navigate = useNavigate();
 
   return (

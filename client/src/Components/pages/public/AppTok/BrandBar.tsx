@@ -28,7 +28,7 @@ const BrandBar = observer(() => {
   };
 
   return (
-    <ListGroup horizontal>
+    <ListGroup horizontal className="list-group__eg">
       {context.brands.map((item: any) => (
         <ListGroup.Item
           key={item.id}

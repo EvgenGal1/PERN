@@ -16,27 +16,15 @@ import {
   USER_ROUTE,
   ADMIN_ROUTE,
 } from "../../../utils/consts";
-// ^ tokmakov.blog
 import { AppContext } from "./AppContext";
 import CheckAuth from "./CheckAuth";
-// ^ UlbiTV.PERN.magaz
-// import { ContextUTVst } from "../../index";
-// import { /* useHistory */ useNavigate } from "react-router-dom";
-// import Basket from "../../pages/auth/Basket";
+import FetchBasket from "./FetchBasket";
 
 const NavBar = observer(() => {
   // врем заглушка.
   // const isAuth = false;
   // const isAdmin = true;
-  const { user }: any = useContext(AppContext);
-
-  // ^ UlbiTV.PERN.magaz
-  // const { userUTV }: any = useContext(ContextUTVst);
-  // const history = /* useHistory */ useNavigate();
-  // const logOut = () => {
-  //   userUTV.setUser({});
-  //   userUTV.setIsAuth(false);
-  // };
+  const { user, basket }: any = useContext(AppContext);
 
   return (
     <Navbar bg="dark" variant="dark">
@@ -62,9 +50,9 @@ const NavBar = observer(() => {
                 <NavLink to={USER_ROUTE} className="nav-link">
                   Личный кабинет
                 </NavLink>
-                <NavLink to={BASKET_ROUTE} className="nav-link">
+                {/* <NavLink to={BASKET_ROUTE} className="nav-link">
                   Корзина
-                </NavLink>
+                </NavLink> */}
               </>
             ) : (
               <>
@@ -85,36 +73,14 @@ const NavBar = observer(() => {
               </>
             )}
           </CheckAuth>
+          {/* Когда пользователь только зашел на сайт — надо запросить с сервера его корзину, если она существует. И показывать в главном меню ссылку на корзину + количество позиций в ней. Для этого создадим HOC-компонент FetchBasket.js и обернем в него ссылку на корзину. */}
+          <FetchBasket>
+            <NavLink to={BASKET_ROUTE} className="nav-link">
+              Корзина
+              {!!basket.count && <span>({basket.count})</span>}
+            </NavLink>
+          </FetchBasket>
         </Nav>
-
-        {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
-        {/* // ^ UlbiTV.PERN.magaz */}
-        {/* {user.isAuth ? (
-          <Nav className="ml-auto" style={{ color: "white" }}>
-            <Button
-              variant={"outline-light"}
-              onClick={() => history.push(ADMIN_ROUTE)}
-            >
-              Админ панель
-            </Button>
-            <Button
-              variant={"outline-light"}
-              onClick={() => logOut()}
-              className="ml-2"
-            >
-              Выйти
-            </Button>
-          </Nav>
-        ) : (
-          <Nav className="ml-auto" style={{ color: "white" }}>
-            <Button
-              variant={"outline-light"}
-              onClick={() => history.push(UTV_LOGIN_ROUTE)}
-            >
-              Авторизация
-            </Button>
-          </Nav>
-        )} */}
       </Container>
     </Navbar>
   );

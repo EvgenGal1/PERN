@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -14,9 +14,12 @@ import {
   fetchOneProduct,
   fetchProdRating,
 } from "../../../../http/Tok/catalogAPI_Tok";
+import { append } from "../../../../http/Tok/basketAPI_Tok";
+import { AppContext } from "../../../layout/AppTok/AppContext";
 
 const Product = () => {
   const { id }: any = useParams();
+  const { basket }: any = useContext(AppContext);
   const [product, setProduct]: any = useState(null);
   const [rating, setRating]: any = useState(null);
 
@@ -24,6 +27,13 @@ const Product = () => {
     fetchOneProduct(id).then((data: any) => setProduct(data));
     fetchProdRating(id).then((data: any) => setRating(data));
   }, [id]);
+
+  // На странице товара добавим обработчик клика по кнопке «Добавить в корзину»:
+  const handleClick = (productId: any) => {
+    append(productId).then((data: any) => {
+      basket.products = data.products;
+    });
+  };
 
   if (!product) {
     return <Spinner animation="border" />;
@@ -63,7 +73,9 @@ const Product = () => {
               <Spinner animation="border" />
             )}
           </div>
-          <Button>Добавить в корзину</Button>
+          <Button onClick={() => handleClick(product.id)}>
+            Добавить в корзину
+          </Button>
         </Col>
       </Row>
       {!!product.props.length && (

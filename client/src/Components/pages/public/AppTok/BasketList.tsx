@@ -1,20 +1,29 @@
-import { useContext } from "react";
-import { Table } from "react-bootstrap";
+import React, { useContext, useState, useEffect } from "react";
+import { Table, Spinner } from "react-bootstrap";
+import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
+import { fetchBasket } from "../../../../http/Tok/basketAPI_Tok";
 import BasketItem from "./BasketItem";
 
-const BasketList = () => {
+const BasketList = observer(() => {
   const { basket }: any = useContext(AppContext);
-  // общая стоимость товаров в корзине
-  const cost = basket.reduce(
-    (sum: any, item: any) => sum + item.price * item.quantity,
-    0
-  );
+  const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    fetchBasket()
+      .then((data) => (basket.products = data.products))
+      .finally(() => setFetching(false));
+  }, []);
+
+  if (fetching) {
+    return <Spinner animation="border" />;
+  }
+
   return (
     <>
-      {basket.length ? (
-        <Table bordered hover size="sm" className="mt-3">
+      {basket.count ? (
+        <Table bordered hover size="sm" className="mt-3 table__eg">
           <thead>
             <tr>
               <th>Наименование</th>
@@ -25,12 +34,12 @@ const BasketList = () => {
             </tr>
           </thead>
           <tbody>
-            {basket.map((item: any) => (
-              <BasketItem key={item.product_id} {...item} />
+            {basket.products.map((item: any) => (
+              <BasketItem key={item.id} {...item} />
             ))}
             <tr>
               <th colSpan={3}>Итого</th>
-              <th>{cost}</th>
+              <th>{basket.sum}</th>
               <th>руб.</th>
             </tr>
           </tbody>
@@ -40,6 +49,6 @@ const BasketList = () => {
       )}
     </>
   );
-};
+});
 
 export default BasketList;
