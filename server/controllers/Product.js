@@ -10,8 +10,9 @@ class Product {
       // limit - количество товаров на странице; page - товары какой страницы возвращать
       // ^ тесты GET для страниц и кол-ва товаров на стр. - http://localhost:5050/api/product/getall/?page=3&limit=2
       let { limit, page } = req.query;
+      // ^ ограничение колличества (limit) товаров на странице
       limit =
-        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 3;
+        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 16;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
       const options = { categoryId, brandId, limit, page };
       console.log("options ", options);

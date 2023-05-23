@@ -14,8 +14,9 @@ router.get("/getall", ProductController.getAll);
 router.get("/getone/:id([0-9]+)", ProductController.getOne);
 router.post(
   "/create",
-  authMiddleware_Tok,
-  adminMiddleware_Tok,
+  // ! врем.откл.
+  // authMiddleware_Tok,
+  // adminMiddleware_Tok,
   ProductController.create
 );
 router.put(
