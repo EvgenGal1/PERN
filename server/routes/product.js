@@ -1,4 +1,5 @@
 import express from "express";
+
 import ProductController from "../controllers/Product.js";
 import ProductPropController from "../controllers/ProductProp.js";
 import authMiddleware_Tok from "../middleware/authMiddleware_Tok.js";
@@ -32,6 +33,7 @@ router.delete(
   adminMiddleware_Tok,
   ProductController.delete
 );
+
 // Расширенные под фильтрацию
 // ^ тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
 // список товаров выбранной категории и выбранного бренда
