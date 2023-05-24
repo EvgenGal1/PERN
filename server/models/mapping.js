@@ -62,6 +62,26 @@ const ProductProp = sequelize.define("product_prop", {
   value: { type: DataTypes.STRING, allowNull: false },
 });
 
+// модель «Заказ», таблица БД «orders»
+const Order = sequelize.define("order", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false },
+  address: { type: DataTypes.STRING, allowNull: false },
+  amount: { type: DataTypes.INTEGER, allowNull: false },
+  status: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+  comment: { type: DataTypes.STRING },
+});
+
+// позиции заказа, в одном заказе может быть несколько позиций (товаров)
+const OrderItem = sequelize.define("order_item", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING, allowNull: false },
+  price: { type: DataTypes.INTEGER, allowNull: false },
+  quantity: { type: DataTypes.INTEGER, allowNull: false },
+});
+
 /*
  * Описание связей
  */
@@ -105,6 +125,16 @@ Rating.belongsTo(User);
 Product.hasMany(ProductProp, { as: "props", onDelete: "CASCADE" });
 ProductProp.belongsTo(Product);
 
+// связь заказа с позициями: в заказе может быть несколько позиций, но
+// каждая позиция связана только с одним заказом
+Order.hasMany(OrderItem, { as: "items", onDelete: "CASCADE" });
+OrderItem.belongsTo(Order);
+
+// связь заказа с пользователями: у пользователя может быть несколько заказов,
+// но заказ может принадлежать только одному пользователю
+User.hasMany(Order, { as: "orders", onDelete: "SET NULL" });
+Order.belongsTo(User);
+
 export {
   User,
   Basket,
@@ -114,6 +144,6 @@ export {
   Rating,
   BasketProduct,
   ProductProp,
-  // Order,
-  // OrderItem,
+  Order,
+  OrderItem,
 };
