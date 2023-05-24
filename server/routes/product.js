@@ -21,8 +21,9 @@ router.post(
 );
 router.put(
   "/update/:id([0-9]+)",
-  authMiddleware_Tok,
-  adminMiddleware_Tok,
+  // ! врем.откл.
+  // authMiddleware_Tok,
+  // adminMiddleware_Tok,
   ProductController.update
 );
 router.delete(
