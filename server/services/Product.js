@@ -83,6 +83,8 @@ class Product {
     const file = FileService.save(img);
     // если загружено новое изображение — надо удалить старое
     if (file && product.image) {
+      // ! не раб. - FileService.delete is not a function
+      // ^ врем.пропис.заглушку
       FileService.delete(product.image);
     }
     // подготавливаем данные, которые надо обновить в базе данных
