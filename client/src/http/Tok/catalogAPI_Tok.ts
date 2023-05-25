@@ -1,4 +1,4 @@
-// ^ для работы с каталогом товаров
+// ^ HTTP-запросы на сервер для работы с каталогом товаров
 import jwt_decode from "jwt-decode";
 
 import { guestInstance, authInstance } from "./index_Tok";

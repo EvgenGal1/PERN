@@ -18,6 +18,23 @@ import { append } from "../../../../http/Tok/basketAPI_Tok";
 import { AppContext } from "../../../layout/AppTok/AppContext";
 
 const Product = () => {
+  // эффект нажатия кнопки
+  const [isPressed, setIsPressed] = useState(false);
+  const styles = {
+    button: {
+      transition: "transform 0.2s",
+    },
+    buttonPressed: {
+      transform: "scale(0.95)",
+    },
+  };
+  const handleMouseDown = () => {
+    setIsPressed(true);
+  };
+  const handleMouseUp = () => {
+    setIsPressed(false);
+  };
+
   const { id }: any = useParams();
   const { basket }: any = useContext(AppContext);
   const [product, setProduct]: any = useState(null);
@@ -73,7 +90,14 @@ const Product = () => {
               <Spinner animation="border" />
             )}
           </div>
-          <Button onClick={() => handleClick(product.id)}>
+          <Button
+            onClick={() => handleClick(product.id)}
+            style={{ ...styles.button, ...(isPressed && styles.buttonPressed) }}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onTouchStart={handleMouseDown}
+            onTouchEnd={handleMouseUp}
+          >
             Добавить в корзину
           </Button>
         </Col>

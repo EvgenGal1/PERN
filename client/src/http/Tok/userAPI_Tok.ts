@@ -1,4 +1,4 @@
-// ^ для работы с пользователями
+// ^ HTTP-запросы на сервер для работы с пользователями
 import jwt_decode from "jwt-decode";
 
 import { guestInstance, authInstance } from "./index_Tok";

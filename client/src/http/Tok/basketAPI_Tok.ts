@@ -1,4 +1,4 @@
-// ^ HTTP-запросы при работе с корзиной
+// ^ HTTP-запросы на сервер при работе с корзиной
 import { guestInstance } from "./index_Tok";
 
 export const fetchBasket = async () => {
