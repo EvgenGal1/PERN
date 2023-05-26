@@ -72,6 +72,54 @@ const Order = sequelize.define("order", {
   amount: { type: DataTypes.INTEGER, allowNull: false },
   status: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
   comment: { type: DataTypes.STRING },
+  // ^ Формат даты заказа
+  // ^ 1ый способ. getter-ы для полей createdAt и updatedAt при определении модели «Заказ»:
+  // ! откл.т.к.необход.форматировать даты-времени для каждого запроса, если нужно показать их пользователю
+  // createdAt: {
+  //   type: DataTypes.DATE,
+  //   get() {
+  //     return this.getDataValue("createdAt").toLocaleString("ru-RU", {
+  //       timeZone: "Europe/Moscow",
+  //     });
+  //   },
+  // },
+  // updatedAt: {
+  //   type: DataTypes.DATE,
+  //   get() {
+  //     return this.getDataValue("updatedAt").toLocaleString("ru-RU", {
+  //       timeZone: "Europe/Moscow",
+  //     });
+  //   },
+  // },
+  // ^ 2ый способ. виртуал.поля (prettyCreatedAt, prettyUpdatedAt), берут значение createdAt, updatedAt и форматируют.
+  prettyCreatedAt: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      // return this.getDataValue("createdAt").toLocaleString("ru-RU");
+      // ^ любой формат
+      const value = this.getDataValue("createdAt");
+      const day = value.getDate();
+      const month = value.getMonth() + 1;
+      const year = value.getFullYear();
+      const hours = value.getHours();
+      const minutes = value.getMinutes();
+      return day + "." + month + "." + year + " " + hours + ":" + minutes;
+    },
+  },
+  prettyUpdatedAt: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      // return this.getDataValue("updatedAt").toLocaleString("ru-RU");
+      // ^ любой формат
+      const value = this.getDataValue("updatedAt");
+      const day = value.getDate();
+      const month = value.getMonth() + 1;
+      const year = value.getFullYear();
+      const hours = value.getHours();
+      const minutes = value.getMinutes();
+      return day + "." + month + "." + year + " " + hours + ":" + minutes;
+    },
+  },
 });
 
 // позиции заказа, в одном заказе может быть несколько позиций (товаров)

@@ -1,15 +1,41 @@
+// import sequelize from "../sequelize.js"; // ^ Формат даты заказа. 1ый способ
 import { Order as OrderMapping } from "../models/mapping.js";
 import { OrderItem as OrderItemMapping } from "../models/mapping.js";
 import AppError from "../error/AppError_Tok.js";
 
 class Order {
   async getAll(userId = null) {
-    let orders;
+    // let orders;
+    // if (userId) {
+    //   orders = await OrderMapping.findAll({ where: { userId } });
+    // } else {
+    //   orders = await OrderMapping.findAll();
+    // }
+    // ^ Формат даты заказа. 1ый способ
+    // const options = {
+    //   attributes: {
+    //     include: [
+    //       [
+    //         sequelize.fn(
+    //           // "to_char",
+    //           // sequelize.col("created_at"),
+    //           // "DD.MM.YYYY HH24:MI"
+    //           // ^ при раб.с MySQL замен.to_char > DATE_FORMAT
+    //           "DATE_FORMAT",
+    //           sequelize.col("created_at"),
+    //           "%d-%m-%Y %H:%i"
+    //         ),
+    //         "prettyCreated",
+    //       ],
+    //     ],
+    //   },
+    // };
+    // ^ Формат даты заказа. 2ый способ
+    const options = {};
     if (userId) {
-      orders = await OrderMapping.findAll({ where: { userId } });
-    } else {
-      orders = await OrderMapping.findAll();
+      options.where = { userId };
     }
+    const orders = await OrderMapping.findAll(options);
     return orders;
   }
 

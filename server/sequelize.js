@@ -11,8 +11,12 @@ export default new Sequelize(
     port: process.env.DB_PORT,
     // убрать авто.поля createdAt и updatedAt
     define: {
-      underscored: true, // использовать snake_case вместо camelCase для полей таблиц БД
-      timestamps: false, // не добавлять поля created_at и updated_at при создании таблиц
+      // использовать snake_case вместо camelCase для полей таблиц БД
+      underscored: true, // вкл.поля
+      // timestamps: false, // не добавлять поля created_at и updated_at при создании таблиц
     },
+    // ^ Формат даты заказа. 1ый способ. ? Нужно для 2го ?
+    logging: false,
+    timezone: "Europe/Moscow",
   }
 );
