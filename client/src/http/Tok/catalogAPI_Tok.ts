@@ -11,13 +11,18 @@ export const createCategory = async (category: string | any) => {
   return data;
 };
 
-export const updateCategory = async (id: number, category: string) => {
+export const updateCategory = async (id: number, category: string | any) => {
   const { data } = await authInstance.put(`category/update/${id}`, category);
   return data;
 };
 
 export const deleteCategory = async (id: number) => {
   const { data } = await authInstance.delete(`category/delete/${id}`);
+  return data;
+};
+
+export const fetchCategory = async (id: number) => {
+  const { data } = await guestInstance.get(`category/getone/${id}`);
   return data;
 };
 
@@ -34,13 +39,18 @@ export const createBrand = async (brand: string | any) => {
   return data;
 };
 
-export const updateBrand = async (id: number, brand: string) => {
+export const updateBrand = async (id: number, brand: string | any) => {
   const { data } = await authInstance.put(`brand/update/${id}`, brand);
   return data;
 };
 
 export const deleteBrand = async (id: number) => {
   const { data } = await authInstance.delete(`brand/delete/${id}`);
+  return data;
+};
+
+export const fetchBrand = async (id: number) => {
+  const { data } = await guestInstance.get(`brand/getone/${id}`);
   return data;
 };
 

@@ -2,18 +2,40 @@
 import { useState, useEffect, useContext } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 
-import { fetchCategories } from "../../../http/Tok/catalogAPI_Tok";
+import {
+  fetchCategories,
+  deleteCategory,
+} from "../../../http/Tok/catalogAPI_Tok";
 import CreateCategory from "../../layout/AppTok/CreateCategory";
+import UpdateCategory from "../../layout/AppTok/UpdateCategory";
 
 const AdminCategories = () => {
   // список загруженных категорий
   const [categories, setCategories]: any = useState(null);
   // загрузка списка категорий с сервера
   const [fetching, setFetching] = useState(true);
-  // модальное окно создания-редактирования
-  const [show, setShow] = useState(false);
-  // для обновления списка после добавления-редактирования, нужно изменить состояние
+  // модальное окно создания категории
+  const [createShow, setCreateShow] = useState(false);
+  // модальное окно редактирования
+  const [updateShow, setUpdateShow] = useState(false);
+  // для обновления списка после добавления, редактирования, удаления — изменяем состояние
   const [change, setChange] = useState(false);
+  // id категории, которую будем редактировать — для передачи в <UpdateCategory id={…} />
+  const [category, setCategory] = useState(null);
+
+  const handleUpdateClick = (id: any) => {
+    setCategory(id);
+    setUpdateShow(true);
+  };
+
+  const handleDeleteClick = (id: any) => {
+    deleteCategory(id)
+      .then((data) => {
+        setChange(!change);
+        alert(`Категория «${data.name}» удалена`);
+      })
+      .catch((error: any) => alert(error.response.data.message));
+  };
 
   useEffect(() => {
     fetchCategories()
@@ -29,8 +51,19 @@ const AdminCategories = () => {
     <Container>
       <h1>Категории</h1>
       {/* Кнп. для показа Модального окна с формой */}
-      <Button onClick={() => setShow(true)}>Создать категорию</Button>
-      <CreateCategory show={show} setShow={setShow} setChange={setChange} />
+      <Button onClick={() => setCreateShow(true)}>Создать категорию</Button>
+      <CreateCategory
+        show={createShow}
+        setShow={setCreateShow}
+        setChange={setChange}
+      />
+      <UpdateCategory
+        id={category}
+        show={updateShow}
+        setShow={setUpdateShow}
+        setChange={setChange}
+      />
+
       {/*  */}
       {categories.length > 0 ? (
         <Table bordered hover size="sm" className="mt-3 table__eg">
@@ -49,7 +82,8 @@ const AdminCategories = () => {
                   <Button
                     variant="success"
                     size="sm"
-                    onClick={() => alert("Редактирование категории")}
+                    // onClick={() => alert("Редактирование категории")}
+                    onClick={() => handleUpdateClick(item.id)}
                   >
                     Редактировать
                   </Button>
@@ -58,7 +92,8 @@ const AdminCategories = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => alert("Удаление категории")}
+                    // onClick={() => alert("Удаление категории")}
+                    onClick={() => handleDeleteClick(item.id)}
                   >
                     Удалить
                   </Button>

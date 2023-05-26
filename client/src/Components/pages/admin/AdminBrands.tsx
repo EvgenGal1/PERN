@@ -2,18 +2,37 @@
 import { useState, useEffect } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 
-import { fetchBrands } from "../../../http/Tok/catalogAPI_Tok";
+import { fetchBrands, deleteBrand } from "../../../http/Tok/catalogAPI_Tok";
 import CreateBrand from "../../layout/AppTok/CreateBrand";
+import UpdateBrand from "../../layout/AppTok/UpdateBrand";
 
 const AdminBrands = () => {
   // список загруженных брендов
   const [brands, setBrands]: any = useState(null);
   // загрузка списка брендов с сервера
   const [fetching, setFetching] = useState(true);
-  // модальное окно создания-редактирования
-  const [show, setShow] = useState(false);
-  // для обновления списка после добавления-редактирования, нужно изменить состояние
+  // модальное окно создания бренда
+  const [createShow, setCreateShow] = useState(false);
+  // модальное окно редактирования
+  const [updateShow, setUpdateShow] = useState(false);
+  // для обновления списка после добавления, редактирования, удаления — изменяем состояние
   const [change, setChange] = useState(false);
+  // id бренда, который будем редактировать — для передачи в <UpdateBrand id={…} />
+  const [brand, setBrand] = useState(null);
+
+  const handleUpdateClick = (id: any) => {
+    setBrand(id);
+    setUpdateShow(true);
+  };
+
+  const handleDeleteClick = (id: any) => {
+    deleteBrand(id)
+      .then((data) => {
+        setChange(!change);
+        alert(`Бренд «${data.name}» удален`);
+      })
+      .catch((error) => alert(error.response.data.message));
+  };
 
   useEffect(() => {
     fetchBrands()
@@ -29,8 +48,18 @@ const AdminBrands = () => {
     <Container>
       <h1>Бренды</h1>
       {/* Кнп. для показа Модального окна с формой */}
-      <Button onClick={() => setShow(true)}>Создать бренд</Button>
-      <CreateBrand show={show} setShow={setShow} setChange={setChange} />
+      <Button onClick={() => setCreateShow(true)}>Создать бренд</Button>
+      <CreateBrand
+        show={createShow}
+        setShow={setCreateShow}
+        setChange={setChange}
+      />
+      <UpdateBrand
+        id={brand}
+        show={updateShow}
+        setShow={setUpdateShow}
+        setChange={setChange}
+      />
       {/*  */}
       {brands.length > 0 ? (
         <Table bordered hover size="sm" className="mt-3 table__eg">
@@ -49,7 +78,8 @@ const AdminBrands = () => {
                   <Button
                     variant="success"
                     size="sm"
-                    onClick={() => alert("Редактирование бренда")}
+                    // onClick={() => alert("Редактирование бренда")}
+                    onClick={() => handleUpdateClick(item.id)}
                   >
                     Редактировать
                   </Button>
@@ -58,7 +88,8 @@ const AdminBrands = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => alert("Удаление бренда")}
+                    // onClick={() => alert("Удаление бренда")}
+                    onClick={() => handleDeleteClick(item.id)}
                   >
                     Удалить
                   </Button>

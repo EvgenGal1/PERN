@@ -208,3 +208,19 @@ img.card-img-top {
     }
   }
 }
+// модал.окно
+.modal_eg {
+  z-index: 3;
+  width: 70%;
+  max-width: 500px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  padding: 40px 30px;
+  text-align: center;
+  border-radius: 10px;
+  background-color: #fff;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 3px 5px black;
+  transition: all 0.5s ease-in-out;
+}
