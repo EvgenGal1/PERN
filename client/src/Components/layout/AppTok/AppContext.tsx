@@ -1,3 +1,4 @@
+// ^ Контекст. По умолч.и передаваемый
 import React from "react";
 
 import UserStore from "../../../store/Tok/UserStore";

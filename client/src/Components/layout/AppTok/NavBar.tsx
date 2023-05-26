@@ -1,3 +1,4 @@
+// ^ панель навигации
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { Container, Navbar, Nav, Button } from "react-bootstrap";

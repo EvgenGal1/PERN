@@ -1,29 +1,36 @@
 import {
-  SHOP_ROUTE,
-  LOGIN_ROUTE,
-  SIGNUP_ROUTE,
-  PRODUCT_ROUTE,
   DEVICE_ROUTE,
   DELIVERY_ROUTE,
   CONTACTS_ROUTE,
   NOTFOUND_ROUTE,
-  USER_ROUTE,
+  SHOP_ROUTE,
+  LOGIN_ROUTE,
+  SIGNUP_ROUTE,
+  PRODUCT_ROUTE,
   BASKET_ROUTE,
+  USER_ROUTE,
+  USERORDER_ROUTE,
+  USERORDERS_ROUTE,
+  CHECKOUT_ROUTE,
   ADMIN_ROUTE,
 } from "../../../utils/consts";
 
+// общ.эл.
 import DevicePage from "../../pages/public/DevicePage";
 import Delivery from "../../pages/public/Delivery";
 import Contacts from "../../pages/public/Contacts";
 import NotFound from "../../pages/public/NotFound";
 // ^ tokmakov
-import Shop from "../../pages/public/AppTok/Shop";
-import Product from "../../pages/public/AppTok/Product";
-import Basket from "../../pages/public/AppTok/Basket";
-import Auth from "../../pages/public/AppTok/Auth";
 // import Login from "../../pages/public/AppTok/Login";
 // import Signup from "../../pages/public/AppTok/Signup";
+import Shop from "../../pages/public/AppTok/Shop";
+import Auth from "../../pages/public/AppTok/Auth";
+import Product from "../../pages/public/AppTok/Product";
+import Basket from "../../pages/public/AppTok/Basket";
 import User from "../../pages/auth/User";
+import UserOrder from "../../pages/public/AppTok/UserOrder.js";
+import UserOrders from "../../pages/public/AppTok/UserOrders.js";
+import Checkout from "../../pages/public/AppTok/Checkout.js";
 import Admin from "../../pages/admin/Admin";
 // ^ UlbiTV
 // import Auth_UTV from "../../pages/public/AppUTVst/Auth";

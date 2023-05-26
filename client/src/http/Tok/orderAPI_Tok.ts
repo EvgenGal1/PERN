@@ -46,7 +46,7 @@ export const userGetAll = async () => {
   return data;
 };
 // получить один заказ пользователя
-export const userGetOne = async (id: number) => {
+export const userGetOne = async (id: number | string | undefined) => {
   const { data } = await authInstance.get(`order/user/getone/${id}`);
   return data;
 };
