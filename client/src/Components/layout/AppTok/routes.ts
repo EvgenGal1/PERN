@@ -15,6 +15,9 @@ import {
   ADMIN_ROUTE,
   ADMINORDER_ROUTE,
   ADMINORDERS_ROUTE,
+  ADMINCATEGORIES_ROUTE,
+  ADMINBRANDS_ROUTE,
+  ADMINPRODUCTS_ROUTE,
 } from "../../../utils/consts";
 
 // общ.эл.
@@ -30,12 +33,15 @@ import Auth from "../../pages/public/AppTok/Auth";
 import Product from "../../pages/public/AppTok/Product";
 import Basket from "../../pages/public/AppTok/Basket";
 import User from "../../pages/auth/User";
-import UserOrder from "../../pages/public/AppTok/UserOrder";
-import UserOrders from "../../pages/public/AppTok/UserOrders";
+import UserOrder from "../../pages/auth/UserOrder";
+import UserOrders from "../../pages/auth/UserOrders";
 import Checkout from "../../pages/public/AppTok/Checkout";
 import Admin from "../../pages/admin/Admin";
 import AdminOrder from "../../pages/public/AppTok/AdminOrder";
 import AdminOrders from "../../pages/public/AppTok/AdminOrders";
+import AdminCategories from "../../pages/admin/AdminCategories";
+import AdminBrands from "../../pages/admin/AdminBrands";
+// import AdminProducts from "../../pages/public/AppTok/AdminProducts";
 
 // ! https://tokmakov.blog.msk.ru/blog/item/673 разобрать примеры и 677
 // 2 МАРШРУТА ++
@@ -53,7 +59,7 @@ export const publicRoutes = [
   { path: CONTACTS_ROUTE, Component: Contacts },
   { path: NOTFOUND_ROUTE, Component: NotFound },
   { path: BASKET_ROUTE, Component: Basket },
-  { path: CHECKOUT_ROUTE, Component: Basket },
+  // { path: CHECKOUT_ROUTE, Component: Checkout },
 ];
 
 // Доступ для Авториз.польз.(Польз.)
@@ -68,4 +74,7 @@ export const adminRoutes = [
   { path: ADMIN_ROUTE, Component: Admin },
   { path: ADMINORDER_ROUTE, Component: AdminOrders },
   { path: ADMINORDERS_ROUTE, Component: AdminOrder },
+  { path: ADMINCATEGORIES_ROUTE, Component: AdminCategories },
+  { path: ADMINBRANDS_ROUTE, Component: AdminBrands },
+  // { path: ADMINPRODUCTS_ROUTE, Component: AdminProducts },
 ];
