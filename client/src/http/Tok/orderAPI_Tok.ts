@@ -21,7 +21,7 @@ export const adminGetUser = async (id: number) => {
   return data;
 };
 // получить заказ по id
-export const adminGetOne = async (id: number) => {
+export const adminGetOne = async (id: number | string | undefined) => {
   const { data } = await authInstance.get(`order/admin/getone/${id}`);
   return data;
 };

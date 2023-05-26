@@ -21,5 +21,7 @@ export const USER_ROUTE = "/user";
 export const USERORDER_ROUTE = "/user/orders";
 export const USERORDERS_ROUTE = "/user/orders/:id";
 export const ADMIN_ROUTE = "/admin";
+export const ADMINORDER_ROUTE = "/admin/orders";
+export const ADMINORDERS_ROUTE = "/admin/orders/:id";
 // ^ UlbiTV
 export const BASKET_UTVst_ROUTE = "/basket";

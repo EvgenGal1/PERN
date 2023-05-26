@@ -13,6 +13,8 @@ import {
   USERORDERS_ROUTE,
   CHECKOUT_ROUTE,
   ADMIN_ROUTE,
+  ADMINORDER_ROUTE,
+  ADMINORDERS_ROUTE,
 } from "../../../utils/consts";
 
 // общ.эл.
@@ -28,41 +30,42 @@ import Auth from "../../pages/public/AppTok/Auth";
 import Product from "../../pages/public/AppTok/Product";
 import Basket from "../../pages/public/AppTok/Basket";
 import User from "../../pages/auth/User";
-import UserOrder from "../../pages/public/AppTok/UserOrder.js";
-import UserOrders from "../../pages/public/AppTok/UserOrders.js";
-import Checkout from "../../pages/public/AppTok/Checkout.js";
+import UserOrder from "../../pages/public/AppTok/UserOrder";
+import UserOrders from "../../pages/public/AppTok/UserOrders";
+import Checkout from "../../pages/public/AppTok/Checkout";
 import Admin from "../../pages/admin/Admin";
-// ^ UlbiTV
-// import Auth_UTV from "../../pages/public/AppUTVst/Auth";
-// import BasketUtVst from "../../pages/auth/Basket";
+import AdminOrder from "../../pages/public/AppTok/AdminOrder";
+import AdminOrders from "../../pages/public/AppTok/AdminOrders";
 
 // ! https://tokmakov.blog.msk.ru/blog/item/673 разобрать примеры и 677
 // 2 МАРШРУТА ++
 
-// Доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID)
+// Доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
 export const publicRoutes = [
-  // {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
+  // ^ {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
+  // Замена 2 Комп.Login|Signup на один Комп.с разн.маршр. в строке запроса
   { /* "/", */ path: SHOP_ROUTE, Component: Shop },
-  // Замена 2 Комп.Login|Signup на один Комп.с разн.путями
   { path: LOGIN_ROUTE, Component: /* Login */ Auth },
   { path: SIGNUP_ROUTE, Component: /* Signup */ Auth },
-  { path: BASKET_ROUTE, Component: Basket },
   { path: PRODUCT_ROUTE + "/:id", Component: Product },
   { path: DEVICE_ROUTE + "/:id", Component: DevicePage },
   { path: DELIVERY_ROUTE, Component: Delivery },
   { path: CONTACTS_ROUTE, Component: Contacts },
   { path: NOTFOUND_ROUTE, Component: NotFound },
-  // login|registr один Комп. но с разным маршр. в строке запроса
-  // { path: UTV_LOGIN_ROUTE, Component: Auth_UTV },
-  // { path: UTV_REGISTRATION_ROUTE, Component: Auth_UTV },
+  { path: BASKET_ROUTE, Component: Basket },
+  { path: CHECKOUT_ROUTE, Component: Basket },
 ];
 
-// Доступ для Авториз.польз.(Корзина, Польз.)
+// Доступ для Авториз.польз.(Польз.)
 export const authRoutes = [
-  // { path: BASKET_ROUTE, Component: Basket },
   { path: USER_ROUTE, Component: User },
-  // { path: BASKET_UTVst_ROUTE, Component: BasketUtVst },
+  { path: USERORDER_ROUTE, Component: UserOrders },
+  { path: USERORDERS_ROUTE, Component: UserOrder },
 ];
 
 // Доступ для Админа (Админ панель)
-export const adminRoutes = [{ path: ADMIN_ROUTE, Component: Admin }];
+export const adminRoutes = [
+  { path: ADMIN_ROUTE, Component: Admin },
+  { path: ADMINORDER_ROUTE, Component: AdminOrders },
+  { path: ADMINORDERS_ROUTE, Component: AdminOrder },
+];
