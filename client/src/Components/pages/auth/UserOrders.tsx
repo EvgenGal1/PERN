@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Container, Spinner } from "react-bootstrap";
 
-import { userGetAll as getAllOrders } from "../../../../http/Tok/orderAPI_Tok";
-import Orders from "../../../layout/AppTok/Orders";
+import { userGetAll as getAllOrders } from "../../../http/Tok/orderAPI_Tok";
+import Orders from "../../layout/AppTok/Orders";
 
 const UserOrders = () => {
   const [orders, setOrders] = useState(null);

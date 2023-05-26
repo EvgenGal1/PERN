@@ -6,7 +6,7 @@ import { guestInstance, authInstance } from "./index_Tok";
 /*
  * Создание, обновление и удаление категории, получение списка всех категорий
  */
-export const createCategory = async (category: string) => {
+export const createCategory = async (category: string | any) => {
   const { data } = await authInstance.post("category/create", category);
   return data;
 };
@@ -29,7 +29,7 @@ export const fetchCategories = async () => {
 /*
  * Создание, обновление и удаление бренда, получение списка всех брендов
  */
-export const createBrand = async (brand: string) => {
+export const createBrand = async (brand: string | any) => {
   const { data } = await authInstance.post("brand/create", brand);
   return data;
 };

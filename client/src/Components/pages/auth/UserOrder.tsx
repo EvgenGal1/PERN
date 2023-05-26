@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Spinner } from "react-bootstrap";
 
-import { userGetOne as getOneOrder } from "../../../../http/Tok/orderAPI_Tok";
-import Order from "../../../layout/AppTok/Order";
+import { userGetOne as getOneOrder } from "../../../http/Tok/orderAPI_Tok";
+import Order from "../../layout/AppTok/Order";
 
 const UserOrder = () => {
   const { id } = useParams();
