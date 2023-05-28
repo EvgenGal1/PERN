@@ -19,6 +19,7 @@ const UpdateBrand = (props: any) => {
   }, [id]);
 
   const handleChange = (event: any) => {
+    console.log("CLT.UpdateBrand handleChange ", event);
     setName(event.target.value);
     setValid(event.target.value.trim() !== "");
   };
