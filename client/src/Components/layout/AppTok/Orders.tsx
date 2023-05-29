@@ -3,12 +3,12 @@ import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Orders = (props: any) => {
-  if (props.items.length === 0) {
+  if (props.items?.length === 0) {
     return <p>Список заказов пустой</p>;
   }
 
   return (
-    <Table bordered hover size="sm" className="mt-3">
+    <Table bordered hover size="sm" className="mt-3 table__eg">
       <thead>
         <tr>
           <th>№</th>
@@ -22,7 +22,7 @@ const Orders = (props: any) => {
         </tr>
       </thead>
       <tbody>
-        {props.items.map((item: any) => (
+        {props.items?.map((item: any) => (
           <tr key={item.id}>
             <td>{item.id}</td>
             <td>{item.prettyCreatedAt}</td>

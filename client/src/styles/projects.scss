@@ -161,7 +161,12 @@ div {
   }
 }
 
-// Tok
+// Tok ----------------------------------------------------------------------------------
+// текст
+:root body #root .bavbar,
+:root body #root .main {
+  color: #000;
+}
 // img с прозрачным фоном
 img.card-img-top {
   background: radial-gradient(circle, #41464b, #000);
@@ -205,6 +210,35 @@ img.card-img-top {
       color: #000;
       border-color: black;
       background-color: var(--ui-act-col);
+    }
+  }
+}
+// `умерация страниц`
+.pagination_eg {
+  li.page-item {
+    .page-link {
+      color: #000;
+      border: 1px solid var(--bord-hr);
+      background-color: var(--act-bg);
+      &:focus {
+        // box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        // box-shadow: 0 0 0 0.25rem rgba(253, 13, 13, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(253, 237, 13, 0.25);
+      }
+    }
+    &:hover {
+      .page-link {
+        color: #000;
+        font-weight: bold;
+        background-color: var(--act-bg-hov);
+      }
+    }
+    &.active {
+      .page-link {
+        color: var(--ui-act-col);
+        font-weight: bold;
+        background-color: var(--act-bg-hov);
+      }
     }
   }
 }

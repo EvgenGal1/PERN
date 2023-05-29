@@ -1,4 +1,4 @@
-// ^ Список брендов
+// ^ Список Брендов
 import { useState, useEffect } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 

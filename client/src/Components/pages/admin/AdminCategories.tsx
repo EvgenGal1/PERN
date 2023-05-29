@@ -1,4 +1,4 @@
-// ^ Список категорий
+// ^ Список Категорий
 import { useState, useEffect, useContext } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 

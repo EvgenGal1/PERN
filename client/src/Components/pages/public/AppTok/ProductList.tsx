@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import { Row, Pagination } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
@@ -11,13 +11,15 @@ const ProductList = observer(() => {
   const navigate = useNavigate();
 
   const handleClick = (page: number) => {
-    context.page = page; // при каждом клике добавляем в историю браузера новый элемент
-    navigate("/", {
-      state: {
-        category: context.category,
-        brand: context.brand,
-        page: context.page,
-      },
+    context.page = page;
+    // при каждом клике добавляем в историю браузера новый элемент
+    const params: any = {};
+    if (context.category) params.category = context.category;
+    if (context.brand) params.brand = context.brand;
+    if (context.page > 1) params.page = context.page;
+    navigate({
+      pathname: "/",
+      search: "?" + createSearchParams(params),
     });
   };
 
@@ -46,7 +48,9 @@ const ProductList = observer(() => {
           <p className="m-3">По вашему запросу ничего не найдено</p>
         )}
       </Row>
-      {context.pages > 1 && <Pagination>{pages}</Pagination>}
+      {context.pages > 1 && (
+        <Pagination className="pagination_eg">{pages}</Pagination>
+      )}
     </>
   );
 });

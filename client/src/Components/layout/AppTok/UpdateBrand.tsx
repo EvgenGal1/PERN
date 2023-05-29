@@ -1,4 +1,4 @@
-// ^ Редактирование бренда
+// ^ Редактирование Бренда
 import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 

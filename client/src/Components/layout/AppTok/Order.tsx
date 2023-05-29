@@ -20,7 +20,7 @@ const Order = (props: any) => {
         <li>Адрес доставки: {props.data.address}</li>
         <li>Комментарий: {props.data.comment}</li>
       </ul>
-      <Table bordered hover size="sm" className="mt-3">
+      <Table bordered hover size="sm" className="mt-3 table__eg">
         <thead>
           <tr>
             <th>Название</th>
