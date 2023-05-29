@@ -41,7 +41,7 @@ import AdminOrder from "../../pages/public/AppTok/AdminOrder";
 import AdminOrders from "../../pages/public/AppTok/AdminOrders";
 import AdminCategories from "../../pages/admin/AdminCategories";
 import AdminBrands from "../../pages/admin/AdminBrands";
-// import AdminProducts from "../../pages/public/AppTok/AdminProducts";
+import AdminProducts from "../../pages/admin/AdminProducts";
 
 // ! https://tokmakov.blog.msk.ru/blog/item/673 разобрать примеры и 677
 // 2 МАРШРУТА ++
@@ -76,5 +76,5 @@ export const adminRoutes = [
   { path: ADMINORDERS_ROUTE, Component: AdminOrder },
   { path: ADMINCATEGORIES_ROUTE, Component: AdminCategories },
   { path: ADMINBRANDS_ROUTE, Component: AdminBrands },
-  // { path: ADMINPRODUCTS_ROUTE, Component: AdminProducts },
+  { path: ADMINPRODUCTS_ROUTE, Component: AdminProducts },
 ];
