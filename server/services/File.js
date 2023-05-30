@@ -15,19 +15,12 @@ class FileService {
     }
   }
 
-  // ! не раб. - FileService.delete is not a function
-  // ^ врем.пропис.заглушку. Дописать!
   delete(file) {
-    if (!file) return null;
-    try {
-      // const product = ProductMapping.findByPk(id);
-      // if (!product) {
-      //   throw new Error("Товар не найден в БД");
-      // }
-      // product.destroy();
-      // return product;
-    } catch (e) {
-      console.log(e);
+    if (file) {
+      const filePath = path.resolve("static", file);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     }
   }
 }

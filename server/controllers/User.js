@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 import UserModel from "../services/User.js";
 import AppError from "../error/AppError_Tok.js";
 
 // ! дописать cntrl,services для login и signup
-import { User as UserMapping } from "../models/mapping.js";
+// import { User as UserMapping } from "../models/mapping.js";
 
 const makeJwt = (id, email, role) => {
   return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
@@ -15,11 +16,8 @@ const makeJwt = (id, email, role) => {
 class User {
   // Регистрация
   async signup(req, res, next) {
-    console.log("SRV.ctrl.User signup ", 1);
-    // res.status(200).send("Регистрация пользователя");
     const { email, password, role = "USER" } = req.body;
     try {
-      console.log("SRV.ctrl.User signup try ", 2);
       if (!email || !password) {
         throw new Error("Пустой email или пароль");
       }
@@ -31,25 +29,18 @@ class User {
       const token = makeJwt(user.id, user.email, user.role);
       return res.json({ token });
     } catch (e) {
-      console.log("SRV.ctrl.User signup catch ", 2);
-      console.log("SRV.ctrl.User signup catch e ", e);
       next(AppError.badRequest(e.message));
     }
   }
 
   // Вход
   async login(req, res, next) {
-    console.log("SRV.ctrl.User login ", 1);
-    // res.status(200).send("Вход в личный кабинет");
     try {
-      console.log("SRV.ctrl.User login try ", 2);
       const { email, password } = req.body;
-      console.log("SRV.ctrl.User login email ", email);
-      console.log("SRV.ctrl.User login password ", password);
 
-      // const user = await UserModel.getByEmail(email);
+      const user = await UserModel.getByEmail(email);
       // ! дописать cntrl,services для login и signup
-      const user = await UserModel.login(email /* , password */);
+      // const user = await UserModel.login(email /* , password */);
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
         throw new Error("Указан неверный пароль");
@@ -57,14 +48,13 @@ class User {
       const token = makeJwt(user.id, user.email, user.role);
       return res.json({ token });
     } catch (e) {
-      console.log("SRV.ctrl.User login catch ", 2);
-      console.log("SRV.ctrl.User login catch e ", e);
       next(AppError.badRequest(e.message));
     }
   }
 
   async check(req, res, next) {
-    res.status(200).send("Проверка авторизации");
+    const token = makeJwt(req.auth.id, req.auth.email, req.auth.role);
+    return res.json({ token });
   }
 
   async getAll(req, res, next) {
@@ -89,9 +79,17 @@ class User {
   }
 
   async create(req, res, next) {
+    const { email, password, role = "USER" } = req.body;
     try {
-      const user = await UserModel.create(req.body);
-      res.json(brand);
+      if (!email || !password) {
+        throw new Error("Пустой email или пароль");
+      }
+      if (!["USER", "ADMIN"].includes(role)) {
+        throw new Error("Недопустимое значение роли");
+      }
+      const hash = await bcrypt.hash(password, 5);
+      const user = await UserModel.create({ email, password: hash, role });
+      return res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
@@ -102,7 +100,21 @@ class User {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");
       }
-      const user = await UserModel.update(req.params.id, req.body);
+      if (Object.keys(req.body).length === 0) {
+        throw new Error("Нет данных для обновления");
+      }
+      let { email, password, role } = req.body;
+      if (role && !["USER", "ADMIN"].includes(role)) {
+        throw new Error("Недопустимое значение роли");
+      }
+      if (password) {
+        password = await bcrypt.hash(password, 5);
+      }
+      const user = await UserModel.update(req.params.id, {
+        email,
+        password,
+        role,
+      });
       res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
