@@ -1,6 +1,5 @@
 import ProductModel from "../services/Product.js";
 import AppError from "../error/AppError_Tok.js";
-import FileService from "../services/File.js";
 
 class Product {
   async getAll(req, res, next) {
@@ -11,10 +10,9 @@ class Product {
       let { limit = null, page = null } = req.query;
       // ^ ограничение колличества (limit) товаров на странице
       limit =
-        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 5; //16
+        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 3;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
       const options = { categoryId, brandId, limit, page };
-      // const products = await ProductModel.getAll(req.params);
       const products = await ProductModel.getAll(options);
       res.json(products);
     } catch (e) {

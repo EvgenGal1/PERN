@@ -10,32 +10,8 @@ const router = new express.Router();
 /*
  * Товары
  */
-// Стандартные
-router.get("/getall", ProductController.getAll);
-router.get("/getone/:id([0-9]+)", ProductController.getOne);
-router.post(
-  "/create",
-  // ! врем.откл.
-  // authMiddleware_Tok,
-  // adminMiddleware_Tok,
-  ProductController.create
-);
-router.put(
-  "/update/:id([0-9]+)",
-  // ! врем.откл.
-  // authMiddleware_Tok,
-  // adminMiddleware_Tok,
-  ProductController.update
-);
-router.delete(
-  "/delete/:id([0-9]+)",
-  authMiddleware_Tok,
-  adminMiddleware_Tok,
-  ProductController.delete
-);
 
-// Расширенные под фильтрацию
-// ^ тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
+// ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
 // список товаров выбранной категории и выбранного бренда
 router.get(
   "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
@@ -45,6 +21,33 @@ router.get(
 router.get("/getall/categoryId/:categoryId([0-9]+)", ProductController.getAll);
 // список товаров выбранного бренда
 router.get("/getall/brandId/:brandId([0-9]+)", ProductController.getAll);
+
+// ^ Стандартные
+// список всех товаров каталога
+router.get("/getall", ProductController.getAll);
+// получить один товар каталога
+router.get("/getone/:id([0-9]+)", ProductController.getOne);
+// создать товар каталога — нужны права администратора
+router.post(
+  "/create",
+  authMiddleware_Tok,
+  adminMiddleware_Tok,
+  ProductController.create
+);
+// обновить товар каталога  — нужны права администратора
+router.put(
+  "/update/:id([0-9]+)",
+  authMiddleware_Tok,
+  adminMiddleware_Tok,
+  ProductController.update
+);
+// удалить товар каталога  — нужны права администратора
+router.delete(
+  "/delete/:id([0-9]+)",
+  authMiddleware_Tok,
+  adminMiddleware_Tok,
+  ProductController.delete
+);
 
 /*
  * Свойства
@@ -60,25 +63,22 @@ router.get(
 // создать свойство товара
 router.post(
   "/:productId([0-9]+)/property/create",
-  // ! врем.откл.
-  // authMiddleware_Tok,
-  // adminMiddleware_Tok,
+  authMiddleware_Tok,
+  adminMiddleware_Tok,
   ProductPropController.create
 );
 // обновить свойство товара
 router.put(
   "/:productId([0-9]+)/property/update/:id([0-9]+)",
-  // ! врем.откл.
-  // authMiddleware_Tok,
-  // adminMiddleware_Tok,
+  authMiddleware_Tok,
+  adminMiddleware_Tok,
   ProductPropController.update
 );
 // удалить свойство товара
 router.delete(
   "/:productId([0-9]+)/property/delete/:id([0-9]+)",
-  // ! врем.откл.
-  // authMiddleware_Tok,
-  // adminMiddleware_Tok,
+  authMiddleware_Tok,
+  adminMiddleware_Tok,
   ProductPropController.delete
 );
 

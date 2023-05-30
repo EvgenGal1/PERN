@@ -49,9 +49,6 @@ class Basket {
         basketId = parseInt(req.signedCookies.basketId);
       }
       const { productId, quantity } = req.params;
-      console.log("basketId ", basketId);
-      console.log("productId ", productId);
-      console.log("quantity ", quantity);
       const basket = await BasketModel.increment(basketId, productId, quantity);
       res.cookie("basketId", basket.id, { maxAge, signed });
       res.json(basket);

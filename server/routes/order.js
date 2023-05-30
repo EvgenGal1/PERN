@@ -2,7 +2,7 @@ import express from "express";
 
 import OrderController from "../controllers/Order.js";
 import authMiddleware_Tok from "../middleware/authMiddleware_Tok.js";
-import adminMiddleware_Tok from "../middleware/authMiddleware_Tok.js";
+import adminMiddleware_Tok from "../middleware/adminMiddleware_Tok.js";
 
 const router = new express.Router();
 

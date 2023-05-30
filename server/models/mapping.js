@@ -22,8 +22,7 @@ const Basket = sequelize.define("basket", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-// связь между корзиной и товаром через промежуточную таблицу «basket_products»
-// у этой таблицы будет составной первичный ключ (basket_id + product_id)
+// связь между корзиной и товаром через промежуточную таблицу «basket_products» у этой таблицы будет составной первичный ключ (basket_id + product_id)
 const BasketProduct = sequelize.define("basket_product", {
   quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
 });
@@ -49,8 +48,7 @@ const Brand = sequelize.define("brand", {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-// связь между товаром и пользователем через промежуточную таблицу «rating»
-// у этой таблицы будет составной первичный ключ (product_id + user_id)
+// связь между товаром и пользователем через промежуточную таблицу «rating» у этой таблицы будет составной первичный ключ (product_id + user_id)
 const Rating = sequelize.define("rating", {
   rate: { type: DataTypes.INTEGER, allowNull: false },
 });
@@ -146,19 +144,16 @@ BasketProduct.belongsTo(Basket);
 Product.hasMany(BasketProduct);
 BasketProduct.belongsTo(Product);
 
-// связь категории с товарами: в категории может быть несколько товаров, но
-// каждый товар может принадлежать только одной категории
+// связь категории с товарами: в категории может быть несколько товаров, но каждый товар может принадлежать только одной категории
 Category.hasMany(Product, { onDelete: "RESTRICT" });
 Product.belongsTo(Category);
 
-// связь бренда с товарами: у бренда может быть много товаров, но каждый товар
-// может принадлежать только одному бренду
+// связь бренда с товарами: у бренда может быть много товаров, но каждый товар может принадлежать только одному бренду
 Brand.hasMany(Product, { onDelete: "RESTRICT" });
 Product.belongsTo(Brand);
 
 // связь many-to-many товаров и пользователей через промежуточную таблицу rating;
-// за один товар могут проголосовать несколько зарегистрированных пользователей,
-// один пользователь может проголосовать за несколько товаров
+// за один товар могут проголосовать несколько зарегистрированных пользователей, один пользователь может проголосовать за несколько товаров
 Product.belongsToMany(User, { through: Rating, onDelete: "CASCADE" });
 User.belongsToMany(Product, { through: Rating, onDelete: "CASCADE" });
 
