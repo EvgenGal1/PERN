@@ -59,7 +59,7 @@ export const publicRoutes = [
   { path: CONTACTS_ROUTE, Component: Contacts },
   { path: NOTFOUND_ROUTE, Component: NotFound },
   { path: BASKET_ROUTE, Component: Basket },
-  // { path: CHECKOUT_ROUTE, Component: Checkout },
+  { path: CHECKOUT_ROUTE, Component: Checkout },
 ];
 
 // Доступ для Авториз.польз.(Польз.)
