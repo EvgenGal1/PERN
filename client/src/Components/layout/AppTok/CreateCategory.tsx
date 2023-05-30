@@ -6,6 +6,7 @@ import { createCategory } from "../../../http/Tok/catalogAPI_Tok";
 
 const CreateCategory = (props: any) => {
   const { show, setShow, setChange } = props;
+
   const [name, setName] = useState("");
   const [valid, setValid]: any = useState(null);
 

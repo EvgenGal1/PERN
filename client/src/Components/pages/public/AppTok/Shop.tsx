@@ -74,6 +74,7 @@ const Shop = observer(() => {
     // eslint-disable-next-line
   }, []);
 
+  // При каждом клике на категорию, бренд или номер страницы — мы добавляем элемент в историю браузера, ссылки в истории имеют вид /?page=1, /?page=2, /?page=3. При нажатии кнопки «Назад» браузера — мы отслеживаем изменение GET-параметров и изменяем состояние хранилища.
   useEffect(() => {
     const { category, brand, page } = getSearchParams(searchParams);
 
@@ -91,22 +92,19 @@ const Shop = observer(() => {
 
   useEffect(() => {
     setProductsFetching(true);
-    // ! врем.откл.Таймер
-    // setTimeout(() => {
     fetchAllProducts(
-      context?.category,
-      context?.brand,
-      context?.page,
-      context?.limit
+      context.category,
+      context.brand,
+      context.page,
+      context.limit
     )
       .then((data) => {
         context.products = data.rows;
         context.count = data.count;
       })
       .finally(() => setProductsFetching(false));
-    // }, 1000);
     // eslint-disable-next-line
-  }, [context?.category, context?.brand, context?.page /* , context */]);
+  }, [context.category, context.brand, context.page]);
 
   return (
     <Container>

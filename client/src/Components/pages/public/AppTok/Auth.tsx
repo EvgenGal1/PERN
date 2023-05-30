@@ -15,7 +15,6 @@ import {
 // оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач. для renderа
 const Auth = observer(() => {
   const { user }: any = useContext(AppContext);
-  // console.log("CLT.auth - user ", user);
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
@@ -27,7 +26,6 @@ const Auth = observer(() => {
   }, [navigate, user.isAdmin, user.isAuth]);
 
   const handleSubmit = async (event: any) => {
-    console.log("CLT.Auth handleSubmit : " + 1);
     event.preventDefault();
     const email = event.target.email.value.trim();
     const password = event.target.password.value.trim();
@@ -41,7 +39,6 @@ const Auth = observer(() => {
     } else {
       data = await signup(email, password);
     }
-    console.log("CLT.Auth handleSubmit data : " + data);
 
     // перенаправление е/и прошло верно
     if (data) {

@@ -185,7 +185,7 @@ const UpdateProduct = (props: any) => {
           );
           // закрываем модальное окно редактирования товара
           setShow(false);
-          // // изменяем состояние компонента списка товаров
+          // ? хз нужно ли // изменяем состояние компонента списка товаров
           // setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));

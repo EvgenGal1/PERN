@@ -49,31 +49,26 @@ const UpdateCategory = (props: any) => {
   };
 
   return (
-    <>
-      <div className="modal_eg 12">modal_eg</div>
-      <Modal show={show} onHide={() => setShow(false)} className="modal_eg 23">
-        00
-        <Modal.Header closeButton>
-          <Modal.Title>Редактирование категории</Modal.Title>
-        </Modal.Header>
-        11
-        <Modal.Body>
-          <Form noValidate onSubmit={handleSubmit}>
-            <Form.Control
-              name="name"
-              value={name}
-              onChange={(e) => handleChange(e)}
-              isValid={valid === true}
-              isInvalid={valid === false}
-              placeholder="Название категории..."
-              className="mb-3"
-            />
-            <Button type="submit">Сохранить</Button>
-          </Form>
-        </Modal.Body>
-        22
-      </Modal>
-    </>
+    <Modal show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Редактирование категории</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <Form noValidate onSubmit={handleSubmit}>
+          <Form.Control
+            name="name"
+            value={name}
+            onChange={(e) => handleChange(e)}
+            isValid={valid === true}
+            isInvalid={valid === false}
+            placeholder="Название категории..."
+            className="mb-3"
+          />
+          <Button type="submit">Сохранить</Button>
+        </Form>
+      </Modal.Body>
+    </Modal>
   );
 };
 

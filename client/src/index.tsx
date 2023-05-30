@@ -1,15 +1,15 @@
 import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+// import { BrowserRouter } from "react-router-dom";
 
 // ^ Мой Шаблон | СТАРЫЙ ПОДХОД
 import { AppStar } from "./Components/AppStar";
 // import { Router } from "./Components/layout/Router";
 import "./index.css";
 // ^ UlbiTV.PERNstore
-import UserStore from "./store/UTV/UserStore";
-import DeviceStore from "./store/UTV/DeviceStore";
-import AppUTV from "./Components/AppUTV";
+// import UserStore from "./store/UTV/UserStore";
+// import DeviceStore from "./store/UTV/DeviceStore";
+// import AppUTV from "./Components/AppUTV";
 // ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
 import AppTok from "./Components/AppTok";
 import { AppContextProvider } from "./Components/layout/AppTok/AppContext";

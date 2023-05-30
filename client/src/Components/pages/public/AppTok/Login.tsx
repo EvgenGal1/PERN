@@ -25,11 +25,6 @@ const Login = () => {
           <Form.Control
             className="mt-3"
             placeholder="Введите ваш email..."
-            // value=""
-            // onChange={() => {
-            //   console.log("eml ", "eml");
-            // }}
-            // onChange={() => {}}
             defaultValue=""
           />
           <Form.Control

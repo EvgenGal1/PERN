@@ -29,7 +29,7 @@ const CreateBrand = (props: any) => {
       createBrand(data)
         .then((data) => {
           // изменяем состояние компонента списка брендов
-          setChange(true);
+          setChange((state: any) => !state);
           // готовим форму к созданию еще одной категории
           setName("");
           setValid(null);

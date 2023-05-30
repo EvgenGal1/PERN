@@ -38,7 +38,7 @@ const AdminProducts = () => {
   };
 
   // содержимое компонента <Pagination>
-  const pages = [];
+  const pages: any = [];
   for (let page = 1; page <= totalPages; page++) {
     pages.push(
       <Pagination.Item

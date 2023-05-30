@@ -92,8 +92,7 @@ const CreateProduct = (props: any) => {
           setProperties([]);
           // закрываем модальное окно создания товара
           setShow(false);
-          // изменяем состояние компонента списка товаров,
-          // чтобы в этом списке появился и новый товар
+          // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
           setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));
