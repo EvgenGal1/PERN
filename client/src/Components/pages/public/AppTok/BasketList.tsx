@@ -5,17 +5,20 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import {
-  fetchBasket,
+  // fetchBasket,
   increment,
   decrement,
   remove,
 } from "../../../../http/Tok/basketAPI_Tok";
+import { CHECKOUT_ROUTE } from "../../../../utils/consts";
 import BasketItem from "./BasketItem";
 
 const BasketList = observer(() => {
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
+
   const navigate = useNavigate();
+
   const handleIncrement = (id: number) => {
     setFetching(true);
     increment(id)
@@ -37,6 +40,7 @@ const BasketList = observer(() => {
       .finally(() => setFetching(false));
   };
 
+  // ^ получ.данн.корзины(сохран.в хран-ще) в AppTok. FetchBasket не нужен
   // useEffect(() => {
   //   fetchBasket()
   //     .then((data) => (basket.products = data.products))
@@ -78,7 +82,9 @@ const BasketList = observer(() => {
               </tr>
             </tbody>
           </Table>
-          <Button onClick={() => navigate("/checkout")}>Оформить заказ</Button>
+          <Button onClick={() => navigate(CHECKOUT_ROUTE)}>
+            Оформить заказ
+          </Button>
         </>
       ) : (
         <p>Ваша корзина пуста</p>

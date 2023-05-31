@@ -15,7 +15,12 @@ const app = express();
 // MW для раб.с cookie
 app.use(cookieParser(process.env.SECRET_KEY));
 // Совместное использование ресурсов между источниками + разрешить cookie от клиента
-app.use(cors({ origin: "http://localhost:3030", credentials: true }));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 // middleware для работы с json
 app.use(express.json());
 // middleware для статики (img, css)

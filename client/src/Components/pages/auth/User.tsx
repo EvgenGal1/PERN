@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Button } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
+import { USERORDER_ROUTE } from "../../../utils/consts";
 import { logout } from "../../../http/Tok/userAPI_Tok";
 
 const User = () => {
@@ -19,6 +20,11 @@ const User = () => {
     <Container>
       <h1>Личный кабинет</h1>
       <p>Это личный кабинет постоянного покупателя магазина</p>
+      <ul>
+        <li>
+          <Link to={USERORDER_ROUTE}>История заказов</Link>
+        </li>
+      </ul>
       <Button onClick={handleLogout}>Выйти</Button>
     </Container>
   );

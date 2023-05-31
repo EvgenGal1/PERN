@@ -12,7 +12,7 @@ import {
   ADMIN_ROUTE,
 } from "../../../../utils/consts";
 
-// оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач. для renderа
+// оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач.для renderа
 const Auth = observer(() => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();

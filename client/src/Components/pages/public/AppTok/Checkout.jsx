@@ -14,13 +14,14 @@ const isValid = (input) => {
       pattern = /^[-а-я]{2,}( [-а-я]{2,}){1,2}$/i;
       return pattern.test(input.value.trim());
     case "email":
-      pattern = /^[-_.a-z]+@([-a-z]+\.){1,2}[a-z]+$/i;
+      pattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+.{1,2}[a-z]+$/i;
       return pattern.test(input.value.trim());
     case "phone":
-      pattern = /^\+7 \([0-9]{3}\) [0-9]{3}-[0-9]{2}-[0-9]{2}$/i;
+      pattern = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
       return pattern.test(input.value.trim());
     case "address":
       return input.value.trim() !== "";
+    default:
   }
 };
 
@@ -105,7 +106,6 @@ const Checkout = () => {
     // е/и форма заполнена правильно, можно отправлять данные
     if (valid.name && valid.email && valid.phone && valid.address) {
       // З.
-      // ! ошб.в TS - Свойство "comment" не существует в типе "EventTarget"
       let comment = event.target.comment.value.trim();
       comment = comment ? comment : null;
       // форма заполнена правильно, можно отправлять данные
