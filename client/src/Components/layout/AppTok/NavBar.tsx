@@ -15,13 +15,10 @@ import {
   ADMIN_ROUTE,
 } from "../../../utils/consts";
 import { AppContext } from "./AppContext";
-import CheckAuth from "./CheckAuth";
-import FetchBasket from "./FetchBasket";
+// import CheckAuth from "./CheckAuth";
+// import FetchBasket from "./FetchBasket";
 
 const NavBar = observer(() => {
-  // врем заглушка.
-  // const isAuth = false;
-  // const isAdmin = true;
   const { user, basket }: any = useContext(AppContext);
 
   return (
@@ -69,13 +66,14 @@ const NavBar = observer(() => {
             </>
           )}
           {/* </CheckAuth> */}
-          {/* Когда пользователь только зашел на сайт — надо запросить с сервера его корзину, если она существует. И показывать в главном меню ссылку на корзину + количество позиций в ней. Для этого создадим HOC-компонент FetchBasket.js и обернем в него ссылку на корзину. */}
-          <FetchBasket>
-            <NavLink to={BASKET_ROUTE} className="nav-link">
-              Корзина
-              {!!basket.count && <span>({basket.count})</span>}
-            </NavLink>
-          </FetchBasket>
+          {/* Когда пользователь только зашел на сайт — надо запросить с сервера его корзину, если она существует. И показывать в главном меню ссылку на корзину + количество позиций в ней. Для этого создадим HOC-компонент FetchBasket.js и обернем в него ссылку на корзину. 
+          // ^ перенос loader,получ.данн.корзины(сохран.в хран-ще) в AppTok. FetchBasket не нужен */}
+          {/* <FetchBasket> */}
+          <NavLink to={BASKET_ROUTE} className="nav-link">
+            Корзина
+            {!!basket.count && <span>({basket.count})</span>}
+          </NavLink>
+          {/* </FetchBasket> */}
         </Nav>
       </Container>
     </Navbar>
