@@ -29,7 +29,7 @@ const AppUTV = /* observer( */ () => {
 
   return (
     <BrowserRouter>
-      {/* // ! прописать отд. ТфмИфк и AppRouter для AppUTV */}
+      {/* // ! прописать отд. NavBar и AppRouter для AppUTV */}
       {/* <NavBar /> */}
       <AppRouter />
     </BrowserRouter>

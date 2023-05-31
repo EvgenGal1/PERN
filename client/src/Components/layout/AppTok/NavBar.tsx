@@ -10,10 +10,7 @@ import {
   CONTACTS_ROUTE,
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
-  UTV_LOGIN_ROUTE,
-  UTV_REGISTRATION_ROUTE,
   BASKET_ROUTE,
-  BASKET_UTVst_ROUTE,
   USER_ROUTE,
   ADMIN_ROUTE,
 } from "../../../utils/consts";
@@ -43,37 +40,35 @@ const NavBar = observer(() => {
           <NavLink to={CONTACTS_ROUTE} className="nav-link">
             Контакты
           </NavLink>
-          {/* показ.loader до авториз. или не авториз.е/и токена нет/истёк */}
-          <CheckAuth>
-            {/* Авториз */}
-            {user.isAuth ? (
-              <>
-                <NavLink to={USER_ROUTE} className="nav-link">
-                  Личный кабинет
-                </NavLink>
-                {/* <NavLink to={BASKET_ROUTE} className="nav-link">
-                  Корзина
-                </NavLink> */}
-              </>
-            ) : (
-              <>
-                <NavLink to={LOGIN_ROUTE} className="nav-link">
-                  Войти
-                </NavLink>
-                <NavLink to={SIGNUP_ROUTE} className="nav-link">
-                  Регистрация
-                </NavLink>
-              </>
-            )}
-            {/* Админ */}
-            {user.isAdmin && (
-              <>
-                <NavLink to={ADMIN_ROUTE} className="nav-link">
-                  Панель управления
-                </NavLink>
-              </>
-            )}
-          </CheckAuth>
+          {/* показ.loader до авториз. или не авториз. е/и токена нет/истёк 
+          // ^ перенос loader,получ.данн.польз(сохран.в хран-ще) в AppTok. CheckAuth не нужен */}
+          {/* <CheckAuth> */}
+          {/* Авториз */}
+          {user.isAuth ? (
+            <>
+              <NavLink to={USER_ROUTE} className="nav-link">
+                Личный кабинет
+              </NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to={LOGIN_ROUTE} className="nav-link">
+                Войти
+              </NavLink>
+              <NavLink to={SIGNUP_ROUTE} className="nav-link">
+                Регистрация
+              </NavLink>
+            </>
+          )}
+          {/* Админ */}
+          {user.isAdmin && (
+            <>
+              <NavLink to={ADMIN_ROUTE} className="nav-link">
+                Панель управления
+              </NavLink>
+            </>
+          )}
+          {/* </CheckAuth> */}
           {/* Когда пользователь только зашел на сайт — надо запросить с сервера его корзину, если она существует. И показывать в главном меню ссылку на корзину + количество позиций в ней. Для этого создадим HOC-компонент FetchBasket.js и обернем в него ссылку на корзину. */}
           <FetchBasket>
             <NavLink to={BASKET_ROUTE} className="nav-link">
