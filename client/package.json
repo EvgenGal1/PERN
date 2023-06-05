@@ -2,7 +2,7 @@
   "name": "pern-start_front",
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
-  "main": "PERN.tsx",
+  "main": "index.tsx",
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
   "license": "ISC",
   "keywords": [

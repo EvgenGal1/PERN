@@ -1,15 +1,11 @@
-import React, { useState, useContext } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Container } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
-import CreateBrand from "../../layout/AppTok/CreateBrand";
-import CreateDevice from "../../layout/AppTok/CreateCategory";
-// import CreateType from "../components/modals/CreateType";
 import {
   LOGIN_ROUTE,
   ADMINORDER_ROUTE,
-  ADMINORDERS_ROUTE,
   ADMINCATEGORIES_ROUTE,
   ADMINBRANDS_ROUTE,
   ADMINPRODUCTS_ROUTE,

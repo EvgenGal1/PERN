@@ -12,8 +12,6 @@ import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 const PORT = process.env.PORT_Tok || 5000;
 
 const app = express();
-// MW для раб.с cookie
-app.use(cookieParser(process.env.SECRET_KEY));
 // Совместное использование ресурсов между источниками + разрешить cookie от клиента
 app.use(
   cors({
@@ -27,6 +25,8 @@ app.use(express.json());
 app.use(express.static("static"));
 // middleware для загрузки файлов
 app.use(fileUpload());
+// MW для раб.с cookie
+app.use(cookieParser(process.env.SECRET_KEY));
 // // обрабатываем GET-запрос
 // app.get("/", (req, res) => {
 //   res.status(200).send("Hello, world!");

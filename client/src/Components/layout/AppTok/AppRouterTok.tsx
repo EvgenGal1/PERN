@@ -15,9 +15,6 @@ import { useTransition, animated } from "react-spring";
 // !!! https://tokmakov.blog.msk.ru/blog/item/677 разобрать примеры и 673
 // const AppRouterStar = observer(() => {
 const AppRouterTok = () => {
-  // врем заглушка.
-  // const isAuth = true;
-  // const isAdmin = true;
   const { user }: any = useContext(AppContext);
 
   // анимация страниц

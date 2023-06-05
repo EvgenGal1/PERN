@@ -6,7 +6,7 @@ import {
   authRoutes /* publicRoutes, authRoutes */ /* , adminRoutes */,
 } from "./Router";
 // ^ tokmakov.blog
-// import { AppContext } from "../AppContext";
+// import { AppContext } from "../AppContext.js";
 // ^ UlbiTV.PERN.magaz
 // import { SHOP_ROUTE } from "../utils/consts";
 // import { Context } from "../index";

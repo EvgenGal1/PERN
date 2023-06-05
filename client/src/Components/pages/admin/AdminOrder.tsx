@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Spinner } from "react-bootstrap";
 
-import { adminGetOne as getOneOrder } from "../../../../http/Tok/orderAPI_Tok";
-import Order from "../../../layout/AppTok/Order";
+import { adminGetOne as getOneOrder } from "../../../http/Tok/orderAPI_Tok";
+import Order from "../../layout/AppTok/Order";
 
 const AdminOrder = () => {
   const { id } = useParams();

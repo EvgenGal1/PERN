@@ -6,21 +6,21 @@ import { observer } from "mobx-react-lite";
 import { AppContext } from "../../../layout/AppTok/AppContext";
 
 const BrandBar = observer(() => {
-  // const { brands }: any = useContext(AppContext);
-  const context: any = useContext(AppContext);
+  const { catalog } = useContext(AppContext);
+
   const navigate = useNavigate();
 
   const handleClick = (id: number) => {
-    if (id === context.brand) {
-      context.brand = null;
+    if (id === catalog.brand) {
+      catalog.brand = null;
     } else {
-      context.brand = id;
+      catalog.brand = id;
     }
     // при каждом клике добавляем в историю браузера новый элемент
     const params: any = {};
-    if (context.category) params.category = context.category;
-    if (context.brand) params.brand = context.brand;
-    if (context.page > 1) params.page = context.page;
+    if (catalog.category) params.category = catalog.category;
+    if (catalog.brand) params.brand = catalog.brand;
+    if (catalog.page > 1) params.page = catalog.page;
     navigate({
       pathname: "/",
       search: "?" + createSearchParams(params),
@@ -28,11 +28,11 @@ const BrandBar = observer(() => {
   };
 
   return (
-    <ListGroup horizontal className="list-group__eg">
-      {context.brands.map((item: any) => (
+    <ListGroup horizontal>
+      {catalog.brands.map((item: any) => (
         <ListGroup.Item
           key={item.id}
-          active={item.id === context.brand}
+          active={item.id === catalog.brand}
           onClick={() => handleClick(item.id)}
           style={{ cursor: "pointer" }}
         >

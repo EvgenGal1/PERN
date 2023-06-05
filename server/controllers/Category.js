@@ -25,6 +25,9 @@ class Category {
 
   async create(req, res, next) {
     try {
+      if (!req.body.name) {
+        throw new Error("Нет названия категории");
+      }
       const category = await CategoryModel.create(req.body);
       res.json(category);
     } catch (e) {
@@ -36,6 +39,9 @@ class Category {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id категории");
+      }
+      if (!req.body.name) {
+        throw new Error("Нет названия категории");
       }
       const category = await CategoryModel.update(req.params.id, req.body);
       res.json(category);

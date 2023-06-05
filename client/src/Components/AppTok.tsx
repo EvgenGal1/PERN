@@ -29,7 +29,7 @@ const AppTok = observer(() => {
     // fetchBasket()
     //   .then((data) => (basket.products = data.products))
     //   .finally(() => setBasketLoading(false));
-    // ^ Promise.all() Запускаем несколько промисов(здесь 2) параллельно и ждём, выполнения (получ.данн.с сервера)
+    // ^ Promise.all() Запускаем несколько промисов(здесь два) параллельно и ждём, выполнения (получ.данн.с сервера)
     Promise.all([checkAuth(), fetchBasket()])
       .then(
         axios.spread((userData, basketData) => {

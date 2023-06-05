@@ -6,9 +6,11 @@ export default class UserStore {
   email = null;
   isAuth = false;
   isAdmin = false;
+
   constructor() {
     makeAutoObservable(this);
   }
+
   login({ id, email, role }: any) {
     this.id = id;
     this.email = email;
