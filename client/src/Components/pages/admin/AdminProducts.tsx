@@ -124,8 +124,9 @@ const AdminProducts = () => {
                   <td>
                     {item.image && (
                       <a
-                        href={process.env.REACT_APP_IMG_URL + item.image}
-                        // target="_blank"
+                        href={process.env.REACT_APP_IMG_URL_TOK + item.image}
+                        target="_blank"
+                        rel="noreferrer"
                       >
                         фото
                       </a>
@@ -157,7 +158,7 @@ const AdminProducts = () => {
             </tbody>
           </Table>
           {totalPages > 1 && (
-            <Pagination className="pagination_eg">{pages}</Pagination>
+            <Pagination className="pagination__eg">{pages}</Pagination>
           )}
         </>
       ) : (

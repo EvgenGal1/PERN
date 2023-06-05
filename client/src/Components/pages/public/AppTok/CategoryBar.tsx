@@ -28,7 +28,7 @@ const CategoryBar = observer(() => {
   };
 
   return (
-    <ListGroup>
+    <ListGroup className="list-group__eg">
       {catalog.categories.map((item: any) => (
         <ListGroup.Item
           key={item.id}

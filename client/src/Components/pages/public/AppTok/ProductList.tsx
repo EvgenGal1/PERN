@@ -49,7 +49,7 @@ const ProductList = observer(() => {
         )}
       </Row>
       {catalog.pages > 1 && (
-        <Pagination className="pagination_eg">{pages}</Pagination>
+        <Pagination className="pagination__eg">{pages}</Pagination>
       )}
     </>
   );

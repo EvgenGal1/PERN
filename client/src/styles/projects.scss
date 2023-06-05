@@ -213,8 +213,8 @@ img.card-img-top {
     }
   }
 }
-// `умерация страниц`
-.pagination_eg {
+// `нумерация страниц`
+.pagination__eg {
   li.page-item {
     .page-link {
       color: #000;
@@ -229,21 +229,21 @@ img.card-img-top {
     &:hover {
       .page-link {
         color: #000;
-        font-weight: bold;
+        // font-weight: bold;
         background-color: var(--act-bg-hov);
       }
     }
     &.active {
       .page-link {
         color: var(--ui-act-col);
-        font-weight: bold;
+        // font-weight: bold;
         background-color: var(--act-bg-hov);
       }
     }
   }
 }
 // модал.окно
-.modal_eg {
+.modal__eg {
   z-index: 3;
   width: 70%;
   max-width: 500px;
@@ -257,4 +257,29 @@ img.card-img-top {
   transform: translate(-50%, -50%);
   box-shadow: 0 3px 5px black;
   transition: all 0.5s ease-in-out;
+}
+// Список группы
+.list-group__eg {
+  .list-group-item {
+    // color: #000;
+    font-weight: 500;
+    border: 1px solid var(--bord-hr);
+    background-color: var(--act-bg);
+    &:hover {
+      color: #000;
+      // font-weight: 700;
+      background-color: var(--act-bg-hov);
+      // border: 1px solid rgba(253, 237, 13, 0.25);
+    }
+    &.active {
+      color: var(--ui-act-col);
+      // font-weight: bold;
+      background-color: var(--act-bg-hov);
+      border: 1px solid rgba(250, 39, 39, 0.25);
+      border: 1px solid #4b0000;
+    }
+    &:focus {
+      border: 1px solid rgba(253, 237, 13, 0.25);
+    }
+  }
 }
