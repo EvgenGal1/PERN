@@ -3,7 +3,7 @@ import jwt_decode from "jwt-decode";
 
 import { guestInstance, authInstance } from "./index_Tok";
 
-export const signup = async (email: string, password: string) => {
+export const signup = async (email: string, password: string | any) => {
   try {
     const response = await guestInstance.post("user/signup", {
       email,
@@ -20,7 +20,7 @@ export const signup = async (email: string, password: string) => {
   }
 };
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string | any) => {
   try {
     const response = await guestInstance.post("user/login", {
       email,

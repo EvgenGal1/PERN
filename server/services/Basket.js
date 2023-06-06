@@ -1,6 +1,6 @@
-import { Basket as BasketMapping } from "../models/mapping.js";
-import { Product as ProductMapping } from "../models/mapping.js";
-import { BasketProduct as BasketProductMapping } from "../models/mapping.js";
+import { Basket as BasketMapping } from "../models/mapping_Tok.js";
+import { Product as ProductMapping } from "../models/mapping_Tok.js";
+import { BasketProduct as BasketProductMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 const pretty = (basket) => {

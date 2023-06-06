@@ -7,13 +7,13 @@ const Router = require("express");
 const router = new Router();
 
 const authRouter = require("./auth.routes");
-const userRouter = require("./user.routes");
+const userRouter = require("./user.routes_UTV");
 const typeRouter = require("./type.routes");
-const brandRouter = require("./brand.routes");
+const brandRouter = require("./brand.routes_UTV");
 const deviceRouter = require("./device.routes");
 const postRouter = require("./post.routes");
 // ^ Tok.
-const categoryRouter = require("./category.routes");
+// const categoryRouter = require("./category.routes");
 
 // вызов подроутеры ч/з use
 router.use("/auth", authRouter);
@@ -23,6 +23,6 @@ router.use("/brand", brandRouter);
 router.use("/device", deviceRouter);
 router.use("/posts", postRouter);
 // ^ Tok.
-router.use("/category", categoryRouter);
+// router.use("/category", categoryRouter);
 
 module.exports = router;

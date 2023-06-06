@@ -1,4 +1,6 @@
 import AppError from "../error/AppError_Tok.js";
+// import AppError from "../error/ApiError";
+// const AppError = require("../error/ApiError");
 
 const ErrorHandler = (err, req, res, next) => {
   if (err instanceof AppError) {
@@ -8,3 +10,4 @@ const ErrorHandler = (err, req, res, next) => {
 };
 
 export default ErrorHandler;
+// module.exports = { ErrorHandler };

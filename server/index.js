@@ -1,12 +1,12 @@
 // ^ Tok. Запуск Сервера для до СЛН. Базов.конфиг для приёма запросов
 import config from "dotenv/config";
 import express from "express";
-import sequelize from "./sequelize.js";
-import * as mapping from "./models/mapping.js";
+import sequelize from "./sequelize_Tok.js";
+import * as mapping from "./models/mapping_Tok.js";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
-import router from "./routes/index.js";
+import router from "./routes/index_Tok.js";
 import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 
 const PORT = process.env.PORT_Tok || 5000;
@@ -45,7 +45,7 @@ const start = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    app.listen(PORT, () => console.log("Сервер запущен на порту", PORT));
+    app.listen(PORT, () => console.log("Сервер Tok JS запущен на порту", PORT));
   } catch (e) {
     console.log(e);
   }

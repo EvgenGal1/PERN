@@ -1,4 +1,4 @@
-import { User as UserMapping } from "../models/mapping.js";
+import { User as UserMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 class User {

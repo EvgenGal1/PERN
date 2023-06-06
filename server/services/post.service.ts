@@ -5,7 +5,7 @@ export {};
 
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
-const FileService = require("./file.service.ts");
+const FileService = require("./file.service_UTV.ts");
 
 class PostService {
   async createPost(post, picture) {

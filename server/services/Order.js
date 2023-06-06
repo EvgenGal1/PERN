@@ -1,6 +1,6 @@
 // import sequelize from "../sequelize.js"; // ^ Формат даты заказа. 1ый способ
-import { Order as OrderMapping } from "../models/mapping.js";
-import { OrderItem as OrderItemMapping } from "../models/mapping.js";
+import { Order as OrderMapping } from "../models/mapping_Tok.js";
+import { OrderItem as OrderItemMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 class Order {

@@ -1,4 +1,4 @@
-import { Brand as BrandMapping } from "../models/mapping.js";
+import { Brand as BrandMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 class Brand {

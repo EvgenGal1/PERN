@@ -1,6 +1,6 @@
 // ^ servis для свойств товара
-import { ProductProp as ProductPropMapping } from "../models/mapping.js";
-import { Product as ProductMapping } from "../models/mapping.js";
+import { ProductProp as ProductPropMapping } from "../models/mapping_Tok.js";
+import { Product as ProductMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 class ProductProp {

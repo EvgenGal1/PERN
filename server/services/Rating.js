@@ -1,6 +1,6 @@
-import { Rating as RatingMapping } from "../models/mapping.js";
-import { Product as ProductMapping } from "../models/mapping.js";
-import { User as UserMapping } from "../models/mapping.js";
+import { Rating as RatingMapping } from "../models/mapping_Tok.js";
+import { Product as ProductMapping } from "../models/mapping_Tok.js";
+import { User as UserMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 class Rating {

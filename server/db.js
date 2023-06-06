@@ -24,7 +24,7 @@ const { Sequelize } = require("sequelize");
 // экспотр. объ.кл. сразу с перем.окруж.
 // module.exports = new Sequelize(
 const sequelize = new Sequelize(
-  process.env.DB_NAME, // Название БД
+  process.env.DB_NAME_UTV, // Название БД
   process.env.DB_USER, // Пользователь
   process.env.DB_PASSWORD, // ПАРОЛЬ
   {

@@ -5,7 +5,7 @@ import UserModel from "../services/User.js";
 import AppError from "../error/AppError_Tok.js";
 
 // ! дописать cntrl,services для login и signup
-// import { User as UserMapping } from "../models/mapping.js";
+// import { User as UserMapping } from "../models/mapping_Tok.js";
 
 const makeJwt = (id, email, role) => {
   return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {

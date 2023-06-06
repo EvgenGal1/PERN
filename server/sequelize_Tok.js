@@ -4,7 +4,7 @@ import Sequelize from "sequelize";
 export default new Sequelize(
   process.env.DB_NAME_Tok, // база данных
   process.env.DB_USER, // пользователь
-  process.env.DB_PASS, // пароль
+  process.env.DB_PASSWORD, // пароль
   {
     dialect: "postgres",
     host: process.env.DB_HOST,

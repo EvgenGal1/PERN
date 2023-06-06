@@ -8,7 +8,7 @@ const authControllers = require("../controllers/auth.controllers");
 const { check } = require("express-validator");
 // const exprsValid = require("../middleware/exprsValid");
 // подкл.декодер.токен,проверка валидности
-const authMiddleware = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware_UTV");
 // подкл. middleware доступ ADMIN
 const checkRole = require("../middleware/checkRoleMiddleware");
 

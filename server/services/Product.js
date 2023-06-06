@@ -3,9 +3,9 @@ import {
   ProductProp as ProductPropMapping,
   Brand as BrandMapping,
   Category as CategoryMapping,
-} from "../models/mapping.js";
+} from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
-import FileService from "../services/File.js";
+import FileService from "../services/File_Tok.js";
 
 class Product {
   // async getAll(params) {

@@ -2,15 +2,14 @@
 
 // подкл.ф.наст.конфигураций
 // const config = require("config");
-require("dotenv").config();
+// require("dotenv").config();
+const config = require("dotenv").config();
 // получ express ч/з require для прилож.
 const express = require("express");
 // подкл.конфиг.БД
 const { sequelize } = require("./db");
 // подкл.моделей(табл. // ^ UTV)
-const models = require("./models/modelsTS.ts");
-// подкл.моделей(табл. // ^ Tok)
-import * as mapping from "./models/mapping.js";
+const models = require("./models/modelsTS");
 // подкл.cors для отправ.запр.с брауз.
 const cors = require("cors");
 // подкл.MiddlWare по ошб.
@@ -28,7 +27,7 @@ const allRoutes = require("./routes/all.routes");
 // const postRoutes = require("./routes/post.routes");
 
 // в конст PORT запис.порт из перек.опкруж. (| сист.перем. - config.get("port")) или 5000
-const PORT = process.env.PORT || 7531;
+const PORT = process.env.PORT_UTV || 7531;
 
 // созд.server
 const app = express();
@@ -94,7 +93,7 @@ const start = async () => {
       if (err) {
         return console.log(err);
       }
-      console.log(`Сервер запущен на порту ${PORT}.....`);
+      console.log(`Сервер UTV запущен на порту ${PORT}.....`);
     });
   } catch (error) {
     // отраб.ошб.

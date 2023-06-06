@@ -1,4 +1,4 @@
-import { Category as CategoryMapping } from "../models/mapping.js";
+import { Category as CategoryMapping } from "../models/mapping_Tok.js";
 import AppError from "../error/AppError_Tok.js";
 
 class Category {

@@ -1,6 +1,6 @@
 // ^ ORM (Object-relational mapping `Объектно-реляционное отображение`).
 // ^ Tok. модели данных табл. (подобие modelsTS/JS)
-import sequelize from "../sequelize.js";
+import sequelize from "../sequelize_Tok.js";
 import database from "sequelize";
 
 const { DataTypes } = database;
