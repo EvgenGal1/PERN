@@ -1,22 +1,24 @@
-// от ошб.повтор.объяв.перем в блоке
-export {};
+import express /* , { Application } */ from "express";
+const router /* : Application */ = express();
 
-const Router = require("express");
-const router = new Router();
-const brandController = require("../controllers/brand.controller");
-// подкл. middleware доступ ADMIN
-const checkRole = require("../middleware/checkRoleMiddleware");
+import authMiddleware from "../middleware/authMiddleware";
+import adminMiddleware from "../middleware/adminMiddleware";
+import BrandController from "../controllers/brand.controller";
 
-// маршруты Бренда созд.,получ.всех,получ.индив.
-router.post("/", checkRole("SUPER", "ADMIN", "MODER"), brandController.create);
-router.get("/", brandController.getAll);
-router.get("/:id", brandController.getOne);
-router.put("/", checkRole("SUPER", "ADMIN", "MODER"), brandController.update);
-router.delete(
-  "/:id",
-  checkRole("SUPER", "ADMIN", "MODER"),
-  brandController.delOne
+router.get("/getall", BrandController.getAll);
+router.get("/getone/:id([0-9]+)", BrandController.getOne);
+router.post("/create", authMiddleware, adminMiddleware, BrandController.create);
+router.put(
+  "/update/:id([0-9]+)",
+  authMiddleware,
+  adminMiddleware,
+  BrandController.update
 );
-// router.delete("/",   checkRole("SUPER", "ADMIN", "MODER"), brandController.delAll);
+router.delete(
+  "/delete/:id([0-9]+)",
+  authMiddleware,
+  adminMiddleware,
+  BrandController.delete
+);
 
-module.exports = router;
+export default router;

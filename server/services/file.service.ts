@@ -1,27 +1,32 @@
-// от ошб.повтор.объяв.перем в блоке
-export {};
-
+import fs from "fs";
 // подкл.генир.уник.рандом.id
 const uuid = require("uuid");
 // подкл.для созд.пути
 const path = require("path");
 
 class FileService {
-  // ^ сделать неск.fn (запись, удаление, получение, обработка). Пока только сохр.
-  saveFile(file) {
+  save(file: /* : Express.Multer.File */ any): string | null {
+    if (!file) return null;
     try {
-      // генирир.уник.имя(ч/з fn v4 + формат)
-      const fileName = uuid.v4() + ".jpg";
-      // путь для сохр.
+      const [, ext] = file.mimetype.split("/");
+      const fileName = uuid.v4() + "." + ext;
       const filePath = path.resolve("static", fileName);
-      // ^ ИЛИ обобщаем всё вместе - `движение`перемещ.файлы с клиента в static/ |
-      // file.mv(path.resolve(__dirname, "..", "static", fileName));
       file.mv(filePath);
       return fileName;
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  delete(file: string): void {
+    if (file) {
+      const filePath = path.resolve("static", file);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     }
   }
 }
 
-module.exports = new FileService();
+export default new FileService();

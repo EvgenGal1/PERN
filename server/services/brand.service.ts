@@ -1,95 +1,44 @@
-// ^ Service(Бизнес логика - БД и выход.парам.(НЕ req,res))
+import AppError from "../error/ApiError";
+import { Brand as BrandMapping } from "../models/mapping";
 
-// от ошб.повтор.объяв.перем в блоке
-export {};
-
-const ApiErrorJS = require("../error/ApiErrorJS");
-const { Brand } = require("../models/modelsTS.ts");
-
-class BrandService {
-  async create(name: string) {
-    try {
-      const brandVerif = await Brand.findOne({
-        where: { name },
-      });
-      if (brandVerif) {
-        return ApiErrorJS.BadRequest(`Бренд ${name} уже существует`); // throw не раб
-      }
-      const brand = await Brand.create({ name });
-      return brand;
-      // {
-      //   message: `Бренд ${name} создан.`,
-      //   brand,
-      // };
-    } catch (error) {
-      return ApiErrorJS.BadRequest(`Ошибка создания - ${error}.`);
-    }
-  }
-
+class Brand {
   async getAll() {
-    try {
-      const brands = await Brand.findAndCountAll(); // findAndCountAll иногда в ошб.
-      return brands.rows; // масс.объ.
-      /* return {
-        message: `Количесто ${brands.count}`,
-        messageCount: brands.count,
-        brandss: brands.rows,
-        brands,
-      }; */
-    } catch (error) {
-      return ApiErrorJS.BadRequest(`Ошибка на всех - ${error}.`);
-    }
+    const brands = await BrandMapping.findAll();
+    return brands;
   }
 
-  async getOne(id: number) {
-    try {
-      const brandId = await Brand.findOne({ where: { id } });
-      if (!brandId) {
-        return ApiErrorJS.BadRequest(`Бренд по ID_${id} не найден`);
-      }
-      return /* {message: brandId.name, */ brandId /* } */;
-    } catch (error) {
-      return ApiErrorJS.BadRequest(`Ошибка на одного - ${error}.`);
+  async getOne(id) {
+    const brand = await BrandMapping.findByPk(id);
+    if (!brand) {
+      throw new Error("Бренд не найден в БД");
     }
+    return brand;
   }
 
-  // ! не раб
-  async update(id: number, name: string) {
-    try {
-      const brandId = await Brand.findOne({ where: { id } });
-      if (!brandId) {
-        return ApiErrorJS.BadRequest(`Бренд по ID_${id} не найден`);
-      }
-      const updBrand = await Brand.update(
-        { /* id, */ name },
-        { where: { id: id } }
-      );
-      const brandNew = await Brand.findOne({ where: { id } });
-      // const brandDto = new UserDto(userNew);
-      return /* {message: `Бренд ${name} обновлён. Код_${updBrand}`, */ /* brandDto */ brandNew /* } */;
-    } catch (error) {
-      return ApiErrorJS.BadRequest(`Ошибка обновления - ${error}.`);
-    }
+  async create(data) {
+    const { name } = data;
+    const brand = await BrandMapping.create({ name });
+    return brand;
   }
 
-  async delOne(id: number) {
-    try {
-      const brand = await Brand.findOne({ where: { id } });
-      if (!brand) {
-        return ApiErrorJS.BadRequest(`Бренд с ID ${id} не найден`);
-      }
-      var deletBrand = await Brand.destroy({ where: { id } });
-      return /* {message: `Бренд по ID_${id}`,deletBrand: */ `КОД_${deletBrand}` /* } */;
-    } catch (error) {
-      return ApiErrorJS.BadRequest(`Ошибка на удаления - ${error}.`);
+  async update(id, data) {
+    const brand = await BrandMapping.findByPk(id);
+    if (!brand) {
+      throw new Error("Бренд не найден в БД");
     }
+    const { name = brand.name } = data;
+    await brand.update({ name });
+    return brand;
   }
 
-  async delAll(req, res, next) {
-    // const id = req.query.id;
-    // const brands = await Brand.destroy();
-    // return res.json(brands);
+  async delete(id) {
+    const brand = await BrandMapping.findByPk(id);
+    if (!brand) {
+      throw new Error("Бренд не найден в БД");
+    }
+    await brand.destroy();
+    return brand;
   }
 }
 
-module.exports = new BrandService();
+export default new Brand();

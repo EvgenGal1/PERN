@@ -9,7 +9,7 @@ const path = require("path");
 const { Device, DeviceInfo } = require("../models/modelsTS.ts");
 // подкл.обраб.ошиб.
 const ApiErrorJS = require("../error/ApiErrorJS");
-const FileService = require("../services/file.service.ts");
+const FileService = require("../services/file.service_UTV.ts");
 const DeviceService = require("../services/device.service.ts");
 
 class DeviceController {

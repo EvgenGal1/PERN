@@ -1,78 +1,62 @@
-// от ошб.повтор.объяв.перем в блоке
-export {};
+import { Request, Response, NextFunction } from "express";
 
-const ApiErrorJS = require("../error/ApiErrorJS");
-const { Brand } = require("../models/modelsTS.ts");
-const BrandService = require("../services/brand.service.ts");
+import AppError from "../error/ApiError";
+import BrandService from "../services/brand.service";
 
-// всё в упрощ.вар.
-class BrandController {
-  async create(req, res, next) {
-    try {
-      const { name } = req.body;
-      if (!name) {
-        return next(ApiErrorJS.internal(`Name не передан`));
-      }
-      const brand = await BrandService.create(name);
-      return res.json(brand);
-    } catch (error) {
-      next(`НЕ удалось добавить Бренд - ${error}.`);
-    }
-  }
-
-  async getAll(req, res, next) {
+class Brand {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const brands = await BrandService.getAll();
-      return res.json(brands);
-    } catch (error) {
-      next(`НЕ удалось получить Бренды - ${error}.`);
+      res.json(brands);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
     }
   }
 
-  async getOne(req, res, next) {
+  async getOne(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return next(ApiErrorJS.internal(`ID не передан`));
+      if (!req.params.id) {
+        throw new Error("Не указан id бренда");
       }
-      const brandId = await BrandService.getOne(id);
-      return res.json(brandId);
-    } catch (error) {
-      next(`НЕ удалось по ID - ${error}.`);
+      const brand = await BrandService.getOne(req.params.id);
+      res.json(brand);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
     }
   }
 
-  async update(req, res, next) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id, name } = req.body;
-      if (!id || !name) {
-        return next(ApiErrorJS.internal(`ID или Name не передан`));
-      }
-      const brandUpd = await BrandService.update(id, name);
-      return res.json(brandUpd);
-    } catch (error) {
-      next(`НЕ обновлён - ${error}.`);
+      const brand = await BrandService.create(req.body);
+      res.json(brand);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
     }
   }
 
-  async delOne(req, res, next) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return next(ApiErrorJS.internal(`ID не передан`));
+      if (!req.params.id) {
+        throw new Error("Не указан id бренда");
       }
-      const delBrand = await BrandService.delOne(id);
-      return res.json(delBrand);
-    } catch (error) {
-      next(`НЕ удалён - ${error}.`);
+      const brand = await BrandService.update(req.params.id, req.body);
+      res.json(brand);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
     }
   }
 
-  async delAll(req, res, next) {
-    // const id = req.query.id;
-    // const brands = await Brand.destroy();
-    // return res.json(brands);
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params.id) {
+        throw new Error("Не указан id бренда");
+      }
+      const brand = await BrandService.delete(req.params.id);
+      res.json(brand);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
+    }
   }
 }
 
-module.exports = new BrandController();
+export default new Brand();
