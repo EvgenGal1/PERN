@@ -15,6 +15,8 @@ const User = sequelize.define("user", {
   email: { type: DataTypes.STRING, unique: true },
   password: { type: DataTypes.STRING },
   role: { type: DataTypes.STRING, defaultValue: "USER" },
+  // // `Ссылка активации` - хран.ссылку для актив.
+  // activationLink: { type: DataTypes.STRING, defaultValue: "нет mapp_JS" },
 });
 
 // модель «Корзина», таблица БД «baskets»

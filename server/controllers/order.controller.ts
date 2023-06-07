@@ -5,20 +5,33 @@ import UserService from "../services/user.service";
 
 class Order {
   adminCreate = async (req, res, next) => {
+    console.log("SRV ordCntrl adminCreat 1 : " + 1);
+    console.log("SRV ordCntrl adminCreat req : " + req);
     await this.create(req, res, next, "admin");
   };
 
   userCreate = async (req, res, next) => {
+    console.log("SRV ordCntrl userCreat 1 : " + 1);
+    console.log("SRV ordCntrl userCreat req : " + req);
     await this.create(req, res, next, "user");
   };
 
   guestCreate = async (req, res, next) => {
+    console.log("SRV ordCntrl guestCreat 1 : " + 1);
+    console.log("SRV ordCntrl guestCreat req : " + req);
     await this.create(req, res, next, "guest");
   };
 
   async create(req, res, next, type) {
+    console.log("SRV ordCntrl create Creat 1 : " + 1);
+    console.log("SRV ordCntrl create req : " + req);
+    console.log("SRV ordCntrl create type : " + type);
+    // console.log(req);
+    console.log(type);
     try {
       const { name, email, phone, address, comment = null } = req.body;
+      console.log("SRV ordCntrl create req.body : " + req.body);
+      console.log(req.body);
       // данные для создания заказа
       if (!name) throw new Error("Не указано имя покупателя");
       if (!email) throw new Error("Не указан email покупателя");
@@ -27,7 +40,10 @@ class Order {
 
       let items,
         userId = null;
+      console.log("SRV ordCntrl create items 1: " + items);
+      console.log(items);
       if (type === "admin") {
+        console.log("SRV ordCntrl create IF ELSE 11 : " + 11);
         // когда заказ делает админ, id пользователя и состав заказа в теле запроса
         if (!req.body.items) throw new Error("Не указан состав заказа");
         if (req.body.items.length === 0)
@@ -39,14 +55,30 @@ class Order {
           await UserService.getOne(userId); // будет исключение, если не найден
         }
       } else {
+        console.log("SRV ordCntrl create ELSE IF 22 : " + 22);
         // когда заказ делает обычный пользователь (авторизованный или нет), состав заказа получаем из корзины, а id пользователя из req.auth.id (если есть)
-        if (!req.signedCookies.basketId) throw new Error("Ваша корзина пуста");
+        if (!req.signedCookies.basketId) {
+          console.log(
+            "SRV ordCntrl create IF !req.signedCookies.basketId 1 : " + 1
+          );
+          throw new Error("Ваша корзина пуста");
+        }
         const basket = await BasketService.getOne(
           parseInt(req.signedCookies.basketId)
         );
-        if (basket.products.length === 0) throw new Error("Ваша корзина пуста");
+        console.log("SRV ordCntrl create basket : " + basket);
+        console.log("SRV ordCntrl create basket.products : " + basket.products);
+        console.log(basket.products);
+        if (basket.products.length === 0) {
+          console.log("SRV ordCntrl create IF basket.products.length 1 : " + 1);
+          throw new Error("Ваша корзина пуста");
+        }
         items = basket.products;
+        console.log("SRV ordCntrl create items 2 : " + items);
+        console.log(items);
         userId = req.auth?.id ?? null;
+        console.log("SRV ordCntrl create userId : " + userId);
+        console.log(userId);
       }
 
       // все готово, можно создавать
@@ -59,6 +91,10 @@ class Order {
         items,
         userId,
       });
+      console.log("SRV ordCntrl create order : " + order);
+      console.log(order);
+      console.log("SRV ordCntrl create order.items : " + order.items);
+      console.log(order.items);
 
       // корзину теперь нужно очистить
       await BasketService.clear(parseInt(req.signedCookies.basketId));

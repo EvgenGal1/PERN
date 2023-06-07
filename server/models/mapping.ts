@@ -27,6 +27,10 @@ const User = sequelize.define("user", {
   email: { type: DataTypes.STRING, unique: true },
   password: { type: DataTypes.STRING },
   role: { type: DataTypes.STRING, defaultValue: "USER" },
+  // `активируется` - подтвержд.почты от польз.
+  isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
+  // `Ссылка активации` - хран.ссылку для актив.
+  activationLink: { type: DataTypes.STRING, defaultValue: "нет mappTS" },
 });
 
 //  ----------------------------------------------------------------------------------

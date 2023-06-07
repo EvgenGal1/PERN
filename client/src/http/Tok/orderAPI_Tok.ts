@@ -7,21 +7,25 @@ import { guestInstance, authInstance } from "./index_Tok";
 
 // создать новый заказ
 export const adminCreate = async (body: any) => {
+  console.log("ordApi adminCreate 1 : " + 1);
   const { data } = await authInstance.post("order/admin/create", body);
   return data;
 };
 // получить список всех заказов магазина
 export const adminGetAll = async () => {
+  console.log("ordApi adminGetAll 1 : " + 1);
   const { data } = await authInstance.get("order/admin/getall");
   return data;
 };
 // получить список заказов пользователя
 export const adminGetUser = async (id: number) => {
+  console.log("ordApi adminGetUser 1 : " + 1);
   const { data } = await authInstance.get(`order/admin/getall/user/${id}`);
   return data;
 };
 // получить заказ по id
 export const adminGetOne = async (id: number | string | undefined) => {
+  console.log("ordApi adminGetOne 1 : " + 1);
   const { data } = await authInstance.get(`order/admin/getone/${id}`);
   return data;
 };
@@ -57,6 +61,7 @@ export const userGetOne = async (id: number | string | undefined) => {
 
 // создать новый заказ
 export const guestCreate = async (body: any) => {
+  console.log("ordApi guestCreate 1 : " + 1);
   const { data } = await guestInstance.post("order/guest/create", body);
   return data;
 };

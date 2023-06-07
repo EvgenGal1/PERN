@@ -1,3 +1,4 @@
+// ^ `Проверить`
 import { useState, useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { Container, Form, Button, Spinner } from "react-bootstrap";
@@ -44,6 +45,11 @@ const Checkout = () => {
   const { user, basket }: any = useContext(AppContext);
   // loader, пока получаем корзину
   const [fetching, setFetching] = useState(true);
+
+  console.log("Checkout user ", user);
+  console.log("Checkout basket ", basket);
+  console.log("Checkout basket.products ", basket.products);
+  console.log(basket.products);
 
   // Заказ. Логика заказа
   const [order, setOrder] = useState(null);
@@ -150,20 +156,26 @@ const Checkout = () => {
       let comment: any = (
         event.currentTarget.elements.namedItem("comment") as HTMLInputElement
       ).value.trim();
+      console.log("Checkout handleSubmit comment 1 ", comment);
       comment = comment ? comment : null;
+      console.log("Checkout handleSubmit comment 2 ", comment);
       // форма заполнена правильно, можно отправлять данные
       const body = { ...value, comment };
+      console.log("Checkout handleSubmit body ", body);
       const create = user.isAuth ? userCreate : guestCreate;
       create(body).then((data) => {
         setOrder(data);
         basket.products = [];
       });
+      console.log("Checkout handleSubmit basket.products ", basket.products);
     }
   };
   return (
     <Container>
       {/* Авториз.Корзин. Если корзина пуста — пользователь будет направлен на страницу корзины, где увидит сообщение «Ваша корзина пуста». После того, как заказ был создан, переменная order изменяет свое значение — и пользователь увидит сообщение, что заказ успешно оформлен. */}
+      11
       {basket.count === 0 && <Navigate to="/basket" replace={true} />}
+      22
       {/*  */}
       <h1 className="mb-4 mt-4">Оформление заказа</h1>
       <Form noValidate onSubmit={handleSubmit}>

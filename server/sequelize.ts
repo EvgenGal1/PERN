@@ -14,7 +14,14 @@ export default new Sequelize(
       // использовать snake_case вместо camelCase для полей таблиц БД. вкл.поля
       underscored: true,
       // не добавлять поля created_at и updated_at при создании таблиц
-      timestamps: false,
+      // timestamps: false,
+      timestamps: true,
+      // вкл. `createdAt`
+      createdAt: true,
+      // вкл. `updatedAt`
+      updatedAt: true,
+      // Изменяем название `updatedAt`
+      // updatedAt: 'updateTimestamp',
     },
     // ^ Формат даты заказа. 1ый способ. ? Нужно для 2го ?
     logging: false,
