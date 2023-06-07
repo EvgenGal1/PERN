@@ -5,16 +5,21 @@ const Order = (props: any) => {
   return (
     <>
       <ul>
-        <li>Дата заказа: {props.data.prettyCreatedAt}</li>
+        <li>
+          Дата заказа: {props.data.prettyCreatedAt}
+          {props.data.prettyCreatedAt !== props.data.prettyUpdatedAt
+            ? ` | Обновлён: ` + props.data.prettyUpdatedAt
+            : ""}
+        </li>
         <li>
           Статус заказа:
-          {props.data.status === 0 && <span>Новый</span>}
-          {props.data.status === 1 && <span>В работе</span>}
-          {props.data.status === 2 && <span>Завершен</span>}
+          {props.data.status === 0 && <span> Новый</span>}
+          {props.data.status === 1 && <span> В работе</span>}
+          {props.data.status === 2 && <span> Завершен</span>}
         </li>
       </ul>
       <ul>
-        <li>Имя, фамилия: {props.data.name}</li>
+        <li>Имя, Фамилия: {props.data.name}</li>
         <li>Адрес почты: {props.data.email}</li>
         <li>Номер телефона: {props.data.phone}</li>
         <li>Адрес доставки: {props.data.address}</li>

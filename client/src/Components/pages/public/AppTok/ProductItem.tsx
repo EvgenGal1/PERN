@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Card, Col } from "react-bootstrap";
 
+import { PRODUCT_ROUTE } from "../../../../utils/consts";
+
 const ProductItem = ({ data }: any) => {
   const navigate = useNavigate();
 
@@ -10,8 +12,7 @@ const ProductItem = ({ data }: any) => {
       lg={4}
       sm={6}
       className="mt-3"
-      // onClick={() => alert("Переход на страницу товара")}
-      onClick={() => navigate(`/product/${data.id}`)}
+      onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
     >
       <Card style={{ /* width: 200, */ cursor: "pointer" }}>
         {data.image ? (

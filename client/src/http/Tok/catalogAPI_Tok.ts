@@ -5,8 +5,6 @@ import { guestInstance, authInstance } from "./index_Tok";
  * Создание, обновление и удаление категории, получение списка всех Категорий
  */
 export const createCategory = async (category: string | any) => {
-  console.log("catApi createCategory 1 : " + 1);
-  console.log("catApi category : " + category);
   const { data } = await authInstance.post("category/create", category);
   return data;
 };

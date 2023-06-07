@@ -15,10 +15,7 @@ import BasketItem from "./BasketItem";
 
 const BasketList = observer(() => {
   const { basket }: any = useContext(AppContext);
-  // `получение`
   const [fetching, setFetching] = useState(false);
-
-  console.log("BL basket ", basket);
 
   const navigate = useNavigate();
 

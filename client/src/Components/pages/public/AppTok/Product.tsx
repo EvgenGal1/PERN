@@ -106,7 +106,7 @@ const Product = () => {
         <Row>
           <Col>
             <h3>Характеристики</h3>
-            <Table bordered hover size="sm">
+            <Table className="table__eg" bordered hover size="sm">
               <tbody>
                 {product.props.map((item: any) => (
                   <tr key={item.id}>

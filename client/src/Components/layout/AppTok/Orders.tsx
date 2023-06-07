@@ -1,6 +1,8 @@
 // ^ Многраз.Комп.Заказов
-import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { Table } from "react-bootstrap";
+
+import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
 
 const Orders = (props: any) => {
   if (props.items?.length === 0) {
@@ -29,13 +31,19 @@ const Orders = (props: any) => {
             <td>{item.name}</td>
             <td>{item.email}</td>
             <td>{item.phone}</td>
-            <td>{item.status}</td>
+            <td>
+              {item.status === 0 && <>Новый</>}
+              {item.status === 1 && <>В работе</>}
+              {item.status === 2 && <>Завершен</>}
+            </td>
             <td>{item.amount}</td>
             <td>
               {props.admin ? (
-                <Link to={`/admin/order/${item.id}`}>Подробнее</Link>
+                <Link to={ADMINORDER_ROUTE + `/${item.id}`}>
+                  Подробнее для admin
+                </Link>
               ) : (
-                <Link to={`/user/order/${item.id}`}>Подробнее</Link>
+                <Link to={USERORDER_ROUTE + `/${item.id}`}>Подробнее</Link>
               )}
             </td>
           </tr>
