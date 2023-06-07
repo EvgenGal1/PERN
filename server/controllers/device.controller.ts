@@ -36,7 +36,6 @@ class DeviceController {
         typeId,
         /* img: */ fileName
       );
-      console.log("SRV.dev.cntrl typeId : " + typeId);
 
       // услов.для инфо
       if (info) {

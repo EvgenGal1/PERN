@@ -55,17 +55,6 @@ class User {
     await user.destroy();
     return user;
   }
-
-  // ! дописать cntrl,services для login и signup
-  // async login(email) {
-  //   console.log("SRV.serv.User login ", 1);
-  //   const user = await UserMapping.findOne({ where: { email } });
-  //   console.log("SRV.serv.User login user ", user);
-  //   if (!user) {
-  //     throw new Error("Пользователь не найден в БД");
-  //   }
-  //   return user;
-  // }
 }
 
 export default new User();

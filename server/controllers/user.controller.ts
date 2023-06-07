@@ -4,9 +4,6 @@ import jwt from "jsonwebtoken";
 import AppError from "../error/ApiError";
 import UserService from "../services/user.service";
 
-// ! дописать cntrl,services для login и signup
-// import { User as UserMapping } from "../models/mapping.js";
-
 const makeJwt = (id, email, role) => {
   return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
     expiresIn: "24h",
@@ -39,8 +36,6 @@ class User {
       const { email, password } = req.body;
 
       const user = await UserService.getByEmail(email);
-      // ! дописать cntrl,services для login и signup
-      // const user = await UserService.login(email /* , password */);
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
         throw new Error("Указан неверный пароль");

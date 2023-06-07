@@ -83,20 +83,16 @@ class Order {
     return order;
   }
 
-  async create(data) {
-    console.log("SRV ordServ data 1 : " + data);
-    console.log(data);
+  async create(data: any) {
     // общая стоимость заказа
     const items = data.items;
-    console.log("SRV ordServ data.items : " + data.items);
-    console.log(data.items);
     const amount = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+      (sum: number, item: { price: number; quantity: number }) =>
+        sum + item.price * item.quantity,
       0
     );
     // данные для создания заказа
     const { name, email, phone, address, comment = null, userId = null } = data;
-    console.log("SRV ordServ data 2 : " + data);
     const order = await OrderMapping.create({
       name,
       email,
@@ -108,8 +104,6 @@ class Order {
     });
     // товары, входящие в заказ
     for (let item of items) {
-      console.log("SRV ordServ FOR item : " + item);
-      console.log(item);
       await OrderItemMapping.create({
         name: item.name,
         price: item.price,
@@ -127,7 +121,6 @@ class Order {
         },
       ],
     });
-    console.log("SRV ordServ created : " + created);
     return created;
   }
 

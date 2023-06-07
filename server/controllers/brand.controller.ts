@@ -26,7 +26,6 @@ class Brand {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
-    console.log("SRV drndCntrl create 1 : " + 1);
     try {
       const brand = await BrandService.create(req.body);
       res.json(brand);
