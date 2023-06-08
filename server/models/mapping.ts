@@ -10,18 +10,6 @@ const { DataTypes, Sequelize } = database;
  * Описание моделей
  */
 
-// модель «Пользователь», таблица БД «users»
-// const User = sequelize.define("user", {
-//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-//   email: { type: DataTypes.STRING, unique: true },
-//   password: { type: DataTypes.STRING },
-//   role: { type: DataTypes.STRING, defaultValue: "USER" },
-// });
-
-// import Sequelize /* , DataTypes */ from "sequelize";
-// import  DataTypes /* , Sequelize */ from "sequelize";
-// import sequelize from "../sequelize";
-
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   email: { type: DataTypes.STRING, unique: true },
@@ -32,26 +20,6 @@ const User = sequelize.define("user", {
   // `Ссылка активации` - хран.ссылку для актив.
   activationLink: { type: DataTypes.STRING, defaultValue: "нет mappTS" },
 });
-
-//  ----------------------------------------------------------------------------------
-// const User = sequelize.define("user", {
-//   name: {
-//     type: Sequelize.STRING,
-//     allowNull: false,
-//   },
-//   email: {
-//     type: Sequelize.STRING,
-//     allowNull: false,
-//     unique: true,
-//   },
-//   password: {
-//     type: Sequelize.STRING,
-//     allowNull: false,
-//   },
-// });
-
-// export default User;
-//  ----------------------------------------------------------------------------------
 
 // модель «Корзина», таблица БД «baskets»
 const Basket = sequelize.define("basket", {

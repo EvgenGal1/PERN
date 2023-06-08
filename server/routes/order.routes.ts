@@ -4,9 +4,10 @@ const router /* : Application */ = express();
 import authMiddleware from "../middleware/authMiddleware";
 import adminMiddleware from "../middleware/adminMiddleware";
 import OrderController from "../controllers/order.controller";
+import OrderItemsController from "../controllers/orderItems.controller";
 
 /*
- * только для администратора магазина
+ * ЗАКАЗЫ для ADNIN магазина
  */
 
 // получить список всех заказов магазина
@@ -50,6 +51,38 @@ router.delete(
   authMiddleware,
   adminMiddleware,
   OrderController.adminDelete
+);
+
+/*
+ * ПОЗИЦИИ Заказа
+ */
+// список позицый заказа
+router.get("/:orderId([0-9]+)/item/getall", OrderItemsController.getAll);
+// одна позиция заказа
+router.get(
+  "/:orderId([0-9]+)/item/getone/:id([0-9]+)",
+  OrderItemsController.getOne
+);
+// создать позицию заказа
+router.post(
+  "/:orderId([0-9]+)/item/create",
+  authMiddleware,
+  adminMiddleware,
+  OrderItemsController.create
+);
+// обновить позицию заказа
+router.put(
+  "/:orderId([0-9]+)/item/update/:id([0-9]+)",
+  authMiddleware,
+  adminMiddleware,
+  OrderItemsController.update
+);
+// удалить позицию заказа
+router.delete(
+  "/:orderId([0-9]+)/item/delete/:id([0-9]+)",
+  authMiddleware,
+  adminMiddleware,
+  OrderItemsController.delete
 );
 
 /*
