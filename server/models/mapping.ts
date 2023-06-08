@@ -63,15 +63,6 @@ const BasketProduct = sequelize.define("basket_product", {
   quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
 });
 
-// модель «Товар», таблица БД «products»
-const Product = sequelize.define("product", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  price: { type: DataTypes.INTEGER, allowNull: false },
-  rating: { type: DataTypes.INTEGER, defaultValue: 0 },
-  image: { type: DataTypes.STRING, allowNull: false },
-});
-
 // модель «Категория», таблица БД «categories»
 const Category = sequelize.define("category", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -87,6 +78,15 @@ const Brand = sequelize.define("brand", {
 // связь между товаром и пользователем через промежуточную таблицу «rating» у этой таблицы будет составной первичный ключ (product_id + user_id)
 const Rating = sequelize.define("rating", {
   rate: { type: DataTypes.INTEGER, allowNull: false },
+});
+
+// модель «Товар», таблица БД «products»
+const Product = sequelize.define("product", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  price: { type: DataTypes.INTEGER, allowNull: false },
+  rating: { type: DataTypes.INTEGER, defaultValue: 0 },
+  image: { type: DataTypes.STRING, allowNull: false },
 });
 
 // свойства товара, у одного товара может быть много свойств

@@ -104,6 +104,7 @@ class Order {
     });
     // товары, входящие в заказ
     for (let item of items) {
+      console.log("SRV ord.serv item : " + item);
       await OrderItemMapping.create({
         name: item.name,
         price: item.price,
@@ -122,6 +123,56 @@ class Order {
       ],
     });
     return created;
+  }
+
+  async update(id, data) {
+    console.log("SRV upd.serv id : " + id);
+    console.log("SRV upd.serv data 1 : " + data);
+    const order = await OrderMapping.findByPk(id);
+    if (!order) {
+      throw new Error("Заказ не найден в БД");
+    }
+    // общая стоимость заказа
+    const items = data.items;
+    const amount = items.reduce(
+      (sum: number, item: { price: number; quantity: number }) =>
+        sum + item.price * item.quantity,
+      0
+    );
+    // данные для создания заказа
+    const { name, email, phone, address, comment = null, userId = null } = data;
+    console.log("SRV upd.serv data 2 : " + data);
+    await order.update({
+      name,
+      email,
+      phone,
+      address,
+      comment,
+      amount,
+      userId,
+    });
+    // товары, входящие в заказ
+    for (let item of items) {
+      console.log("SRV upd.serv item : " + item);
+      await OrderItemMapping.update({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        orderId: order.id,
+      });
+    }
+    // возвращать будем заказ с составом
+    const ordered = await OrderMapping.findByPk(order.id, {
+      include: [
+        {
+          model: OrderItemMapping,
+          as: "items",
+          attributes: ["name", "price", "quantity"],
+        },
+      ],
+    });
+    console.log("SRV upd.serv ordered : " + ordered);
+    return ordered;
   }
 
   async delete(id) {

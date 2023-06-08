@@ -37,6 +37,13 @@ router.post(
   adminMiddleware,
   OrderController.adminCreate
 );
+// обновить заказ
+router.put(
+  "/admin/update/:id([0-9]+)",
+  authMiddleware,
+  adminMiddleware,
+  OrderController.adminUpdate
+);
 // удалить заказ по id
 router.delete(
   "/admin/delete/:id([0-9]+)",
