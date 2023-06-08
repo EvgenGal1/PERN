@@ -9,6 +9,8 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState(null);
   const [fetching, setFetching] = useState(true);
 
+  console.log("CLT admOrdS orders ", orders);
+
   useEffect(() => {
     getAllOrders()
       .then((data: any) => setOrders(data))
@@ -21,7 +23,7 @@ const AdminOrders = () => {
 
   return (
     <Container>
-      <h1>Все заказы</h1>
+      <h1>Все заказы (adm.ordS ~!)</h1>
       <Orders items={orders} admin={true} />
     </Container>
   );

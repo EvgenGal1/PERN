@@ -25,6 +25,11 @@ export const adminGetOne = async (id: number | string | undefined) => {
   const { data } = await authInstance.get(`order/admin/getone/${id}`);
   return data;
 };
+// обновить заказ по id
+export const adminUpdate = async (id: number, body: any) => {
+  const { data } = await authInstance.put(`order/admin/update/${id}`, body);
+  return data;
+};
 // удалить заказ по id
 export const adminDelete = async (id: number) => {
   const { data } = await authInstance.delete(`order/admin/delete/${id}`);

@@ -71,12 +71,14 @@ const AdminCategories = () => {
         setShow={setUpdateShow}
         setChange={setChange}
       /> */}
+      11~!
       <EditCategory
         id={categoryId}
         show={show}
         setShow={setShow}
         setChange={setChange}
       />
+      22~!
       {/*  */}
       {categories.length > 0 ? (
         <Table bordered hover size="sm" className="mt-3 table__eg">
