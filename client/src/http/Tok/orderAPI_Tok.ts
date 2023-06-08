@@ -2,7 +2,7 @@
 import { guestInstance, authInstance } from "./index_Tok";
 
 /*
- * только для администратора магазина
+ * ЗАКАЗ для ADMIN магазина
  */
 
 // создать новый заказ
@@ -33,6 +33,32 @@ export const adminUpdate = async (id: number, body: any) => {
 // удалить заказ по id
 export const adminDelete = async (id: number) => {
   const { data } = await authInstance.delete(`order/admin/delete/${id}`);
+  return data;
+};
+
+/*
+ * ПОЗИЦИИ Заказа для cоздание, обновление и удаление
+ */
+export const createItems = async (orderId: number, item: any) => {
+  const { data } = await authInstance.post(
+    `order/${orderId}/item/create`,
+    item
+  );
+  return data;
+};
+
+export const updateItems = async (orderId: number, id: number, item: any) => {
+  const { data } = await authInstance.put(
+    `order/${orderId}/item/update/${id}`,
+    item
+  );
+  return data;
+};
+
+export const deleteItems = async (orderId: number, id: number) => {
+  const { data } = await authInstance.delete(
+    `order/${orderId}/item/delete/${id}`
+  );
   return data;
 };
 

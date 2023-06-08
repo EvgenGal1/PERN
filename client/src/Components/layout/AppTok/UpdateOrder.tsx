@@ -1,4 +1,4 @@
-// ^ модальн.окно Редактирование Товара
+// ^ Редактирование Товара
 import { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import uuid from "react-uuid";
@@ -197,11 +197,10 @@ const UpdateProduct = (props: any) => {
   return (
     <Modal show={show} onHide={() => setShow(false)} size="lg">
       <Modal.Header closeButton>
-        ~! UpdateProduct
-        <Modal.Title>Редактирование товара</Modal.Title>
+        <Modal.Title>Редактирование Заказа</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      {/* <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Form.Control
             name="name"
@@ -278,7 +277,7 @@ const UpdateProduct = (props: any) => {
             </Col>
           </Row>
         </Form>
-      </Modal.Body>
+      </Modal.Body> */}
     </Modal>
   );
 };

@@ -8,7 +8,9 @@ import {
   adminUpdate,
   adminDelete,
 } from "../../../http/Tok/orderAPI_Tok";
-// import EditCategory from "../../layout/AppTok/EditCategory";
+import EditOrder from "../../layout/AppTok/EditOrder";
+// import CreateOrder from "../../layout/AppTok/CreateOrder";
+import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 
 const Order = (props: any) => {
   console.log("CLT ord props ", props);
@@ -19,16 +21,21 @@ const Order = (props: any) => {
   const [fetching, setFetching] = useState(true);
   // модальное окно создания-редактирования
   const [show, setShow]: any = useState(false);
+  // модальное окно создания товара
+  const [createShow, setCreateShow] = useState(false);
+  // модальное окно редактирования
+  const [updateShow, setUpdateShow] = useState(false);
   // для обновления списка после добавления, редактирования, удаления — изменяем состояние
   const [change, setChange] = useState(false);
   // id категории, которую будем редактировать — для передачи в <UpdateCategory id={…} />
   const [orderId, setOrderId]: any = useState(null);
 
   const handleUpdateClick = (id: any) => {
-    // setOrderId(id);
+    setOrderId(id);
     // setShow(true);
-    adminGetOne(id);
-    alert(`Заказ «» удален`);
+    setUpdateShow(true);
+    // adminGetOne(id);
+    // alert(`Заказ «» удален`);
   };
 
   const handleDeleteClick = (id: any) => {
@@ -73,12 +80,23 @@ const Order = (props: any) => {
         <li>Комментарий: {props.data.comment}</li>
       </ul>
       {/*  */}
-      {/* <EditOrders
+      {/* <EditOrder
         id={orderId}
         show={show}
         setShow={setShow}
         setChange={setChange}
       /> */}
+      {/* <CreateOrder
+        show={createShow}
+        setShow={setCreateShow}
+        setChange={setChange}
+      /> */}
+      <UpdateOrder
+        id={orderId}
+        show={updateShow}
+        setShow={setUpdateShow}
+        setChange={setChange}
+      />
       {/*  */}
       <Table bordered hover size="sm" className="mt-3 table__eg">
         <thead>
@@ -102,7 +120,7 @@ const Order = (props: any) => {
                 <Button
                   variant="success"
                   size="sm"
-                  // onClick={() => handleUpdateClick(item.id)}
+                  onClick={() => handleUpdateClick(item.id)}
                 >
                   Редактировать
                 </Button>
