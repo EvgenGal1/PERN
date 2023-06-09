@@ -1,31 +1,41 @@
-// ^ Редактирование Характеристик Товара
+// ^ доп.модальн.окно редактирование Позиций Заказа
 import { useEffect, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
 import {
-  createProperty,
-  updateProperty,
-  deleteProperty,
-} from "../../../http/Tok/catalogAPI_Tok";
+  createItem,
+  updateItem,
+  deleteItem,
+} from "../../../http/Tok/orderAPI_Tok";
 
-const UpdateProperties = (props: any) => {
+const UpdateItems = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.
-  const { properties, setProperties } = props;
+  const { items, setItems } = props;
+
+  console.log("CLT updItms props ", props);
+  console.log("CLT updItms items ", items);
 
   const append = () => {
-    setProperties([
-      ...properties,
-      { id: null, name: "", value: "", unique: uuid(), append: true },
+    setItems([
+      ...items,
+      {
+        id: null,
+        name: null,
+        price: null,
+        quantity: null,
+        unique: uuid(),
+        append: true,
+      },
     ]);
   };
-  // новую хар-ку надо просто удалить из массива properties, а старую — оставить, но изменить remove на true, чтобы потом выполнить http-запрос на сервер для удаления
+  // новую хар-ку надо просто удалить из массива items, а старую — оставить, но изменить remove на true, чтобы потом выполнить http-запрос на сервер для удаления
   const remove = (unique: any) => {
-    const item = properties.find((elem: any) => elem.unique === unique);
+    const item = items.find((elem: any) => elem.unique === unique);
     if (item.id) {
       // старая хар-ка
-      setProperties(
-        properties.map((elem: any) =>
+      setItems(
+        items.map((elem: any) =>
           elem.unique === unique
             ? { ...elem, change: false, remove: true }
             : elem
@@ -33,12 +43,12 @@ const UpdateProperties = (props: any) => {
       );
     } else {
       // новая хар-ка
-      setProperties(properties.filter((elem: any) => elem.unique === unique));
+      setItems(items.filter((elem: any) => elem.unique === unique));
     }
   };
   const change = (key: any, value: any, unique: any) => {
-    setProperties(
-      properties.map((item: any) =>
+    setItems(
+      items.map((item: any) =>
         item.unique === unique
           ? { ...item, [key]: value, change: !item.append }
           : item
@@ -48,8 +58,8 @@ const UpdateProperties = (props: any) => {
 
   return (
     <>
-      ~! UpdateProperties
-      <h5>Характеристики</h5>
+      ~! UpdateItems
+      <h5>Позиции</h5>
       <Button
         onClick={append}
         variant="outline-primary"
@@ -58,7 +68,7 @@ const UpdateProperties = (props: any) => {
       >
         Добавить
       </Button>
-      {properties.map((item: any) => (
+      {items.map((item: any) => (
         <Row
           key={item.unique}
           className="mb-2"
@@ -69,16 +79,34 @@ const UpdateProperties = (props: any) => {
               name={"name_" + item.unique}
               value={item.name}
               onChange={(e) => change("name", e.target.value, item.unique)}
-              placeholder="Название..."
+              placeholder="Имя..."
               size="sm"
             />
           </Col>
           <Col>
             <Form.Control
-              name={"value_" + item.unique}
-              value={item.value}
-              onChange={(e) => change("value", e.target.value, item.unique)}
-              placeholder="Значение..."
+              name={"price_" + item.unique}
+              value={item.price}
+              onChange={(e) => change("price", e.target.value, item.unique)}
+              placeholder="Цена..."
+              size="sm"
+            />
+          </Col>
+          <Col>
+            <Form.Control
+              name={"quantity_" + item.unique}
+              value={item.quantity}
+              onChange={(e) => change("quantity", e.target.value, item.unique)}
+              placeholder="Количество..."
+              size="sm"
+            />
+          </Col>
+          <Col>
+            <Form.Control
+              name={"unique_" + item.unique}
+              value={item.unique}
+              onChange={(e) => change("unique", e.target.value, item.unique)}
+              placeholder="Уникальный..."
               size="sm"
             />
           </Col>
@@ -98,4 +126,4 @@ const UpdateProperties = (props: any) => {
   );
 };
 
-export default UpdateProperties;
+export default UpdateItems;

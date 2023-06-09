@@ -30,6 +30,15 @@ const Order = (props: any) => {
   // id категории, которую будем редактировать — для передачи в <UpdateCategory id={…} />
   const [orderId, setOrderId]: any = useState(null);
 
+  console.log("Ord orders ВСЕ ", orders);
+  console.log("Ord orderId ОДИН ID ", orderId);
+  console.log("Ord updateShow ", updateShow);
+
+  // текущая страница списка товаров
+  // const [currentPage, setCurrentPage] = useState(1);
+  // // сколько всего страниц списка товаров
+  // const [totalPages, setTotalPages] = useState(1);
+
   const handleUpdateClick = (id: any) => {
     setOrderId(id);
     // setShow(true);
@@ -52,7 +61,11 @@ const Order = (props: any) => {
 
   useEffect(() => {
     adminGetAll()
-      .then((data: any) => setOrders(data))
+      .then((data: any) => {
+        console.log("CLT ORD === data ", data);
+        console.log("CLT ORD === data.rows ", data.rows);
+        setOrders(data.rows);
+      })
       .finally(() => setFetching(false));
   }, [change]);
 
@@ -120,7 +133,8 @@ const Order = (props: any) => {
                 <Button
                   variant="success"
                   size="sm"
-                  onClick={() => handleUpdateClick(item.id)}
+                  // onClick={() => handleUpdateClick(item.id)}
+                  onClick={() => handleUpdateClick(props.data.id)}
                 >
                   Редактировать
                 </Button>
@@ -129,7 +143,8 @@ const Order = (props: any) => {
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={() => handleDeleteClick(item.id)}
+                  // onClick={() => handleDeleteClick(item.id)}
+                  onClick={() => handleDeleteClick(props.data.id)}
                 >
                   Удалить
                 </Button>

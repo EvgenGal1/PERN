@@ -1,4 +1,4 @@
-// ^ модальн.окно Редактирование Товара
+// ^ модальн.окно редактирование Товара
 import { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import uuid from "react-uuid";
@@ -18,6 +18,7 @@ const defaultValue = { name: "", price: "", category: "", brand: "" };
 const defaultValid = { name: null, price: null, category: null, brand: null };
 
 const isValid = (value: any) => {
+  console.log("value.category ", value.category);
   const result: any = {};
   const pattern = /^[1-9][0-9]*$/;
   for (let key in value) {
@@ -75,6 +76,7 @@ const updateProperties = async (properties: any, productId: any) => {
 };
 
 const UpdateProduct = (props: any) => {
+  console.log("CLT updProd props ", props);
   const { id, show, setShow, setChange } = props;
 
   const [value, setValue] = useState(defaultValue);
@@ -90,23 +92,30 @@ const UpdateProduct = (props: any) => {
   // список характеристик товара
   const [properties, setProperties] = useState([]);
 
+  console.log("CLT updProd usSTt roperties ", properties);
+
   useEffect(() => {
     if (id) {
+      console.log("CLT updProd usEfid IF ", id);
       // нужно получить с сервера данные товара для редактирования
       fetchOneProduct(id)
         .then((data) => {
+          console.log("CLT updProd usEfid DATA ", data);
           const prod = {
             name: data.name,
             price: data.price.toString(),
             category: data.categoryId.toString(),
             brand: data.brandId.toString(),
           };
+          console.log("updORD USef data ", data);
+          console.log("updORD USef order ", prod);
           setValue(prod);
           setValid(isValid(prod));
           // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
           // setProperties(data.props);
           setProperties(
             data.props.map((item: any) => {
+              console.log("CLT updProd item ", item);
               // при добавлении новой хар-ки свойство append принимает значение true
               // при изменении старой хар-ки свойство change принимает значение true
               // при удалении старой хар-ки свойство remove принимает значение true
@@ -148,6 +157,7 @@ const UpdateProduct = (props: any) => {
 
     // если введенные данные прошли проверку — можно отправлять их на сервер
     if (correct.name && correct.price && correct.category && correct.brand) {
+      console.log("CLT updProd sbm if 1 ", 1);
       const data = new FormData();
       data.append("name", value.name.trim());
       data.append("price", value.price.trim());
@@ -162,6 +172,7 @@ const UpdateProduct = (props: any) => {
 
       updateProduct(id, data)
         .then((data) => {
+          console.log("CLT updOrd usEfid DATA ", data);
           // сбрасываем поле загрузки изображения, чтобы при сохранении товара (без очистки полей при рендер), когда новое изображение не выбрано, не загружать старое повтороно
           event.target.image.value = "";
           // в принципе, мы могли бы сбросить все поля формы на дефолтные значения, но если пользователь решит отредатировать тот же товар повтороно, то увидит пустые поля формы — http-запрос на получение данных для редактирования мы выполняем только тогда, когда выбран новый товар (изменился id товара)

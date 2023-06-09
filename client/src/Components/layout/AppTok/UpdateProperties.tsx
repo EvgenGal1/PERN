@@ -1,4 +1,4 @@
-// ^ доп.модальн.окно Редактирование Характеристик Товара
+// ^ доп.модальн.окно редактирование Характеристик Товара
 import { useEffect, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
@@ -12,6 +12,9 @@ import {
 const UpdateProperties = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.
   const { properties, setProperties } = props;
+
+  console.log("CLT updProper props ", props);
+  console.log("CLT updProper properties ", properties);
 
   const append = () => {
     setProperties([

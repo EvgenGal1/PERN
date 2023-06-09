@@ -39,7 +39,7 @@ export const adminDelete = async (id: number) => {
 /*
  * ПОЗИЦИИ Заказа для cоздание, обновление и удаление
  */
-export const createItems = async (orderId: number, item: any) => {
+export const createItem = async (orderId: number, item: any) => {
   const { data } = await authInstance.post(
     `order/${orderId}/item/create`,
     item
@@ -47,7 +47,7 @@ export const createItems = async (orderId: number, item: any) => {
   return data;
 };
 
-export const updateItems = async (orderId: number, id: number, item: any) => {
+export const updateItem = async (orderId: number, id: number, item: any) => {
   const { data } = await authInstance.put(
     `order/${orderId}/item/update/${id}`,
     item
@@ -55,7 +55,7 @@ export const updateItems = async (orderId: number, id: number, item: any) => {
   return data;
 };
 
-export const deleteItems = async (orderId: number, id: number) => {
+export const deleteItem = async (orderId: number, id: number) => {
   const { data } = await authInstance.delete(
     `order/${orderId}/item/delete/${id}`
   );
