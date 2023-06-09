@@ -39,7 +39,7 @@ class Order {
     return orders;
   }
 
-  async getOne(id: any, userId: any = null) {
+  async getOne(id: any, userId /* : any */ = null) {
     // ^ стар.код
     // let order;
     // if (userId) {
@@ -65,18 +65,26 @@ class Order {
     //   });
     // }
     // ^ нов.код из github
-    const options: any = {
-      where: { id },
-      include: [
-        {
-          model: OrderItemMapping,
-          as: "items",
-          attributes: ["id", "name", "price", "quantity"],
-        },
-      ],
-    };
-    if (userId) options.where.userId = userId;
-    const order = await OrderMapping.findOne(options);
+    // const options: any = {
+    //   where: { id },
+    //   include: [
+    //     {
+    //       model: OrderItemMapping,
+    //       as: "items",
+    //       attributes: ["id", "name", "price", "quantity"],
+    //     },
+    //   ],
+    // };
+    // if (userId) options.where.userId = userId;
+    // const order = await OrderMapping.findOne(options);
+    // ^ подобие prod.serv
+    console.log("SRV ord.serv getOne 1 : " + 1);
+    const order = await OrderMapping.findByPk(id, {
+      include: [{ model: OrderItemMapping, as: "items" }],
+    });
+    console.log("SRV ord.serv getOne 2 : " + 2);
+    console.log("SRV ord.serv getOne order : " + order);
+    console.log(order);
     if (!order) {
       throw new Error("Заказ не найден в БД");
     }

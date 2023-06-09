@@ -102,11 +102,16 @@ class Order {
   }
 
   async adminGetOne(req, res, next) {
+    console.log("SRV ord.cntrl adminGetOne 1 : " + 1);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
+      console.log("SRV ord.cntrl adminGetOne 2 : " + 2);
       const order = await OrderService.getOne(req.params.id);
+      console.log("SRV ord.cntrl adminGetOne 3 : " + 3);
+      console.log("SRV ord.cntrl adminGetOne order : " + order);
+      console.log(order);
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
