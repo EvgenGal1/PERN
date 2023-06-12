@@ -18,7 +18,7 @@ const defaultValue = { name: "", price: "", category: "", brand: "" };
 const defaultValid = { name: null, price: null, category: null, brand: null };
 
 const isValid = (value: any) => {
-  console.log("value.category ", value.category);
+  console.log("valid VALUE ", value);
   const result: any = {};
   const pattern = /^[1-9][0-9]*$/;
   for (let key in value) {
@@ -101,21 +101,24 @@ const UpdateProduct = (props: any) => {
       fetchOneProduct(id)
         .then((data) => {
           console.log("CLT updProd usEfid DATA ", data);
+          console.log("data.price.toString() =====", data.price.toString());
           const prod = {
             name: data.name,
             price: data.price.toString(),
             category: data.categoryId.toString(),
             brand: data.brandId.toString(),
           };
+          console.log("CLT UPD usEf 2 ", 2);
           console.log("updORD USef data ", data);
           console.log("updORD USef order ", prod);
           setValue(prod);
           setValid(isValid(prod));
+          console.log("CLT UPD usEf 3 ", 3);
           // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
           // setProperties(data.props);
           setProperties(
             data.props.map((item: any) => {
-              console.log("CLT updProd item ", item);
+              console.log("CLT usEf ITEM --- ", item);
               // при добавлении новой хар-ки свойство append принимает значение true
               // при изменении старой хар-ки свойство change принимает значение true
               // при удалении старой хар-ки свойство remove принимает значение true

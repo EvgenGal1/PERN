@@ -92,6 +92,7 @@ class Order {
   }
 
   async create(data: any) {
+    console.log("ORD.SERV === data : " + data);
     // общая стоимость заказа
     const items = data.items;
     const amount = items.reduce(

@@ -111,7 +111,7 @@ class Order {
       const order = await OrderService.getOne(req.params.id);
       console.log("SRV ord.cntrl adminGetOne 3 : " + 3);
       console.log("SRV ord.cntrl adminGetOne order : " + order);
-      console.log(order);
+      // console.log(order);
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));

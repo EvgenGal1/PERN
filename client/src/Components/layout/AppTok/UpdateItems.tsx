@@ -10,6 +10,7 @@ import {
 } from "../../../http/Tok/orderAPI_Tok";
 
 const UpdateItems = (props: any) => {
+  console.log("UPD ITEMS props ", props);
   // получ.от родителя масс. хар-тик и fn измен.масс.
   const { items, setItems } = props;
 
@@ -101,7 +102,7 @@ const UpdateItems = (props: any) => {
               size="sm"
             />
           </Col>
-          <Col>
+          {/* <Col>
             <Form.Control
               name={"unique_" + item.unique}
               value={item.unique}
@@ -109,7 +110,7 @@ const UpdateItems = (props: any) => {
               placeholder="Уникальный..."
               size="sm"
             />
-          </Col>
+          </Col> */}
           <Col>
             <Button
               onClick={() => remove(item.unique)}

@@ -10,6 +10,7 @@ import {
 } from "../../../http/Tok/catalogAPI_Tok";
 
 const UpdateProperties = (props: any) => {
+  console.log("UPD PROPERTI props ", props);
   // получ.от родителя масс. хар-тик и fn измен.масс.
   const { properties, setProperties } = props;
 

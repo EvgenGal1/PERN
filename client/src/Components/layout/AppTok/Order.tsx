@@ -16,7 +16,7 @@ const Order = (props: any) => {
   console.log("CLT ord props ", props);
 
   // список загруженных заказов
-  const [orders, setOrders]: any = useState(null);
+  const [orders, setOrders]: any = useState([]);
   // загрузка списка категорий с сервера
   const [fetching, setFetching] = useState(true);
   // модальное окно создания-редактирования
@@ -64,7 +64,7 @@ const Order = (props: any) => {
       .then((data: any) => {
         console.log("CLT ORD === data ", data);
         console.log("CLT ORD === data.rows ", data.rows);
-        setOrders(data.rows);
+        setOrders(data);
       })
       .finally(() => setFetching(false));
   }, [change]);

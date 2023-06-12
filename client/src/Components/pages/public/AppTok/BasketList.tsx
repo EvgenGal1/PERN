@@ -14,6 +14,7 @@ import { CHECKOUT_ROUTE } from "../../../../utils/consts";
 import BasketItem from "./BasketItem";
 
 const BasketList = observer(() => {
+  console.log("BasketList 1 ", 1);
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
 
@@ -50,7 +51,7 @@ const BasketList = observer(() => {
   if (fetching) {
     return <Spinner animation="border" />;
   }
-
+  console.log("BasketList basket ", basket);
   return (
     <>
       {basket.count ? (
