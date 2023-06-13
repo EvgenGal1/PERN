@@ -99,6 +99,7 @@ const updateItems = async (items: any, orderId: any) => {
 
         await deleteItem(orderId, item.id);
       } catch (error: any) {
+        console.log("UPD-ORD updateItems 4.588 ", 4.58889);
         alert(error.response.data.message);
       }
       continue;
