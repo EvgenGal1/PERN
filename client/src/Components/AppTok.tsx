@@ -13,7 +13,7 @@ import Loader from "./layout/AppTok/Loader";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const AppTok = observer(() => {
-  const { user, basket }: any = useContext(AppContext);
+  const { user, basket, order }: any = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   // const [userAuthLoading, setUserAuthLoading] = useState(true);
   // const [basketLoading, setBasketLoading] = useState(true);

@@ -5,8 +5,10 @@ class CatalogStore {
   _categories = [];
   _brands = [];
   _products = [];
+  _orders = [];
   _category = null; // выбранная категория
   _brand = null; // выбранный бренд
+  _order = null; // выбранный заказ
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
   _limit = 3; // товаров на страницу
@@ -27,12 +29,20 @@ class CatalogStore {
     return this._products;
   }
 
+  get orders() {
+    return this._orders;
+  }
+
   get category() {
     return this._category;
   }
 
   get brand() {
     return this._brand;
+  }
+
+  get order() {
+    return this._order;
   }
 
   get page() {
@@ -64,6 +74,10 @@ class CatalogStore {
     this._products = products;
   }
 
+  set orders(orders) {
+    this._orders = orders;
+  }
+
   set category(id) {
     this.page = 1;
     this._category = id;
@@ -72,6 +86,11 @@ class CatalogStore {
   set brand(id) {
     this.page = 1;
     this._brand = id;
+  }
+
+  set order(id) {
+    this.page = 1;
+    this._order = id;
   }
 
   set page(page) {
