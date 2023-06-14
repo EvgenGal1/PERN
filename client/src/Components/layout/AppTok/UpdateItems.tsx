@@ -88,6 +88,8 @@ const UpdateItems = (props: any) => {
             <Form.Control
               name={"price_" + item.unique}
               value={item.price}
+              // ! попытка перевести в номер. не раб
+              // value={Number(item.price)}
               onChange={(e) => change("price", e.target.value, item.unique)}
               placeholder="Цена..."
               size="sm"

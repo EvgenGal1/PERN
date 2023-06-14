@@ -226,6 +226,7 @@ const UpdateProduct = (props: any) => {
             placeholder="Название товара..."
             className="mb-3"
           />
+          {/* Категория и Бренд */}
           <Row className="mb-3">
             <Col>
               <Form.Select

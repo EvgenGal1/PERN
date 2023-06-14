@@ -38,7 +38,7 @@ const isValid = (value: any) => {
     if (key === "email") result.email = value.email.trim(); // pattern.test(value.email.trim());
     if (key === "phone") result.phone = value.phone.trim(); // pattern.test(value.phone);
     if (key === "address") result.address = value.address.trim(); // pattern.test(value.address);
-    if (key === "comment") result.comment = value.comment.trim(); // pattern.test(value.comment);
+    if (key === "comment") result.comment = value?.comment?.trim(); // pattern.test(value.comment);
   }
   return result;
 };
@@ -279,61 +279,44 @@ const UpdateProduct = (props: any) => {
             placeholder="Название заказа..."
             className="mb-3"
           />
-          {/* <Row className="mb-3">
-            <Col>
-              <Form.Select
-                name="category"
-                value={value.category}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.category === true}
-                isInvalid={valid.category === false}
-              >
-                <option value="">Категория</option>
-                {categories &&
-                  categories.map((item: any) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Col>
-            <Col>
-              <Form.Select
-                name="brand"
-                value={value.brand}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.brand === true}
-                isInvalid={valid.brand === false}
-              >
-                <option value="">Бренд</option>
-                {brands &&
-                  brands.map((item: any) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Col>
-          </Row> */}
+          {/* 
+          email: "",
+          phone: "",
+          address: "",
+          comment: "", 
+          */}
+          {/* <Col> */}
+          <Form.Control
+            name="address"
+            value={value.address}
+            onChange={(e) => handleInputChange(e)}
+            isValid={valid.address === true}
+            isInvalid={valid.address === false}
+            placeholder="Адрес"
+            className="mb-3"
+          />
+          {/* </Col> */}
           <Row className="mb-3">
             <Col>
-              {/* <Form.Control
-                name="price"
-                value={value.price}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.price === true}
-                isInvalid={valid.price === false}
-                placeholder="Цена товара..."
-              /> */}
-            </Col>
-            {/* <Col>
               <Form.Control
-                name="image"
-                type="file"
-                onChange={(e) => handleImageChange(e)}
-                placeholder="Фото товара..."
+                name="email"
+                value={value.email}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.email === true}
+                isInvalid={valid.email === false}
+                placeholder="Email"
               />
-            </Col> */}
+            </Col>
+            <Col>
+              <Form.Control
+                name="phone"
+                value={value.phone}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.phone === true}
+                isInvalid={valid.phone === false}
+                placeholder="Телефон"
+              />
+            </Col>
           </Row>
           <UpdateItems items={items} setItems={setItems} />
           <Row>

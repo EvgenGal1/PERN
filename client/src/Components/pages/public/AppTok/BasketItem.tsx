@@ -1,8 +1,8 @@
 import { Button } from "react-bootstrap";
 
 const BasketItem = (props: any) => {
-  console.log("BasketList 1 ", 1);
-  console.log("BasketList props ", props);
+  console.log("BasketItems 1 ", 1);
+  console.log("BasketItems props ", props);
   return (
     <tr>
       <td>{props.name}</td>
