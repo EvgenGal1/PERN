@@ -16,6 +16,7 @@ class ProductProp {
   }
 
   async getOne(productId, id) {
+    console.log("SRV prodPr.serv CRE data - 01011 : " + id);
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -30,6 +31,8 @@ class ProductProp {
   }
 
   async create(productId, data) {
+    console.log("SRV prodPr.serv CRE data - 0111 : " + data);
+    console.log(data);
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -44,6 +47,10 @@ class ProductProp {
   }
 
   async update(productId, id, data) {
+    console.log("SRV prodPr.serv UPD productId - 111 : " + productId);
+    console.log("SRV prodPr.serv UPD id - 111 : " + id);
+    console.log("SRV prodPr.serv UPD data - 111 : " + data);
+
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");

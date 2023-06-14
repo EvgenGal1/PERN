@@ -20,7 +20,7 @@ class Order {
   };
 
   // созд.общ.
-  async create(req, res, next, type) {
+  async create(req /* : Request */, res: Response, next: NextFunction, type) {
     try {
       const { name, email, phone, address, comment = null } = req.body;
       console.log("SRV ord.cntrl CRT req.body : " + req.body);
@@ -57,19 +57,22 @@ class Order {
           throw new Error("Ваша корзина пуста");
         }
         items = basket.products;
-        userId = req.auth?.id ?? null;
+        userId = req?.auth?.id ?? null;
       }
 
       // все готово, можно создавать
-      const order = await OrderService.create({
-        name,
-        email,
-        phone,
-        address,
-        comment,
-        items,
-        userId,
-      });
+      const order = await OrderService.create(
+        // {
+        // name,
+        // email,
+        // phone,
+        // address,
+        // comment,
+        // items,
+        // userId,
+        // }
+        req.body
+      );
       console.log("SRV ord.cntrl CRT order : " + order);
 
       // корзину теперь нужно очистить
@@ -119,16 +122,25 @@ class Order {
   }
 
   async adminUpdate(req: Request, res: Response, next: NextFunction) {
+    console.log("SRV ord.cntrl adminUpdate 1 : " + 1);
     console.log("SRV ord.cntrl UPD req.body : " + req.body);
     try {
+      console.log("SRV ord.cntrl adminUpdate 2 : " + 2);
       if (!req.params.id) {
+        console.log("SRV ord.cntrl adminUpdate err : " + 2.1);
         throw new Error("Не указан id заказа");
+      }
+      if (Object.keys(req.body).length === 0) {
+        console.log("SRV ord.cntrl adminUpdate err : " + 2.2);
+        throw new Error("Нет данных для обновления");
       }
       // if (!req.body.name) {
       //   throw new Error("Нет названия заказа");
       // }
+      console.log("SRV ord.cntrl adminUpdate 3 : " + 3);
       const order = await OrderService.update(req.params.id, req.body);
       res.json(order);
+      console.log("SRV ord.cntrl adminUpdate 4 : " + 4);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }

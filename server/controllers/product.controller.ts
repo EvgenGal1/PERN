@@ -65,6 +65,8 @@ class Product {
         req.body,
         req.files?.image
       );
+      console.log("SRV prod.CNTRL UPD product : " + product.props);
+      console.log(product.props);
       res.json(product);
     } catch (e) {
       next(AppError.badRequest(e.message));

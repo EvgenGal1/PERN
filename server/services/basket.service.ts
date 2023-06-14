@@ -65,9 +65,12 @@ class Basket {
   }
 
   async increment(basketId: number, productId: number, quantity: number) {
+    console.log("SRV basr.serv 11 : " + 11);
     let basket = await BasketMapping.findByPk(basketId, {
       include: [{ model: ProductMapping, as: "products" }],
     });
+    console.log("SRV basr.serv 11 : " + 11);
+    console.log(basket);
     if (!basket) {
       basket = await BasketMapping.create();
     }
@@ -75,6 +78,8 @@ class Basket {
     const basket_product = await BasketProductMapping.findOne({
       where: { basketId, productId },
     });
+    console.log("basket_product : " + basket_product);
+    console.log(basket_product);
     if (basket_product) {
       await basket_product.increment("quantity", { by: quantity });
       // обновим объект корзины, чтобы вернуть свежие данные

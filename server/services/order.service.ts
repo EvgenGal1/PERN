@@ -3,6 +3,71 @@ import AppError from "../error/ApiError";
 import { Order as OrderMapping } from "../models/mapping";
 import { OrderItem as OrderItemMapping } from "../models/mapping";
 
+// const pretty = (basket) => {
+//   const data: any = {};
+//   data.id = basket.id;
+//   data.products = [];
+//   if (basket.products) {
+//     data.products = basket.products.map((item) => {
+//       return {
+//         id: item.id,
+//         name: item.name,
+//         price: item.price,
+//         quantity: item.basket_product.quantity,
+//       };
+//     });
+//   }
+//   return data;
+// };
+
+// Типы данных
+interface Orders {
+  name: string | number;
+  email: string;
+  phone: string | number;
+  address: string;
+  comment: string;
+  amount: number;
+  userId: number;
+  items?: OrderItem[];
+  // createdAt: Date;
+  // updatedAt: Date;
+}
+
+interface CreateData {
+  name: string | number;
+  email: string;
+  phone: string | number;
+  address: string;
+  comment: string;
+  amount: number;
+  userId: number;
+  items?: string;
+  // items?: OrderItem[]|string;
+}
+
+interface UpdateData {
+  name: string | number;
+  email: string;
+  phone: string | number;
+  address: string;
+  comment: string;
+  amount: number;
+  userId: number;
+  // items?: string;
+  items?: OrderItem[];
+  // items?: OrderItem[]|string;
+}
+
+interface OrderItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  // createdAt: Date;
+  // updatedAt: Date;
+}
+
 class Order {
   async getAll(userId = null) {
     // let orders;
@@ -91,15 +156,18 @@ class Order {
     return order;
   }
 
-  async create(data: any) {
-    console.log("ORD.SERV === data : " + data);
+  async create(data: any /* CreateData */) /* : Promise<Orders> */ {
+    console.log("ORD.SERV CRAat === data : " + data);
+    console.log(data);
     // общая стоимость заказа
     const items = data.items;
-    const amount = items.reduce(
+    console.log("ORD.SERV CREat items : " + items);
+    const amount: any = items.reduce(
       (sum: number, item: { price: number; quantity: number }) =>
         sum + item.price * item.quantity,
       0
     );
+    console.log("ORD.SERV CREat amount : " + amount);
     // данные для создания заказа
     const { name, email, phone, address, comment = null, userId = null } = data;
     const order = await OrderMapping.create({
@@ -134,23 +202,48 @@ class Order {
     return created;
   }
 
-  async update(id, data) {
-    console.log("SRV upd.serv id : " + id);
-    console.log("SRV upd.serv data 1 : " + data);
-    const order = await OrderMapping.findByPk(id);
+  async update(id: string | number, data: /* any */ UpdateData) {
+    console.log("SRV ord.serv UPD data - 11 : " + data);
+    console.log(data);
+    console.log("SRV ord.serv UPD id : " + id);
+    console.log("SRV ord.serv UPD 22 : " + 22);
+    // const order = await OrderMapping.findByPk(id);
+    const order = await OrderMapping.findByPk(id, {
+      include: [{ model: OrderItemMapping, as: "items" }],
+    });
+    console.log("SRV ord.serv UPD order : " + order);
+    console.log(order);
+    console.log("SRV ord.serv UPD order.items : " + order.items);
+    console.log(order.items);
     if (!order) {
+      console.log("SRV ord.serv UPD 22.1 : " + 22.1);
       throw new Error("Заказ не найден в БД");
     }
+    console.log("SRV ord.serv UPD 33 : " + 33);
+
+    // ^ перенос в data.items
     // общая стоимость заказа
-    const items = data.items;
-    const amount = items.reduce(
+    // const items = data.items;
+    const items = order.items;
+    console.log("SRV ord.serv UPD 44 " + 44);
+    const amount: any = items.reduce(
       (sum: number, item: { price: number; quantity: number }) =>
         sum + item.price * item.quantity,
       0
     );
+    console.log("SRV ord.serv UPD amount " + amount);
+
     // данные для создания заказа
-    const { name, email, phone, address, comment = null, userId = null } = data;
-    console.log("SRV upd.serv data 2 : " + data);
+    // const { name, email, phone, address, comment = null, userId = null } = data;
+    const {
+      name = order.name,
+      email = order.email,
+      phone = order.phone,
+      address = order.address,
+      comment = order.comment,
+      userId = order.userId,
+    } = data;
+    console.log("SRV ord.serv UPD data - 22 : " + data);
     await order.update({
       name,
       email,
@@ -160,28 +253,40 @@ class Order {
       amount,
       userId,
     });
-    // товары, входящие в заказ
-    for (let item of items) {
-      console.log("SRV upd.serv item : " + item);
-      await OrderItemMapping.update({
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        orderId: order.id,
-      });
+    //
+    if (data.items) {
+      console.log("SRV ord.serv UPD data - 222 : " + 222);
+      // свойства товара
+      // удаляем старые и добавляем новые
+      await OrderItemMapping.destroy({ where: { orderId: id } });
+      // const items: any = JSON.parse(data.items);
+      // товары, входящие в заказ
+      console.log("SRV ord.serv UPD items : " + items);
+      for (let item of items) {
+        await OrderItemMapping.create({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          orderId: order.id,
+        });
+      }
     }
-    // возвращать будем заказ с составом
-    const ordered = await OrderMapping.findByPk(order.id, {
-      include: [
-        {
-          model: OrderItemMapping,
-          as: "items",
-          attributes: ["name", "price", "quantity"],
-        },
-      ],
-    });
-    console.log("SRV upd.serv ordered : " + ordered);
-    return ordered;
+    // // возвращать будем заказ с составом
+    // const ordered = await OrderMapping.findByPk(order.id, {
+    //   include: [
+    //     {
+    //       model: OrderItemMapping,
+    //       as: "items",
+    //       attributes: ["name", "price", "quantity"],
+    //     },
+    //   ],
+    // });
+    // console.log("SRV ord.serv UPD ordered : " + ordered);
+    // return ordered;
+    // обновим объект товара, чтобы вернуть свежие данные
+    await order.reload();
+    return order;
+    // return pretty(order);
   }
 
   async delete(id) {

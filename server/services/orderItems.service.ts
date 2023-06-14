@@ -30,20 +30,28 @@ class OrderItem {
   }
 
   async create(orderId, data) {
+    console.log("SRV ord ITM.serv CRA data - 0111 : " + data);
+    console.log(data);
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
     }
-    const { name, value } = data;
+    const { name, price, quantity } = data;
     const item = await OrderItemMapping.create({
       name,
-      value,
+      price,
+      quantity,
       orderId,
     });
     return item;
   }
 
   async update(orderId, id, data) {
+    console.log("SRV ord ITM.serv UPD orderId - 0111 : " + orderId);
+    console.log("SRV ord ITM.serv UPD id - 0111 : " + id);
+    console.log("SRV ord ITM.serv UPD data - 0111 : " + data);
+    console.log(data);
+
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
@@ -54,8 +62,12 @@ class OrderItem {
     if (!item) {
       throw new Error("Свойство товара не найдено в БД");
     }
-    const { name = item.name, value = item.value } = data;
-    await item.update({ name, value });
+    const {
+      name = item.name,
+      price = item.price,
+      quantity = item.price,
+    } = data;
+    await item.update({ name, price, quantity });
     return item;
   }
 
