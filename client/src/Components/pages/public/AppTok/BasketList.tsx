@@ -51,7 +51,7 @@ const BasketList = observer(() => {
   if (fetching) {
     return <Spinner animation="border" />;
   }
-  console.log("BasketList basket ", basket);
+
   return (
     <>
       {basket.count ? (

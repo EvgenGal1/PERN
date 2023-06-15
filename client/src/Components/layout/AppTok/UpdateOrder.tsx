@@ -108,7 +108,7 @@ const updateItems = async (items: any, orderId: any) => {
   }
 };
 
-const UpdateProduct = (props: any) => {
+const UpdateOrder = (props: any) => {
   console.log("CLT updOrd props ", props);
   const { id, show, setShow, setChange } = props;
 
@@ -225,10 +225,6 @@ const UpdateProduct = (props: any) => {
 
       adminUpdate(id, data)
         .then((data) => {
-          // сбрасываем поле загрузки изображения, чтобы при сохранении товара (без очистки полей при рендер), когда новое изображение не выбрано, не загружать старое повтороно
-          // event.target.image.value = "";
-          // в принципе, мы могли бы сбросить все поля формы на дефолтные значения, но если пользователь решит отредатировать тот же товар повтороно, то увидит пустые поля формы — http-запрос на получение данных для редактирования мы выполняем только тогда, когда выбран новый товар (изменился id товара)
-
           console.log("UPD_ORD sbm if 4 ", 4);
 
           const order = {
@@ -253,9 +249,9 @@ const UpdateProduct = (props: any) => {
               };
             })
           );
-          // закрываем модальное окно редактирования товара
+          // закрываем модальное окно редактирования заказов
           setShow(false);
-          // изменяем состояние компонента списка товаров
+          // изменяем состояние компонента списка заказов
           setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));
@@ -330,4 +326,4 @@ const UpdateProduct = (props: any) => {
   );
 };
 
-export default UpdateProduct;
+export default UpdateOrder;

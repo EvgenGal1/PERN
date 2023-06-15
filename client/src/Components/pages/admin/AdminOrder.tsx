@@ -14,7 +14,7 @@ const AdminOrder = () => {
 
   useEffect(() => {
     getOneOrder(id)
-      .then((data) => setOrder(data))
+      .then((data: any) => setOrder(data))
       .catch((error) => setError(error.response.data.message))
       .finally(() => setFetching(false));
   }, [id]);

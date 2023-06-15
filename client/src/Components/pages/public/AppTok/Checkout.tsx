@@ -140,10 +140,10 @@ const Checkout = () => {
 
     // е/и форма заполнена правильно, можно отправлять данные
     if (
-      valid.name === true &&
-      valid.email === true &&
-      valid.phone === true &&
-      valid.address === true
+      valid.name /* === true */ &&
+      valid.email /* === true */ &&
+      valid.phone /* === true */ &&
+      valid.address /* === true */
     ) {
       // Заказ.
       // Свойство "comment" не существует в типе "EventTarget".

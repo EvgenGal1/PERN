@@ -65,6 +65,7 @@ interface Brand {
 class Product {
   // async getAll(params) {
   async getAll(options: any) {
+    console.log("SRV prod.serv getAll 1 : " + 1);
     // const { categoryId, brandId } = params;
     const { categoryId, brandId, limit, page } = options;
     const offset = (page - 1) * limit;
@@ -87,6 +88,7 @@ class Product {
   }
 
   async getOne(id: number) {
+    console.log("SRV prod.serv getOne 11 : " + 11);
     // const product = await ProductMapping.findByPk(id);
     // const product = await ProductMapping.findOne({
     //   where: { id: id },
@@ -173,6 +175,8 @@ class Product {
     } = data;
     console.log("SRV prod.serv UPD 44 : " + 44);
     console.log("SRV prod.serv UPD DATA - 22 : " + data);
+    console.log(data);
+    console.log("SRV prod.serv UPD 444 : " + 444);
     await product.update({ name, price, image, categoryId, brandId });
     console.log("SRV prod.serv UPD 55 : " + 55);
     if (data.props) {

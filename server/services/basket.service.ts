@@ -40,6 +40,7 @@ class Basket {
   }
 
   async append(basketId: number, productId: number, quantity: number) {
+    console.log("SRV basr.serv append 11 : " + 11);
     let basket = await BasketMapping.findByPk(basketId, {
       attributes: ["id"],
       include: [{ model: ProductMapping, attributes: ["id", "name", "price"] }],
@@ -65,7 +66,7 @@ class Basket {
   }
 
   async increment(basketId: number, productId: number, quantity: number) {
-    console.log("SRV basr.serv 11 : " + 11);
+    console.log("SRV basr.serv increment 11 : " + 11);
     let basket = await BasketMapping.findByPk(basketId, {
       include: [{ model: ProductMapping, as: "products" }],
     });
@@ -90,6 +91,7 @@ class Basket {
   }
 
   async decrement(basketId: number, productId: number, quantity: number) {
+    console.log("SRV basr.serv decrement 11 : " + 11);
     let basket = await BasketMapping.findByPk(basketId, {
       include: [{ model: ProductMapping, as: "products" }],
     });
@@ -115,6 +117,7 @@ class Basket {
   }
 
   async remove(basketId: number, productId: number) {
+    console.log("SRV basr.serv remove 11 : " + 11);
     let basket = await BasketMapping.findByPk(basketId, {
       include: [{ model: ProductMapping, as: "products" }],
     });
@@ -135,6 +138,7 @@ class Basket {
   }
 
   async clear(basketId: number) {
+    console.log("SRV basr.serv clear 11 : " + 11);
     let basket = await BasketMapping.findByPk(basketId, {
       include: [{ model: ProductMapping, as: "products" }],
     });
@@ -150,6 +154,7 @@ class Basket {
   }
 
   async delete(basketId: number) {
+    console.log("SRV basr.serv delete 11 : " + 11);
     const basket = await BasketMapping.findByPk(basketId, {
       include: [{ model: ProductMapping, as: "products" }],
     });
