@@ -36,6 +36,7 @@ class ProductProp {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
+    console.log("SRV prodPROP.cntrl CRT req.body : " + req.body);
     try {
       if (!req.params.productId) {
         throw new Error("Не указан id товара");

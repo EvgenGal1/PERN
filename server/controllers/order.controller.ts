@@ -22,8 +22,10 @@ class Order {
   // созд.общ.
   async create(req /* : Request */, res: Response, next: NextFunction, type) {
     try {
-      const { name, email, phone, address, comment = null } = req.body;
       console.log("SRV ord.cntrl CRT req.body : " + req.body);
+      console.log(req.body);
+
+      const { name, email, phone, address, comment = null } = req.body;
       // данные для создания заказа
       if (!name) throw new Error("Не указано имя покупателя");
       if (!email) throw new Error("Не указан email покупателя");
@@ -57,21 +59,21 @@ class Order {
           throw new Error("Ваша корзина пуста");
         }
         items = basket.products;
-        userId = req?.auth?.id ?? null;
+        userId = req.auth?.id ?? null;
       }
 
       // все готово, можно создавать
       const order = await OrderService.create(
-        // {
-        // name,
-        // email,
-        // phone,
-        // address,
-        // comment,
-        // items,
-        // userId,
-        // }
-        req.body
+        {
+          name,
+          email,
+          phone,
+          address,
+          comment,
+          items,
+          userId,
+        }
+        // req.body
       );
       console.log("SRV ord.cntrl CRT order : " + order);
 
@@ -84,6 +86,7 @@ class Order {
   }
   // ADMIN ord
   async adminGetAll(req, res, next) {
+    console.log("SRV ord.cntrl adminGetAll req : " + req);
     try {
       const orders = await OrderService.getAll();
       res.json(orders);
@@ -93,6 +96,7 @@ class Order {
   }
 
   async adminGetUser(req, res, next) {
+    console.log("SRV ord.cntrl adminGetUser req : " + req);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");

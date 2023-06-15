@@ -111,6 +111,7 @@ class Product {
     img: any /* : Express.Multer.File */
   ): Promise<Products> {
     console.log("SRV prod.serv CRE data - 11 : " + data);
+    console.log(data);
     // поскольку image не допускает null, задаем пустую строку
     const image = FileService.save(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
@@ -138,6 +139,7 @@ class Product {
     const created = await ProductMapping.findByPk(product.id, {
       include: [{ model: ProductPropMapping, as: "props" }],
     });
+    console.log("create : " + 343);
     return created;
   }
 

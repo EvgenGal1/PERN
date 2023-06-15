@@ -219,7 +219,12 @@ class Order {
       console.log("SRV ord.serv UPD 22.1 : " + 22.1);
       throw new Error("Заказ не найден в БД");
     }
-    console.log("SRV ord.serv UPD 33 : " + 33);
+    console.log("SRV ord.serv UPD 33 : " + 333);
+    console.log("order.items : " + order.items);
+    console.log(order.items);
+    console.log("data.items : " + data.items);
+    console.log(data.items);
+    console.log("SRV ord.serv UPD 33 : " + 333333);
 
     // ^ перенос в data.items
     // общая стоимость заказа
