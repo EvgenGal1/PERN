@@ -105,7 +105,9 @@ const Order = sequelize.define("order", {
       const year = value.getFullYear();
       const hours = value.getHours();
       const minutes = value.getMinutes();
-      return day + "." + month + "." + year + " " + hours + ":" + minutes;
+      // return day + "." + month + "." + year + " " + hours + ":" + minutes;
+      const paddedMonth = month < 10 ? `0${month}` : month;
+      return `${day}.${paddedMonth}.${year} ${hours}:${minutes}`;
     },
   },
   prettyUpdatedAt: {
@@ -119,7 +121,9 @@ const Order = sequelize.define("order", {
       const year = value.getFullYear();
       const hours = value.getHours();
       const minutes = value.getMinutes();
-      return day + "." + month + "." + year + " " + hours + ":" + minutes;
+      // return day + "." + month + "." + year + " " + hours + ":" + minutes;
+      const paddedMonth = month < 10 ? `0${month}` : month;
+      return `${day}.${paddedMonth}.${year} ${hours}:${minutes}`;
     },
   },
 });
