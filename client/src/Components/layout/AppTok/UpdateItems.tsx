@@ -61,14 +61,6 @@ const UpdateItems = (props: any) => {
     <>
       ~! UpdateItems
       <h5>Позиции</h5>
-      <Button
-        onClick={append}
-        variant="outline-primary"
-        size="sm"
-        className="mb-2"
-      >
-        Добавить
-      </Button>
       {items.map((item: any) => (
         <Row
           key={item.unique}
@@ -90,7 +82,9 @@ const UpdateItems = (props: any) => {
               value={item.price}
               // ! попытка перевести в номер. не раб
               // value={Number(item.price)}
-              onChange={(e) => change("price", e.target.value, item.unique)}
+              onChange={(e) =>
+                change("price", Number(e.target.value), item.unique)
+              }
               placeholder="Цена..."
               size="sm"
             />
@@ -99,7 +93,9 @@ const UpdateItems = (props: any) => {
             <Form.Control
               name={"quantity_" + item.unique}
               value={item.quantity}
-              onChange={(e) => change("quantity", e.target.value, item.unique)}
+              onChange={(e) =>
+                change("quantity", Number(e.target.value), item.unique)
+              }
               placeholder="Количество..."
               size="sm"
             />

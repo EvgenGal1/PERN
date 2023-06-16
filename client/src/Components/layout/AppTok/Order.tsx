@@ -1,6 +1,6 @@
 // ^ Многраз.Комп.Заказа
 import { useState, useEffect } from "react";
-import { Table, Button, Spinner } from "react-bootstrap";
+import { Table, Button, Spinner, Row, Col } from "react-bootstrap";
 
 import {
   adminGetAll,
@@ -41,21 +41,18 @@ const Order = (props: any) => {
   const handleUpdateClick = (id: any) => {
     setOrderId(id);
     setShow(true);
-    // setUpdateShow(true);
-    // adminGetOne(id);
-    // alert(`Заказ «» удален`);
   };
 
   const handleDeleteClick = (id: any) => {
     // alert(`Заказ «${data.id}» удален`);
-    adminGetOne(id);
-    alert(`Заказ «» удален`);
-    // adminDelete(id)
-    //   .then((data: any) => {
-    //     setChange(!change);
-    //     alert(`Заказ «${data.id}» удален`);
-    //   })
-    //   .catch((error: any) => alert(error.response.data.message));
+    // adminGetOne(id);
+    // alert(`Заказ «» удален`);
+    adminDelete(id)
+      .then((data: any) => {
+        setChange(!change);
+        alert(`Заказ «${data.id}» удален`);
+      })
+      .catch((error: any) => alert(error.response.data.message));
   };
 
   useEffect(() => {
@@ -94,26 +91,33 @@ const Order = (props: any) => {
         <li>Адрес доставки: {props.data.address}</li>
         <li>Комментарий: {props.data.comment}</li>
       </ul>
-      {/*  */}
-      {/* <EditOrder
-        id={orderId}
-        show={show}
-        setShow={setShow}
-        setChange={setChange}
-      /> */}
-      {/* <CreateOrder
-        show={createShow}
-        setShow={setCreateShow}
-        setChange={setChange}
-      /> */}
+      {/* Модалка ред.Заказа */}
       <UpdateOrder
         id={orderId}
-        // show={updateShow}
-        // setShow={setUpdateShow}
         show={show}
         setShow={setShow}
         setChange={setChange}
       />
+      {/* КНП Редакт./Удалить */}
+      <Row className="mb-3">
+        <Col>
+          <Button
+            variant="success"
+            size="sm"
+            onClick={() => handleUpdateClick(props.data.id)}
+            style={{ marginRight: "15px" }}
+          >
+            Редактировать
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => handleDeleteClick(props.data.id)}
+          >
+            Удалить
+          </Button>
+        </Col>
+      </Row>
       {/*  */}
       <Table bordered hover size="sm" className="mt-3 table__eg">
         <thead>
@@ -122,8 +126,6 @@ const Order = (props: any) => {
             <th>Цена</th>
             <th>Кол-во</th>
             <th>Сумма</th>
-            <th>Редактировать</th>
-            <th>Удалить</th>
           </tr>
         </thead>
         <tbody>
@@ -133,32 +135,13 @@ const Order = (props: any) => {
               <td>{item.price}</td>
               <td>{item.quantity}</td>
               <td>{item.price * item.quantity}</td>
-              <td>
-                <Button
-                  variant="success"
-                  size="sm"
-                  // onClick={() => handleUpdateClick(item.id)}
-                  onClick={() => handleUpdateClick(props.data.id)}
-                >
-                  Редактировать
-                </Button>
-              </td>
-              <td>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  // onClick={() => handleDeleteClick(item.id)}
-                  onClick={() => handleDeleteClick(props.data.id)}
-                >
-                  Удалить
-                </Button>
-              </td>
             </tr>
           ))}
-          <tr>
-            <td colSpan={3}>Итого</td>
-            <td>{props.data.amount}</td>
-            <td colSpan={2}> </td>
+          <tr id="th__eg">
+            <td colSpan={3} style={{ fontWeight: "bold" }}>
+              Итого
+            </td>
+            <td style={{ fontWeight: "bold" }}>{props.data.amount}</td>
           </tr>
         </tbody>
       </Table>

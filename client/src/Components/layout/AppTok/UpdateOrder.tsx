@@ -20,6 +20,7 @@ const defaultValue = {
   phone: "",
   address: "",
   comment: "",
+  status: "",
 };
 const defaultValid = {
   name: null,
@@ -27,6 +28,7 @@ const defaultValid = {
   phone: null,
   address: null,
   comment: null,
+  status: null,
 };
 
 const isValid = (value: any) => {
@@ -39,6 +41,9 @@ const isValid = (value: any) => {
     if (key === "phone") result.phone = value.phone.trim(); // pattern.test(value.phone);
     if (key === "address") result.address = value.address.trim(); // pattern.test(value.address);
     if (key === "comment") result.comment = value?.comment?.trim(); // pattern.test(value.comment);
+    if (key === "status")
+      result.status = /* result.status */ value?.comment?.trim(); // pattern.test(value.comment);
+    // 'result.status' is assigned to itself.
   }
   return result;
 };
@@ -125,12 +130,20 @@ const UpdateOrder = (props: any) => {
   // список характеристик товара
   const [items, setItems] = useState([]);
 
+  const itemsId = items;
+  console.log("itemsId ", itemsId);
+  const amount: any = itemsId.reduce(
+    (sum: number, item: { price: number; quantity: number }) =>
+      sum + item.price * item.quantity,
+    0
+  );
+
   console.log("CLT updOrd usSTt items ", items);
 
   useEffect(() => {
     console.log("CLT updOrd usEf 1 ", 1);
     if (id) {
-      console.log("CLT updOrd usEfid IF ", id);
+      console.log("CLT updOrd usEfid IF  =========== ", id);
       // нужно получить с сервера данные товара для редактирования
       adminGetOne(id)
         .then((data) => {
@@ -143,6 +156,7 @@ const UpdateOrder = (props: any) => {
             phone: data.phone.toString(),
             address: data.address.toString(),
             comment: data?.comment?.toString(),
+            status: data?.status?.toString(),
           };
           console.log("CLT UPD usEf 2 ", 2);
           console.log("updORD USef data ", data);
@@ -233,6 +247,7 @@ const UpdateOrder = (props: any) => {
             phone: data.phone.toString(),
             address: data.address.toString(),
             comment: data.comment.toString(),
+            status: data.status.toString(),
           };
           console.log("UPD_ORD sbm if 5 ", 5);
           setValue(order);
@@ -259,11 +274,17 @@ const UpdateOrder = (props: any) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="lg"
+      className="modal__eg-bootstr"
+    >
       <Modal.Header closeButton>
-        <Modal.Title>Редактирование Заказа</Modal.Title>
+        <Modal.Title>
+          <h1>Редактирование Заказа №_{id}</h1>
+        </Modal.Title>
       </Modal.Header>
-
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Form.Control
@@ -275,13 +296,6 @@ const UpdateOrder = (props: any) => {
             placeholder="Название заказа..."
             className="mb-3"
           />
-          {/* 
-          email: "",
-          phone: "",
-          address: "",
-          comment: "", 
-          */}
-          {/* <Col> */}
           <Form.Control
             name="address"
             value={value.address}
@@ -291,7 +305,6 @@ const UpdateOrder = (props: any) => {
             placeholder="Адрес"
             className="mb-3"
           />
-          {/* </Col> */}
           <Row className="mb-3">
             <Col>
               <Form.Control
@@ -314,10 +327,21 @@ const UpdateOrder = (props: any) => {
               />
             </Col>
           </Row>
+          <Form.Control
+            name="comment"
+            value={value.comment}
+            onChange={(e) => handleInputChange(e)}
+            isValid={valid.comment === true}
+            isInvalid={valid.comment === false}
+            placeholder="Комментарий"
+          />
           <UpdateItems items={items} setItems={setItems} />
           <Row>
             <Col>
               <Button type="submit">Сохранить</Button>
+            </Col>
+            <Col>
+              <Button type="submit">{amount}</Button>
             </Col>
           </Row>
         </Form>
