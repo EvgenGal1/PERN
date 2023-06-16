@@ -226,7 +226,6 @@ class Order {
     console.log(data.items);
     console.log("SRV ord.serv UPD 33 : " + 333333);
 
-    // ^ перенос в data.items
     // общая стоимость заказа
     // const items = data.items;
     const items = order.items;
