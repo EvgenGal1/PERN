@@ -40,8 +40,6 @@ const Product = () => {
   const [product, setProduct]: any = useState(null);
   const [rating, setRating]: any = useState(null);
 
-  console.log("Product basket ", basket);
-
   useEffect(() => {
     fetchOneProduct(id).then((data: any) => setProduct(data));
     fetchProdRating(id).then((data: any) => setRating(data));

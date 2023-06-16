@@ -9,8 +9,6 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState(null);
   const [fetching, setFetching] = useState(true);
 
-  console.log("CLT admOrdS orders ", orders);
-
   useEffect(() => {
     getAllOrders()
       .then((data: any) => setOrders(data))

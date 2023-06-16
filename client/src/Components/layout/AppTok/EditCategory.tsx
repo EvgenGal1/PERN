@@ -8,7 +8,6 @@ import {
 } from "../../../http/Tok/catalogAPI_Tok";
 
 const EditCategory = (props: any) => {
-  console.log("CLT edtCat props ", props);
   const { id, show, setShow, setChange } = props;
 
   const [name, setName] = useState("");

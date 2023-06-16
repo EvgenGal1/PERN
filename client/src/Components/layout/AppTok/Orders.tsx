@@ -13,8 +13,6 @@ import { Table, Button, Spinner } from "react-bootstrap";
 import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
 
 const Orders = (props: any) => {
-  console.log("CLT ordS props ", props);
-
   // список загруженных заказов
   // const [orders, setOrders]: any = useState([]);
   // загрузка списка категорий с сервера

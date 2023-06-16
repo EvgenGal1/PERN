@@ -30,8 +30,6 @@ class OrderItem {
   }
 
   async create(orderId, data) {
-    console.log("SRV ord ITM.serv CRA data - 0111 : " + data);
-    console.log(data);
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
@@ -47,11 +45,6 @@ class OrderItem {
   }
 
   async update(orderId, id, data) {
-    console.log("SRV ord ITM.serv UPD orderId - 0111 : " + orderId);
-    console.log("SRV ord ITM.serv UPD id - 0111 : " + id);
-    console.log("SRV ord ITM.serv UPD data - 0111 : " + data);
-    console.log(data);
-
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");

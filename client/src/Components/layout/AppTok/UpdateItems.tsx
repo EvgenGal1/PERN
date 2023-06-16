@@ -10,12 +10,8 @@ import {
 } from "../../../http/Tok/orderAPI_Tok";
 
 const UpdateItems = (props: any) => {
-  console.log("UPD ITEMS props ", props);
   // получ.от родителя масс. хар-тик и fn измен.масс.
   const { items, setItems } = props;
-
-  console.log("CLT updItms props ", props);
-  console.log("CLT updItms items ", items);
 
   const append = () => {
     setItems([

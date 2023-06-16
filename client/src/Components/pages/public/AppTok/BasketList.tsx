@@ -14,7 +14,6 @@ import { CHECKOUT_ROUTE } from "../../../../utils/consts";
 import BasketItem from "./BasketItem";
 
 const BasketList = observer(() => {
-  console.log("BasketList 1 ", 1);
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
 

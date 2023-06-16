@@ -22,9 +22,6 @@ class Order {
   // созд.общ.
   async create(req /* : Request */, res: Response, next: NextFunction, type) {
     try {
-      console.log("SRV ord.cntrl CRT req.body : " + req.body);
-      console.log(req.body);
-
       const { name, email, phone, address, comment = null } = req.body;
       // данные для создания заказа
       if (!name) throw new Error("Не указано имя покупателя");
@@ -35,8 +32,6 @@ class Order {
       let items,
         userId = null;
       if (type === "admin") {
-        console.log("SRV ord.cntrl CRT type : " + type);
-        console.log("SRV ord.cntrl CRT req.body.items : " + req.body.items);
         // когда заказ делает админ, id пользователя и состав заказа в теле запроса
         if (!req.body.items) throw new Error("Не указан состав заказа");
         if (req.body.items.length === 0)
@@ -63,19 +58,15 @@ class Order {
       }
 
       // все готово, можно создавать
-      const order = await OrderService.create(
-        {
-          name,
-          email,
-          phone,
-          address,
-          comment,
-          items,
-          userId,
-        }
-        // req.body
-      );
-      console.log("SRV ord.cntrl CRT order : " + order);
+      const order = await OrderService.create({
+        name,
+        email,
+        phone,
+        address,
+        comment,
+        items,
+        userId,
+      });
 
       // корзину теперь нужно очистить
       await BasketService.clear(parseInt(req.signedCookies.basketId));
@@ -86,7 +77,6 @@ class Order {
   }
   // ADMIN ord
   async adminGetAll(req, res, next) {
-    console.log("SRV ord.cntrl adminGetAll req : " + req);
     try {
       const orders = await OrderService.getAll();
       res.json(orders);
@@ -96,7 +86,6 @@ class Order {
   }
 
   async adminGetUser(req, res, next) {
-    console.log("SRV ord.cntrl adminGetUser req : " + req);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");
@@ -109,16 +98,11 @@ class Order {
   }
 
   async adminGetOne(req, res, next) {
-    console.log("SRV ord.cntrl adminGetOne 1 : " + 1);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      console.log("SRV ord.cntrl adminGetOne 2 : " + 2);
       const order = await OrderService.getOne(req.params.id);
-      console.log("SRV ord.cntrl adminGetOne 3 : " + 3);
-      console.log("SRV ord.cntrl adminGetOne order : " + order);
-      // console.log(order);
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -126,25 +110,18 @@ class Order {
   }
 
   async adminUpdate(req: Request, res: Response, next: NextFunction) {
-    console.log("SRV ord.cntrl adminUpdate 1 : " + 1);
-    console.log("SRV ord.cntrl UPD req.body : " + req.body);
     try {
-      console.log("SRV ord.cntrl adminUpdate 2 : " + 2);
       if (!req.params.id) {
-        console.log("SRV ord.cntrl adminUpdate err : " + 2.1);
         throw new Error("Не указан id заказа");
       }
       if (Object.keys(req.body).length === 0) {
-        console.log("SRV ord.cntrl adminUpdate err : " + 2.2);
         throw new Error("Нет данных для обновления");
       }
       // if (!req.body.name) {
       //   throw new Error("Нет названия заказа");
       // }
-      console.log("SRV ord.cntrl adminUpdate 3 : " + 3);
       const order = await OrderService.update(req.params.id, req.body);
       res.json(order);
-      console.log("SRV ord.cntrl adminUpdate 4 : " + 4);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }

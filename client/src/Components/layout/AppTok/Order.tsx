@@ -13,8 +13,6 @@ import EditOrder from "../../layout/AppTok/EditOrder";
 import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 
 const Order = (props: any) => {
-  console.log("CLT ord props ", props);
-
   // список загруженных заказов
   const [orders, setOrders]: any = useState([]);
   // загрузка списка категорий с сервера
@@ -33,10 +31,6 @@ const Order = (props: any) => {
   // const [currentPage, setCurrentPage] = useState(1);
   // // сколько всего страниц списка товаров
   // const [totalPages, setTotalPages] = useState(1);
-
-  console.log("Ord orders ВСЕ ", orders);
-  console.log("Ord orderId ОДИН ID ", orderId);
-  console.log("Ord updateShow ", show);
 
   const handleUpdateClick = (id: any) => {
     setOrderId(id);

@@ -9,7 +9,6 @@ class Product {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log("getAll : " + 141);
     try {
       const { categoryId = null, brandId = null } = req.params;
       let { limit = null, page = null } = req.query;
@@ -30,7 +29,6 @@ class Product {
   }
 
   async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
-    console.log("getOne : " + 475);
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
@@ -47,8 +45,6 @@ class Product {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для создания");
       }
-      console.log("SRV prod.cntrl CRT req.body : " + req.body);
-      console.log(req.body);
       const product = await ProductService.create(req.body, req.files?.image);
       res.json(product);
     } catch (e) {
@@ -69,7 +65,6 @@ class Product {
         req.body,
         req.files?.image
       );
-      console.log("SRV prod.CNTRL UPD product : " + product.props);
       res.json(product);
     } catch (e) {
       next(AppError.badRequest(e.message));

@@ -65,7 +65,6 @@ interface Brand {
 class Product {
   // async getAll(params) {
   async getAll(options: any) {
-    console.log("SRV prod.serv getAll 1 : " + 1);
     // const { categoryId, brandId } = params;
     const { categoryId, brandId, limit, page } = options;
     const offset = (page - 1) * limit;
@@ -88,7 +87,6 @@ class Product {
   }
 
   async getOne(id: number) {
-    console.log("SRV prod.serv getOne 11 : " + 11);
     // const product = await ProductMapping.findByPk(id);
     // const product = await ProductMapping.findOne({
     //   where: { id: id },
@@ -110,8 +108,6 @@ class Product {
     data: CreateData,
     img: any /* : Express.Multer.File */
   ): Promise<Products> {
-    console.log("SRV prod.serv CRE data - 11 : " + data);
-    console.log(data);
     // поскольку image не допускает null, задаем пустую строку
     const image = FileService.save(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
@@ -123,7 +119,6 @@ class Product {
       brandId,
     });
     // свойства товара
-    console.log("SRV prod.serv UPD data.props : " + data.props);
     if (data.props) {
       // ! ошб. Unexpected token o in JSON at position 1 - коммит parse от не нужного преобразованя JSON в объ.
       const props: ProductProp[] = JSON.parse(data.props);
@@ -139,7 +134,6 @@ class Product {
     const created = await ProductMapping.findByPk(product.id, {
       include: [{ model: ProductPropMapping, as: "props" }],
     });
-    console.log("create : " + 343);
     return created;
   }
 
@@ -148,19 +142,12 @@ class Product {
     data: UpdateData,
     img: any /* : Express.Multer.File */
   ) {
-    console.log("SRV prod.serv UPD data - 11 : " + data);
-    console.log(data);
     const product = await ProductMapping.findByPk(id, {
       include: [{ model: ProductPropMapping, as: "props" }],
     });
-    console.log("SRV prod.serv UPD product : " + product);
-    console.log(product);
-    console.log("SRV prod.serv UPD product.props : " + product.props);
-    console.log(product.props);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
-    console.log("SRV prod.serv UPD 33 : " + 33);
     // пробуем сохранить изображение, если оно было загружено
     const file = FileService.save(img);
     // если загружено новое изображение — надо удалить старое
@@ -175,14 +162,8 @@ class Product {
       brandId = product.brandId,
       image = file ? file : product.image,
     } = data;
-    console.log("SRV prod.serv UPD 44 : " + 44);
-    console.log("SRV prod.serv UPD DATA - 22 : " + data);
-    console.log(data);
-    console.log("SRV prod.serv UPD 444 : " + 444);
     await product.update({ name, price, image, categoryId, brandId });
-    console.log("SRV prod.serv UPD 55 : " + 55);
     if (data.props) {
-      console.log("SRV prod.serv UPD 66 : " + 66);
       // свойства товара
       // удаляем старые и добавляем новые
       await ProductPropMapping.destroy({ where: { productId: id } });

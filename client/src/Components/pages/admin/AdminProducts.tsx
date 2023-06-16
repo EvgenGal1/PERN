@@ -26,10 +26,6 @@ const AdminProducts = () => {
   // id товара, который будем редактировать — для передачи в <UpdateProduct id={…} />
   const [product, setProduct] = useState(null);
 
-  console.log("admProd products ВСЕ ", products);
-  console.log("admProd orderId ОДИН ID ", product);
-  console.log("admProd updateShow ", updateShow);
-
   // текущая страница списка товаров
   const [currentPage, setCurrentPage] = useState(1);
   // сколько всего страниц списка товаров
@@ -82,8 +78,6 @@ const AdminProducts = () => {
   useEffect(() => {
     fetchAllProducts(null, null, currentPage, ADMIN_PER_PAGE)
       .then((data) => {
-        console.log("CLT admProd === data ", data);
-        console.log("CLT admProd === data.rows ", data.rows);
         setProducts(data.rows);
         setTotalPages(Math.ceil(data.count / ADMIN_PER_PAGE));
       })
@@ -134,7 +128,13 @@ const AdminProducts = () => {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        фото
+                        {/* фото */}
+                        <img
+                          alt=""
+                          src={process.env.REACT_APP_IMG_URL_TOK + item.image}
+                          width={50}
+                          height={50}
+                        />
                       </a>
                     )}
                   </td>
