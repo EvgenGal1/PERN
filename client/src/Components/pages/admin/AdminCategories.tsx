@@ -1,13 +1,11 @@
 // ^ Список Категорий
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 
 import {
   fetchCategories,
   deleteCategory,
 } from "../../../http/Tok/catalogAPI_Tok";
-// import CreateCategory from "../../layout/AppTok/CreateCategory";
-// import UpdateCategory from "../../layout/AppTok/UpdateCategory";
 import EditCategory from "../../layout/AppTok/EditCategory";
 
 const AdminCategories = () => {
@@ -15,10 +13,6 @@ const AdminCategories = () => {
   const [categories, setCategories]: any = useState(null);
   // загрузка списка категорий с сервера
   const [fetching, setFetching] = useState(true);
-  // // модальное окно создания категории
-  // const [createShow, setCreateShow] = useState(false);
-  // // модальное окно редактирования
-  // const [updateShow, setUpdateShow] = useState(false);
   // модальное окно создания-редактирования
   const [show, setShow]: any = useState(false);
   // для обновления списка после добавления, редактирования, удаления — изменяем состояние
@@ -60,26 +54,13 @@ const AdminCategories = () => {
       <h1>Категории</h1>
       {/* Кнп. для показа Модального окна с формой */}
       <Button onClick={() => handleCreateClick()}>Создать категорию</Button>
-      {/* <CreateCategory
-        show={createShow}
-        setShow={setCreateShow}
-        setChange={setChange}
-      />
-      <UpdateCategory
-        id={category}
-        show={updateShow}
-        setShow={setUpdateShow}
-        setChange={setChange}
-      /> */}
-      11~!
       <EditCategory
         id={categoryId}
         show={show}
         setShow={setShow}
         setChange={setChange}
       />
-      22~!
-      {/*  */}
+      {/* Таблица Категорий */}
       {categories.length > 0 ? (
         <Table bordered hover size="sm" className="mt-3 table__eg">
           <thead>
@@ -97,7 +78,6 @@ const AdminCategories = () => {
                   <Button
                     variant="success"
                     size="sm"
-                    // onClick={() => alert("Редактирование категории")}
                     onClick={() => handleUpdateClick(item.id)}
                   >
                     Редактировать
@@ -107,7 +87,6 @@ const AdminCategories = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    // onClick={() => alert("Удаление категории")}
                     onClick={() => handleDeleteClick(item.id)}
                   >
                     Удалить

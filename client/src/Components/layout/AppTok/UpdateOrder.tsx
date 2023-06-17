@@ -40,8 +40,7 @@ const isValid = (value: any) => {
     if (key === "phone") result.phone = value.phone.trim(); // pattern.test(value.phone);
     if (key === "address") result.address = value.address.trim(); // pattern.test(value.address);
     if (key === "comment") result.comment = value?.comment?.trim(); // pattern.test(value.comment);
-    if (key === "status")
-      result.status = /* result.status */ value?.status?.trim(); // pattern.test(value.comment);
+    if (key === "status") result.status = value?.status?.trim(); // pattern.test(value.status);
     // 'result.status' is assigned to itself.
   }
   return result;
@@ -119,8 +118,8 @@ const UpdateOrder = (props: any) => {
             email: data.email.toString(),
             phone: data.phone.toString(),
             address: data.address.toString(),
-            comment: data?.comment?.toString(),
-            status: data?.status?.toString(),
+            comment: data?.comment.toString(),
+            status: data?.status.toString(),
           };
           setValue(order);
           // setValid(isValid(order));
@@ -170,7 +169,8 @@ const UpdateOrder = (props: any) => {
       correct.email &&
       correct.phone &&
       correct.address &&
-      correct.comment
+      correct.comment &&
+      correct.status
     ) {
       const data = new FormData();
       data.append("name", value.name.trim());
@@ -178,6 +178,7 @@ const UpdateOrder = (props: any) => {
       data.append("phone", value.phone.trim());
       data.append("address", value.address.trim());
       data.append("comment", value.comment.trim());
+      data.append("status", value.status.trim());
       // if (image) data.append("image", image, image.name);
 
       // нужно обновить, добавить или удалить характеристики и обязательно дождаться ответа сервера — поэтому функция updateItem() объявлена как async, а в теле функции для выполнения действия с каждой хар-кой используется await

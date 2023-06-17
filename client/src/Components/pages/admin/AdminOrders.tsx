@@ -21,7 +21,7 @@ const AdminOrders = () => {
 
   return (
     <Container>
-      <h1>Все заказы (adm.ordS ~!)</h1>
+      <h1>Все заказы</h1>
       <Orders items={orders} admin={true} />
     </Container>
   );

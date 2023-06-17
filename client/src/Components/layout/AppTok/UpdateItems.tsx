@@ -1,13 +1,6 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
-import { useEffect, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
-
-import {
-  createItem,
-  updateItem,
-  deleteItem,
-} from "../../../http/Tok/orderAPI_Tok";
 
 const UpdateItems = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.
@@ -55,7 +48,6 @@ const UpdateItems = (props: any) => {
 
   return (
     <>
-      ~! UpdateItems
       <h5>Позиции</h5>
       {items.map((item: any) => (
         <Row

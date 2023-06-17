@@ -1,13 +1,6 @@
 // ^ доп.модальн.окно редактирование Характеристик Товара
-import { useEffect, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
-
-import {
-  createProperty,
-  updateProperty,
-  deleteProperty,
-} from "../../../http/Tok/catalogAPI_Tok";
 
 const UpdateProperties = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.
@@ -48,7 +41,6 @@ const UpdateProperties = (props: any) => {
 
   return (
     <>
-      ~! UpdateProperties
       <h5>Характеристики</h5>
       <Button
         onClick={append}

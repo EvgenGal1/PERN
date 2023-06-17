@@ -142,8 +142,6 @@ class Order {
     };
     if (userId) options.where.userId = userId;
     const order = await OrderMapping.findOne(options);
-    console.log(order);
-    console.log("order : " + order);
     // ^ подобие prod.serv
     // const order = await OrderMapping.findByPk(id, {
     //   include: [{ model: OrderItemMapping, as: "items" }],
@@ -201,6 +199,10 @@ class Order {
     const order = await OrderMapping.findByPk(id, {
       include: [{ model: OrderItemMapping, as: "items" }],
     });
+    console.log("ORD data : " + data);
+    console.log(data);
+    console.log("ORD order : " + order);
+    console.log(order);
     if (!order) {
       throw new Error("Заказ не найден в БД");
     }
@@ -213,6 +215,20 @@ class Order {
         sum + item.price * item.quantity,
       0
     );
+
+    // статус
+    let status: number = order.status;
+    console.log("status нач. : " + status);
+    if (
+      data.name !== order.name ||
+      data.email !== order.email ||
+      data.phone !== order.phone ||
+      data.address !== order.address ||
+      data.comment !== order.comment
+    ) {
+      status = 2;
+    }
+    console.log("status после. : " + status);
 
     // данные для создания заказа
     // const { name, email, phone, address, comment = null, userId = null } = data;
@@ -232,6 +248,7 @@ class Order {
       comment,
       amount,
       userId,
+      status,
     });
     //
     if (data.items) {

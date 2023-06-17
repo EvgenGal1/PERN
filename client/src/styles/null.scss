@@ -296,6 +296,28 @@ input.primary {
     opacity: 0.8;
   }
 }
+button.btn-primary__eg {
+  &:hover {
+    // background-color: #157347;
+    // border-color: #146c43;
+  }
+}
+button.btn-success__eg {
+  background: #198754;
+  border-color: #198754;
+  &:hover {
+    background-color: #157347;
+    border-color: #146c43;
+  }
+}
+button.btn-danger__eg {
+  background: #dc3545;
+  border-color: #dc3545;
+  &:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+  }
+}
 button[type="submit"]:active,
 input[type="button"]:active,
 input[type="submit"]:active {

@@ -197,7 +197,6 @@ const UpdateProduct = (props: any) => {
   return (
     <Modal show={show} onHide={() => setShow(false)} size="lg">
       <Modal.Header closeButton>
-        ~! UpdateProduct
         <Modal.Title>Редактирование товара</Modal.Title>
       </Modal.Header>
 

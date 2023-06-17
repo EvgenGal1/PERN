@@ -1,7 +1,7 @@
 // ^ Многраз.Комп.Заказов
 // import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Table, Button, Spinner } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 // import {
 //   adminGetAll,
@@ -72,7 +72,6 @@ const Orders = (props: any) => {
             <th>Телефон</th>
             <th>Статус</th>
             <th>Сумма</th>
-            {/* <th>Редактировать</th> */}
             <th>Подробнее</th>
           </tr>
         </thead>
@@ -85,20 +84,13 @@ const Orders = (props: any) => {
               <td>{item.email}</td>
               <td>{item.phone}</td>
               <td>
-                {item.status === 0 && <>Новый</>}
-                {item.status === 1 && <>В работе</>}
-                {item.status === 2 && <>Завершен</>}
+                {item.status === 0 && <> Новый</>}
+                {item.status === 1 && <> В работе</>}
+                {item.status === 2 && <> Изменения в данных</>}
+                {item.status === 3 && <> В работе</>}
+                {item.status === 9 && <> Завершен</>}
               </td>
               <td>{item.amount}</td>
-              {/* <td>
-                <Button
-                  variant="success"
-                  size="sm"
-                  onClick={() => handleUpdateClick(props.item.id)}
-                >
-                  Редактировать
-                </Button>
-              </td> */}
               <td>
                 {props.admin ? (
                   <Link to={ADMINORDER_ROUTE + `/${item.id}`}>

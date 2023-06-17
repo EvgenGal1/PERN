@@ -8,8 +8,6 @@ import {
   adminUpdate,
   adminDelete,
 } from "../../../http/Tok/orderAPI_Tok";
-import EditOrder from "../../layout/AppTok/EditOrder";
-// import CreateOrder from "../../layout/AppTok/CreateOrder";
 import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 
 // количество Заказов на страницу
@@ -83,7 +81,9 @@ const Order = (props: any) => {
 
   return (
     <>
-      ORD
+      <span style={{ marginBottom: "3px", display: "inline-block" }}>
+        Дата|Статус
+      </span>
       <ul>
         <li>
           Дата заказа: {orders.prettyCreatedAt}
@@ -93,11 +93,14 @@ const Order = (props: any) => {
         </li>
         <li>
           Статус заказа:
-          {orders.status === 0 && <span> Новый</span>}
-          {orders.status === 1 && <span> В работе</span>}
-          {orders.status === 2 && <span> Завершен</span>}
+          {orders.status === 0 && <> Новый</>}
+          {orders.status === 1 && <> В работе</>}
+          {orders.status === 2 && <> Изменения в данных</>}
+          {orders.status === 3 && <> В работе</>}
+          {orders.status === 9 && <> Завершен</>}
         </li>
       </ul>
+      <span>Данные Заказа № {orders.id}</span>
       <ul>
         <li>Имя, Фамилия: {orders.name}</li>
         <li>Адрес почты: {orders.email}</li>
@@ -120,6 +123,7 @@ const Order = (props: any) => {
             size="sm"
             onClick={() => handleUpdateClick(orders.id)}
             style={{ marginRight: "15px" }}
+            className="btn-success__eg"
           >
             Редактировать
           </Button>
@@ -127,16 +131,20 @@ const Order = (props: any) => {
             variant="danger"
             size="sm"
             onClick={() => handleDeleteClick(orders.id)}
+            className="btn-danger__eg"
           >
             Удалить
           </Button>
         </Col>
       </Row>
-      {/*  */}
-      <Table bordered hover size="sm" className="mt-3 table__eg">
+      {/* ПОЗИЦИИ Заказа */}
+      <span style={{ marginBottom: "3px", display: "inline-block" }}>
+        Позиции Заказа № {orders.id}
+      </span>
+      <Table bordered hover size="sm" className="table__eg">
         <thead>
           <tr>
-            <th>Название</th>
+            <th>Название позиции</th>
             <th>Цена</th>
             <th>Кол-во</th>
             <th>Сумма</th>

@@ -52,6 +52,10 @@ class OrderItem {
     const item = await OrderItemMapping.findOne({
       where: { orderId, id },
     });
+    console.log("ITM data : " + data);
+    console.log(data);
+    console.log("ITM item : " + item);
+    console.log(item);
     if (!item) {
       throw new Error("Свойство товара не найдено в БД");
     }
