@@ -130,22 +130,25 @@ class Order {
     //   });
     // }
     // ^ нов.код из github
-    // const options: any = {
-    //   where: { id },
-    //   include: [
-    //     {
-    //       model: OrderItemMapping,
-    //       as: "items",
-    //       attributes: ["id", "name", "price", "quantity"],
-    //     },
-    //   ],
-    // };
-    // if (userId) options.where.userId = userId;
-    // const order = await OrderMapping.findOne(options);
+    const options: any = {
+      where: { id },
+      include: [
+        {
+          model: OrderItemMapping,
+          as: "items",
+          attributes: ["id", "name", "price", "quantity"],
+        },
+      ],
+    };
+    if (userId) options.where.userId = userId;
+    const order = await OrderMapping.findOne(options);
+    console.log(order);
+    console.log("order : " + order);
     // ^ подобие prod.serv
-    const order = await OrderMapping.findByPk(id, {
-      include: [{ model: OrderItemMapping, as: "items" }],
-    });
+    // const order = await OrderMapping.findByPk(id, {
+    //   include: [{ model: OrderItemMapping, as: "items" }],
+    // });
+    //
     if (!order) {
       throw new Error("Заказ не найден в БД");
     }
@@ -265,9 +268,10 @@ class Order {
 
   async delete(id) {
     let order = await OrderMapping.findByPk(id, {
-      include: [
-        { model: OrderItemMapping, attributes: ["name", "price", "quantity"] },
-      ],
+      // include: [
+      //   { model: OrderItemMapping, attributes: ["name", "price", "quantity"] },
+      // ],
+      include: [{ model: OrderItemMapping, as: "items" }],
     });
     if (!order) {
       throw new Error("Заказ не найден в БД");

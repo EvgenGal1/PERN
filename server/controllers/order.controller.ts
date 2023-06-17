@@ -102,7 +102,7 @@ class Order {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      const order = await OrderService.getOne(req.params.id);
+      const order = await OrderService.getOne(Number(req.params.id));
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -153,7 +153,9 @@ class Order {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      const order = await OrderService.getOne(req.params.id, req.auth.id);
+      const order = await OrderService.getOne(
+        req.params.id /* , req.auth.id */
+      );
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
