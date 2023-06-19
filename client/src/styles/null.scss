@@ -313,9 +313,17 @@ button.btn-success__eg {
 button.btn-danger__eg {
   background: #dc3545;
   border-color: #dc3545;
+  background: #4b0000;
+  border-color: black;
+  color: darkgoldenrod;
   &:hover {
     background-color: #bb2d3b;
     border-color: #b02a37;
+    background: #6b0000;
+    border-color: #212121;
+    color: var(--MelonYellow);
+    transform: scale(1.1);
+    transform: scale(1.03);
   }
 }
 button[type="submit"]:active,

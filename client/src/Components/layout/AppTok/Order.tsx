@@ -95,8 +95,8 @@ const Order = (props: any) => {
           Статус заказа:
           {orders.status === 0 && <> Новый</>}
           {orders.status === 1 && <> В работе</>}
-          {orders.status === 2 && <> Изменения в данных</>}
-          {orders.status === 3 && <> В работе</>}
+          {orders.status === 2.0 && <> Изменения в Данных</>}
+          {orders.status === 3.0 && <> Изменения в Позициях</>}
           {orders.status === 9 && <> Завершен</>}
         </li>
       </ul>
