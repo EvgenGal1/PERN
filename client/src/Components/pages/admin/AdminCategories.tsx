@@ -53,7 +53,13 @@ const AdminCategories = () => {
     <Container>
       <h1>Категории</h1>
       {/* Кнп. для показа Модального окна с формой */}
-      <Button onClick={() => handleCreateClick()}>Создать категорию</Button>
+      <Button
+        onClick={() => handleCreateClick()}
+        variant="primary"
+        className="btn-primary__eg"
+      >
+        Создать категорию
+      </Button>
       <EditCategory
         id={categoryId}
         show={show}
@@ -79,6 +85,7 @@ const AdminCategories = () => {
                     variant="success"
                     size="sm"
                     onClick={() => handleUpdateClick(item.id)}
+                    className="btn-success__eg"
                   >
                     Редактировать
                   </Button>
@@ -88,6 +95,7 @@ const AdminCategories = () => {
                     variant="danger"
                     size="sm"
                     onClick={() => handleDeleteClick(item.id)}
+                    className="btn-danger__eg"
                   >
                     Удалить
                   </Button>

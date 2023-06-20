@@ -26,7 +26,7 @@ const CreateProperties = (props: any) => {
         onClick={append}
         variant="outline-primary"
         size="sm"
-        className="mb-2"
+        className="btn-primary__eg mb-2"
       >
         Добавить
       </Button>
@@ -55,6 +55,7 @@ const CreateProperties = (props: any) => {
               onClick={() => remove(item.number)}
               size="sm"
               variant="outline-danger"
+              className="btn-primary__eg danger"
             >
               Удалить
             </Button>

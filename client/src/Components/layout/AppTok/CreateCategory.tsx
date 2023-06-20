@@ -57,7 +57,14 @@ const CreateCategory = (props: any) => {
             placeholder="Название категории..."
             className="mb-3"
           />
-          <Button type="submit">Сохранить</Button>
+          <Button
+            type="submit"
+            size="sm"
+            variant="success"
+            className="btn-success__eg"
+          >
+            Сохранить
+          </Button>
         </Form>
       </Modal.Body>
     </Modal>

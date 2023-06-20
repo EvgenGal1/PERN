@@ -91,7 +91,13 @@ const AdminProducts = () => {
   return (
     <Container>
       <h1>Товары</h1>
-      <Button onClick={() => setCreateShow(true)}>Создать товар</Button>
+      <Button
+        onClick={() => setCreateShow(true)}
+        variant="primary"
+        className="btn-primary__eg"
+      >
+        Создать товар
+      </Button>
       <CreateProduct
         show={createShow}
         setShow={setCreateShow}
@@ -146,6 +152,7 @@ const AdminProducts = () => {
                       variant="success"
                       size="sm"
                       onClick={() => handleUpdateClick(item.id)}
+                      className="btn-success__eg"
                     >
                       Редактировать
                     </Button>
@@ -155,6 +162,7 @@ const AdminProducts = () => {
                       variant="danger"
                       size="sm"
                       onClick={() => handleDeleteClick(item.id)}
+                      className="btn-danger__eg"
                     >
                       Удалить
                     </Button>

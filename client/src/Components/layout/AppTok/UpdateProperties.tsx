@@ -46,7 +46,7 @@ const UpdateProperties = (props: any) => {
         onClick={append}
         variant="outline-primary"
         size="sm"
-        className="mb-2"
+        className="mb-2 btn-primary__eg"
       >
         Добавить
       </Button>
@@ -79,6 +79,7 @@ const UpdateProperties = (props: any) => {
               onClick={() => remove(item.unique)}
               size="sm"
               variant="outline-danger"
+              className="btn-danger__eg"
             >
               Удалить
             </Button>

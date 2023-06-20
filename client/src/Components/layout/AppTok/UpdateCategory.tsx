@@ -49,7 +49,7 @@ const UpdateCategory = (props: any) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)}>
+    <Modal show={show} onHide={() => setShow(false)} className="modal__eg">
       <Modal.Header closeButton>
         <Modal.Title>Редактирование категории</Modal.Title>
       </Modal.Header>
@@ -63,9 +63,16 @@ const UpdateCategory = (props: any) => {
             isValid={valid === true}
             isInvalid={valid === false}
             placeholder="Название категории..."
-            className="mb-3"
+            className="mb-3 123"
           />
-          <Button type="submit">Сохранить</Button>
+          <Button
+            type="submit"
+            size="sm"
+            variant="success"
+            className="btn-success__eg"
+          >
+            Сохранить
+          </Button>
         </Form>
       </Modal.Body>
     </Modal>

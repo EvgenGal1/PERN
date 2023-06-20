@@ -40,7 +40,14 @@ const Admin = () => {
           <Link to={ADMINPRODUCTS_ROUTE}>Товары каталога</Link>
         </li>
       </ul>
-      <Button onClick={handleLogout}>Выйти</Button>
+      <Button
+        onClick={handleLogout}
+        variant="primary"
+        size="sm"
+        className="btn-primary__eg"
+      >
+        Выйти
+      </Button>
     </Container>
   );
 };

@@ -97,6 +97,8 @@ const Product = () => {
             onMouseUp={handleMouseUp}
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp}
+            variant="primary"
+            className="btn-primary__eg"
           >
             Добавить в корзину
           </Button>

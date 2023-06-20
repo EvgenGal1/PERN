@@ -31,6 +31,15 @@
   --ModYelBrown: #7d512d; // Умеренный Желтый Коричневый
   --YellowBrown: #d2b48c; // Желто-Коричневый
   --NavajoWhite: #ffdead; // Белый навахо
+  --Green_1: #004020; // Зелёный_1
+  --Green_2: #006633; // Зелёный_2
+  --Blue_1: #002550; // Синий_1
+  --Blue_2: #004080; // Синий_2
+  --Blue_3: #002244; // Синий_3
+  --Blue_4: #0040cc; // Синий_4
+  --Blue_5: #0050cc; // Синий_5
+  --Blue_6: #0060cc; // Синий_6
+  --Blue_7: #0070cc; // Синий_7
 }
 
 // Цветовые переменные для Цв.Тем (Тёмной/Светлой/Средней) на атрибутах
@@ -118,9 +127,15 @@ body[data-theme="light"] {
     }
 
     // ссылки
+    a {
+      color: var(--Blue_4);
+      &:hover {
+        color: var(--Blue_7);
+      }
+    }
     div nav {
       & a {
-        // color: var(--activ-col) ;
+        color: var(--activ-col);
         // background-color: var(--act-bg) ;
         &.active {
           color: var(--act-dark);
@@ -146,66 +161,6 @@ body[data-theme="light"] {
     .main {
       background-color: var(--fon-dark);
       transition: background-color 300ms linear;
-      // }
-
-      // КНП
-      input,
-      button.btn__eg/* :not([class*="btn-primary"]) */ {
-        border-color: var(--bord-hr) /* !important */;
-        background-color: var(--act-bg);
-        // transition: background-color 200ms linear;
-        &:hover {
-          background-color: var(--act-bg-hov) !important;
-        }
-      }
-      form {
-        background-color: var(--ui-bg);
-        input {
-          &:hover {
-            background-color: var(--act-bg-hov);
-          }
-        }
-        button {
-          color: var(--act-light);
-          background-color: var(--act-dark) !important;
-          &:hover {
-            // background-color: var(--act-bg-hov);
-          }
-        }
-      }
-
-      // модальные окна
-      .modal__eg {
-        background-color: var(--ui-bg);
-      }
-
-      // карточки/сетка блоков
-      .card {
-        background-color: var(--ui-bg);
-        border-color: var(--bord-hr);
-        transition: 0.5s;
-        // наведения для всех кроме содерж. form
-        &:hover:not(:has(form)) {
-          background-color: var(--ui-act-col);
-        }
-      }
-      // карточка с контентом (form)
-      .card-form {
-        background-color: var(--ui-bg);
-        border-color: var(--bord-hr);
-        transition: 0.5s;
-        &:hover {
-          transition: 0.5s;
-          > form {
-            transition: 0.5s;
-            // background-color: var(--ui-act-col);
-          }
-        }
-      }
-      .card-form:hover form {
-        transition: 0.5s;
-        // background-color: var(--ui-act-col);
-      }
 
       // & > div nav {
       //   & a.active {
@@ -217,6 +172,93 @@ body[data-theme="light"] {
       //   color: var(--activ-col) ;
       //   background-color: var(--act-bg) ;
       // }
+    }
+
+    // КНП
+    input,
+      button.btn__eg/* :not([class*="btn-primary"]) */ {
+      border-color: var(--bord-hr) /* !important */;
+      background-color: var(--act-bg);
+      // transition: background-color 200ms linear;
+      &:hover {
+        background-color: var(--act-bg-hov);
+      }
+    }
+    form {
+      background-color: var(--ui-bg);
+      input {
+        &:hover {
+          background-color: var(--act-bg-hov);
+        }
+      }
+      button {
+        color: var(--act-light);
+        background-color: var(--act-dark);
+        &:hover {
+          // background-color: var(--act-bg-hov);
+        }
+      }
+    }
+    button.btn-primary__eg,
+    button.btn-success__eg,
+    button.btn-danger__eg {
+      border-color: var(--BlackAmber);
+      color: var(--DeepYellow);
+      &:hover {
+        border-color: var(--BlackBrown);
+        color: var(--MelonYellow);
+      }
+    }
+    button.btn-primary__eg {
+      background-color: var(--Blue_1);
+      &:hover {
+        background-color: var(--Blue_2);
+      }
+    }
+    button.btn-success__eg {
+      background-color: var(--Green_1);
+      &:hover {
+        background-color: var(--Green_2);
+      }
+    }
+    button.btn-danger__eg {
+      background-color: var(--CrimsonBrown);
+      &:hover {
+        background-color: var(--PinkForest);
+      }
+    }
+
+    // модальные окна
+    .modal__eg {
+      background-color: var(--ui-bg);
+    }
+
+    // карточки/сетка блоков
+    .card {
+      background-color: var(--ui-bg);
+      border-color: var(--bord-hr);
+      transition: 0.5s;
+      // наведения для всех кроме содерж. form
+      &:hover:not(:has(form)) {
+        background-color: var(--ui-act-col);
+      }
+    }
+    // карточка с контентом (form)
+    .card-form {
+      background-color: var(--ui-bg);
+      border-color: var(--bord-hr);
+      transition: 0.5s;
+      &:hover {
+        transition: 0.5s;
+        > form {
+          transition: 0.5s;
+          // background-color: var(--ui-act-col);
+        }
+      }
+    }
+    .card-form:hover form {
+      transition: 0.5s;
+      // background-color: var(--ui-act-col);
     }
 
     // ПЕРЕКЛЮЧАТЕЛИ ----------------------------------------------------------------------------------

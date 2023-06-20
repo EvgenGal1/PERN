@@ -296,34 +296,29 @@ input.primary {
     opacity: 0.8;
   }
 }
-button.btn-primary__eg {
-  &:hover {
-    // background-color: #157347;
-    // border-color: #146c43;
-  }
-}
-button.btn-success__eg {
-  background: #198754;
-  border-color: #198754;
-  &:hover {
-    background-color: #157347;
-    border-color: #146c43;
-  }
-}
+button.btn-primary__eg,
+button.btn-success__eg,
 button.btn-danger__eg {
-  background: #dc3545;
-  border-color: #dc3545;
-  background: #4b0000;
-  border-color: black;
-  color: darkgoldenrod;
+  animation: turn-off 0.5s ease-out;
+  @keyframes turn-off {
+    0% {
+      right: 100%;
+    }
+    100% {
+      right: 0%;
+    }
+  }
   &:hover {
-    background-color: #bb2d3b;
-    border-color: #b02a37;
-    background: #6b0000;
-    border-color: #212121;
-    color: var(--MelonYellow);
-    transform: scale(1.1);
-    transform: scale(1.03);
+    transform: scale(1.05);
+    animation: turn-on 5s ease-out;
+    @keyframes turn-on {
+      0% {
+        left: 100%;
+      }
+      100% {
+        left: 0%;
+      }
+    }
   }
 }
 button[type="submit"]:active,

@@ -25,7 +25,14 @@ const User = () => {
           <Link to={USERORDER_ROUTE}>История заказов</Link>
         </li>
       </ul>
-      <Button onClick={handleLogout}>Выйти</Button>
+      <Button
+        onClick={handleLogout}
+        variant="primary"
+        size="sm"
+        className="btn-primary__eg"
+      >
+        Выйти
+      </Button>
     </Container>
   );
 };

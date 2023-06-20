@@ -284,10 +284,24 @@ const UpdateOrder = (props: any) => {
           <UpdateItems items={items} setItems={setItems} />
           <Row>
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button
+                type="submit"
+                size="sm"
+                variant="success"
+                className="btn-success__eg"
+              >
+                Сохранить
+              </Button>
             </Col>
             <Col>
-              <Button type="submit">{amount}</Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                className="btn-primary__eg"
+              >
+                {amount}
+              </Button>
             </Col>
           </Row>
         </Form>

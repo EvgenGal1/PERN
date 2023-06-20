@@ -70,7 +70,11 @@ const Auth = observer(() => {
             placeholder="Введите ваш пароль..."
           />
           <Row className="d-flex justify-content-between mt-3 pl-3 pr-3 m-0">
-            <Button variant={"outline-success"} type="submit">
+            <Button
+              variant={"outline-success"}
+              type="submit"
+              className="btn-primary__eg"
+            >
               {isLogin ? "Войти" : "Регистрация"}
             </Button>
             {isLogin ? (

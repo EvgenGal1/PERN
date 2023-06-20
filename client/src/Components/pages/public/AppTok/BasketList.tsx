@@ -82,7 +82,11 @@ const BasketList = observer(() => {
               </tr>
             </tbody>
           </Table>
-          <Button onClick={() => navigate(CHECKOUT_ROUTE)}>
+          <Button
+            variant="primary"
+            onClick={() => navigate(CHECKOUT_ROUTE)}
+            className="btn-primary__eg"
+          >
             Оформить заказ
           </Button>
         </>

@@ -100,7 +100,12 @@ const CreateProduct = (props: any) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="lg"
+      className="modal__eg-bootstr"
+    >
       <Modal.Header closeButton>
         <Modal.Title>Новый товар</Modal.Title>
       </Modal.Header>
@@ -179,7 +184,14 @@ const CreateProduct = (props: any) => {
           />
           <Row>
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button
+                type="submit"
+                size="sm"
+                variant="success"
+                className="btn-success__eg"
+              >
+                Сохранить
+              </Button>
             </Col>
           </Row>
         </Form>

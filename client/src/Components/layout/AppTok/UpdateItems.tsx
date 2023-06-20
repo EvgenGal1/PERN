@@ -1,4 +1,5 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
+import { useEffect, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
@@ -102,6 +103,7 @@ const UpdateItems = (props: any) => {
               onClick={() => remove(item.unique)}
               size="sm"
               variant="outline-danger"
+              className="btn-danger__eg"
             >
               Удалить
             </Button>
