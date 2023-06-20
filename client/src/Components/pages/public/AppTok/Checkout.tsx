@@ -139,12 +139,7 @@ const Checkout = () => {
     });
 
     // е/и форма заполнена правильно, можно отправлять данные
-    if (
-      valid.name /* === true */ &&
-      valid.email /* === true */ &&
-      valid.phone /* === true */ &&
-      valid.address /* === true */
-    ) {
+    if (valid.name && valid.email && valid.phone && valid.address) {
       // Заказ.
       // Свойство "comment" не существует в типе "EventTarget".
       // let comment: any = event.target.comment.value.trim();

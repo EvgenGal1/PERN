@@ -173,32 +173,22 @@ img.card-img-top {
 }
 // таблиза корзины
 .table__eg {
-  background-color: var(--ui-bg);
-  border-color: var(--bord-hr);
-  border: 2px solid var(--bord-hr) !important;
-  color: #111 !important;
   tbody {
     tr {
+      vertical-align: inherit;
       &:hover,
       &:hover > * {
-        // font-weight: bold; // создаёт перескок/смещение при выборе
-        color: #000 !important;
-        background-color: var(--ModYelBrown);
-        background-color: var(--ui-act-col);
       }
       &#th__eg:hover {
         background-color: transparent;
-        background-color: var(--ui-bg) !important;
-        // background-color: var(--ui-act-col) !important;
         & > * {
           background-color: transparent;
-          background-color: var(--ui-bg) !important;
-          // background-color: var(--ui-act-col) !important;
         }
       }
     }
   }
 }
+
 // лист групп категор.,бренд
 .list-group__eg {
   border-radius: 5px;

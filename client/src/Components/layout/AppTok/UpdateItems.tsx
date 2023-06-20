@@ -1,5 +1,4 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
-import { useEffect, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 

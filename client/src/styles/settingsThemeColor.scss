@@ -228,7 +228,36 @@ body[data-theme="light"] {
       }
     }
 
-    // модальные окна
+    // ТАБЛИЦЫ
+    .table__eg {
+      background-color: var(--ui-bg);
+      border-color: var(--bord-hr);
+      border: 2px solid var(--bord-hr) /* !important */;
+      color: var(--AlmostBlack) /* !important */;
+      tbody {
+        tr {
+          td {
+            vertical-align: initial;
+          }
+          &:hover,
+          &:hover > * {
+            color: var(--Black) /* !important */;
+            background-color: var(--ModYelBrown);
+            background-color: var(--ui-act-col);
+          }
+          &#th__eg:hover {
+            background-color: transparent;
+            background-color: var(--ui-bg) /* !important */;
+            & > * {
+              background-color: transparent;
+              background-color: var(--ui-bg) /* !important */;
+            }
+          }
+        }
+      }
+    }
+
+    // МОДАЛЬНЫЙ ОКНА
     .modal__eg {
       background-color: var(--ui-bg);
     }

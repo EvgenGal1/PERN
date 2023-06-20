@@ -84,29 +84,44 @@ const Order = (props: any) => {
       <span style={{ marginBottom: "3px", display: "inline-block" }}>
         Дата|Статус
       </span>
-      <ul>
+      <ul className="list-param__eg">
         <li>
-          Дата заказа: {orders.prettyCreatedAt}
+          <p>Дата заказа:</p> {orders.prettyCreatedAt}
           {orders.prettyCreatedAt !== orders.prettyUpdatedAt
             ? ` | Обновлён: ` + orders.prettyUpdatedAt
             : ""}
         </li>
         <li>
-          Статус заказа:
+          <p>Статус заказа:</p>
           {orders.status === 0 && <> Новый</>}
           {orders.status === 1 && <> В работе</>}
-          {orders.status === 2.0 && <> Изменения в Данных</>}
-          {orders.status === 3.0 && <> Изменения в Позициях</>}
+          {orders.status === 2001 && <> Изменения в Данных</>}
+          {orders.status === 2002 && <> Изменения в Позициях</>}
+          {orders.status === 2003 && <> Изменения в Данных, Позициях</>}
           {orders.status === 9 && <> Завершен</>}
         </li>
       </ul>
       <span>Данные Заказа № {orders.id}</span>
-      <ul>
-        <li>Имя, Фамилия: {orders.name}</li>
-        <li>Адрес почты: {orders.email}</li>
-        <li>Номер телефона: {orders.phone}</li>
-        <li>Адрес доставки: {orders.address}</li>
-        <li>Комментарий: {orders.comment}</li>
+      <ul className="list-param__eg">
+        <li>
+          <p>Имя, Фамилия:</p> {orders.name}
+        </li>
+        <li>
+          <p>Адрес почты:</p> {orders.email}
+        </li>
+        <li>
+          <p>Номер телефона:</p> {orders.phone}
+        </li>
+        <li>
+          <p>Адрес доставки:</p> {orders.address}
+        </li>
+        {orders.comment ? (
+          <li>
+            <p>Комментарий:</p> {orders.comment}
+          </li>
+        ) : (
+          ""
+        )}
       </ul>
       {/* Модалка ред.Заказа */}
       <UpdateOrder

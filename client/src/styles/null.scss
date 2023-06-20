@@ -79,9 +79,22 @@ header a {
   letter-spacing: 1px;
 }
 
-// списки
+// СПИСКИ
 ul li {
   list-style: none;
+}
+.list-param__eg {
+  // display: table-cell;
+  // margin: 0 0 1rem 0;
+  li {
+    list-style: square;
+    // &:first-child {
+    p {
+      min-width: 150px;
+      margin: 0 10px 0 0;
+      display: inline-block;
+    }
+  }
 }
 
 // изо

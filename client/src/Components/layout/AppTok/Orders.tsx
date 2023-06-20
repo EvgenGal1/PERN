@@ -86,8 +86,9 @@ const Orders = (props: any) => {
               <td>
                 {item.status === 0 && <> Новый</>}
                 {item.status === 1 && <> В работе</>}
-                {item.status === 2 && <> Изменения в данных</>}
-                {item.status === 3 && <> В работе</>}
+                {item.status === 2001 && <> Изменения в Данных</>}
+                {item.status === 2002 && <> Изменения в Позициях</>}
+                {item.status === 2003 && <> Изменения в Данных, Позициях</>}
                 {item.status === 9 && <> Завершен</>}
               </td>
               <td>{item.amount}</td>

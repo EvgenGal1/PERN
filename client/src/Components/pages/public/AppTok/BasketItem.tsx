@@ -15,7 +15,7 @@ const BasketItem = (props: any) => {
         </Button>{" "}
         <strong>{props.quantity}</strong>{" "}
         <Button
-          variant="outline-dark"
+          variant="danger"
           size="sm"
           onClick={() => props.increment(props.id)}
           className="btn-danger__eg"
@@ -27,7 +27,7 @@ const BasketItem = (props: any) => {
       <td>{props.price * props.quantity}</td>
       <td>
         <Button
-          variant="link"
+          variant="danger"
           onClick={() => props.remove(props.id)}
           className="btn-danger__eg"
         >

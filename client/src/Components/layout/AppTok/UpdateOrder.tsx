@@ -20,7 +20,6 @@ const defaultValue = {
   phone: "",
   address: "",
   comment: "",
-  status: "",
 };
 const defaultValid = {
   name: null,
@@ -28,20 +27,35 @@ const defaultValid = {
   phone: null,
   address: null,
   comment: null,
-  status: null,
 };
 
 const isValid = (value: any) => {
   const result: any = {};
   const pattern = /^[1-9][0-9]*$/;
+  // const patternNam = /^[-а-я]{2,}( [-а-я]{2,}){1,2}*$/;
+  const patternEML = /^[a-z0-9._%+-]+@[a-z0-9.-]+.{1,2}[a-z]+$/i;
+  const patternPHN = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
   for (let key in value) {
-    if (key === "name") result.name = value.name.trim() !== "";
-    if (key === "email") result.email = value.email.trim(); // pattern.test(value.email.trim());
-    if (key === "phone") result.phone = value.phone.trim(); // pattern.test(value.phone);
-    if (key === "address") result.address = value.address.trim(); // pattern.test(value.address);
-    if (key === "comment") result.comment = value?.comment?.trim(); // pattern.test(value.comment);
-    if (key === "status") result.status = value?.status?.trim(); // pattern.test(value.status);
-    // 'result.status' is assigned to itself.
+    if (key === "name")
+      result.name =
+        // patternNam.test(value.name.trim());
+        value.name.trim() !== "";
+    if (key === "email")
+      result.email =
+        // value.email.trim();
+        patternEML.test(value.email.trim());
+    if (key === "phone")
+      result.phone =
+        // value.phone.trim();
+        patternPHN.test(value.phone);
+    if (key === "address")
+      result.address =
+        // pattern.test(value.address);
+        value.address.trim() !== "";
+    // if (key === "comment")
+    //   result.comment =
+    //     // pattern.test(value.comment);
+    //     value?.comment /* ?.trim() */ /* || " " */;
   }
   return result;
 };
@@ -113,19 +127,18 @@ const UpdateOrder = (props: any) => {
       // нужно получить с сервера данные товара для редактирования
       adminGetOne(id)
         .then((data) => {
+          console.log("data.comment ", data.comment);
           const order = {
             name: data.name,
             email: data.email.toString(),
             phone: data.phone.toString(),
             address: data.address.toString(),
-            comment: data?.comment.toString(),
-            status: data?.status.toString(),
+            comment: data?.comment == null ? "" : data?.comment.toString(),
           };
           setValue(order);
           // setValid(isValid(order));
           setValid(order);
           // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
-          // setItems(data.props);
           setItems(
             data.items.map((item: any) => {
               // при добавлении новой хар-ки свойство append принимает значение true
@@ -168,9 +181,8 @@ const UpdateOrder = (props: any) => {
       correct.name &&
       correct.email &&
       correct.phone &&
-      correct.address &&
-      correct.comment &&
-      correct.status
+      correct.address /* &&
+      correct?.comment */
     ) {
       const data = new FormData();
       data.append("name", value.name.trim());
@@ -178,8 +190,6 @@ const UpdateOrder = (props: any) => {
       data.append("phone", value.phone.trim());
       data.append("address", value.address.trim());
       data.append("comment", value.comment.trim());
-      data.append("status", value.status.trim());
-      // if (image) data.append("image", image, image.name);
 
       // нужно обновить, добавить или удалить характеристики и обязательно дождаться ответа сервера — поэтому функция updateItem() объявлена как async, а в теле функции для выполнения действия с каждой хар-кой используется await
       if (items.length) {
@@ -194,7 +204,6 @@ const UpdateOrder = (props: any) => {
             phone: data.phone.toString(),
             address: data.address.toString(),
             comment: data.comment.toString(),
-            status: data.status.toString(),
           };
           setValue(order);
           setValid(isValid(order));
@@ -277,8 +286,8 @@ const UpdateOrder = (props: any) => {
             name="comment"
             value={value.comment}
             onChange={(e) => handleInputChange(e)}
-            isValid={valid.comment === true}
-            isInvalid={valid.comment === false}
+            // isValid={valid?.comment === true}
+            // isInvalid={valid?.comment === false}
             placeholder="Комментарий"
           />
           <UpdateItems items={items} setItems={setItems} />
@@ -295,8 +304,8 @@ const UpdateOrder = (props: any) => {
             </Col>
             <Col>
               <Button
-                type="submit"
-                variant="primary"
+                // type="submit"
+                // variant="primary"
                 size="sm"
                 className="btn-primary__eg"
               >

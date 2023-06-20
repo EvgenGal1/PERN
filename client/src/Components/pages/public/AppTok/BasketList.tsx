@@ -40,16 +40,9 @@ const BasketList = observer(() => {
       .finally(() => setFetching(false));
   };
 
-  // ^ получ.данн.корзины(сохран.в хран-ще) в AppTok. FetchBasket не нужен
-  // useEffect(() => {
-  //   fetchBasket()
-  //     .then((data) => (basket.products = data.products))
-  //     .finally(() => setFetching(false));
-  // }, []);
-
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+  // if (fetching) {
+  //   return <Spinner animation="border" />;
+  // }
 
   return (
     <>
