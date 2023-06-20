@@ -107,7 +107,9 @@ const Order = sequelize.define("order", {
       const minutes = value.getMinutes();
       // return day + "." + month + "." + year + " " + hours + ":" + minutes;
       const paddedMonth = month < 10 ? `0${month}` : month;
-      return `${day}.${paddedMonth}.${year} ${hours}:${minutes}`;
+      const paddedHours = hours < 10 ? `0${hours}` : hours;
+      const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+      return `${day}.${paddedMonth}.${year} ${paddedHours}:${paddedMinutes}`;
     },
   },
   prettyUpdatedAt: {

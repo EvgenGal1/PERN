@@ -26,7 +26,7 @@ interface Orders {
   email: string;
   phone: string | number;
   address: string;
-  comment: string;
+  comment: string | number | null | undefined;
   amount: number;
   userId: number;
   items?: OrderItem[];
@@ -39,7 +39,7 @@ interface CreateData {
   email: string;
   phone: string | number;
   address: string;
-  comment: string;
+  comment: string | number | null | undefined;
   amount: number;
   userId: number;
   items?: string;
@@ -51,7 +51,7 @@ interface UpdateData {
   email: string;
   phone: string | number;
   address: string;
-  comment: string;
+  comment: string | number | null | undefined;
   amount: number;
   userId: number;
   // items?: string;
@@ -199,10 +199,6 @@ class Order {
     const order = await OrderMapping.findByPk(id, {
       include: [{ model: OrderItemMapping, as: "items" }],
     });
-    console.log("ORD data : " + data);
-    console.log(data);
-    console.log("ORD order : " + order);
-    console.log(order);
     if (!order) {
       throw new Error("Заказ не найден в БД");
     }
@@ -218,7 +214,6 @@ class Order {
 
     // статус
     let status: number = order.status;
-    console.log("status нач. : " + status);
     if (
       data.name !== order.name ||
       data.email !== order.email ||
@@ -226,9 +221,12 @@ class Order {
       data.address !== order.address ||
       data.comment !== order.comment
     ) {
-      status = 2;
+      if (status === 2002) {
+        status = 2003;
+      } else {
+        status = 2001;
+      }
     }
-    console.log("status после. : " + status);
 
     // данные для создания заказа
     // const { name, email, phone, address, comment = null, userId = null } = data;

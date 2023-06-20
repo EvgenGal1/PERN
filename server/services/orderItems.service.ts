@@ -59,10 +59,28 @@ class OrderItem {
     if (!item) {
       throw new Error("Свойство товара не найдено в БД");
     }
+
+    // статус
+    let status: number = order.status;
+    if (
+      data.name !== item.name ||
+      data.price !== item.price ||
+      data.quantity !== item.quantity
+    ) {
+      if (status === 2001) {
+        status = 2003;
+      } else {
+        status = 2002;
+      }
+      await order.update({
+        status,
+      });
+    }
+
     const {
       name = item.name,
       price = item.price,
-      quantity = item.price,
+      quantity = item.quantity,
     } = data;
     await item.update({ name, price, quantity });
     return item;
