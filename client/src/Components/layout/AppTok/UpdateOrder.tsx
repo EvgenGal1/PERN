@@ -107,7 +107,7 @@ const updateItems = async (items: any, orderId: any) => {
 };
 
 const UpdateOrder = (props: any) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, auth } = props;
 
   const [value, setValue] = useState(defaultValue);
   const [valid, setValid] = useState(defaultValid);
@@ -127,7 +127,6 @@ const UpdateOrder = (props: any) => {
       // нужно получить с сервера данные товара для редактирования
       adminGetOne(id)
         .then((data) => {
-          console.log("data.comment ", data.comment);
           const order = {
             name: data.name,
             email: data.email.toString(),

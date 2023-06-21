@@ -1,20 +1,24 @@
 // ^ Многраз.Комп.Заказа
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Table, Button, Spinner, Row, Col, Pagination } from "react-bootstrap";
 
 import {
-  adminGetAll,
   adminGetOne,
-  adminUpdate,
   adminDelete,
+  userGetOne,
 } from "../../../http/Tok/orderAPI_Tok";
 import UpdateOrder from "../../layout/AppTok/UpdateOrder";
+import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
 
 // количество Заказов на страницу
 const ADMIN_PER_PAGE = 8;
 
 const Order = (props: any) => {
+  const navigate = useNavigate();
+
   const id = props.data;
+  const auth = props.admin;
 
   // список загруженных заказов
   const [orders, setOrders]: any = useState([]);
@@ -26,32 +30,32 @@ const Order = (props: any) => {
   const [change, setChange] = useState(false);
   // id заказа, которую будем редактировать — для передачи в <UpdateOrder id={…} />
   const [orderId, setOrderId]: any = useState(null);
+  // признак удалённого Заказа
+  const [delOrd, setDelOrd]: any = useState(false);
 
-  // текущая страница списка Заказов
-  const [currentPage, setCurrentPage] = useState(1);
-  // сколько всего страниц списка Заказов
-  const [totalPages, setTotalPages] = useState(1);
-
-  // обработчик клика по номеру страницы
-  const handlePageClick = (page: any) => {
-    setCurrentPage(page);
-    setFetching(true);
-  };
-
-  // содержимое компонента <Pagination>
-  const pages: any = [];
-  for (let page = 1; page <= totalPages; page++) {
-    pages.push(
-      <Pagination.Item
-        key={page}
-        active={page === currentPage}
-        activeLabel=""
-        onClick={() => handlePageClick(page)}
-      >
-        {page}
-      </Pagination.Item>
-    );
-  }
+  // // текущая страница списка Заказов
+  // const [currentPage, setCurrentPage] = useState(1);
+  // // сколько всего страниц списка Заказов
+  // const [totalPages, setTotalPages] = useState(1);
+  // // обработчик клика по номеру страницы
+  // const handlePageClick = (page: any) => {
+  //   setCurrentPage(page);
+  //   setFetching(true);
+  // };
+  // // содержимое компонента <Pagination>
+  // const pages: any = [];
+  // for (let page = 1; page <= totalPages; page++) {
+  //   pages.push(
+  //     <Pagination.Item
+  //       key={page}
+  //       active={page === currentPage}
+  //       activeLabel=""
+  //       onClick={() => handlePageClick(page)}
+  //     >
+  //       {page}
+  //     </Pagination.Item>
+  //   );
+  // }
 
   const handleUpdateClick = (id: any) => {
     setOrderId(id);
@@ -62,18 +66,32 @@ const Order = (props: any) => {
     adminDelete(id)
       .then((data: any) => {
         setChange(!change);
+        setDelOrd(!delOrd);
         alert(`Заказ «${data.id}» удален`);
       })
       .catch((error: any) => alert(error.response.data.message));
   };
 
+  // usEf Удаления Заказа и перенос на пред.стр.
   useEffect(() => {
-    adminGetOne(id)
+    if (auth && delOrd) navigate(ADMINORDER_ROUTE, { replace: true });
+    if (!auth && delOrd) navigate(USERORDER_ROUTE, { replace: true });
+  }, [navigate, auth, delOrd]);
+
+  // usEf Получения Заказ (ADMIN/USER)
+  useEffect(() => {
+    let authPers: any;
+    if (auth) {
+      authPers = adminGetOne(id);
+    } else {
+      authPers = userGetOne(id);
+    }
+    authPers
       .then((data: any) => {
         setOrders(data);
       })
       .finally(() => setFetching(false));
-  }, [change, id]);
+  }, [change, id, auth]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -129,6 +147,7 @@ const Order = (props: any) => {
         show={show}
         setShow={setShow}
         setChange={setChange}
+        auth={auth}
       />
       {/* КНП Редакт./Удалить */}
       <Row className="mb-3">
