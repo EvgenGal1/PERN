@@ -27,7 +27,7 @@ const isValid = (input: HTMLInputElement) => {
   let pattern;
   switch (input.name) {
     case "name":
-      pattern = /^[-а-я]{2,}( [-а-я]{2,}){1,2}$/i;
+      pattern = /^[-а-я]|[a-z0-9._%+-]{2,}( [-а-я]|[a-z0-9._%+-]{2,}){1,2}$/i;
       return pattern.test(input.value.trim());
     case "email":
       pattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+.{1,2}[a-z]+$/i;

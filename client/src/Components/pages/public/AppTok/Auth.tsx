@@ -73,7 +73,7 @@ const Auth = observer(() => {
             <Button
               variant={"outline-success"}
               type="submit"
-              className="btn-primary__eg"
+              className="btn-success__eg"
             >
               {isLogin ? "Войти" : "Регистрация"}
             </Button>

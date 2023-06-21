@@ -30,7 +30,7 @@ const UserOrder = () => {
   return (
     <Container>
       <h1>Заказ № {order.id}</h1>
-      <Order data={order} admin={false} />
+      <Order data={order.id} admin={false} />
     </Container>
   );
 };

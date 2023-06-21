@@ -43,7 +43,6 @@ const Admin = () => {
       <Button
         onClick={handleLogout}
         variant="primary"
-        size="sm"
         className="btn-primary__eg"
       >
         Выйти

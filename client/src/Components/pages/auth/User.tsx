@@ -28,7 +28,6 @@ const User = () => {
       <Button
         onClick={handleLogout}
         variant="primary"
-        size="sm"
         className="btn-primary__eg"
       >
         Выйти
