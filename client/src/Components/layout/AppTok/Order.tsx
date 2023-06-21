@@ -74,6 +74,7 @@ const Order = (props: any) => {
 
   // usEf Удаления Заказа и перенос на пред.стр.
   useEffect(() => {
+    // if (delOrd) navigate(-1); // ^ кратко но менее понятно
     if (auth && delOrd) navigate(ADMINORDER_ROUTE, { replace: true });
     if (!auth && delOrd) navigate(USERORDER_ROUTE, { replace: true });
   }, [navigate, auth, delOrd]);
