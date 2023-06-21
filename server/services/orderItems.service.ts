@@ -67,7 +67,7 @@ class OrderItem {
       data.price !== item.price ||
       data.quantity !== item.quantity
     ) {
-      if (status === 2001) {
+      if (status === 2001 || status === 2003) {
         status = 2003;
       } else {
         status = 2002;

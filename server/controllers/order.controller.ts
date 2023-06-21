@@ -153,8 +153,11 @@ class Order {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
+      console.log("cntrl req.params.id  : " + req.params.id);
+      console.log("cntrl req.auth.id : " + req.auth.id);
       const order = await OrderService.getOne(
-        req.params.id /* , req.auth.id */
+        Number(req.params.id),
+        Number(req.auth.id)
       );
       res.json(order);
     } catch (e) {

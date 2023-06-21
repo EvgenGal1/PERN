@@ -221,7 +221,7 @@ class Order {
       data.address !== order.address ||
       data.comment !== order.comment
     ) {
-      if (status === 2002) {
+      if (status === 2002 || status === 2003) {
         status = 2003;
       } else {
         status = 2001;
@@ -283,10 +283,14 @@ class Order {
 
   async delete(id) {
     let order = await OrderMapping.findByPk(id, {
-      // include: [
-      //   { model: OrderItemMapping, attributes: ["name", "price", "quantity"] },
-      // ],
-      include: [{ model: OrderItemMapping, as: "items" }],
+      include: [
+        {
+          model: OrderItemMapping,
+          as: "items",
+          // attributes: ["name", "price", "quantity"],
+        },
+      ],
+      // include: [{ model: OrderItemMapping, as: "items" }],
     });
     if (!order) {
       throw new Error("Заказ не найден в БД");
