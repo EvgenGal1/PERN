@@ -14,7 +14,8 @@ class Product {
       let { limit = null, page = null } = req.query;
       // ! ошб.(limit и page) - Тип "number" не может быть назначен для типа "string | ParsedQs | string[] | ParsedQs[]"
       limit =
-        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 3;
+        // ~ врем.измен.по limit
+        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 10;
       // limit = limit && typeof limit === "string" && /[0-9]+/.test(limit) ? parseInt(limit) : 3;
       // limit = limit && typeof limit.toString() === "string" && /[0-9]+/.test(limit.toString()) ? parseInt(limit) : 3;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;

@@ -11,7 +11,8 @@ class CatalogStore {
   _order = null; // выбранный заказ
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
-  _limit = 7; // товаров на страницу
+  // ~ врем.измен.по limit
+  // _limit = 999; // товаров на страницу
 
   constructor() {
     makeAutoObservable(this);
@@ -53,14 +54,16 @@ class CatalogStore {
     return this._count;
   }
 
-  get limit() {
-    return this._limit;
-  }
+  // ~ врем.измен.по limit
+  // get limit() {
+  //   return this._limit;
+  // }
 
-  get pages() {
-    // всего страниц
-    return Math.ceil(this.count / this.limit);
-  }
+  // ~ врем.измен.по limit
+  // get pages() {
+  //   // всего страниц
+  //   return Math.ceil(this.count / this.limit);
+  // }
 
   set categories(categories) {
     this._categories = categories;
@@ -101,9 +104,10 @@ class CatalogStore {
     this._count = count;
   }
 
-  set limit(limit) {
-    this._limit = limit;
-  }
+  // ~ врем.измен.по limit
+  // set limit(limit) {
+  //   this._limit = limit;
+  // }
 }
 
 export default CatalogStore;
