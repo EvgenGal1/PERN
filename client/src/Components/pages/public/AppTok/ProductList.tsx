@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import { Row, Pagination } from "react-bootstrap";
+import { Row, Pagination, Card } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
@@ -8,8 +8,55 @@ import ProductItem from "./ProductItem";
 
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
+
   const navigate = useNavigate();
 
+  // ФИЛЬТРАЦИЯ
+  // inp.поиска // ~ асинхр.usSt не даёт нов.знач.
+  const [searchInput, setSearchInput] = useState("");
+  // результ.фильтра
+  const [filteredResults, setFilteredResults] = useState([]);
+
+  const searchItems = (searchValue: any) => {
+    // ~ асинхр.usSt не даёт нов.знач.
+    // setSearchInput(searchValue);
+    // ~ стра.версия
+    // const filteredData = catalog.products.filter((item: any) => {
+    //   return Object.values(item).join("").toLowerCase().includes(searchInput.toLowerCase());
+    // });
+    // return name.toLowerCase().includes(searchInput.toLowerCase());
+    // ~ нов.версия
+    if (/* searchInput */ searchValue !== "") {
+      const filteredData = catalog.products.filter(
+        ({ name, price, rating }: any) => {
+          if (
+            name.toLowerCase().includes(
+              // ~ асинхр.usSt не даёт нов.знач.
+              // searchInput.toLowerCase()
+              searchValue.toLowerCase()
+            )
+            // ^ версии с Ценой и Рейтингом
+            // || price /* .toLowerCase() */
+            //   .includes(searchValue) ||
+            // rating /* .toLowerCase() */
+            //   .includes(searchValue)
+            // ~
+            // || price === searchValue ||
+            // rating === searchValue
+            // ~
+            /* || price.includes(searchInput.toLowerCase()) || rating.includes(searchInput.toLowerCase()) */
+          ) {
+            return name;
+          }
+        }
+      );
+      setFilteredResults(filteredData);
+    } else {
+      setFilteredResults(catalog.products);
+    }
+  };
+
+  // КЛИК по СТР.
   const handleClick = (page: number) => {
     catalog.page = page;
     // при каждом клике добавляем в историю браузера новый элемент
@@ -23,6 +70,7 @@ const ProductList = observer(() => {
     });
   };
 
+  // СТРАНИЦЫ
   const pages: any = [];
   for (let page = 1; page <= catalog.pages; page++) {
     pages.push(
@@ -40,13 +88,49 @@ const ProductList = observer(() => {
   return (
     <>
       <Row className="mb-3">
-        {catalog.products.length ? (
+        <div className="search">
+          {/* INP.ПОИСКА */}
+          <input
+            className="search__eg"
+            placeholder="Поиск..."
+            onChange={(e) => {
+              searchItems(e.target.value);
+              // ~ асинхр.usSt не даёт нов.знач. Запись напрямую
+              setSearchInput(e.target.value);
+            }}
+          />
+        </div>
+        {/* // ! додел.отраж. */}
+        {/* СПИСОК ПРОДУКТОВ ПО УМОЛЧАНИЮ */}
+        {/* {catalog.products.length && searchInput.length === 0 ? (
+          catalog.products.map((item: any) => (
+            <ProductItem key={item.id} data={item} />
+          ))
+        ) : (
+          <p className="m-3">По вашему запросу ничего не найдено</p>
+        )} */}
+        {/* // ! додел.отраж. */}
+        {/* СПИСОК ПРОДУКТОВ ПО ПОИСКУ */}
+        {searchInput.length > 0 ? (
+          filteredResults ? (
+            filteredResults.map((item: any) => {
+              return <ProductItem key={item.id} data={item} />;
+            })
+          ) : (
+            <p className="m-3">По вашему запросу ничего не найдено</p>
+          )
+        ) : catalog.products.length ? (
           catalog.products.map((item: any) => (
             <ProductItem key={item.id} data={item} />
           ))
         ) : (
           <p className="m-3">По вашему запросу ничего не найдено</p>
         )}
+        {/* // ! додел.отраж. */}
+        {/* {filteredResults ||
+          (catalog.products.length === 0 && (
+            <p className="m-3">По вашему запросу ничего не найдено</p>
+          ))} */}
       </Row>
       {catalog.pages > 1 && (
         <Pagination className="pagination__eg">{pages}</Pagination>

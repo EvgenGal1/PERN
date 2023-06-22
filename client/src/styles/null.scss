@@ -277,6 +277,18 @@ input::-ms-clear {
 input::placeholder {
   color: #000000;
 }
+input.search__eg {
+  width: 100%;
+  margin: 10px 0px 0px 0px;
+  // @media (min-width: 768px) {
+  //   flex: 0 0 auto;
+  //   width: 25%;
+  // }
+  // @media (min-width: 576px) {
+  //   flex: 0 0 auto;
+  //   width: 50%;
+  // }
+}
 button,
 input {
   margin: 5px 0px;

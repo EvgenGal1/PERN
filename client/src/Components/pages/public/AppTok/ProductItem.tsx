@@ -25,9 +25,18 @@ const ProductItem = ({ data }: any) => {
         ) : (
           <Card.Img variant="top" src="http://via.placeholder.com/200" />
         )}
-        <Card.Body style={{ height: 100, overflow: "hidden" }}>
-          <p>Бренд: {data.brand.name}</p>
+        <Card.Body style={{ height: "100%", overflow: "hidden" }}>
           <strong>{data.name}</strong>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "spaceBetween",
+            }}
+          >
+            <div>Бренд: {data.brand.name}</div>
+            <div>Цена: {data.price}</div>
+          </div>
         </Card.Body>
       </Card>
     </Col>
