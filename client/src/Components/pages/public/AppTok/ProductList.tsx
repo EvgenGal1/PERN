@@ -30,21 +30,9 @@ const ProductList = observer(() => {
       const filteredData = catalog.products.filter(
         ({ name, price, rating }: any) => {
           if (
-            name.toLowerCase().includes(
-              // ~ асинхр.usSt не даёт нов.знач.
-              // searchInput.toLowerCase()
-              searchValue.toLowerCase()
-            )
-            // ^ версии с Ценой и Рейтингом
-            // || price /* .toLowerCase() */
-            //   .includes(searchValue) ||
-            // rating /* .toLowerCase() */
-            //   .includes(searchValue)
-            // ~
-            // || price === searchValue ||
-            // rating === searchValue
-            // ~
-            /* || price.includes(searchInput.toLowerCase()) || rating.includes(searchInput.toLowerCase()) */
+            name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            String(price).includes(searchValue) ||
+            String(rating).includes(searchValue)
           ) {
             return name;
           }
@@ -100,19 +88,10 @@ const ProductList = observer(() => {
             }}
           />
         </div>
-        {/* // ! додел.отраж. */}
-        {/* СПИСОК ПРОДУКТОВ ПО УМОЛЧАНИЮ */}
-        {/* {catalog.products.length && searchInput.length === 0 ? (
-          catalog.products.map((item: any) => (
-            <ProductItem key={item.id} data={item} />
-          ))
-        ) : (
-          <p className="m-3">По вашему запросу ничего не найдено</p>
-        )} */}
-        {/* // ! додел.отраж. */}
-        {/* СПИСОК ПРОДУКТОВ ПО ПОИСКУ */}
+        {/* СПИСОК ПРОДУКТОВ */}
         {searchInput.length > 0 ? (
-          filteredResults ? (
+          // ПО ПОИСКУ
+          filteredResults.length !== 0 ? (
             filteredResults.map((item: any) => {
               return <ProductItem key={item.id} data={item} />;
             })
@@ -120,17 +99,13 @@ const ProductList = observer(() => {
             <p className="m-3">По вашему запросу ничего не найдено</p>
           )
         ) : catalog.products.length ? (
+          // ПО УМОЛЧАНИЮ
           catalog.products.map((item: any) => (
             <ProductItem key={item.id} data={item} />
           ))
         ) : (
           <p className="m-3">По вашему запросу ничего не найдено</p>
         )}
-        {/* // ! додел.отраж. */}
-        {/* {filteredResults ||
-          (catalog.products.length === 0 && (
-            <p className="m-3">По вашему запросу ничего не найдено</p>
-          ))} */}
       </Row>
       {catalog.pages > 1 && (
         <Pagination className="pagination__eg">{pages}</Pagination>

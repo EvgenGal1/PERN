@@ -263,7 +263,7 @@ body[data-theme="light"] {
     }
 
     // карточки/сетка блоков
-    .card {
+    .card__eg {
       background-color: var(--ui-bg);
       border-color: var(--bord-hr);
       transition: 0.5s;
@@ -273,7 +273,7 @@ body[data-theme="light"] {
       }
     }
     // карточка с контентом (form)
-    .card-form {
+    .card-form__eg {
       background-color: var(--ui-bg);
       border-color: var(--bord-hr);
       transition: 0.5s;
@@ -285,7 +285,7 @@ body[data-theme="light"] {
         }
       }
     }
-    .card-form:hover form {
+    .card-form__eg:hover form {
       transition: 0.5s;
       // background-color: var(--ui-act-col);
     }
