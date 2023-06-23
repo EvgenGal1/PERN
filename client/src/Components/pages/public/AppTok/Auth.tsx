@@ -54,7 +54,7 @@ const Auth = observer(() => {
         style={{
           width: "50%",
         }}
-        className="p-2"
+        className="p-2 card__eg"
       >
         {/* mt-5 bg-light */}
         <h3 className="m-auto">{isLogin ? "Авторизация" : "Регистрация"}</h3>

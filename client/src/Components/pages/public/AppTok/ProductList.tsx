@@ -8,6 +8,7 @@ import ProductItem from "./ProductItem";
 
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
+  console.log("catalog.products ", catalog.products);
 
   const navigate = useNavigate();
 
@@ -72,6 +73,18 @@ const ProductList = observer(() => {
       </Pagination.Item>
     );
   }
+
+  // нач.ПАГИНАЦИЯ на FRONT
+  let limit: number = 25;
+  let page: number = 7;
+  //  limit =
+  // limit && pattern.test(limit) && parseInt(limit) ? parseInt(limit) : 10;
+  // page = page && pattern.test(page) && parseInt(page) ? parseInt(page) : 1;
+  // page = page && pattern.test(page) && page ? page : 1;
+  limit = limit && typeof limit === "number" ? limit : 1;
+  page = page && typeof page === "number" ? page : 1;
+  console.log("limit ", limit);
+  console.log("page ", page);
 
   return (
     <>

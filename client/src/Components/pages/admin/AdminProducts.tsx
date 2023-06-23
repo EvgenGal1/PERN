@@ -15,6 +15,7 @@ const ADMIN_PER_PAGE = 8;
 const AdminProducts = () => {
   // список загруженных товаров
   const [products, setProducts]: any = useState([]);
+  console.log("products ", products);
   // загрузка списка товаров с сервера
   const [fetching, setFetching] = useState(true);
   // модальное окно создания товара

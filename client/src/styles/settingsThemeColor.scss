@@ -264,8 +264,11 @@ body[data-theme="light"] {
 
     // карточки/сетка блоков
     .card__eg {
+      display: flex;
+      flex-direction: column;
       background-color: var(--ui-bg);
-      border-color: var(--bord-hr);
+      border: solid 1px var(--bord-hr);
+      border-radius: 7px;
       transition: 0.5s;
       // наведения для всех кроме содерж. form
       &:hover:not(:has(form)) {
