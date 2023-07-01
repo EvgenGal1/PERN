@@ -12,7 +12,7 @@ class CatalogStore {
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
   // ~ врем.измен.по limit
-  // _limit = 999; // товаров на страницу
+  _limit = 20; // товаров на страницу
 
   constructor() {
     makeAutoObservable(this);
@@ -55,15 +55,15 @@ class CatalogStore {
   }
 
   // ~ врем.измен.по limit
-  // get limit() {
-  //   return this._limit;
-  // }
+  get limit() {
+    return this._limit;
+  }
 
   // ~ врем.измен.по limit
-  // get pages() {
-  //   // всего страниц
-  //   return Math.ceil(this.count / this.limit);
-  // }
+  get pages() {
+    // всего страниц
+    return Math.ceil(this.count / this.limit);
+  }
 
   set categories(categories) {
     this._categories = categories;
@@ -105,9 +105,9 @@ class CatalogStore {
   }
 
   // ~ врем.измен.по limit
-  // set limit(limit) {
-  //   this._limit = limit;
-  // }
+  set limit(limit) {
+    this._limit = limit;
+  }
 }
 
 export default CatalogStore;

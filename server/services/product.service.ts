@@ -68,6 +68,9 @@ class Product {
     // const { categoryId, brandId } = params;
     const { categoryId, brandId, limit, page } = options;
     const offset = (page - 1) * limit;
+    console.log("page : " + page);
+    console.log("limit : " + limit);
+    console.log("offset : " + offset);
     const where: any = {};
     if (categoryId) where.categoryId = categoryId;
     if (brandId) where.brandId = brandId;
@@ -75,9 +78,9 @@ class Product {
     // `Найдите и посчитайте все`
     const products = await ProductMapping.findAndCountAll({
       // ~ врем.измен.по limit
-      // where,
-      // limit,
-      // offset,
+      where,
+      limit,
+      offset,
       // для каждого товара получаем бренд и категорию
       include: [
         { model: BrandMapping, as: "brand" },
@@ -85,6 +88,8 @@ class Product {
       ],
       order: [["name", "ASC"]],
     });
+    console.log("products : " + products);
+    console.log(products);
     return products;
   }
 
