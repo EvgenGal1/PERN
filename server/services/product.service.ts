@@ -88,8 +88,6 @@ class Product {
       ],
       order: [["name", "ASC"]],
     });
-    console.log("products : " + products);
-    console.log(products);
     return products;
   }
 

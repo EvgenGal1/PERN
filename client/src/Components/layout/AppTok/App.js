@@ -265,9 +265,13 @@ const App = () => {
           </div>
           <div className="d-flex flex-row py-4 align-items-center">
             <Pagination
+              // Общие записи
               totalRecords={totalCountries}
+              // Предел страницы
               pageLimit={5}
+              // Страница соседей
               pageNeighbours={1}
+              // на странице изменилось
               onPageChanged={onPageChanged}
             />
           </div>

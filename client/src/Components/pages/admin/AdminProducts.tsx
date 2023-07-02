@@ -15,7 +15,6 @@ const ADMIN_PER_PAGE = 8;
 const AdminProducts = () => {
   // список загруженных товаров
   const [products, setProducts]: any = useState([]);
-  console.log("products ", products);
   // загрузка списка товаров с сервера
   const [fetching, setFetching] = useState(true);
   // модальное окно создания товара
@@ -32,13 +31,19 @@ const AdminProducts = () => {
   // сколько всего страниц списка товаров
   const [totalPages, setTotalPages] = useState(1);
 
-  // обработчик клика по номеру страницы
+  // limit. кол-во эл. на странице
+  const [limiting, setLimiting] = useState(10);
+  const changeLimit = (limit: number) => {
+    setLimiting(limit);
+  };
+
+  // обраб.КЛИК по № СТР.
   const handlePageClick = (page: any) => {
     setCurrentPage(page);
     setFetching(true);
   };
 
-  // содержимое компонента <Pagination>
+  // содер.Комп.`Страница`
   const pages: any = [];
   for (let page = 1; page <= totalPages; page++) {
     pages.push(
@@ -77,13 +82,14 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    fetchAllProducts(null, null, currentPage, ADMIN_PER_PAGE)
+    fetchAllProducts(null, null, currentPage, limiting /* ADMIN_PER_PAGE */)
       .then((data) => {
+        console.log("data ", data);
         setProducts(data.rows);
-        setTotalPages(Math.ceil(data.count / ADMIN_PER_PAGE));
+        setTotalPages(Math.ceil(data.count / limiting /* ADMIN_PER_PAGE */));
       })
       .finally(() => setFetching(false));
-  }, [change, currentPage]);
+  }, [change, currentPage, limiting]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -172,9 +178,43 @@ const AdminProducts = () => {
               ))}
             </tbody>
           </Table>
+          {/* ПАГИНАЦИЯ */}
           {totalPages > 1 && (
             <Pagination className="pagination__eg">{pages}</Pagination>
           )}
+          {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
+          <Button
+            size="sm"
+            onClick={() => changeLimit(10)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            10
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => changeLimit(25)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            25
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => changeLimit(50)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            50
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => changeLimit(100)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            100
+          </Button>
         </>
       ) : (
         <p>Список товаров пустой</p>

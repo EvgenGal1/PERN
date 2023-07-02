@@ -5,7 +5,7 @@ import ProductService from "../services/product.service";
 
 class Product {
   async getAll(
-    req /* : Request */ /* от ошб.number не может назнач... для string */,
+    req /* : Request */ /* // ! от ошб.number не может назнач... для string */,
     res: Response,
     next: NextFunction
   ): Promise<void> {
