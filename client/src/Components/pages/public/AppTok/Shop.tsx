@@ -112,6 +112,7 @@ const Shop = observer(() => {
       catalog.limit
     )
       .then((data) => {
+        console.log("data ", data);
         catalog.products = data.rows;
         catalog.count = data.count;
       })

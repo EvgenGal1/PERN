@@ -74,7 +74,6 @@ class Product {
     const where: any = {};
     if (categoryId) where.categoryId = categoryId;
     if (brandId) where.brandId = brandId;
-    // const products = await ProductMapping.findAll({ where });
     // `Найдите и посчитайте все`
     const products = await ProductMapping.findAndCountAll({
       // ~ врем.измен.по limit
@@ -88,6 +87,26 @@ class Product {
       ],
       order: [["name", "ASC"]],
     });
+    // е/и у products нет rows или его длины
+    if (!products.rows || !products.rows?.length) {
+      console.log("11 : " + 11);
+      const offset = (page - 2) * limit;
+      const products = await ProductMapping.findAndCountAll({
+        where,
+        limit,
+        offset,
+        include: [
+          { model: BrandMapping, as: "brand" },
+          { model: CategoryMapping, as: "category" },
+        ],
+        order: [["name", "ASC"]],
+      });
+      console.log("offset 2 : " + offset);
+      console.log("products 2 : " + products);
+      console.log(products);
+      return products;
+    }
+    console.log("products 1 : " + products);
     return products;
   }
 

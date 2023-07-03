@@ -8,6 +8,7 @@ import ProductItem from "./ProductItem";
 
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
+  console.log("catalog.count ", catalog.count);
 
   const navigate = useNavigate();
 
@@ -128,38 +129,46 @@ const ProductList = observer(() => {
       )}
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
       <>
-        <Button
-          size="sm"
-          onClick={() => /* changeLimit */ handleLimitClick(10)}
-          className="btn-primary__eg"
-          style={{ marginRight: "15px" }}
-        >
-          10
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => /* changeLimit */ handleLimitClick(25)}
-          className="btn-primary__eg"
-          style={{ marginRight: "15px" }}
-        >
-          25
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => /* changeLimit */ handleLimitClick(50)}
-          className="btn-primary__eg"
-          style={{ marginRight: "15px" }}
-        >
-          50
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => /* changeLimit */ handleLimitClick(100)}
-          className="btn-primary__eg"
-          style={{ marginRight: "15px" }}
-        >
-          100
-        </Button>
+        {catalog.count > 10 && (
+          <Button
+            size="sm"
+            onClick={() => /* changeLimit */ handleLimitClick(10)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            10
+          </Button>
+        )}
+        {catalog.count > 25 && (
+          <Button
+            size="sm"
+            onClick={() => /* changeLimit */ handleLimitClick(25)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            25
+          </Button>
+        )}
+        {catalog.count > 50 && (
+          <Button
+            size="sm"
+            onClick={() => /* changeLimit */ handleLimitClick(50)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            50
+          </Button>
+        )}
+        {catalog.count > 100 && (
+          <Button
+            size="sm"
+            onClick={() => /* changeLimit */ handleLimitClick(100)}
+            className="btn-primary__eg"
+            style={{ marginRight: "15px" }}
+          >
+            100
+          </Button>
+        )}
       </>
     </>
   );
