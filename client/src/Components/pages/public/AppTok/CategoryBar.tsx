@@ -21,6 +21,7 @@ const CategoryBar = observer(() => {
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
+    if (catalog.limit) params.limit = catalog.limit;
     navigate({
       pathname: "/",
       search: "?" + createSearchParams(params),

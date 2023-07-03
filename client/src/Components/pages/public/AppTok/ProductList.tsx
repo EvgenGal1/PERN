@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import { Row, Pagination, Card } from "react-bootstrap";
+import { Row, Pagination, Card, Button } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
@@ -8,16 +8,59 @@ import ProductItem from "./ProductItem";
 
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
-  console.log("catalog.products ", catalog.products);
 
   const navigate = useNavigate();
+
+  const handleLimitClick = (limit: number) => {
+    catalog.limit = limit;
+    const params: any = {};
+    // при каждом клике добавляем в историю браузера новый элемент
+    if (catalog.category) params.category = catalog.category;
+    if (catalog.brand) params.brand = catalog.brand;
+    if (catalog.page > 1) params.page = catalog.page;
+    if (catalog.limit) params.limit = catalog.limit;
+    navigate({
+      pathname: "/",
+      search: "?" + createSearchParams(params),
+    });
+  };
+
+  // обраб.КЛИК по № СТР.
+  const handlePageClick = (page: number) => {
+    catalog.page = page;
+    // при каждом клике добавляем в историю браузера новый элемент
+    const params: any = {};
+    if (catalog.category) params.category = catalog.category;
+    if (catalog.brand) params.brand = catalog.brand;
+    if (catalog.page > 1) params.page = catalog.page;
+    if (catalog.limit) params.limit = catalog.limit;
+    navigate({
+      pathname: "/",
+      search: "?" + createSearchParams(params),
+    });
+  };
+
+  // содер.Комп.`Страница`
+  const pages: any = [];
+  for (let page = 1; page <= catalog.pages; page++) {
+    pages.push(
+      <Pagination.Item
+        key={page}
+        active={page === catalog.page}
+        activeLabel=""
+        onClick={() => handlePageClick(page)}
+      >
+        {page}
+      </Pagination.Item>
+    );
+  }
 
   // ФИЛЬТРАЦИЯ
   // inp.поиска // ~ асинхр.usSt не даёт нов.знач.
   const [searchInput, setSearchInput] = useState("");
   // результ.фильтра
   const [filteredResults, setFilteredResults] = useState([]);
-
+  // `Поиск элементов`
   const searchItems = (searchValue: any) => {
     // ~ асинхр.usSt не даёт нов.знач.
     // setSearchInput(searchValue);
@@ -44,47 +87,6 @@ const ProductList = observer(() => {
       setFilteredResults(catalog.products);
     }
   };
-
-  // КЛИК по СТР.
-  const handleClick = (page: number) => {
-    catalog.page = page;
-    // при каждом клике добавляем в историю браузера новый элемент
-    const params: any = {};
-    if (catalog.category) params.category = catalog.category;
-    if (catalog.brand) params.brand = catalog.brand;
-    if (catalog.page > 1) params.page = catalog.page;
-    navigate({
-      pathname: "/",
-      search: "?" + createSearchParams(params),
-    });
-  };
-
-  // СТРАНИЦЫ
-  const pages: any = [];
-  for (let page = 1; page <= catalog.pages; page++) {
-    pages.push(
-      <Pagination.Item
-        key={page}
-        active={page === catalog.page}
-        activeLabel=""
-        onClick={() => handleClick(page)}
-      >
-        {page}
-      </Pagination.Item>
-    );
-  }
-
-  // нач.ПАГИНАЦИЯ на FRONT
-  let limit: number = 25;
-  let page: number = 7;
-  //  limit =
-  // limit && pattern.test(limit) && parseInt(limit) ? parseInt(limit) : 10;
-  // page = page && pattern.test(page) && parseInt(page) ? parseInt(page) : 1;
-  // page = page && pattern.test(page) && page ? page : 1;
-  limit = limit && typeof limit === "number" ? limit : 1;
-  page = page && typeof page === "number" ? page : 1;
-  console.log("limit ", limit);
-  console.log("page ", page);
 
   return (
     <>
@@ -120,9 +122,45 @@ const ProductList = observer(() => {
           <p className="m-3">По вашему запросу ничего не найдено</p>
         )}
       </Row>
+      {/* ПАГИНАЦИЯ */}
       {catalog.pages > 1 && (
         <Pagination className="pagination__eg">{pages}</Pagination>
       )}
+      {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
+      <>
+        <Button
+          size="sm"
+          onClick={() => /* changeLimit */ handleLimitClick(10)}
+          className="btn-primary__eg"
+          style={{ marginRight: "15px" }}
+        >
+          10
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => /* changeLimit */ handleLimitClick(25)}
+          className="btn-primary__eg"
+          style={{ marginRight: "15px" }}
+        >
+          25
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => /* changeLimit */ handleLimitClick(50)}
+          className="btn-primary__eg"
+          style={{ marginRight: "15px" }}
+        >
+          50
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => /* changeLimit */ handleLimitClick(100)}
+          className="btn-primary__eg"
+          style={{ marginRight: "15px" }}
+        >
+          100
+        </Button>
+      </>
     </>
   );
 });
