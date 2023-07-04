@@ -67,16 +67,31 @@ class Product {
   async getAll(options: any) {
     // const { categoryId, brandId } = params;
     const { categoryId, brandId, limit, page } = options;
-    const offset = (page - 1) * limit;
-    console.log("page : " + page);
-    console.log("limit : " + limit);
-    console.log("offset : " + offset);
     const where: any = {};
     if (categoryId) where.categoryId = categoryId;
     if (brandId) where.brandId = brandId;
-    // `Найдите и посчитайте все`
+    // Кол-во эл. `Найдите и посчитайте все`
+    let countAll = await ProductMapping.findAndCountAll({
+      where,
+      // для каждого товара получаем бренд и категорию
+      include: [
+        { model: BrandMapping, as: "brand" },
+        { model: CategoryMapping, as: "category" },
+      ],
+    });
+    // Пропускаем n первых эл. (для 1 стр.)
+    let offset = 0;
+    // Пропуск n эл. > 1
+    if (page > 1) {
+      offset = (page - 1) * limit;
+    }
+    // е/и длина МЕНЬШЕ
+    if (countAll.count <= offset - limit)
+      offset =
+        countAll.count -
+        (countAll.count - limit * Math.floor(countAll.count / limit));
+
     const products = await ProductMapping.findAndCountAll({
-      // ~ врем.измен.по limit
       where,
       limit,
       offset,
@@ -87,26 +102,6 @@ class Product {
       ],
       order: [["name", "ASC"]],
     });
-    // е/и у products нет rows или его длины
-    if (!products.rows || !products.rows?.length) {
-      console.log("11 : " + 11);
-      const offset = (page - 2) * limit;
-      const products = await ProductMapping.findAndCountAll({
-        where,
-        limit,
-        offset,
-        include: [
-          { model: BrandMapping, as: "brand" },
-          { model: CategoryMapping, as: "category" },
-        ],
-        order: [["name", "ASC"]],
-      });
-      console.log("offset 2 : " + offset);
-      console.log("products 2 : " + products);
-      console.log(products);
-      return products;
-    }
-    console.log("products 1 : " + products);
     return products;
   }
 
