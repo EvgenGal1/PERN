@@ -12,7 +12,7 @@ class CatalogStore {
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
   _limit = 15; // товаров на страницу
-  _sortOrd = null; // товаров на страницу
+  _sortOrd = /* null */ "ASC"; // сортировка по порядку
 
   constructor() {
     makeAutoObservable(this);

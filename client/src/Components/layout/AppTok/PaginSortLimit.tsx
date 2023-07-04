@@ -1,13 +1,40 @@
+import { useContext, useState } from "react";
 import { Button, Pagination } from "react-bootstrap";
 
-export const PaginSortLimit = ({
-  totalPages,
-  pages,
-  sortOrd,
-  mutateSort,
-  handleLimitClick,
-  limiting,
-}: any) => {
+import { AppContext } from "../../layout/AppTok/AppContext";
+
+export const PaginSortLimit = (props: any) => {
+  const { totalPages, pages, setChange } = props;
+  const { catalog }: any = useContext(AppContext);
+
+  // limit. кол-во эл. на странице
+  // const [limiting, setLimiting] = useState(10);
+  // ЛИМИТ. изменен.сост.ограничения
+  const changeLimitState = (limit: number) => {
+    // setLimiting(limit);
+    catalog.limit = limit;
+    setChange((state: any) => !state);
+  };
+
+  // сост.сортировки
+  // const [sortOrd, setSortOrd] = useState("ASC");
+  // СОРТИРОВКА. изменен.сост.порядка
+  const changeSortState = () => {
+    console.log("1 ", 1);
+    if (/* sortOrd */ catalog.sortOrd === "ASC") {
+      console.log("2 ", 2);
+      // setSortOrd("DESC");
+      catalog.sortOrd = "DESC";
+      setChange((state: any) => !state);
+    } else {
+      console.log("3 ", 3);
+      // setSortOrd("ASC");
+      catalog.sortOrd = "ASC";
+      setChange((state: any) => !state);
+    }
+  };
+  console.log("PgSrtLim catalog.limit ", catalog.limit);
+  console.log("PgSrtLim catalog.sortOrd ", catalog.sortOrd);
   return (
     <div
       className="pagin-sort-limit"
@@ -26,42 +53,50 @@ export const PaginSortLimit = ({
       {/* СОРТИРОВКА */}
       <Button
         size="sm"
-        onClick={() => mutateSort()}
+        onClick={() => changeSortState()}
         variant="primary"
         className="btn-primary__eg"
       >
-        по названию {sortOrd === "ASC" ? "▲" : "▼"}
+        названиz {/* sortOrd */ catalog.sortOrd === "ASC" ? "А-Я ▲" : "Я-А ▼"}
       </Button>
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
       <div style={{ display: "flex" }}>
         <Button
           size="sm"
-          onClick={() => handleLimitClick(10)}
-          className={`btn-primary__eg${limiting === 10 ? " active" : ""}`}
+          onClick={() => changeLimitState(10)}
+          className={`btn-primary__eg${
+            /* limiting */ catalog.limit === 10 ? " active" : ""
+          }`}
           style={{ marginLeft: "15px" }}
         >
           10
         </Button>
         <Button
           size="sm"
-          onClick={() => handleLimitClick(25)}
-          className={`btn-primary__eg${limiting === 25 ? " active" : ""}`}
+          onClick={() => changeLimitState(25)}
+          className={`btn-primary__eg${
+            /* limiting */ catalog.limit === 25 ? " active" : ""
+          }`}
           style={{ marginLeft: "15px" }}
         >
           25
         </Button>
         <Button
           size="sm"
-          onClick={() => handleLimitClick(50)}
-          className={`btn-primary__eg${limiting === 50 ? " active" : ""}`}
+          onClick={() => changeLimitState(50)}
+          className={`btn-primary__eg${
+            /* limiting */ catalog.limit === 50 ? " active" : ""
+          }`}
           style={{ marginLeft: "15px" }}
         >
           50
         </Button>
         <Button
           size="sm"
-          onClick={() => handleLimitClick(100)}
-          className={`btn-primary__eg${limiting === 100 ? " active" : ""}`}
+          onClick={() => changeLimitState(100)}
+          className={`btn-primary__eg${
+            /* limiting */ catalog.limit === 100 ? " active" : ""
+          }`}
           style={{ marginLeft: "15px" }}
         >
           100

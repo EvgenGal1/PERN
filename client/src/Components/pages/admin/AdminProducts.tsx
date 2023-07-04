@@ -1,7 +1,8 @@
 // ^ Список Товаров
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button, Container, Spinner, Table, Pagination } from "react-bootstrap";
 
+import { AppContext } from "../../layout/AppTok/AppContext";
 import {
   fetchAllProducts,
   deleteProduct,
@@ -11,7 +12,9 @@ import UpdateProduct from "../../layout/AppTok/UpdateProduct";
 import { PaginSortLimit } from "../../layout/AppTok/PaginSortLimit";
 
 const AdminProducts = () => {
-  // список загруженных товаров
+  const { catalog }: any = useContext(AppContext);
+
+  // массив загруженных товаров
   const [products, setProducts]: any = useState([]);
   // загрузка списка товаров с сервера
   const [fetching, setFetching] = useState(true);
@@ -29,22 +32,22 @@ const AdminProducts = () => {
   // сколько всего страниц списка товаров
   const [totalPages, setTotalPages] = useState(1);
 
-  // limit. кол-во эл. на странице
-  const [limiting, setLimiting] = useState(10);
-  const handleLimitClick = (limit: number) => {
-    setLimiting(limit);
-  };
+  // // limit. кол-во эл. на странице
+  // const [limiting, setLimiting] = useState(10);
+  // const handleLimitClick = (limit: number) => {
+  //   setLimiting(limit);
+  // };
 
-  // сост.сортировки
-  const [sortOrd, setSortOrd] = useState("ASC");
-  // изменен.сост.сортировки
-  const mutateSort = () => {
-    if (sortOrd === "ASC") {
-      setSortOrd("DESC");
-    } else {
-      setSortOrd("ASC");
-    }
-  };
+  // // сост.сортировки
+  // const [sortOrd, setSortOrd] = useState("ASC");
+  // // изменен.сост.сортировки
+  // const mutateSort = () => {
+  //   if (sortOrd === "ASC") {
+  //     setSortOrd("DESC");
+  //   } else {
+  //     setSortOrd("ASC");
+  //   }
+  // };
 
   // обраб.КЛИК по № СТР.
   const handlePageClick = (page: any) => {
@@ -91,14 +94,27 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    fetchAllProducts(null, null, currentPage, limiting, sortOrd)
+    console.log("ADMprd catalog.limit ", catalog.limit);
+    console.log("ADMprd catalog.sortOrd ", catalog.sortOrd);
+    fetchAllProducts(
+      null,
+      null,
+      currentPage,
+      /* limiting, sortOrd */ catalog.limit,
+      catalog.sortOrd
+    )
       .then((data) => {
         console.log("data ADMprod ", data);
         setProducts(data.rows);
-        setTotalPages(Math.ceil(data.count / limiting));
+        setTotalPages(Math.ceil(data.count / /* limiting */ catalog.limit));
       })
       .finally(() => setFetching(false));
-  }, [change, currentPage, limiting, sortOrd]);
+  }, [
+    change,
+    currentPage,
+    /* limiting, sortOrd */ catalog.limit,
+    catalog.sortOrd,
+  ]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -131,10 +147,11 @@ const AdminProducts = () => {
       <PaginSortLimit
         totalPages={totalPages}
         pages={pages}
-        sortOrd={sortOrd}
-        mutateSort={mutateSort}
-        handleLimitClick={handleLimitClick}
-        limiting={limiting}
+        setChange={setChange}
+        // sortOrd={sortOrd}
+        // mutateSort={mutateSort}
+        // handleLimitClick={handleLimitClick}
+        // limiting={limiting}
       />
       {/* Табл.Товаров */}
       {products.length > 0 ? (
@@ -205,10 +222,11 @@ const AdminProducts = () => {
           <PaginSortLimit
             totalPages={totalPages}
             pages={pages}
-            sortOrd={sortOrd}
-            mutateSort={mutateSort}
-            handleLimitClick={handleLimitClick}
-            limiting={limiting}
+            setChange={setChange}
+            // sortOrd={sortOrd}
+            // mutateSort={mutateSort}
+            // handleLimitClick={handleLimitClick}
+            // limiting={limiting}
           />
         </>
       ) : (
