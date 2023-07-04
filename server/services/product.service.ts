@@ -79,14 +79,14 @@ class Product {
         { model: CategoryMapping, as: "category" },
       ],
     });
-    // Пропускаем n первых эл. (для 1 стр.)
+    // Пропускаем n первых эл.в BD (для 1 стр.)
     let offset = 0;
-    // Пропуск n эл. > 1
+    // Пропуск n эл.в BD е/и page > 1
     if (page > 1) {
       offset = (page - 1) * limit;
     }
-    // е/и длина МЕНЬШЕ
-    if (countAll.count <= offset - limit)
+    // е/и эл.в BD МЕНЬШЕ чем в запросе(offset)
+    if (countAll.count <= offset)
       offset =
         countAll.count -
         (countAll.count - limit * Math.floor(countAll.count / limit));
