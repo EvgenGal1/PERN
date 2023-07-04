@@ -33,7 +33,7 @@ const AdminProducts = () => {
 
   // limit. кол-во эл. на странице
   const [limiting, setLimiting] = useState(10);
-  const changeLimit = (limit: number) => {
+  const handleLimitClick = (limit: number) => {
     setLimiting(limit);
   };
 
@@ -84,7 +84,7 @@ const AdminProducts = () => {
   useEffect(() => {
     fetchAllProducts(null, null, currentPage, limiting /* ADMIN_PER_PAGE */)
       .then((data) => {
-        console.log("data ", data);
+        console.log("data ADMprod ", data);
         setProducts(data.rows);
         setTotalPages(Math.ceil(data.count / limiting /* ADMIN_PER_PAGE */));
       })
@@ -185,32 +185,32 @@ const AdminProducts = () => {
           {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
           <Button
             size="sm"
-            onClick={() => changeLimit(10)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(10)}
+            className={`btn-primary__eg${limiting === 10 ? " active" : ""}`}
             style={{ marginRight: "15px" }}
           >
             10
           </Button>
           <Button
             size="sm"
-            onClick={() => changeLimit(25)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(25)}
+            className={`btn-primary__eg${limiting === 25 ? " active" : ""}`}
             style={{ marginRight: "15px" }}
           >
             25
           </Button>
           <Button
             size="sm"
-            onClick={() => changeLimit(50)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(50)}
+            className={`btn-primary__eg${limiting === 50 ? " active" : ""}`}
             style={{ marginRight: "15px" }}
           >
             50
           </Button>
           <Button
             size="sm"
-            onClick={() => changeLimit(100)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(100)}
+            className={`btn-primary__eg${limiting === 100 ? " active" : ""}`}
             style={{ marginRight: "15px" }}
           >
             100

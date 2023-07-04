@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import ProductItem from "./ProductItem";
+import { Limitation } from "../../../ui/Limitation";
 
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
@@ -132,18 +133,28 @@ const ProductList = observer(() => {
         {catalog.count > 10 && (
           <Button
             size="sm"
-            onClick={() => /* changeLimit */ handleLimitClick(10)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(10)}
+            className={`btn-primary__eg${
+              catalog.limit === 10 ? " active" : ""
+            }`}
             style={{ marginRight: "15px" }}
           >
             10
           </Button>
+          // <Limitation
+          //   size={"sm"}
+          //   cl={"prim"}
+          //   onClickBtn={handleLimitClick /* (10) */}
+          //   limit={catalog.limit === 10 ? 10 : 0}
+          // />
         )}
         {catalog.count > 25 && (
           <Button
             size="sm"
-            onClick={() => /* changeLimit */ handleLimitClick(25)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(25)}
+            className={`btn-primary__eg${
+              catalog.limit === 25 ? " active" : ""
+            }`}
             style={{ marginRight: "15px" }}
           >
             25
@@ -152,8 +163,10 @@ const ProductList = observer(() => {
         {catalog.count > 50 && (
           <Button
             size="sm"
-            onClick={() => /* changeLimit */ handleLimitClick(50)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(50)}
+            className={`btn-primary__eg${
+              catalog.limit === 50 ? " active" : ""
+            }`}
             style={{ marginRight: "15px" }}
           >
             50
@@ -162,8 +175,10 @@ const ProductList = observer(() => {
         {catalog.count > 100 && (
           <Button
             size="sm"
-            onClick={() => /* changeLimit */ handleLimitClick(100)}
-            className="btn-primary__eg"
+            onClick={() => handleLimitClick(100)}
+            className={`btn-primary__eg${
+              catalog.limit === 100 ? " active" : ""
+            }`}
             style={{ marginRight: "15px" }}
           >
             100

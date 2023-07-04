@@ -204,26 +204,30 @@ body[data-theme="light"] {
     button.btn-danger__eg {
       border-color: var(--BlackAmber);
       color: var(--DeepYellow);
-      &:hover {
+      &:hover,
+      &.active {
         border-color: var(--BlackBrown);
         color: var(--MelonYellow);
       }
     }
     button.btn-primary__eg {
       background-color: var(--Blue_1);
-      &:hover {
+      &:hover,
+      &.active {
         background-color: var(--Blue_2);
       }
     }
     button.btn-success__eg {
       background-color: var(--Green_1);
-      &:hover {
+      &:hover,
+      &.active {
         background-color: var(--Green_2);
       }
     }
     button.btn-danger__eg {
       background-color: var(--CrimsonBrown);
-      &:hover {
+      &:hover,
+      &.active {
         background-color: var(--PinkForest);
       }
     }
