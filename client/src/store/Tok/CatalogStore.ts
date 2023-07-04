@@ -11,8 +11,8 @@ class CatalogStore {
   _order = null; // выбранный заказ
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
-  // ~ врем.измен.по limit
   _limit = 15; // товаров на страницу
+  _sortOrd = null; // товаров на страницу
 
   constructor() {
     makeAutoObservable(this);
@@ -54,12 +54,14 @@ class CatalogStore {
     return this._count;
   }
 
-  // ~ врем.измен.по limit
   get limit() {
     return this._limit;
   }
 
-  // ~ врем.измен.по limit
+  get sortOrd() {
+    return this._sortOrd;
+  }
+
   get pages() {
     // всего страниц
     return Math.ceil(this.count / this.limit);
@@ -104,9 +106,12 @@ class CatalogStore {
     this._count = count;
   }
 
-  // ~ врем.измен.по limit
   set limit(limit) {
     this._limit = limit;
+  }
+
+  set sortOrd(sortOrd) {
+    this._sortOrd = sortOrd;
   }
 }
 

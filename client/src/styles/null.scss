@@ -126,7 +126,6 @@ span {
 }
 
 // модальные окна
-
 .modal__eg {
   z-index: 3;
   width: 70%;
@@ -409,5 +408,34 @@ form {
   &::before {
     display: inline;
     content: "⚠ ";
+  }
+}
+// ТАБЛИЦЫ ----------------------------------------------------------------------------------
+.table__eg {
+  border: 2px solid var(--bord-hr);
+  thead {
+    tr {
+      th {
+        text-align: center;
+        text-transform: uppercase;
+      }
+    }
+  }
+  tbody {
+    tr {
+      th {
+        text-align: center;
+      }
+      td {
+        vertical-align: initial;
+      }
+      &:hover,
+      &:hover > * {
+      }
+      &#th__eg:hover {
+        & > * {
+        }
+      }
+    }
   }
 }

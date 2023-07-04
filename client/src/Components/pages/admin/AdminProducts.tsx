@@ -8,9 +8,7 @@ import {
 } from "../../../http/Tok/catalogAPI_Tok";
 import CreateProduct from "../../layout/AppTok/CreateProduct";
 import UpdateProduct from "../../layout/AppTok/UpdateProduct";
-
-// количество товаров на страницу
-const ADMIN_PER_PAGE = 8;
+import { PaginSortLimit } from "../../layout/AppTok/PaginSortLimit";
 
 const AdminProducts = () => {
   // список загруженных товаров
@@ -37,12 +35,22 @@ const AdminProducts = () => {
     setLimiting(limit);
   };
 
+  // сост.сортировки
+  const [sortOrd, setSortOrd] = useState("ASC");
+  // изменен.сост.сортировки
+  const mutateSort = () => {
+    if (sortOrd === "ASC") {
+      setSortOrd("DESC");
+    } else {
+      setSortOrd("ASC");
+    }
+  };
+
   // обраб.КЛИК по № СТР.
   const handlePageClick = (page: any) => {
     setCurrentPage(page);
     setFetching(true);
   };
-
   // содер.Комп.`Страница`
   const pages: any = [];
   for (let page = 1; page <= totalPages; page++) {
@@ -58,11 +66,12 @@ const AdminProducts = () => {
     );
   }
 
+  // обнов.эл.ч/з Комп.Modal
   const handleUpdateClick = (id: any) => {
     setProduct(id);
     setUpdateShow(true);
   };
-
+  // удал.эл.
   const handleDeleteClick = (id: any) => {
     deleteProduct(id)
       .then((data) => {
@@ -82,14 +91,14 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    fetchAllProducts(null, null, currentPage, limiting /* ADMIN_PER_PAGE */)
+    fetchAllProducts(null, null, currentPage, limiting, sortOrd)
       .then((data) => {
         console.log("data ADMprod ", data);
         setProducts(data.rows);
-        setTotalPages(Math.ceil(data.count / limiting /* ADMIN_PER_PAGE */));
+        setTotalPages(Math.ceil(data.count / limiting));
       })
       .finally(() => setFetching(false));
-  }, [change, currentPage, limiting]);
+  }, [change, currentPage, limiting, sortOrd]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -98,6 +107,7 @@ const AdminProducts = () => {
   return (
     <Container>
       <h1>Товары</h1>
+      {/* Создание Товара (btn|Комп.Modal) */}
       <Button
         onClick={() => setCreateShow(true)}
         variant="primary"
@@ -110,31 +120,43 @@ const AdminProducts = () => {
         setShow={setCreateShow}
         setChange={setChange}
       />
+      {/* Обновление Товара (Комп.Modal) */}
       <UpdateProduct
         id={product}
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
       />
+      {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
+      <PaginSortLimit
+        totalPages={totalPages}
+        pages={pages}
+        sortOrd={sortOrd}
+        mutateSort={mutateSort}
+        handleLimitClick={handleLimitClick}
+        limiting={limiting}
+      />
+      {/* Табл.Товаров */}
       {products.length > 0 ? (
         <>
           <Table bordered hover size="sm" className="mt-3 table__eg">
             <thead>
               <tr>
-                <th>Название</th>
-                <th>Фото</th>
+                <th style={{ width: "250px" }}>Название</th>
+                <th style={{ width: "54px" }}>Фото</th>
                 <th>Категория</th>
                 <th>Бренд</th>
                 <th>Цена</th>
-                <th>Редактировать</th>
-                <th>Удалить</th>
+                <th style={{ width: "100px" }}>Рейтинг</th>
+                <th style={{ width: "150px" }}>Редактировать</th>
+                <th style={{ width: "75px" }}>Удалить</th>
               </tr>
             </thead>
             <tbody>
               {products.map((item: any) => (
                 <tr key={item.id}>
                   <td>{item.name}</td>
-                  <td>
+                  <td style={{ textAlign: "center" }}>
                     {item.image && (
                       <a
                         href={process.env.REACT_APP_IMG_URL_TOK + item.image}
@@ -154,7 +176,8 @@ const AdminProducts = () => {
                   <td>{item.category?.name || "NULL"}</td>
                   <td>{item.brand?.name || "NULL"}</td>
                   <td>{item.price}</td>
-                  <td>
+                  <td>{item.rating}</td>
+                  <td style={{ textAlign: "center" }}>
                     <Button
                       variant="success"
                       size="sm"
@@ -164,7 +187,7 @@ const AdminProducts = () => {
                       Редактировать
                     </Button>
                   </td>
-                  <td>
+                  <td style={{ textAlign: "center" }}>
                     <Button
                       variant="danger"
                       size="sm"
@@ -178,43 +201,15 @@ const AdminProducts = () => {
               ))}
             </tbody>
           </Table>
-          {/* ПАГИНАЦИЯ */}
-          {totalPages > 1 && (
-            <Pagination className="pagination__eg">{pages}</Pagination>
-          )}
-          {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
-          <Button
-            size="sm"
-            onClick={() => handleLimitClick(10)}
-            className={`btn-primary__eg${limiting === 10 ? " active" : ""}`}
-            style={{ marginRight: "15px" }}
-          >
-            10
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => handleLimitClick(25)}
-            className={`btn-primary__eg${limiting === 25 ? " active" : ""}`}
-            style={{ marginRight: "15px" }}
-          >
-            25
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => handleLimitClick(50)}
-            className={`btn-primary__eg${limiting === 50 ? " active" : ""}`}
-            style={{ marginRight: "15px" }}
-          >
-            50
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => handleLimitClick(100)}
-            className={`btn-primary__eg${limiting === 100 ? " active" : ""}`}
-            style={{ marginRight: "15px" }}
-          >
-            100
-          </Button>
+          {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
+          <PaginSortLimit
+            totalPages={totalPages}
+            pages={pages}
+            sortOrd={sortOrd}
+            mutateSort={mutateSort}
+            handleLimitClick={handleLimitClick}
+            limiting={limiting}
+          />
         </>
       ) : (
         <p>Список товаров пустой</p>
