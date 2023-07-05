@@ -319,6 +319,42 @@ img.card-img-top {
   }
 }
 
+// Комп.PaginSortLimit
+.pagin-sort-limit {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0 1rem;
+
+  .select__eg {
+    width: 15%;
+  }
+  // .limit__eg {
+  button,
+  select {
+    margin: 0 0 0 15px;
+    @media (max-width: 768px) {
+      margin: 0 0 0 10px;
+    }
+  }
+  // }
+}
+
+// СОКРАШЕНИЕ
+.mini-1__eg,
+.mini-2__eg {
+  font-weight: inherit;
+}
+.mini-1__eg {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+.mini-2__eg {
+  @media (max-width: 620px) {
+    display: none;
+  }
+}
+
 // media
 :root body #root .main {
   @media (min-width: 768px) {

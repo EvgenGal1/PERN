@@ -129,6 +129,7 @@ $md5NoErr: 576px;
   // $md4: 768;
   @media (max-width: $md4NoErr) {
     max-width: 576px;
+    max-width: none !important;
   }
   // $md5: 576;
   @media (max-width: $md5NoErr) {

@@ -29,14 +29,7 @@ export const PaginSortLimit = (props: any) => {
   };
 
   return (
-    <div
-      className="pagin-sort-limit"
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        margin: "1rem 0 1rem",
-      }}
-    >
+    <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
       {totalPages > 1 && (
         <Pagination style={{ margin: "0" }} className="pagination__eg">
@@ -47,7 +40,6 @@ export const PaginSortLimit = (props: any) => {
       <Form.Select
         size="sm"
         className="select__eg"
-        style={{ width: "7%" }}
         onChange={(e) => changeSortField(e.target.value)}
       >
         <option value="name">Название</option>
@@ -61,20 +53,23 @@ export const PaginSortLimit = (props: any) => {
         variant="primary"
         className="btn-primary__eg"
       >
-        порядок{" "}
-        {
-          /* sortOrd */ catalog.sortOrd === "ASC"
-            ? "А-Я | 1-9 ▲"
-            : "Я-А | 9-1 ▼"
-        }
+        <span className="mini-1__eg">порядок</span>{" "}
+        {catalog.sortOrd === "ASC" ? (
+          <span>
+            <span className="mini-2__eg">А-Я | 1-9</span> ▲
+          </span>
+        ) : (
+          <span>
+            <span className="mini-2__eg">Я-А | 9-1</span> ▼
+          </span>
+        )}
       </Button>
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
-      <div style={{ display: "flex" }}>
+      <div className="limit__eg" style={{ display: "flex" }}>
         <Button
           size="sm"
           onClick={() => changeLimitState(10)}
           className={`btn-primary__eg${catalog.limit === 10 ? " active" : ""}`}
-          style={{ margin: "0 0 0 15px" }}
         >
           10
         </Button>
@@ -82,7 +77,6 @@ export const PaginSortLimit = (props: any) => {
           size="sm"
           onClick={() => changeLimitState(25)}
           className={`btn-primary__eg${catalog.limit === 25 ? " active" : ""}`}
-          style={{ margin: "0 0 0 15px" }}
         >
           25
         </Button>
@@ -90,7 +84,6 @@ export const PaginSortLimit = (props: any) => {
           size="sm"
           onClick={() => changeLimitState(50)}
           className={`btn-primary__eg${catalog.limit === 50 ? " active" : ""}`}
-          style={{ margin: "0 0 0 15px" }}
         >
           50
         </Button>
@@ -98,7 +91,6 @@ export const PaginSortLimit = (props: any) => {
           size="sm"
           onClick={() => changeLimitState(100)}
           className={`btn-primary__eg${catalog.limit === 100 ? " active" : ""}`}
-          style={{ margin: "0 0 0 15px" }}
         >
           100
         </Button>
