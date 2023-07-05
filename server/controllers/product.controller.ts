@@ -11,19 +11,17 @@ class Product {
   ): Promise<void> {
     try {
       const { categoryId = null, brandId = null } = req.params;
-      let { limit = null, page = null, sortOrd = null } = req.query;
-      console.log(req.params);
+      let {
+        limit = null,
+        page = null,
+        sortOrd = null,
+        sortField = null,
+      } = req.query;
       console.log(req.query);
-      // ! ошб.(limit и page) - Тип "number" не может быть назначен для типа "string | ParsedQs | string[] | ParsedQs[]"
       limit =
-        // ~ врем.измен.по limit
         limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 10;
-      // limit = limit && typeof limit === "string" && /[0-9]+/.test(limit) ? parseInt(limit) : 3;
-      // limit = limit && typeof limit.toString() === "string" && /[0-9]+/.test(limit.toString()) ? parseInt(limit) : 3;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      // page = page && typeof page === "string" && /[0-9]+/.test(page) ? parseInt(page) : 1;
-      // page = page && typeof page.toString() === "string" && /[0-9]+/.test(page.toString()) ? parseInt(page) : 1;
-      const options = { categoryId, brandId, limit, page, sortOrd };
+      const options = { categoryId, brandId, limit, page, sortOrd, sortField };
       const products = await ProductService.getAll(options);
       res.json(products);
     } catch (e) {

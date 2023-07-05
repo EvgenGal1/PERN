@@ -66,7 +66,7 @@ class Product {
   // async getAll(params) {
   async getAll(options: any) {
     // const { categoryId, brandId } = params;
-    const { categoryId, brandId, limit, page, sortOrd } = options;
+    const { categoryId, brandId, limit, page, sortOrd, sortField } = options;
     const where: any = {};
     if (categoryId) where.categoryId = categoryId;
     if (brandId) where.brandId = brandId;
@@ -100,7 +100,7 @@ class Product {
         { model: BrandMapping, as: "brand" },
         { model: CategoryMapping, as: "category" },
       ],
-      order: [["name", /* [sortfield || 'id'] */ sortOrd || "ASC"]],
+      order: [[sortField || "name", sortOrd || "ASC"]],
     });
     return products;
   }

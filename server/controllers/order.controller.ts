@@ -153,8 +153,6 @@ class Order {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      console.log("cntrl req.params.id  : " + req.params.id);
-      console.log("cntrl req.auth.id : " + req.auth.id);
       const order = await OrderService.getOne(
         Number(req.params.id),
         Number(req.auth.id)
