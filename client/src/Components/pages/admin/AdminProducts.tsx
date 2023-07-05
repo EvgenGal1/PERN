@@ -32,23 +32,6 @@ const AdminProducts = () => {
   // сколько всего страниц списка товаров
   const [totalPages, setTotalPages] = useState(1);
 
-  // // limit. кол-во эл. на странице
-  // const [limiting, setLimiting] = useState(10);
-  // const handleLimitClick = (limit: number) => {
-  //   setLimiting(limit);
-  // };
-
-  // // сост.сортировки
-  // const [sortOrd, setSortOrd] = useState("ASC");
-  // // изменен.сост.сортировки
-  // const mutateSort = () => {
-  //   if (sortOrd === "ASC") {
-  //     setSortOrd("DESC");
-  //   } else {
-  //     setSortOrd("ASC");
-  //   }
-  // };
-
   // обраб.КЛИК по № СТР.
   const handlePageClick = (page: any) => {
     setCurrentPage(page);
@@ -94,27 +77,20 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    console.log("ADMprd catalog.limit ", catalog.limit);
-    console.log("ADMprd catalog.sortOrd ", catalog.sortOrd);
     fetchAllProducts(
       null,
       null,
       currentPage,
-      /* limiting, sortOrd */ catalog.limit,
-      catalog.sortOrd
+      catalog.limit,
+      catalog.sortOrd,
+      catalog.sortField
     )
       .then((data) => {
-        console.log("data ADMprod ", data);
         setProducts(data.rows);
         setTotalPages(Math.ceil(data.count / /* limiting */ catalog.limit));
       })
       .finally(() => setFetching(false));
-  }, [
-    change,
-    currentPage,
-    /* limiting, sortOrd */ catalog.limit,
-    catalog.sortOrd,
-  ]);
+  }, [change, currentPage, catalog.limit, catalog.sortOrd, catalog.sortField]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -148,10 +124,6 @@ const AdminProducts = () => {
         totalPages={totalPages}
         pages={pages}
         setChange={setChange}
-        // sortOrd={sortOrd}
-        // mutateSort={mutateSort}
-        // handleLimitClick={handleLimitClick}
-        // limiting={limiting}
       />
       {/* Табл.Товаров */}
       {products.length > 0 ? (

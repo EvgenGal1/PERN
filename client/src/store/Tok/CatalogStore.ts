@@ -12,7 +12,8 @@ class CatalogStore {
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
   _limit = 15; // товаров на страницу
-  _sortOrd = /* null */ "ASC"; // сортировка по порядку
+  _sortOrd = "ASC"; // сортировка по порядку
+  _sortField = "name"; // сортировка по полю
 
   constructor() {
     makeAutoObservable(this);
@@ -60,6 +61,10 @@ class CatalogStore {
 
   get sortOrd() {
     return this._sortOrd;
+  }
+
+  get sortField() {
+    return this._sortField;
   }
 
   get pages() {
@@ -112,6 +117,10 @@ class CatalogStore {
 
   set sortOrd(sortOrd) {
     this._sortOrd = sortOrd;
+  }
+
+  set sortField(sortField) {
+    this._sortField = sortField;
   }
 }
 

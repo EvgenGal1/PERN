@@ -9,7 +9,6 @@ import { Limitation } from "../../../ui/Limitation";
 
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
-  console.log("catalog.count ", catalog.count);
 
   const navigate = useNavigate();
 

@@ -260,6 +260,18 @@ body[data-theme="light"] {
       }
     }
 
+    // ВЫБОРКА
+    .select__eg {
+      background-color: var(--Blue_1);
+      border-color: var(--BlackAmber);
+      color: var(--DeepYellow);
+      &:hover {
+        background-color: var(--Blue_2);
+        border-color: var(--BlackBrown);
+        color: var(--MelonYellow);
+      }
+    }
+
     // МОДАЛЬНЫЙ ОКНА
     .modal__eg {
       background-color: var(--ui-bg);

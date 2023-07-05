@@ -80,7 +80,8 @@ export const fetchAllProducts = async (
   brandId: number | null | any,
   page?: number,
   limit?: number,
-  sortOrd?: string
+  sortOrd?: string,
+  sortField?: string
 ) => {
   let url = "product/getall";
   // фильтрация товаров по категории и/или бренду
@@ -92,6 +93,7 @@ export const fetchAllProducts = async (
       page,
       limit,
       sortOrd,
+      sortField,
     },
   });
   return data;

@@ -8,7 +8,6 @@ import Orders from "../../layout/AppTok/Orders";
 const UserOrders = () => {
   const [orders, setOrders] = useState(null);
   const [fetching, setFetching] = useState(true);
-  console.log("orders ", orders);
 
   useEffect(() => {
     getAllOrders()
