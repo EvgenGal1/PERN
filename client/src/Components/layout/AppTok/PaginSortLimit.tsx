@@ -3,9 +3,32 @@ import { Button, Form, Pagination } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 
-export const PaginSortLimit = (props: any) => {
-  const { totalPages, pages, setChange } = props;
+export const PaginSortLimit = (props?: any) => {
+  const { setFetching, setChange }: any = props;
   const { catalog }: any = useContext(AppContext);
+
+  // обраб.КЛИК по № СТР.
+  const handlePageClick = (page: any) => {
+    // setCurrentPage(page);
+    catalog.currentPage = page;
+    if (typeof setFetching) {
+      setFetching(true);
+    }
+  };
+  // содер.Комп.`Страница`
+  const pages: any = [];
+  for (let page = 1; page <= catalog.totalPages; page++) {
+    pages.push(
+      <Pagination.Item
+        key={page}
+        active={page === catalog.currentPage}
+        activeLabel=""
+        onClick={() => handlePageClick(page)}
+      >
+        {page}
+      </Pagination.Item>
+    );
+  }
 
   // ЛИМИТ. изменен.сост.ограничения
   const changeLimitState = (limit: number) => {
@@ -20,7 +43,6 @@ export const PaginSortLimit = (props: any) => {
     if (e === "rating") catalog.sortField = e;
     setChange((state: any) => !state);
   };
-
   // СОРТИРОВКА ПО ПОРЯДКА. изменен.сост.порядка
   const changeSortOrder = () => {
     if (catalog.sortOrd === "ASC") catalog.sortOrd = "DESC";
@@ -31,7 +53,7 @@ export const PaginSortLimit = (props: any) => {
   return (
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
-      {totalPages > 1 && (
+      {catalog.totalPages > 1 && (
         <Pagination style={{ margin: "0" }} className="pagination__eg">
           {pages}
         </Pagination>
@@ -40,6 +62,7 @@ export const PaginSortLimit = (props: any) => {
       <Form.Select
         size="sm"
         className="select__eg"
+        defaultValue={catalog.sortField}
         onChange={(e) => changeSortField(e.target.value)}
       >
         <option value="name">Название</option>

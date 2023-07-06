@@ -22,48 +22,21 @@ const AdminProducts = () => {
   const [createShow, setCreateShow] = useState(false);
   // модальное окно редактирования
   const [updateShow, setUpdateShow] = useState(false);
-  // для обновления списка после добавления, редактирования, удаления — изменяем состояние
+  // обнов.списка/сост.после добав., редактир., удал.
   const [change, setChange] = useState(false);
-  // id товара, который будем редактировать — для передачи в <UpdateProduct id={…} />
+  // id радактир-го товара, для UpdateProduct id
   const [product, setProduct] = useState(null);
-
-  // текущая страница списка товаров
-  // const [currentPage, setCurrentPage] = useState(1);
-  // сколько всего страниц списка товаров
-  // const [totalPages, setTotalPages] = useState(1);
 
   // скрытие/показ от ширины экрана
   const [matches, setMatches] = useState(
     window.matchMedia("(min-width: 768px)").matches
   );
+  // отслеж.ширины экрана для скрытие/показ по условн.рендер.
   useEffect(() => {
     window
       .matchMedia("(min-width: 768px)")
       .addEventListener("change", (e) => setMatches(e.matches));
   }, []);
-
-  // обраб.КЛИК по № СТР.
-  const handlePageClick = (page: any) => {
-    // setCurrentPage(page);
-    catalog.currentPage = page;
-    setFetching(true);
-  };
-  // содер.Комп.`Страница`
-  const pages: any = [];
-  // for (let page = 1; page <= totalPages; page++) {
-  for (let page = 1; page <= catalog.totalPages; page++) {
-    pages.push(
-      <Pagination.Item
-        key={page}
-        // active={page === currentPage}
-        active={page === catalog.currentPage}
-        activeLabel=""
-        onClick={() => handlePageClick(page)}
-      >
-        {page}
-      </Pagination.Item>
-    );
-  }
 
   // обнов.эл.ч/з Комп.Modal
   const handleUpdateClick = (id: any) => {
@@ -78,10 +51,8 @@ const AdminProducts = () => {
         if (
           catalog.totalPages > 1 &&
           products?.length === 1 &&
-          // currentPage === catalog.totalPages
           catalog.currentPage === catalog.totalPages
         ) {
-          // setCurrentPage(currentPage - 1);
           catalog.currentPage = catalog.totalPages - 1;
         } else {
           setChange(!change);
@@ -95,7 +66,6 @@ const AdminProducts = () => {
     fetchAllProducts(
       null,
       null,
-      // currentPage,
       catalog.currentPage,
       catalog.limit,
       catalog.sortOrd,
@@ -103,14 +73,12 @@ const AdminProducts = () => {
     )
       .then((data) => {
         setProducts(data.rows);
-        // setTotalPages(Math.ceil(data.count / catalog.limit));
         catalog.totalPages = Math.ceil(data.count / catalog.limit);
       })
       .finally(() => setFetching(false));
   }, [
     catalog,
     change,
-    // currentPage,
     catalog.currentPage,
     catalog.limit,
     catalog.sortOrd,
@@ -145,11 +113,7 @@ const AdminProducts = () => {
         setChange={setChange}
       />
       {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-      <PaginSortLimit
-        totalPages={catalog.totalPages}
-        pages={pages}
-        setChange={setChange}
-      />
+      <PaginSortLimit setFetching={setFetching} setChange={setChange} />
       {/* Табл.Товаров */}
       {products.length > 0 ? (
         <>
@@ -218,12 +182,7 @@ const AdminProducts = () => {
             </tbody>
           </Table>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-          <PaginSortLimit
-            // totalPages={totalPages}
-            totalPages={catalog.totalPages}
-            pages={pages}
-            setChange={setChange}
-          />
+          <PaginSortLimit setFetching={setFetching} setChange={setChange} />
         </>
       ) : (
         <p>Список товаров пустой</p>
