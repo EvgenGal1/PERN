@@ -173,6 +173,12 @@ img.card-img-top {
 }
 // таблиза корзины
 .table__eg {
+  thead {
+    tr {
+      th {
+      }
+    }
+  }
   tbody {
     tr {
       vertical-align: inherit;

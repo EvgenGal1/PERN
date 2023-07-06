@@ -32,6 +32,16 @@ const AdminProducts = () => {
   // сколько всего страниц списка товаров
   const [totalPages, setTotalPages] = useState(1);
 
+  // скрытие/показ от ширины экрана
+  const [matches, setMatches] = useState(
+    window.matchMedia("(min-width: 768px)").matches
+  );
+  useEffect(() => {
+    window
+      .matchMedia("(min-width: 768px)")
+      .addEventListener("change", (e) => setMatches(e.matches));
+  }, []);
+
   // обраб.КЛИК по № СТР.
   const handlePageClick = (page: any) => {
     setCurrentPage(page);
@@ -135,10 +145,12 @@ const AdminProducts = () => {
                 <th style={{ width: "54px" }}>Фото</th>
                 <th>Категория</th>
                 <th>Бренд</th>
-                <th>Цена</th>
-                <th style={{ width: "100px" }}>Рейтинг</th>
-                <th style={{ width: "150px" }}>Редактировать</th>
-                <th style={{ width: "75px" }}>Удалить</th>
+                <th>{matches ? "Цена" : "₽"}</th>
+                <th style={{ width: "100px" }}>{matches ? "Рейтинг" : "★"}</th>
+                <th style={{ width: "150px" }}>
+                  {matches ? "Редактировать" : "↻"}
+                </th>
+                <th style={{ width: "75px" }}>{matches ? "Удалить" : "✕"}</th>
               </tr>
             </thead>
             <tbody>
@@ -173,7 +185,7 @@ const AdminProducts = () => {
                       onClick={() => handleUpdateClick(item.id)}
                       className="btn-success__eg"
                     >
-                      Редактировать
+                      {matches ? "Редактировать" : "✎"}
                     </Button>
                   </td>
                   <td style={{ textAlign: "center" }}>
@@ -183,7 +195,7 @@ const AdminProducts = () => {
                       onClick={() => handleDeleteClick(item.id)}
                       className="btn-danger__eg"
                     >
-                      Удалить
+                      {matches ? "Удалить" : "✕"}
                     </Button>
                   </td>
                 </tr>
