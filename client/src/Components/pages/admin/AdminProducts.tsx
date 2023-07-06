@@ -1,6 +1,6 @@
 // ^ Список Товаров
 import { useContext, useState, useEffect } from "react";
-import { Button, Container, Spinner, Table, Pagination } from "react-bootstrap";
+import { Button, Container, Spinner, Table } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import {
@@ -73,16 +73,17 @@ const AdminProducts = () => {
     )
       .then((data) => {
         setProducts(data.rows);
+        catalog.count = data.count;
         catalog.totalPages = Math.ceil(data.count / catalog.limit);
       })
       .finally(() => setFetching(false));
   }, [
-    catalog,
     change,
-    catalog.currentPage,
+    catalog,
     catalog.limit,
     catalog.sortOrd,
     catalog.sortField,
+    catalog.currentPage,
   ]);
 
   if (fetching) {
@@ -112,11 +113,11 @@ const AdminProducts = () => {
         setShow={setUpdateShow}
         setChange={setChange}
       />
-      {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-      <PaginSortLimit setFetching={setFetching} setChange={setChange} />
       {/* Табл.Товаров */}
       {products.length > 0 ? (
         <>
+          {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
+          <PaginSortLimit setFetching={setFetching} setChange={setChange} />
           <Table bordered hover size="sm" className="mt-3 table__eg">
             <thead>
               <tr>

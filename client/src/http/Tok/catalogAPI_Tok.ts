@@ -78,10 +78,10 @@ export const deleteProduct = async (id: number) => {
 export const fetchAllProducts = async (
   categoryId: number | null | any,
   brandId: number | null | any,
-  page?: number,
-  limit?: number,
-  sortOrd?: string,
-  sortField?: string
+  page: number,
+  limit: number,
+  sortOrd: string,
+  sortField: string
 ) => {
   let url = "product/getall";
   // фильтрация товаров по категории и/или бренду

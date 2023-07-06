@@ -1,19 +1,16 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Button, Form, Pagination } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 
 export const PaginSortLimit = (props?: any) => {
-  const { setFetching, setChange }: any = props;
   const { catalog }: any = useContext(AppContext);
+  const { setFetching, setChange }: any = props;
 
   // обраб.КЛИК по № СТР.
   const handlePageClick = (page: any) => {
-    // setCurrentPage(page);
     catalog.currentPage = page;
-    if (typeof setFetching) {
-      setFetching(true);
-    }
+    setFetching(true);
   };
   // содер.Комп.`Страница`
   const pages: any = [];
@@ -30,12 +27,6 @@ export const PaginSortLimit = (props?: any) => {
     );
   }
 
-  // ЛИМИТ. изменен.сост.ограничения
-  const changeLimitState = (limit: number) => {
-    catalog.limit = limit;
-    setChange((state: any) => !state);
-  };
-
   // СОРТИРОВКА ПО ПОЛЮ. изменен.сост.параметра
   const changeSortField = (e: string) => {
     if (e === "name") catalog.sortField = e;
@@ -47,6 +38,12 @@ export const PaginSortLimit = (props?: any) => {
   const changeSortOrder = () => {
     if (catalog.sortOrd === "ASC") catalog.sortOrd = "DESC";
     else catalog.sortOrd = "ASC";
+    setChange((state: any) => !state);
+  };
+
+  // ЛИМИТ. изменен.сост.ограничения
+  const changeLimitState = (limit: number) => {
+    catalog.limit = limit;
     setChange((state: any) => !state);
   };
 
