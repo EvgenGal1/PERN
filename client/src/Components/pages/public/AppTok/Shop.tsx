@@ -84,8 +84,8 @@ const Shop = observer(() => {
     catalog.brand = brand;
     catalog.page = page ?? 1;
     catalog.limit = limit ?? 15;
-    catalog.sortOrd = sortOrd ?? "ASC";
-    catalog.sortField = sortField ?? "name";
+    catalog.sortOrd = sortOrd === null ? catalog.sortOrd : sortOrd;
+    catalog.sortField = sortField === null ? catalog.sortField : sortField;
 
     fetchAllProducts(
       catalog.category,
@@ -114,8 +114,10 @@ const Shop = observer(() => {
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
       if (limit !== catalog.limit) catalog.limit = limit;
-      if (sortOrd !== catalog.sortOrd) catalog.sortOrd = sortOrd;
-      if (sortField !== catalog.sortField) catalog.sortField = sortField;
+      if (sortOrd !== catalog.sortOrd)
+        catalog.sortOrd = sortOrd === null ? catalog.sortOrd : sortOrd;
+      if (sortField !== catalog.sortField)
+        catalog.sortField = sortField === null ? catalog.sortField : sortField;
     } else {
       catalog.category = null;
       catalog.brand = null;
