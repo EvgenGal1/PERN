@@ -174,7 +174,7 @@ const Shop = observer(() => {
     // });
     // return name.toLowerCase().includes(searchInput.toLowerCase());
     // ~ нов.версия
-    if (/* searchInput */ searchValue !== "") {
+    if (searchValue !== "") {
       const filteredData = catalog.products.filter(
         ({ name, price, rating }: any) => {
           if (
