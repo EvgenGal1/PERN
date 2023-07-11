@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Row } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
@@ -6,9 +6,11 @@ import { AppContext } from "../../../layout/AppTok/AppContext";
 import ProductItem from "./ProductItem";
 import { PaginSortLimit } from "../../../layout/AppTok/PaginSortLimit";
 
-const ProductList = observer((props?: any) => {
+const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
-  const { setChange, setFetching }: any = props;
+
+  const [fetching, setFetching] = useState(false);
+  const [change, setChange] = useState(false);
 
   return (
     <>

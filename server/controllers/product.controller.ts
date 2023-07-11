@@ -17,10 +17,13 @@ class Product {
         sortOrd = null,
         sortField = null,
       } = req.query;
+      // console.log(req);
       console.log(req.query);
+      console.log(req.params);
       limit =
-        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 10;
+        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 22;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
+      sortOrd = sortOrd === null || sortOrd === "ASC" ? "ASC" : "DESC";
       const options = { categoryId, brandId, limit, page, sortOrd, sortField };
       const products = await ProductService.getAll(options);
       res.json(products);

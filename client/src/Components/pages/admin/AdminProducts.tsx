@@ -49,11 +49,11 @@ const AdminProducts = () => {
       .then((data) => {
         // если это последняя страница и мы удаляем на ней единственный оставшийся товар — то надо перейти к предыдущей странице
         if (
-          catalog.totalPages > 1 &&
+          catalog.count > 1 &&
           products?.length === 1 &&
-          catalog.currentPage === catalog.totalPages
+          catalog.page === catalog.count
         ) {
-          catalog.currentPage = catalog.totalPages - 1;
+          catalog.page = catalog.count - 1;
         } else {
           setChange(!change);
         }
@@ -66,15 +66,15 @@ const AdminProducts = () => {
     fetchAllProducts(
       null,
       null,
-      catalog.currentPage,
+      catalog.page,
       catalog.limit,
       catalog.sortOrd,
       catalog.sortField
     )
       .then((data) => {
         setProducts(data.rows);
-        catalog.count = data.count;
-        catalog.totalPages = Math.ceil(data.count / catalog.limit);
+        // catalog.count = data.count;
+        catalog.count = Math.ceil(data.count / catalog.limit);
       })
       .finally(() => setFetching(false));
   }, [
@@ -83,12 +83,12 @@ const AdminProducts = () => {
     catalog.limit,
     catalog.sortOrd,
     catalog.sortField,
-    catalog.currentPage,
+    catalog.page,
   ]);
 
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+  // if (fetching) {
+  //   return <Spinner animation="border" />;
+  // }
 
   return (
     <Container>
@@ -117,7 +117,11 @@ const AdminProducts = () => {
       {products.length > 0 ? (
         <>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-          <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+          <PaginSortLimit
+            admin={true}
+            setFetching={setFetching}
+            setChange={setChange}
+          />
           <Table bordered hover size="sm" className="mt-3 table__eg">
             <thead>
               <tr>
@@ -134,56 +138,64 @@ const AdminProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((item: any) => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td style={{ textAlign: "center" }}>
-                    {item.image && (
-                      <a
-                        href={process.env.REACT_APP_IMG_URL_TOK + item.image}
-                        target="_blank"
-                        rel="noreferrer"
+              {fetching ? (
+                <Spinner animation="border" />
+              ) : (
+                products.map((item: any) => (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
+                    <td style={{ textAlign: "center" }}>
+                      {item.image && (
+                        <a
+                          href={process.env.REACT_APP_IMG_URL_TOK + item.image}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {/* фото */}
+                          <img
+                            alt=""
+                            src={process.env.REACT_APP_IMG_URL_TOK + item.image}
+                            width={50}
+                            height={50}
+                          />
+                        </a>
+                      )}
+                    </td>
+                    <td>{item.category.name || "NULL"}</td>
+                    <td>{item.brand.name || "NULL"}</td>
+                    <td>{item.price}</td>
+                    <td>{item.rating}</td>
+                    <td style={{ textAlign: "center" }}>
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() => handleUpdateClick(item.id)}
+                        className="btn-success__eg"
                       >
-                        {/* фото */}
-                        <img
-                          alt=""
-                          src={process.env.REACT_APP_IMG_URL_TOK + item.image}
-                          width={50}
-                          height={50}
-                        />
-                      </a>
-                    )}
-                  </td>
-                  <td>{item.category?.name || "NULL"}</td>
-                  <td>{item.brand?.name || "NULL"}</td>
-                  <td>{item.price}</td>
-                  <td>{item.rating}</td>
-                  <td style={{ textAlign: "center" }}>
-                    <Button
-                      variant="success"
-                      size="sm"
-                      onClick={() => handleUpdateClick(item.id)}
-                      className="btn-success__eg"
-                    >
-                      {matches ? "Редактировать" : "✎"}
-                    </Button>
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDeleteClick(item.id)}
-                      className="btn-danger__eg"
-                    >
-                      {matches ? "Удалить" : "✕"}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                        {matches ? "Редактировать" : "✎"}
+                      </Button>
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDeleteClick(item.id)}
+                        className="btn-danger__eg"
+                      >
+                        {matches ? "Удалить" : "✕"}
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-          <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+          <PaginSortLimit
+            admin={true}
+            setFetching={setFetching}
+            setChange={setChange}
+          />
         </>
       ) : (
         <p>Список товаров пустой</p>

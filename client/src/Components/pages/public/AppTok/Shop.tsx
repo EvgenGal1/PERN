@@ -36,13 +36,13 @@ const getSearchParams = (searchParams: any) => {
     limit = parseInt(limit);
   }
   let sortOrd = searchParams.get("sortOrd");
-  if (sortOrd && /[a-z][A-Z]*/.test(sortOrd)) {
-    sortOrd = parseInt(sortOrd);
-  }
+  // if (sortOrd && /[a-z][A-Z]*/.test(sortOrd)) {
+  //   sortOrd = parseInt(sortOrd);
+  // }
   let sortField = searchParams.get("sortField");
-  if (sortField && /[a-z][A-Z]*/.test(sortField)) {
-    sortField = parseInt(sortField);
-  }
+  // if (sortField && /[a-z][A-Z]*/.test(sortField)) {
+  //   sortField = parseInt(sortField);
+  // }
   return {
     category,
     brand,
@@ -83,9 +83,9 @@ const Shop = observer(() => {
     catalog.category = category;
     catalog.brand = brand;
     catalog.page = page ?? 1;
-    catalog.limit = limit ?? 15;
-    catalog.sortOrd = sortOrd === null ? catalog.sortOrd : sortOrd;
-    catalog.sortField = sortField === null ? catalog.sortField : sortField;
+    catalog.limit = limit ?? 22;
+    catalog.sortOrd = sortOrd;
+    catalog.sortField = sortField;
 
     fetchAllProducts(
       catalog.category,
@@ -97,8 +97,8 @@ const Shop = observer(() => {
     )
       .then((data: any) => {
         catalog.products = data.rows;
-        catalog.count = data.count;
-        catalog.totalPages = Math.ceil(data.count / catalog.limit);
+        // catalog.count = data.count;
+        catalog.count = Math.ceil(data.count / catalog.limit);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line
@@ -114,17 +114,15 @@ const Shop = observer(() => {
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
       if (limit !== catalog.limit) catalog.limit = limit;
-      if (sortOrd !== catalog.sortOrd)
-        catalog.sortOrd = sortOrd === null ? catalog.sortOrd : sortOrd;
-      if (sortField !== catalog.sortField)
-        catalog.sortField = sortField === null ? catalog.sortField : sortField;
+      if (sortOrd !== catalog.sortOrd) catalog.sortOrd = sortOrd;
+      if (sortField !== catalog.sortField) catalog.sortField = sortField;
     } else {
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;
-      catalog.limit = 15;
-      catalog.sortOrd = "ASC";
-      catalog.sortField = "name";
+      catalog.limit = 22;
+      catalog.sortOrd = null; //"ASC";
+      catalog.sortField = null; //"name";
     }
     // eslint-disable-next-line
   }, [location.search]);
@@ -135,15 +133,15 @@ const Shop = observer(() => {
     fetchAllProducts(
       catalog.category,
       catalog.brand,
-      catalog.currentPage,
+      catalog.page,
       catalog.limit,
       catalog.sortOrd,
       catalog.sortField
     )
       .then((data) => {
         catalog.products = data.rows;
-        catalog.count = data.count;
-        catalog.totalPages = Math.ceil(data.count / catalog.limit);
+        // catalog.count = data.count;
+        catalog.count = Math.ceil(data.count / catalog.limit);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line
@@ -156,7 +154,7 @@ const Shop = observer(() => {
     catalog.limit,
     catalog.sortOrd,
     catalog.sortField,
-    catalog.currentPage,
+    catalog.page,
   ]);
 
   // ФИЛЬТРАЦИЯ
@@ -223,10 +221,7 @@ const Shop = observer(() => {
             {productsFetching ? (
               <Spinner animation="border" />
             ) : (
-              <ProductList
-                setChange={setChange}
-                setFetching={setProductsFetching}
-              />
+              <ProductList />
             )}
           </div>
         </Col>
