@@ -11,11 +11,11 @@ class CatalogStore {
   _order = null; // выбранный заказ
   _page = 1; // текущая страница
   _count = 0; // сколько всего товаров
-  _limit = 22; // товаров на страницу
+  _limit = 0; // товаров на страницу
   _sortOrd = null; // "ASC"; // сортировка по порядку
   _sortField = null; // "name"; // сортировка по полю
-  // _totalPages = 1; // текущая страница
-  // _currentPage = 1; // сколько всего страниц
+  // доп.limit для скрытия его в url пока не выбран limit на странице
+  _InterLimit = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -61,6 +61,10 @@ class CatalogStore {
     return this._limit;
   }
 
+  get InterLimit() {
+    return this._InterLimit;
+  }
+
   get sortOrd() {
     return this._sortOrd;
   }
@@ -73,14 +77,6 @@ class CatalogStore {
   get pages() {
     return Math.ceil(this.count / this.limit);
   }
-
-  // get totalPages() {
-  //   return this._totalPages;
-  // }
-
-  // get currentPage() {
-  //   return this._currentPage;
-  // }
 
   set categories(categories) {
     this._categories = categories;
@@ -125,6 +121,10 @@ class CatalogStore {
     this._limit = limit;
   }
 
+  set InterLimit(InterLimit) {
+    this._InterLimit = InterLimit;
+  }
+
   set sortOrd(sortOrd) {
     this._sortOrd = sortOrd;
   }
@@ -132,14 +132,6 @@ class CatalogStore {
   set sortField(sortField) {
     this._sortField = sortField;
   }
-
-  // set totalPages(totalPages) {
-  //   this._totalPages = totalPages;
-  // }
-
-  // set currentPage(currentPage) {
-  //   this._currentPage = currentPage;
-  // }
 }
 
 export default CatalogStore;

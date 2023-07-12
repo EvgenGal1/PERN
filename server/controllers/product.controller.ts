@@ -21,8 +21,11 @@ class Product {
       console.log(req.query);
       console.log(req.params);
       limit =
-        limit && /[0-9]+/.test(limit) && parseInt(limit) ? parseInt(limit) : 22;
+        limit && /[0-9]+/.test(limit) && parseInt(limit) && limit > 0
+          ? parseInt(limit)
+          : 20;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
+      console.log("limit = " + limit);
       sortOrd = sortOrd === null || sortOrd === "ASC" ? "ASC" : "DESC";
       const options = { categoryId, brandId, limit, page, sortOrd, sortField };
       const products = await ProductService.getAll(options);

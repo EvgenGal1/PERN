@@ -8,8 +8,10 @@ export const PaginSortLimit = (props: any) => {
   const { catalog }: any = useContext(AppContext);
   const { setFetching, setChange }: any = props;
   const navigate = useNavigate();
+  console.log("catalog.limit ------------------------ ", catalog.limit);
 
   const fnCreateSearchParams = () => {
+    console.log("fnSerch -- ", 0);
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
@@ -36,6 +38,8 @@ export const PaginSortLimit = (props: any) => {
   // содер.Комп.`Страница`
   const pages: any = [];
   for (let page = 1; page <= catalog.count; page++) {
+    console.log("PaSoLi FOR catalog.count ===== ", catalog.count);
+    console.log("PaSoLi FOR catalog.limit ===== ", catalog.limit);
     pages.push(
       <Pagination.Item
         key={page}
@@ -50,6 +54,7 @@ export const PaginSortLimit = (props: any) => {
 
   // СОРТИРОВКА ПО ПОЛЮ. изменен.сост.параметра
   const changeSortField = (e: string) => {
+    console.log("SortField 1 ", 1);
     if (e === "name") catalog.sortField = e;
     if (e === "price") catalog.sortField = e;
     if (e === "rating") catalog.sortField = e;
@@ -60,6 +65,7 @@ export const PaginSortLimit = (props: any) => {
   };
   // СОРТИРОВКА ПО ПОРЯДКА. изменен.сост.порядка
   const changeSortOrder = () => {
+    console.log("SortOrder 1 ", 1);
     if (catalog.sortOrd === "ASC" || catalog.sortOrd === null)
       catalog.sortOrd = "DESC";
     else catalog.sortOrd = "ASC";
@@ -71,6 +77,7 @@ export const PaginSortLimit = (props: any) => {
 
   // ЛИМИТ. изменен.сост.ограничения
   const changeLimitState = (limit: number) => {
+    console.log("PaSoLi limit ", limit);
     if (limit !== catalog.limit) {
       catalog.limit = limit;
       if (!props.admin) {
@@ -84,7 +91,10 @@ export const PaginSortLimit = (props: any) => {
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
       {catalog.count > 1 && (
-        <Pagination style={{ margin: "0" }} className="pagination__eg">
+        <Pagination
+          style={{ margin: "0", flexWrap: "wrap" }}
+          className="pagination__eg"
+        >
           {pages}
         </Pagination>
       )}

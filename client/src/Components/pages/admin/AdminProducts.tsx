@@ -62,6 +62,7 @@ const AdminProducts = () => {
       .catch((error) => alert(error.response.data.message));
   };
 
+  console.log("catalog.page 0 ", catalog.page);
   useEffect(() => {
     fetchAllProducts(
       null,
@@ -73,17 +74,27 @@ const AdminProducts = () => {
     )
       .then((data) => {
         setProducts(data.rows);
-        // catalog.count = data.count;
-        catalog.count = Math.ceil(data.count / catalog.limit);
+        console.log("PSL usEf 1 data ", data);
+        console.log("catalog.limit 1 ", catalog.limit);
+        console.log("catalog.count 1 ", catalog.count);
+        console.log("catalog.page 1 ", catalog.page);
+        let InterLimit = catalog.limit;
+        if (catalog.limit === 0) InterLimit = /* data.rows.length */ 11;
+        catalog.limit = Math.ceil(data.limit);
+        catalog.InterLimit = Math.ceil(data.limit);
+        catalog.count = Math.ceil(data.count / data.limit);
+        console.log("catalog.limit 2 ", catalog.limit);
+        console.log("catalog.count 2 ", catalog.count);
+        console.log("catalog.page 2 ", catalog.page);
       })
       .finally(() => setFetching(false));
   }, [
     change,
     catalog,
+    catalog.page,
     catalog.limit,
     catalog.sortOrd,
     catalog.sortField,
-    catalog.page,
   ]);
 
   // if (fetching) {

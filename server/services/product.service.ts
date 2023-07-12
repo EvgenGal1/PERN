@@ -84,13 +84,18 @@ class Product {
     // Пропуск n эл.в BD е/и page > 1
     if (page > 1) {
       offset = (page - 1) * limit;
+      console.log("1 : " + offset);
     }
     // е/и эл.в BD МЕНЬШЕ чем в запросе(offset)
-    if (countAll.count <= offset)
-      offset =
-        countAll.count -
-        (countAll.count - limit * Math.floor(countAll.count / limit));
-
+    if (countAll.count <= offset) {
+      // offset =
+      //   countAll.count -
+      //   (countAll.count - limit * Math.floor(countAll.count / limit));
+      offset = countAll.count - limit;
+      console.log("2 : " + offset);
+    }
+    if (offset < 0) offset = 0;
+    console.log("offset : " + offset);
     const products = await ProductMapping.findAndCountAll({
       where,
       limit,
@@ -102,7 +107,10 @@ class Product {
       ],
       order: [[sortField || "name", sortOrd || "ASC"]],
     });
-    return products;
+    console.log("prod.count", products.count);
+    console.log("prod.rows", products.rows.length);
+    // return products;
+    return { ...products, limit };
   }
 
   async getOne(id: number) {

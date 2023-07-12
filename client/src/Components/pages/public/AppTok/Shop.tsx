@@ -57,6 +57,8 @@ const getSearchParams = (searchParams: any) => {
 // ^ observer `наблюдатель` - обётрка Комп.для слежен.за obser-значен., используемые Комп-ми и render при измен.
 const Shop = observer(() => {
   const { catalog }: any = useContext(AppContext);
+  console.log("catalog.limit ===================== ", catalog.limit);
+  console.log("catalog.pages  ", catalog.pages);
 
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -83,7 +85,7 @@ const Shop = observer(() => {
     catalog.category = category;
     catalog.brand = brand;
     catalog.page = page ?? 1;
-    catalog.limit = limit ?? 22;
+    catalog.limit = limit ?? 0;
     catalog.sortOrd = sortOrd;
     catalog.sortField = sortField;
 
@@ -97,8 +99,16 @@ const Shop = observer(() => {
     )
       .then((data: any) => {
         catalog.products = data.rows;
-        // catalog.count = data.count;
-        catalog.count = Math.ceil(data.count / catalog.limit);
+        console.log("SHP usEf 000 data ", data);
+        console.log("SHP usEf 000 catalog.limit ", catalog.limit);
+        console.log("SHP usEf 000 catalog.InterLimit ", catalog.InterLimit);
+        console.log("SHP usEf 000 catalog.count ", catalog.count);
+        catalog.limit = Math.ceil(data.limit);
+        catalog.InterLimit = Math.ceil(data.limit);
+        catalog.count = Math.ceil(data.count / data.limit);
+        console.log("SHP usEf 111 catalog.limit ", catalog.limit);
+        console.log("SHP usEf 111 catalog.InterLimit ", catalog.InterLimit);
+        console.log("SHP usEf 111 catalog.count ", catalog.count);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line
@@ -120,7 +130,7 @@ const Shop = observer(() => {
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;
-      catalog.limit = 22;
+      catalog.limit = 0;
       catalog.sortOrd = null; //"ASC";
       catalog.sortField = null; //"name";
     }
@@ -140,8 +150,14 @@ const Shop = observer(() => {
     )
       .then((data) => {
         catalog.products = data.rows;
-        // catalog.count = data.count;
+        console.log("SHP usEf 2 data ", data);
+        console.log("SHP usEf 2 catalog.limit ", catalog.limit);
+        console.log("SHP usEf 2 catalog.InterLimit ", catalog.InterLimit);
+        console.log("SHP usEf 2 catalog.count ", catalog.count);
         catalog.count = Math.ceil(data.count / catalog.limit);
+        // catalog.count = Math.ceil(data.count / catalog.InterLimit );
+        console.log("SHP usEf 222 catalog.limit ", catalog.limit);
+        console.log("SHP usEf 222 catalog.count ", catalog.count);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line

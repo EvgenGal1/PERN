@@ -16,7 +16,11 @@ const ProductList = observer(() => {
     <>
       <Row className="mb-3">
         {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-        <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+        {catalog.products.length ? (
+          <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+        ) : (
+          ""
+        )}
         {/* СПИСОК ПРОДУКТОВ */}
         {/* {searchInput.length > 0 ? (
           // ПО ПОИСКУ
@@ -44,7 +48,11 @@ const ProductList = observer(() => {
         )}
       </Row>
       {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-      <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+      {catalog.products.length ? (
+        <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+      ) : (
+        ""
+      )}
     </>
   );
 });
