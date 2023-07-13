@@ -33,6 +33,7 @@ interface CreateData {
 interface UpdateData {
   name?: string;
   price?: number;
+  rating?: number;
   categoryId?: number;
   brandId?: number;
   image?: string;
@@ -188,8 +189,9 @@ class Product {
       categoryId = product.categoryId,
       brandId = product.brandId,
       image = file ? file : product.image,
+      rating = product.rating,
     } = data;
-    await product.update({ name, price, image, categoryId, brandId });
+    await product.update({ name, price, rating, image, categoryId, brandId });
     if (data.props) {
       // свойства товара
       // удаляем старые и добавляем новые

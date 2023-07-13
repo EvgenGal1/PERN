@@ -139,11 +139,13 @@ const UpdateProduct = (props: any) => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    console.log("event ", event);
 
     /*
      * На первый взгляд кажется, что переменная correct не нужна, можно обойтись valid, но это не так. Нельзя использовать значение valid сразу после изменения этого значения — ф-ция setValid не изменяет значение состояния мгновенно. Вызов функции лишь означает — React «принял к сведению» наше сообщение, что состояние нужно изменить.
      */
     const correct = isValid(value);
+    console.log("correct ", correct);
     setValid(correct);
 
     // если введенные данные прошли проверку — можно отправлять их на сервер
@@ -154,6 +156,7 @@ const UpdateProduct = (props: any) => {
       data.append("categoryId", value.category);
       data.append("brandId", value.brand);
       if (image) data.append("image", image, image.name);
+      console.log("data ", data);
 
       // нужно обновить, добавить или удалить характеристики и обязательно дождаться ответа сервера — поэтому функция updateProperties() объявлена как async, а в теле функции для выполнения действия с каждой хар-кой используется await
       if (properties.length) {

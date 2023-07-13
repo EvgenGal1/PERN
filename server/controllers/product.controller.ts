@@ -61,6 +61,10 @@ class Product {
 
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      console.log("REQEST : " + req);
+      // console.log(req);
+      console.log(req.body);
+      console.log("req.body : " + req.body);
       if (!req.params.id) {
         throw new Error("Не указан id товара");
       }

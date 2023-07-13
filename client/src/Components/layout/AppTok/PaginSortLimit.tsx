@@ -38,8 +38,8 @@ export const PaginSortLimit = (props: any) => {
   // содер.Комп.`Страница`
   const pages: any = [];
   for (let page = 1; page <= catalog.count; page++) {
-    console.log("PaSoLi FOR catalog.count ===== ", catalog.count);
-    console.log("PaSoLi FOR catalog.limit ===== ", catalog.limit);
+    // console.log("PaSoLi FOR catalog.count ===== ", catalog.count);
+    // console.log("PaSoLi FOR catalog.limit ===== ", catalog.limit);
     pages.push(
       <Pagination.Item
         key={page}
