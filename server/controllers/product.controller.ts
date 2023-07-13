@@ -17,15 +17,11 @@ class Product {
         sortOrd = null,
         sortField = null,
       } = req.query;
-      // console.log(req);
-      console.log(req.query);
-      console.log(req.params);
       limit =
         limit && /[0-9]+/.test(limit) && parseInt(limit) && limit > 0
           ? parseInt(limit)
           : 20;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      console.log("limit = " + limit);
       sortOrd = sortOrd === null || sortOrd === "ASC" ? "ASC" : "DESC";
       const options = { categoryId, brandId, limit, page, sortOrd, sortField };
       const products = await ProductService.getAll(options);
@@ -61,10 +57,6 @@ class Product {
 
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      console.log("REQEST : " + req);
-      // console.log(req);
-      console.log(req.body);
-      console.log("req.body : " + req.body);
       if (!req.params.id) {
         throw new Error("Не указан id товара");
       }

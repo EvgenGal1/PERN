@@ -4,7 +4,7 @@ import { Product as ProductMapping } from "../models/mapping";
 import { User as UserMapping } from "../models/mapping";
 
 class Rating {
-  async getOne(productId) {
+  async getOne(productId: number) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -16,10 +16,11 @@ class Rating {
       const rates = await RatingMapping.sum("rate", { where: { productId } });
       return { rates, votes, rating: rates / votes };
     }
+    // `ставки голоса рейтинг`
     return { rates: 0, votes: 0, rating: 0 };
   }
 
-  async create(userId, productId, rate) {
+  async create(rate: number, productId: number, userId: number) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -28,8 +29,38 @@ class Rating {
     if (!user) {
       throw new Error("Пользователь не найден в БД");
     }
-    const rating = await RatingMapping.create({ userId, productId, rate });
-    return rating;
+    // находим/удаляем данн.Рейтинга пользователя е/и он уже голосовал
+    const ratingUserId = await RatingMapping.findOne({ where: { userId } });
+    if (ratingUserId.userId === userId) {
+      await RatingMapping.destroy({
+        where: { userId: userId },
+      });
+    }
+    // созд.нов.Рейтинг
+    const rating = await RatingMapping.create({ rate, productId, userId });
+    // запросы для вычисления средн.Рейтинга
+    const votes = await RatingMapping.count({ where: { productId } });
+    const rates = await RatingMapping.sum("rate", { where: { productId } });
+    const ratingAll = rates / votes;
+    // перем./запрос для обнов.Товара
+    let name = product.name;
+    let price = product.price;
+    let image = product.image;
+    let categoryId = product.categoryId;
+    let brandId = product.brandId;
+    if (ratingAll) {
+      await product.update({
+        name: name,
+        price: price,
+        rating: ratingAll,
+        image: image,
+        categoryId: categoryId,
+        brandId: brandId,
+      });
+    }
+    // return rating;
+    // return { ...rating, ratingAll };
+    return { ...rating.dataValues, ratingAll };
   }
 }
 

@@ -85,7 +85,6 @@ class Product {
     // Пропуск n эл.в BD е/и page > 1
     if (page > 1) {
       offset = (page - 1) * limit;
-      console.log("1 : " + offset);
     }
     // е/и эл.в BD МЕНЬШЕ чем в запросе(offset)
     if (countAll.count <= offset) {
@@ -93,10 +92,8 @@ class Product {
       //   countAll.count -
       //   (countAll.count - limit * Math.floor(countAll.count / limit));
       offset = countAll.count - limit;
-      console.log("2 : " + offset);
     }
     if (offset < 0) offset = 0;
-    console.log("offset : " + offset);
     const products = await ProductMapping.findAndCountAll({
       where,
       limit,
@@ -108,8 +105,6 @@ class Product {
       ],
       order: [[sortField || "name", sortOrd || "ASC"]],
     });
-    console.log("prod.count", products.count);
-    console.log("prod.rows", products.rows.length);
     // return products;
     return { ...products, limit };
   }
@@ -182,14 +177,14 @@ class Product {
     if (file && product.image) {
       FileService.delete(product.image);
     }
-    // подготавливаем данные, которые надо обновить в базе данных
+    // подготовка вход.данн. для обнов. в БД
     const {
       name = product.name,
       price = product.price,
+      rating = product.rating,
       categoryId = product.categoryId,
       brandId = product.brandId,
       image = file ? file : product.image,
-      rating = product.rating,
     } = data;
     await product.update({ name, price, rating, image, categoryId, brandId });
     if (data.props) {

@@ -6,15 +6,15 @@ import BasketService from "../services/basket.service";
 import UserService from "../services/user.service";
 
 class Order {
-  // созд.admin
+  // созд.admin`администратор`
   adminCreate = async (req, res, next) => {
     await this.create(req, res, next, "admin");
   };
-  // созд.user
+  // созд.user`пользователь`
   userCreate = async (req, res, next) => {
     await this.create(req, res, next, "user");
   };
-  // созд.guest
+  // созд.guest`гость`
   guestCreate = async (req, res, next) => {
     await this.create(req, res, next, "guest");
   };

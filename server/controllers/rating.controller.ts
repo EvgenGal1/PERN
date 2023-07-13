@@ -14,9 +14,7 @@ class Rating {
   async create(req, res, next) {
     try {
       const { productId, rate } = req.params;
-      // ! врем.откл.
-      // const rating = await RatingService.create(req.auth.userId, productId, rate);
-      const rating = await RatingService.create(3, productId, rate);
+      const rating = await RatingService.create(rate, productId, req.auth.id);
       res.json(rating);
     } catch (e) {
       next(AppError.badRequest(e.message));
