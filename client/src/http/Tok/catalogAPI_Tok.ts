@@ -104,8 +104,22 @@ export const fetchOneProduct = async (id: number) => {
   return data;
 };
 
+/*
+ * Создание, обновление Рейтинга Товара
+ */
 export const fetchProdRating = async (id: number) => {
   const { data } = await guestInstance.get(`rating/product/${id}`);
+  return data;
+};
+
+export const createProdRating = async (
+  authUserId: number,
+  productId: number,
+  rate: number
+) => {
+  const { data } = await authInstance.post(
+    `rating/product/${productId}/rate/${rate}`
+  );
   return data;
 };
 

@@ -64,9 +64,7 @@ const Product = () => {
             <Image
               width={300}
               height={300}
-              // ! врем.простав.полный путь. Из env чёт не читает
-              // src={process.env.REACT_APP_IMG_URL_TOK + product.image}
-              src={"http://localhost:5050/" + product.image}
+              src={process.env.REACT_APP_IMG_URL_TOK + product.image}
             />
           ) : (
             <Image

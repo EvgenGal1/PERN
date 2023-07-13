@@ -57,8 +57,6 @@ const getSearchParams = (searchParams: any) => {
 // ^ observer `наблюдатель` - обётрка Комп.для слежен.за obser-значен., используемые Комп-ми и render при измен.
 const Shop = observer(() => {
   const { catalog }: any = useContext(AppContext);
-  console.log("catalog.limit ===================== ", catalog.limit);
-  console.log("catalog.pages  ", catalog.pages);
 
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -100,15 +98,8 @@ const Shop = observer(() => {
       .then((data: any) => {
         catalog.products = data.rows;
         console.log("SHP usEf 000 data ", data);
-        console.log("SHP usEf 000 catalog.limit ", catalog.limit);
-        console.log("SHP usEf 000 catalog.InterLimit ", catalog.InterLimit);
-        console.log("SHP usEf 000 catalog.count ", catalog.count);
         catalog.limit = Math.ceil(data.limit);
-        catalog.InterLimit = Math.ceil(data.limit);
         catalog.count = Math.ceil(data.count / data.limit);
-        console.log("SHP usEf 111 catalog.limit ", catalog.limit);
-        console.log("SHP usEf 111 catalog.InterLimit ", catalog.InterLimit);
-        console.log("SHP usEf 111 catalog.count ", catalog.count);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line
@@ -151,13 +142,7 @@ const Shop = observer(() => {
       .then((data) => {
         catalog.products = data.rows;
         console.log("SHP usEf 2 data ", data);
-        console.log("SHP usEf 2 catalog.limit ", catalog.limit);
-        console.log("SHP usEf 2 catalog.InterLimit ", catalog.InterLimit);
-        console.log("SHP usEf 2 catalog.count ", catalog.count);
         catalog.count = Math.ceil(data.count / catalog.limit);
-        // catalog.count = Math.ceil(data.count / catalog.InterLimit );
-        console.log("SHP usEf 222 catalog.limit ", catalog.limit);
-        console.log("SHP usEf 222 catalog.count ", catalog.count);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line

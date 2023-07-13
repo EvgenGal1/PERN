@@ -8,8 +8,8 @@ export const PaginSortLimit = (props: any) => {
   const { catalog }: any = useContext(AppContext);
   const { setFetching, setChange }: any = props;
   const navigate = useNavigate();
-  console.log("catalog.limit ------------------------ ", catalog.limit);
 
+  // созд.парам.поиска в строку URL
   const fnCreateSearchParams = () => {
     console.log("fnSerch -- ", 0);
     const params: any = {};

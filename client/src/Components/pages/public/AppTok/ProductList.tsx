@@ -9,6 +9,7 @@ import { PaginSortLimit } from "../../../layout/AppTok/PaginSortLimit";
 const ProductList = observer(() => {
   const { catalog }: any = useContext(AppContext);
 
+  // врем.заглушки для PaginSortLimit
   const [fetching, setFetching] = useState(false);
   const [change, setChange] = useState(false);
 

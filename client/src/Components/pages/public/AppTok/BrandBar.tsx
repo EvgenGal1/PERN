@@ -7,7 +7,6 @@ import { AppContext } from "../../../layout/AppTok/AppContext";
 
 const BrandBar = observer(() => {
   const { catalog } = useContext(AppContext);
-  console.log("catalog.limit _________________________ ", catalog.limit);
 
   const navigate = useNavigate();
 
