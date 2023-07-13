@@ -45,14 +45,14 @@ const Brand = sequelize.define("brand", {
 
 // связь между товаром и пользователем через промежуточную таблицу «rating» у этой таблицы будет составной первичный ключ (product_id + user_id)
 const Rating = sequelize.define("rating", {
-  rate: { type: DataTypes.INTEGER, allowNull: false },
+  rate: { type: DataTypes.FLOAT, allowNull: false },
 });
 
 // модель «Товар», таблица БД «products»
 const Product = sequelize.define("product", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  price: { type: DataTypes.INTEGER, allowNull: false },
+  price: { type: DataTypes.FLOAT, allowNull: false },
   rating: { type: DataTypes.INTEGER, defaultValue: 0 },
   image: { type: DataTypes.STRING, allowNull: false },
 });
