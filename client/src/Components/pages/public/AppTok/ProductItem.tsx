@@ -13,11 +13,11 @@ import {
 // Комп.Рейтинга. Пуст./Полн.
 const OutlineStar = () => {
   const OutlineStar = "☆";
-  return <span>{OutlineStar}</span>;
+  return <>{OutlineStar}</>;
 };
 const FillStar = () => {
   const FillStar = "★";
-  return <span>{FillStar}</span>;
+  return <>{FillStar}</>;
 };
 
 const ProductItem = ({ data }: any) => {
@@ -47,8 +47,7 @@ const ProductItem = ({ data }: any) => {
     const correct = isValid(rating);
     if (user.isAuth && correct.rating) {
       console.log("user.id ", user.id);
-      /* const cra = */
-      /* await */ createProdRating(user.id, data.id, rating)
+      await createProdRating(user.id, data.id, rating)
         .then((data) => {
           console.log("CRA data ", data);
           ratingNew = data.ratingAll;
@@ -84,13 +83,39 @@ const ProductItem = ({ data }: any) => {
     }
   };
 
-  // логика обрезания/замены последн.буквы
+  // логика обрезания/замены последн.БУКВ
   let str = data.category.name;
+  // удал.посл.эл.
   str = str.slice(0, -1);
   if (str === "букв") str = str + "а";
   if (str === "геро") str = str + "й";
   if (str === "сердц") str = str + "е";
   if (str === "молекул") str = str + "а";
+  // логика сокращения ЦЕНЫ
+  let price = data.price.toString();
+  if (price > 1000000000) {
+    // ! не раб. split + splice + join. приходится разбивать
+    // console.log("price", price.split("").splice(2, 0, ":").join(""));
+    // убираем последн.нули, добавл. B(биллион)
+    price = price.replace(/000000$/g, " B");
+    // разбив.на массив
+    let priceSpit = price.split("");
+    // с инд.1, удал.0, добав.запятую(,)
+    priceSpit.splice(1, 0, ",");
+    // превращ.в строку
+    price = priceSpit.join("");
+    // ^ доп.разбиение на 3 цифры
+    // var num = 1234567890;
+    // var result11 = num.toLocaleString(); // 1 234 567 890
+    // function numberWithSpaces(x: any) {
+    //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    // }
+    // numberWithSpaces(1003540) // 1 003 540
+  }
+  if (price > 1000000) {
+    price = price.toString().replace(/000000$/g, " M");
+    console.log("price 22 ", price);
+  }
 
   return (
     <Col
@@ -109,21 +134,48 @@ const ProductItem = ({ data }: any) => {
         ) : (
           <Card.Img variant="top" src="http://via.placeholder.com/200" />
         )}
-        <Card.Body style={{ height: "100%", overflow: "hidden" }}>
+        <Card.Body
+          style={{ height: "100%", overflow: "hidden", padding: "10px" }}
+        >
           <div>
-            {/* Цена: */} <span>{data.price}</span>
+            {/* Цена: */}
+            <span
+              style={{
+                fontSize: "50px",
+                opacity: "0.5",
+              }}
+            >
+              {price}
+            </span>
           </div>
           <div>
             <div>
-              {/* Рейтинг: */}★★★★★{" "}
-              <span>
-                {/* {one} +  */}
-                {ratingNew} = {data.rating} _{ratingNew} -{" "}
-                {data.ratingAll ? data.ratingAll : data.rating}
-              </span>
+              {/* Рейтинг: */}
+              {ratingNew} = {data.rating} _{ratingNew} -{" "}
+              {data.ratingAll ? data.ratingAll : data.rating}
             </div>
-            <br />
-            <div className="youtube__v=McF22__Jz_I">
+            {/* <br /> */}
+            <div
+              className="youtube__v=McF22__Jz_I"
+              style={{
+                position: "relative",
+              }}
+            >
+              {/* Рейтинг: */}
+              <span
+                style={{
+                  position: "absolute",
+                  fontSize: "40px",
+                  opacity: "0.5",
+                  top: "50%",
+                  right: "0",
+                  letterSpacing: "-4px",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                {/* Рейтинг: */} {ratingNew}{" "}
+                {/* {data.rating} {ratingNew} {data.rating} */}
+              </span>
               {Array(5)
                 .fill(0)
                 .map((_, index) =>
@@ -132,7 +184,12 @@ const ProductItem = ({ data }: any) => {
                       onMouseOver={() => setHoverStar(index + 1)}
                       onMouseLeave={() => setHoverStar(0)}
                       onClick={() => handleSubmit(index + 1)}
-                      style={{ fontSize: "35px", color: "orange" }}
+                      style={{
+                        fontWeight: "100",
+                        display: "inline-block",
+                        fontSize: "35px",
+                        color: "orange",
+                      }}
                       key={index}
                     >
                       <FillStar />
@@ -142,7 +199,12 @@ const ProductItem = ({ data }: any) => {
                       onMouseOver={() => setHoverStar(index + 1)}
                       onMouseLeave={() => setHoverStar(0)}
                       onClick={() => handleSubmit(index + 1)}
-                      style={{ fontSize: "35px", color: "orange" }}
+                      style={{
+                        fontWeight: "100",
+                        display: "inline-block",
+                        fontSize: "35px",
+                        color: "orange",
+                      }}
                       key={index}
                     >
                       <OutlineStar />
@@ -150,12 +212,12 @@ const ProductItem = ({ data }: any) => {
                   )
                 )}
             </div>
-            <br />
+            {/* <br /> */}
           </div>
           {/* <br /> */}
           <div>
             <strong>
-              {data.brand.name} {data.name}
+              {str} {data.brand.name} {data.name}
             </strong>
           </div>
         </Card.Body>
