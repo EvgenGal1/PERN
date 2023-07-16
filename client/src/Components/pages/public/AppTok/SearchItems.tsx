@@ -20,7 +20,7 @@ const FillStar = () => {
   return <>{FillStar}</>;
 };
 
-const ProductItem = ({ data }: any) => {
+const SearchItems = ({ data }: any) => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -83,88 +83,14 @@ const ProductItem = ({ data }: any) => {
     }
   };
 
-  // логика обрезания/замены последн.БУКВ КАТЕГОРИИ
-  let strCat = data.category.name;
-  // удал.посл.эл.назв.
-  strCat = strCat.slice(0, -1);
-  console.log("strCat ", strCat);
-  if (strCat === "букв" || strCat === "амбиграмм" || strCat === "молекул")
-    strCat = strCat + "а";
-  if (strCat === "амбиграмма") strCat = "⇔";
-  if (strCat === "буква") strCat = "¶";
-  if (strCat === "молекула") strCat = "⚙";
-  if (strCat === "геро") {
-    // strCat = strCat + "й";
-    strCat = "ν";
-  }
-  if (strCat === "сердц") {
-    // strCat = strCat + "е";
-    strCat = "❤";
-  }
-  if (strCat === "холодильник") strCat = "❉";
-  if (strCat === "смартфон")
-    strCat = (
-      <>
-        <svg
-          // xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          className="bi bi-phone"
-          viewBox="0 0 16 16"
-        >
-          <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z" />
-          <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-        </svg>
-      </>
-    );
-  // логика обрезания/замены последн.БУКВ БРЕНДА
-  // let strBrnd = data.brand.name;
-  // if (strBrnd === ("Apple" || "Samsung")) {  }
-  // логика сокращ.НАЗВАНИЯ
-  let strName = data.name;
-  if (
-    strName.includes("Первая") ||
-    strName.includes("Вторая") ||
-    strName.includes("Третья")
-  ) {
-    let endStrName = strName.slice(6);
-    if (strName.includes("Первая")) {
-      strName = "1-ая";
-    }
-    if (strName.includes("Вторая")) {
-      strName = "2-ая";
-    }
-    if (strName.includes("Третья")) {
-      strName = "3-я";
-    }
-    strName += endStrName;
-  }
-  if (strName.includes("Четвёртая")) {
-    let endStrName = strName.slice(9);
-    strName = "4-ая";
-    strName += endStrName;
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (распозн)")) {
-    strName = strName.slice(0, -10);
-    strName += " (р)";
-  }
-  if (strName.includes(" (запут)")) {
-    strName = strName.slice(0, -8);
-    strName += " (з)";
-  }
+  // логика обрезания/замены последн.БУКВ
+  let str = data.category.name;
+  // удал.посл.эл.
+  str = str.slice(0, -1);
+  if (str === "букв") str = str + "а";
+  if (str === "геро") str = str + "й";
+  if (str === "сердц") str = str + "е";
+  if (str === "молекул") str = str + "а";
   // логика сокращения ЦЕНЫ
   let price = data.price.toString();
   if (price > 1000000000) {
@@ -290,7 +216,7 @@ const ProductItem = ({ data }: any) => {
           {/* <br /> */}
           <div>
             <strong>
-              {strCat} {data.brand.name} {strName}
+              {str} {data.brand.name} {data.name}
             </strong>
           </div>
         </Card.Body>
@@ -299,4 +225,4 @@ const ProductItem = ({ data }: any) => {
   );
 };
 
-export default ProductItem;
+export default SearchItems;
