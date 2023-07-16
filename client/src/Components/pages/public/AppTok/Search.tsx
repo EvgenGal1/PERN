@@ -1,41 +1,60 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
+import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
 
-const SearchBar = observer(() => {
+const Search = observer(() => {
   const { catalog }: any = useContext(AppContext);
 
   // ФИЛЬТРАЦИЯ
+  // все данн.с сервера
+  const [searchAll, setSearchAll] = useState([]);
   // inp.поиска
   const [searchInput, setSearchInput] = useState("");
   // результ.фильтра
-  const [filteredResults, setFilteredResults] = useState([]);
+  // const [filteredResults, setFilteredResults] = useState([]);
+
+  useEffect(() => {
+    const filteredData = searchAll.filter(({ name, price, rating }: any) => {
+      if (
+        name.toLowerCase().includes(searchInput.toLowerCase()) ||
+        String(price).includes(searchInput) ||
+        String(rating).includes(searchInput)
+      ) {
+        return name;
+      }
+    });
+    catalog.products = filteredData;
+  }, [searchAll, searchInput, catalog]);
+
   // `Поиск элементов`
-  const searchItems = (searchValue: any) => {
-    // ~ асинхр.usSt не даёт нов.знач.
-    // setSearchInput(searchValue);
-    // ~ стра.версия
-    // const filteredData = catalog.products.filter((item: any) => {
-    //   return Object.values(item).join("").toLowerCase().includes(searchInput.toLowerCase());
-    // });
-    // return name.toLowerCase().includes(searchInput.toLowerCase());
-    // ~ нов.версия
+  const searchItems = async (searchValue: any) => {
     if (searchValue !== "") {
-      const filteredData = catalog.products.filter(
-        ({ name, price, rating }: any) => {
-          if (
-            name.toLowerCase().includes(searchValue.toLowerCase()) ||
-            String(price).includes(searchValue) ||
-            String(rating).includes(searchValue)
-          ) {
-            return name;
-          }
-        }
-      );
-      setFilteredResults(filteredData);
+      await fetchAllProducts(
+        catalog.category,
+        catalog.brand,
+        catalog.page,
+        // catalog.limit,
+        10000,
+        catalog.sortOrd,
+        catalog.sortField
+      ).then((data: any) => {
+        setSearchAll(data.rows);
+      });
     } else {
-      setFilteredResults(catalog.products);
+      fetchAllProducts(
+        catalog.category,
+        catalog.brand,
+        catalog.page,
+        catalog.limit,
+        catalog.sortOrd,
+        catalog.sortField
+      ).then((data: any) => {
+        catalog.products = data.rows;
+        catalog.limit = Math.ceil(data.limit);
+        catalog.count = Math.ceil(data.count / data.limit);
+      });
     }
   };
 
@@ -54,7 +73,7 @@ const SearchBar = observer(() => {
         />
       </div>
       {/* СПИСОК ПРОДУКТОВ */}
-      {searchInput.length > 0 ? (
+      {/* {searchInput.length > 0 ? (
         // ПО ПОИСКУ
         filteredResults.length !== 0 ? (
           filteredResults.map((item: any) => {
@@ -71,9 +90,9 @@ const SearchBar = observer(() => {
         ))
       ) : (
         <p className="m-3">По вашему запросу ничего не найдено</p>
-      )}
+      )} */}
     </>
   );
 });
 
-export default SearchBar;
+export default Search;

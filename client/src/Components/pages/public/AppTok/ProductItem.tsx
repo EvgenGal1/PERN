@@ -114,7 +114,6 @@ const ProductItem = ({ data }: any) => {
   }
   if (price > 1000000) {
     price = price.toString().replace(/000000$/g, " M");
-    console.log("price 22 ", price);
   }
 
   return (

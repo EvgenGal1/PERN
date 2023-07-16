@@ -92,6 +92,7 @@ export const fetchAllProducts = async (
       // GET-параметры для постраничной навигации
       page,
       limit,
+      // сортировка по порядку и полю (назв.,цена,рейтинг)
       sortOrd,
       sortField,
     },

@@ -15,6 +15,7 @@ import {
 // компоненты
 import CategoryBar from "./CategoryBar";
 import BrandBar from "./BrandBar";
+import Search from "./Search";
 import ProductList from "./ProductList";
 
 // `получить параметры поиска`
@@ -158,38 +159,38 @@ const Shop = observer(() => {
     catalog.page,
   ]);
 
-  // ФИЛЬТРАЦИЯ
-  // inp.поиска
-  const [searchInput, setSearchInput] = useState("");
-  // результ.фильтра
-  const [filteredResults, setFilteredResults] = useState([]);
-  // `Поиск элементов`
-  const searchItems = (searchValue: any) => {
-    // ~ асинхр.usSt не даёт нов.знач.
-    // setSearchInput(searchValue);
-    // ~ стра.версия
-    // const filteredData = catalog.products.filter((item: any) => {
-    //   return Object.values(item).join("").toLowerCase().includes(searchInput.toLowerCase());
-    // });
-    // return name.toLowerCase().includes(searchInput.toLowerCase());
-    // ~ нов.версия
-    if (searchValue !== "") {
-      const filteredData = catalog.products.filter(
-        ({ name, price, rating }: any) => {
-          if (
-            name.toLowerCase().includes(searchValue.toLowerCase()) ||
-            String(price).includes(searchValue) ||
-            String(rating).includes(searchValue)
-          ) {
-            return name;
-          }
-        }
-      );
-      setFilteredResults(filteredData);
-    } else {
-      setFilteredResults(catalog.products);
-    }
-  };
+  // // ФИЛЬТРАЦИЯ
+  // // inp.поиска
+  // const [searchInput, setSearchInput] = useState("");
+  // // результ.фильтра
+  // const [filteredResults, setFilteredResults] = useState([]);
+  // // `Поиск элементов`
+  // const searchItems = (searchValue: any) => {
+  //   // ~ асинхр.usSt не даёт нов.знач.
+  //   // setSearchInput(searchValue);
+  //   // ~ стра.версия
+  //   // const filteredData = catalog.products.filter((item: any) => {
+  //   //   return Object.values(item).join("").toLowerCase().includes(searchInput.toLowerCase());
+  //   // });
+  //   // return name.toLowerCase().includes(searchInput.toLowerCase());
+  //   // ~ нов.версия
+  //   if (searchValue !== "") {
+  //     const filteredData = catalog.products.filter(
+  //       ({ name, price, rating }: any) => {
+  //         if (
+  //           name.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //           String(price).includes(searchValue) ||
+  //           String(rating).includes(searchValue)
+  //         ) {
+  //           return name;
+  //         }
+  //       }
+  //     );
+  //     setFilteredResults(filteredData);
+  //   } else {
+  //     setFilteredResults(catalog.products);
+  //   }
+  // };
 
   return (
     <Container>
@@ -207,7 +208,7 @@ const Shop = observer(() => {
             {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
             {/* INP.ПОИСКА */}
             <div className="search">
-              <input
+              {/* <input
                 className="search__eg"
                 placeholder="Поиск..."
                 onChange={(e) => {
@@ -215,7 +216,8 @@ const Shop = observer(() => {
                   // ~ асинхр.usSt не даёт нов.знач. Запись напрямую
                   setSearchInput(e.target.value);
                 }}
-              />
+              /> */}
+              <Search />
             </div>
           </div>
           <div>

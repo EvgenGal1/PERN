@@ -13,7 +13,7 @@ class CatalogStore {
   _count = 0; // сколько всего товаров
   _limit = 0; // товаров на страницу
   _sortOrd = null; // "ASC"; // сортировка по порядку
-  _sortField = null; // "name"; // сортировка по полю
+  _sortField = null; // "name"; // сортировка по полю(назв.,цена,рейтинг)
   // доп.limit для скрытия его в url пока не выбран limit на странице
   _InterLimit = 0;
 
