@@ -48,7 +48,7 @@ const BasketList = observer(() => {
     <>
       {basket.count ? (
         <>
-          <Table bordered hover size="sm" className="mt-3 table__eg">
+          <Table bordered hover size="sm" className="mt-3 table--eg">
             <thead>
               <tr>
                 <th>Наименование</th>
@@ -78,7 +78,7 @@ const BasketList = observer(() => {
           <Button
             variant="primary"
             onClick={() => navigate(CHECKOUT_ROUTE)}
-            className="btn-primary__eg"
+            className="btn-primary--eg"
           >
             Оформить заказ
           </Button>

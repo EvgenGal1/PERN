@@ -102,7 +102,7 @@ const UpdateItems = (props: any) => {
               onClick={() => remove(item.unique)}
               size="sm"
               variant="outline-danger"
-              className="btn-danger__eg"
+              className="btn-danger--eg"
             >
               Удалить
             </Button>

@@ -232,7 +232,7 @@ const UpdateOrder = (props: any) => {
       show={show}
       onHide={() => setShow(false)}
       size="lg"
-      className="modal__eg-bootstr"
+      className="modal--eg-bootstr"
     >
       <Modal.Header closeButton>
         <Modal.Title>
@@ -296,7 +296,7 @@ const UpdateOrder = (props: any) => {
                 type="submit"
                 size="sm"
                 variant="success"
-                className="btn-success__eg"
+                className="btn-success--eg"
               >
                 Сохранить
               </Button>
@@ -306,7 +306,7 @@ const UpdateOrder = (props: any) => {
                 // type="submit"
                 // variant="primary"
                 size="sm"
-                className="btn-primary__eg"
+                className="btn-primary--eg"
               >
                 {amount}
               </Button>

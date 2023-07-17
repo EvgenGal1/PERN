@@ -62,7 +62,7 @@ const Orders = (props: any) => {
         setChange={setChange}
       /> */}
       {/*  */}
-      <Table bordered hover size="sm" className="mt-3 table__eg">
+      <Table bordered hover size="sm" className="mt-3 table--eg">
         <thead>
           <tr>
             <th>№</th>

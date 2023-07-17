@@ -202,7 +202,7 @@ const UpdateProduct = (props: any) => {
       show={show}
       onHide={() => setShow(false)}
       size="lg"
-      className="modal__eg-bootstr"
+      className="modal--eg-bootstr"
     >
       <Modal.Header closeButton>
         <Modal.Title>Редактирование товара</Modal.Title>
@@ -286,7 +286,7 @@ const UpdateProduct = (props: any) => {
                 type="submit"
                 size="sm"
                 variant="success"
-                className="btn-success__eg"
+                className="btn-success--eg"
               >
                 Сохранить
               </Button>

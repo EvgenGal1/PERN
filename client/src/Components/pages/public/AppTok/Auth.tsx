@@ -54,7 +54,7 @@ const Auth = observer(() => {
         style={{
           width: "50%",
         }}
-        className="p-2 card__eg"
+        className="p-2 card--eg"
       >
         {/* mt-5 bg-light */}
         <h3 className="m-auto">{isLogin ? "Авторизация" : "Регистрация"}</h3>
@@ -73,7 +73,7 @@ const Auth = observer(() => {
             <Button
               variant={"outline-success"}
               type="submit"
-              className="btn-success__eg"
+              className="btn-success--eg"
             >
               {isLogin ? "Войти" : "Регистрация"}
             </Button>

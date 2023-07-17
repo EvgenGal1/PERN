@@ -17,7 +17,7 @@ const Login = () => {
     <Container className="d-flex justify-content-center">
       <Card
         style={{ width: "50%" /* // ! , :hover: { cursor: "pointer"} */ }}
-        className="p-2 card-form__eg"
+        className="p-2 card-form--eg"
       >
         {/* mt-5 bg-light */}
         <h3 className="m-auto">Авторизация</h3>

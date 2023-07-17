@@ -60,7 +60,7 @@ const EditCategory = (props: any) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      className="modal__eg-bootstr"
+      className="modal--eg-bootstr"
     >
       <Modal.Header closeButton>
         <Modal.Title>
@@ -82,7 +82,7 @@ const EditCategory = (props: any) => {
             type="submit"
             size="sm"
             variant="success"
-            className="btn-success__eg"
+            className="btn-success--eg"
           >
             Сохранить
           </Button>

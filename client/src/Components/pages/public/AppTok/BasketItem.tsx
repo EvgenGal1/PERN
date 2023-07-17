@@ -9,7 +9,7 @@ const BasketItem = (props: any) => {
           variant="outline-dark"
           size="sm"
           onClick={() => props.decrement(props.id)}
-          className="btn-success__eg"
+          className="btn-success--eg"
         >
           -
         </Button>{" "}
@@ -18,7 +18,7 @@ const BasketItem = (props: any) => {
           variant="danger"
           size="sm"
           onClick={() => props.increment(props.id)}
-          className="btn-danger__eg"
+          className="btn-danger--eg"
         >
           +
         </Button>
@@ -29,7 +29,7 @@ const BasketItem = (props: any) => {
         <Button
           variant="danger"
           onClick={() => props.remove(props.id)}
-          className="btn-danger__eg"
+          className="btn-danger--eg"
         >
           Удалить
         </Button>

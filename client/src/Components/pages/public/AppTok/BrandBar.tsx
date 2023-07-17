@@ -31,7 +31,7 @@ const BrandBar = observer(() => {
   };
 
   return (
-    <ListGroup horizontal className="list-group__eg">
+    <ListGroup horizontal className="list-group--eg">
       {catalog.brands.map((item: any) => (
         <ListGroup.Item
           key={item.id}

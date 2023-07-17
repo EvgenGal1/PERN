@@ -103,7 +103,7 @@ const Order = (props: any) => {
       <span style={{ marginBottom: "3px", display: "inline-block" }}>
         Дата|Статус
       </span>
-      <ul className="list-param__eg">
+      <ul className="list-param--eg">
         <li>
           <p>Дата заказа:</p> {orders.prettyCreatedAt}
           {orders.prettyCreatedAt !== orders.prettyUpdatedAt
@@ -121,7 +121,7 @@ const Order = (props: any) => {
         </li>
       </ul>
       <span>Данные Заказа № {orders.id}</span>
-      <ul className="list-param__eg">
+      <ul className="list-param--eg">
         <li>
           <p>Имя, Фамилия:</p> {orders.name}
         </li>
@@ -158,7 +158,7 @@ const Order = (props: any) => {
             size="sm"
             onClick={() => handleUpdateClick(orders.id)}
             style={{ marginRight: "15px" }}
-            className="btn-success__eg"
+            className="btn-success--eg"
           >
             Редактировать
           </Button>
@@ -166,7 +166,7 @@ const Order = (props: any) => {
             variant="danger"
             size="sm"
             onClick={() => handleDeleteClick(orders.id)}
-            className="btn-danger__eg"
+            className="btn-danger--eg"
           >
             Удалить
           </Button>
@@ -176,7 +176,7 @@ const Order = (props: any) => {
       <span style={{ marginBottom: "3px", display: "inline-block" }}>
         Позиции Заказа № {orders.id}
       </span>
-      <Table bordered hover size="sm" className="table__eg">
+      <Table bordered hover size="sm" className="table--eg">
         <thead>
           <tr>
             <th>Название позиции</th>
@@ -194,7 +194,7 @@ const Order = (props: any) => {
               <td>{item.price * item.quantity}</td>
             </tr>
           ))}
-          <tr id="th__eg">
+          <tr id="th--eg">
             <td colSpan={3} style={{ fontWeight: "bold" }}>
               Итого
             </td>

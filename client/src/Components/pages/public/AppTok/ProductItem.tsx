@@ -87,7 +87,7 @@ const ProductItem = ({ data }: any) => {
   let strCat = data.category.name;
   // удал.посл.эл.назв.
   strCat = strCat.slice(0, -1);
-  console.log("strCat ", strCat);
+  // console.log("strCat ", strCat);
   if (strCat === "букв" || strCat === "амбиграмм" || strCat === "молекул")
     strCat = strCat + "а";
   if (strCat === "амбиграмма") strCat = "⇔";
@@ -198,7 +198,7 @@ const ProductItem = ({ data }: any) => {
       // ! врем.откл. переход в Карточку
       // onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
     >
-      <Card style={{ cursor: "pointer" }} className="mt-3 card__eg">
+      <Card style={{ cursor: "pointer" }} className="mt-3 card--eg">
         {data.image ? (
           <Card.Img
             variant="top"

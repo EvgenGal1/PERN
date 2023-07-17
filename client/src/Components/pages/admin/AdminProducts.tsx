@@ -108,7 +108,7 @@ const AdminProducts = () => {
       <Button
         onClick={() => setCreateShow(true)}
         variant="primary"
-        className="btn-primary__eg"
+        className="btn-primary--eg"
       >
         Создать товар
       </Button>
@@ -133,7 +133,7 @@ const AdminProducts = () => {
             setFetching={setFetching}
             setChange={setChange}
           />
-          <Table bordered hover size="sm" className="mt-3 table__eg">
+          <Table bordered hover size="sm" className="mt-3 table--eg">
             <thead>
               <tr>
                 <th style={{ width: "250px" }}>Название</th>
@@ -181,7 +181,7 @@ const AdminProducts = () => {
                         variant="success"
                         size="sm"
                         onClick={() => handleUpdateClick(item.id)}
-                        className="btn-success__eg"
+                        className="btn-success--eg"
                       >
                         {matches ? "Редактировать" : "✎"}
                       </Button>
@@ -191,7 +191,7 @@ const AdminProducts = () => {
                         variant="danger"
                         size="sm"
                         onClick={() => handleDeleteClick(item.id)}
-                        className="btn-danger__eg"
+                        className="btn-danger--eg"
                       >
                         {matches ? "Удалить" : "✕"}
                       </Button>

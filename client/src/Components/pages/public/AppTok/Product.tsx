@@ -96,7 +96,7 @@ const Product = () => {
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp}
             variant="primary"
-            className="btn-primary__eg"
+            className="btn-primary--eg"
           >
             Добавить в корзину
           </Button>
@@ -106,7 +106,7 @@ const Product = () => {
         <Row>
           <Col>
             <h3>Характеристики</h3>
-            <Table className="table__eg" bordered hover size="sm">
+            <Table className="table--eg" bordered hover size="sm">
               <tbody>
                 {product.props.map((item: any) => (
                   <tr key={item.id}>

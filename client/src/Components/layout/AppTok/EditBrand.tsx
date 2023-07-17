@@ -60,7 +60,7 @@ const EditBrand = (props: any) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      className="modal__eg-bootstr"
+      className="modal--eg-bootstr"
     >
       <Modal.Header closeButton>
         <Modal.Title>{id ? "Редактирование" : "Создание"} бренда</Modal.Title>
@@ -80,7 +80,7 @@ const EditBrand = (props: any) => {
             type="submit"
             size="sm"
             variant="success"
-            className="btn-success__eg"
+            className="btn-success--eg"
           >
             Сохранить
           </Button>

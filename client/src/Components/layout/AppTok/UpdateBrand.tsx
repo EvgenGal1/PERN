@@ -69,7 +69,7 @@ const UpdateBrand = (props: any) => {
             type="submit"
             size="sm"
             variant="success"
-            className="btn-success__eg"
+            className="btn-success--eg"
           >
             Сохранить
           </Button>

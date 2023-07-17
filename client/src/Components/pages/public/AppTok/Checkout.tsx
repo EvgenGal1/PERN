@@ -212,7 +212,7 @@ const Checkout = () => {
           className="mb-3"
           placeholder="Комментарий к заказу..."
         />
-        <Button type="submit" variant="primary" className="btn-primary__eg">
+        <Button type="submit" variant="primary" className="btn-primary--eg">
           Отправить
         </Button>
       </Form>

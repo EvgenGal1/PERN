@@ -93,7 +93,7 @@ export const PaginSortLimit = (props: any) => {
       {catalog.count > 1 && (
         <Pagination
           style={{ margin: "0", flexWrap: "wrap" }}
-          className="pagination__eg"
+          className="pagination--eg"
         >
           {pages}
         </Pagination>
@@ -101,7 +101,7 @@ export const PaginSortLimit = (props: any) => {
       {/* СОРТИРОВКА ПО ПОЛЮ */}
       <Form.Select
         size="sm"
-        className="select__eg"
+        className="select--eg"
         defaultValue={catalog.sortField}
         onChange={(e) => changeSortField(e.target.value)}
       >
@@ -114,46 +114,46 @@ export const PaginSortLimit = (props: any) => {
         size="sm"
         onClick={() => changeSortOrder()}
         variant="primary"
-        className="btn-primary__eg"
+        className="btn-primary--eg"
       >
-        <span className="mini-1__eg">порядок</span>{" "}
+        <span className="mini-1--eg">порядок</span>{" "}
         {catalog.sortOrd === "ASC" || catalog.sortOrd === null ? (
           <span>
-            <span className="mini-2__eg">А-Я | 1-9</span> ▲
+            <span className="mini-2--eg">А-Я | 1-9</span> ▲
           </span>
         ) : (
           <span>
-            <span className="mini-2__eg">Я-А | 9-1</span> ▼
+            <span className="mini-2--eg">Я-А | 9-1</span> ▼
           </span>
         )}
       </Button>
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
-      <div className="limit__eg" style={{ display: "flex" }}>
+      <div className="limit--eg" style={{ display: "flex" }}>
         <Button
           size="sm"
           onClick={() => changeLimitState(10)}
-          className={`btn-primary__eg${catalog.limit === 10 ? " active" : ""}`}
+          className={`btn-primary--eg${catalog.limit === 10 ? " active" : ""}`}
         >
           10
         </Button>
         <Button
           size="sm"
           onClick={() => changeLimitState(25)}
-          className={`btn-primary__eg${catalog.limit === 25 ? " active" : ""}`}
+          className={`btn-primary--eg${catalog.limit === 25 ? " active" : ""}`}
         >
           25
         </Button>
         <Button
           size="sm"
           onClick={() => changeLimitState(50)}
-          className={`btn-primary__eg${catalog.limit === 50 ? " active" : ""}`}
+          className={`btn-primary--eg${catalog.limit === 50 ? " active" : ""}`}
         >
           50
         </Button>
         <Button
           size="sm"
           onClick={() => changeLimitState(100)}
-          className={`btn-primary__eg${catalog.limit === 100 ? " active" : ""}`}
+          className={`btn-primary--eg${catalog.limit === 100 ? " active" : ""}`}
         >
           100
         </Button>

@@ -53,7 +53,7 @@ const AdminBrands = () => {
       <Button
         onClick={() => handleCreateClick()}
         variant="primary"
-        className="btn-primary__eg"
+        className="btn-primary--eg"
       >
         Создать бренд
       </Button>
@@ -65,7 +65,7 @@ const AdminBrands = () => {
       />
       {/*  */}
       {brands.length > 0 ? (
-        <Table bordered hover size="sm" className="mt-3 table__eg">
+        <Table bordered hover size="sm" className="mt-3 table--eg">
           <thead>
             <tr>
               <th>Название</th>
@@ -82,7 +82,7 @@ const AdminBrands = () => {
                     variant="success"
                     size="sm"
                     onClick={() => handleUpdateClick(item.id)}
-                    className="btn-success__eg"
+                    className="btn-success--eg"
                   >
                     Редактировать
                   </Button>
@@ -92,7 +92,7 @@ const AdminBrands = () => {
                     variant="danger"
                     size="sm"
                     onClick={() => handleDeleteClick(item.id)}
-                    className="btn-danger__eg"
+                    className="btn-danger--eg"
                   >
                     Удалить
                   </Button>

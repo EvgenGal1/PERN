@@ -176,7 +176,7 @@ body[data-theme="light"] {
 
     // КНП
     input,
-      button.btn__eg/* :not([class*="btn-primary"]) */ {
+      button.btn--eg/* :not([class*="btn-primary"]) */ {
       border-color: var(--bord-hr) /* !important */;
       background-color: var(--act-bg);
       // transition: background-color 200ms linear;
@@ -199,9 +199,9 @@ body[data-theme="light"] {
         }
       }
     }
-    button.btn-primary__eg,
-    button.btn-success__eg,
-    button.btn-danger__eg {
+    button.btn-primary--eg,
+    button.btn-success--eg,
+    button.btn-danger--eg {
       border-color: var(--BlackAmber);
       color: var(--DeepYellow);
       &:hover,
@@ -210,21 +210,21 @@ body[data-theme="light"] {
         color: var(--MelonYellow);
       }
     }
-    button.btn-primary__eg {
+    button.btn-primary--eg {
       background-color: var(--Blue_1);
       &:hover,
       &.active {
         background-color: var(--Blue_2);
       }
     }
-    button.btn-success__eg {
+    button.btn-success--eg {
       background-color: var(--Green_1);
       &:hover,
       &.active {
         background-color: var(--Green_2);
       }
     }
-    button.btn-danger__eg {
+    button.btn-danger--eg {
       background-color: var(--CrimsonBrown);
       &:hover,
       &.active {
@@ -233,7 +233,7 @@ body[data-theme="light"] {
     }
 
     // ТАБЛИЦЫ
-    .table__eg {
+    .table--eg {
       background-color: var(--ui-bg);
       border-color: var(--bord-hr);
       color: var(--AlmostBlack) /* !important */;
@@ -248,7 +248,7 @@ body[data-theme="light"] {
             background-color: var(--ModYelBrown);
             background-color: var(--ui-act-col);
           }
-          &#th__eg:hover {
+          &#th--eg:hover {
             background-color: transparent;
             background-color: var(--ui-bg) /* !important */;
             & > * {
@@ -261,7 +261,7 @@ body[data-theme="light"] {
     }
 
     // ВЫБОРКА
-    .select__eg {
+    .select--eg {
       background-color: var(--Blue_1);
       border-color: var(--BlackAmber);
       color: var(--DeepYellow);
@@ -273,12 +273,12 @@ body[data-theme="light"] {
     }
 
     // МОДАЛЬНЫЙ ОКНА
-    .modal__eg {
+    .modal--eg {
       background-color: var(--ui-bg);
     }
 
     // карточки/сетка блоков
-    .card__eg {
+    .card--eg {
       display: flex;
       flex-direction: column;
       background-color: var(--ui-bg);
@@ -291,7 +291,7 @@ body[data-theme="light"] {
       }
     }
     // карточка с контентом (form)
-    .card-form__eg {
+    .card-form--eg {
       background-color: var(--ui-bg);
       border-color: var(--bord-hr);
       transition: 0.5s;
@@ -303,7 +303,7 @@ body[data-theme="light"] {
         }
       }
     }
-    .card-form__eg:hover form {
+    .card-form--eg:hover form {
       transition: 0.5s;
       // background-color: var(--ui-act-col);
     }
@@ -318,102 +318,6 @@ body[data-theme="light"] {
     }
     .sw3btn-radio__neutral:checked ~ .sw3btn-slider {
       background-color: var(--MelonYellow);
-    }
-  }
-}
-
-// СТИЛИ ПРОЕКТОВ
-:root {
-  body {
-    // выбор по атребуту для примен. стилей когда стр. откр. не в родителе (по общ. имени класса)
-    // UlbiTV ----------------------------------------------------------------------------------
-    div[class^="UlbiTV"] {
-      /* &_DrADr */
-      .boards .board,
-      /* &_DrADr  */.item,
-      .card {
-        background-color: var(--ui-bg);
-        border-color: var(--bord-hr);
-      }
-      // &_DrADr {
-      .item,
-      .card {
-        &:hover {
-          // background-color: var(--ui-act-col);
-        }
-      }
-      // }
-    }
-    // BegPrj ----------------------------------------------------------------------------------
-    .BegPrj {
-      &_Modal {
-        .modal {
-          background-color: var(--ui-bg);
-        }
-      }
-      &_Quiz {
-        div[class$="__content"] {
-          background-color: var(--ui-bg);
-          .progress,
-          ul li {
-            background-color: var(--act-bg);
-          }
-          ul li {
-            // border-color: var(--act-bg);
-            // border-color: #000;
-            // border: 2px solid var(--bord-hr);
-          }
-        }
-      }
-      &_Users div[class*="__content"] {
-        background-color: var(--act-bg);
-        background-color: var(--ui-bg);
-        .users-list {
-          li {
-            p {
-              color: var(--txt-col);
-            }
-            h3 {
-              color: var(--txt-leght);
-            }
-            &:hover {
-              background-color: var(--act-bg-hov);
-              h3 {
-                color: var(--txt-dark);
-              }
-            }
-          }
-        }
-        button {
-          color: var(--txt-col);
-          &:hover {
-            // background-color: var(--el-dark);
-          }
-        }
-      }
-      // }
-    }
-    // DayPlanToDo
-    .DayPlanToDo,
-    .MyDPTD {
-      &__content-- {
-        span > div {
-          background-color: var(--ui-bg);
-        }
-        // DAYPLAN/Calendar ----------------------------------------------------------------------------------
-        span:last-child > div {
-          .fc-daygrid-day {
-            &:hover {
-              background-color: var(--ui-act-col);
-              transition: background-color 300ms linear;
-            }
-          }
-        }
-      }
-    }
-    // FormMN
-    .FormMN form {
-      background-color: var(--ui-bg);
     }
   }
 }
