@@ -207,9 +207,9 @@ const Shop = observer(() => {
             {/* БРАНДЫ */}
             {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
             {/* INP.ПОИСКА */}
-            <div className="search">
-              {/* <input
-                className="search__eg"
+            {/* <div className="search"> */}
+            {/* <input
+                className="search--eg"
                 placeholder="Поиск..."
                 onChange={(e) => {
                   searchItems(e.target.value);
@@ -217,8 +217,8 @@ const Shop = observer(() => {
                   setSearchInput(e.target.value);
                 }}
               /> */}
-              <Search />
-            </div>
+            <Search />
+            {/* </div> */}
           </div>
           <div>
             {productsFetching ? (

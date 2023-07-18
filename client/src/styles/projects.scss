@@ -98,7 +98,7 @@ div {
   div:has(p):has(+ div),
   div:has(h1):has(+ div) {
     // line-height: 22px;
-    @include adaptiv-val("margin-top", 10, 2);
+    // @include adaptiv-val("margin-top", 10, 2);
   }
   // для div.__descript где есть параграф|h1 и братский div
   div[class$="__descript"]:has(h1):has(+ div),
@@ -172,7 +172,7 @@ img.card-img-top {
   background: radial-gradient(circle, #41464b, #000);
 }
 // таблиза корзины
-.table__eg {
+.table--eg {
   thead {
     tr {
       th {
@@ -185,7 +185,7 @@ img.card-img-top {
       &:hover,
       &:hover > * {
       }
-      &#th__eg:hover {
+      &#th--eg:hover {
         background-color: transparent;
         & > * {
           background-color: transparent;
@@ -195,8 +195,8 @@ img.card-img-top {
   }
 }
 
-// лист групп категор.,бренд
-.list-group__eg {
+// лист групп Категор.,Бренд
+.list-group--eg {
   border-radius: 5px;
   div {
     color: #111;
@@ -221,7 +221,7 @@ img.card-img-top {
 }
 
 // `нумерация страниц`
-.pagination__eg {
+.pagination--eg {
   li.page-item {
     .page-link {
       color: #000;
@@ -251,24 +251,196 @@ img.card-img-top {
 }
 
 // модал.окно
-.modal__eg {
+.modal--eg {
   z-index: 3;
   width: 70%;
   max-width: 500px;
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
   padding: 40px 30px;
   text-align: center;
   border-radius: 10px;
   background-color: #fff;
-  transform: translate(-50%, -50%);
   box-shadow: 0 3px 5px black;
   transition: all 0.5s ease-in-out;
+  // .modal-dialog {
+  //   position: absolute;
+  //   left: 50% !important;
+  //   top: 50% !important;
+  //   transform: translate(-50%, -50%);
+  // }
+  .modal-content {
+    background-color: var(--ui-bg);
+    text-align: center;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 01);
+    border-radius: 10px;
+    transition: all 0.5s ease-in-out;
+    border: 2px solid var(--bord-hr) !important;
+    .modal-header {
+      padding: 10px 0px;
+      border-bottom: 1px solid #000;
+      border-bottom: 2px solid var(--bord-hr) !important;
+      // border: 2px solid var(--bord-hr) !important;
+      .btn-close {
+        margin: 5px;
+      }
+      .modal-title {
+        width: 100%;
+        h1 {
+          margin: 0;
+        }
+      }
+    }
+    .modal-body {
+      form {
+        border: 2px solid var(--bord-hr);
+      }
+    }
+  }
 }
-.modal__eg-bootstr {
+.open-modal-btn {
+  background: #fff;
+  padding: 18px 25px;
+  border-radius: 20px;
+  // font-weight: 500;
+  // border: 0;
+  // outline: none;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 23px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 01);
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 8px 10px #000000;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 01);
+    transform: translateY(0);
+  }
+}
+
+// Модальное окно с блоком наложение
+.modal--eg__prost {
+  // блок наложения на весь экран
+  .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: all 0.5s ease-in-out;
+    // показ блока наложение
+    &.show {
+      z-index: 5;
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  // модал.окно
+  .modal--eg {
+    opacity: 0;
+    visibility: hidden;
+    // transform: translate(-50%, -50%);
+    // transition-delay: 0.2s;
+    // показ модал.окно
+    &.show {
+      max-width: 100%;
+      z-index: 7;
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+// блоки выбора Параметров/Категорий/Брендов в модал.окне
+// .modal-choice-param {
+.choice-param {
+  display: flex;
+  // flex-direction: column;
+
+  // Колонки
+  &__col {
+    flex: 1;
+    // flex: 1 1 auto;
+    margin: 0px 30px 0 0;
+    &:last-child {
+      margin: 0;
+    }
+    // & div {
+    //   margin: 0px 0px 10px;
+    //   &:last-child {
+    //     margin: 0;
+    //   }
+    // }
+  }
+  // Эл.в Колонках
+  &__item {
+    margin: 0px 0px 15px;
+    // margin: 0px 0px 10px;
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  // скрытие Параметров после btn
+  &__btn + div {
+    display: none;
+  }
+  // показ Параметров после btn
+  &__btn.choice-param-show + div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // КНП.
+  &__btn {
+    position: relative;
+    width: 100%;
+    margin: 0 0 5px;
+    border: 0;
+    &::after {
+      content: "▼";
+      position: absolute;
+      right: 0;
+      margin: 0 5px;
+    }
+    &.choice-param-show {
+      &::after {
+        content: "▲";
+      }
+    }
+  }
+
+  // Параметры
+  &__prm {
+    label {
+      position: relative;
+      input {
+        position: absolute;
+        height: 100%;
+        left: 0;
+      }
+    }
+  }
+}
+// }
+
+.modal--eg-bootstr {
   box-shadow: 0 3px 5px black;
   transition: all 0.5s ease-in-out;
+  .modal-dialog {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
   .modal-content {
     background-color: var(--ui-bg);
     text-align: center;
@@ -300,7 +472,7 @@ img.card-img-top {
 }
 
 // Список группы
-.list-group__eg {
+.list-group--eg {
   .list-group-item {
     // color: #000;
     font-weight: 500;
@@ -331,10 +503,10 @@ img.card-img-top {
   justify-content: space-between;
   margin: 1rem 0 0 !important;
 
-  .select__eg {
+  .select--eg {
     width: 15%;
   }
-  // .limit__eg {}
+  // .limit--eg {}
   button {
     margin: 0 0 0 15px;
   }
@@ -347,18 +519,53 @@ img.card-img-top {
 }
 
 // СОКРАШЕНИЕ
-.mini-1__eg,
-.mini-2__eg {
+.mini-1--eg,
+.mini-2--eg {
   font-weight: inherit;
 }
-.mini-1__eg {
+.mini-1--eg {
   @media (max-width: 768px) {
     display: none;
   }
 }
-.mini-2__eg {
+.mini-2--eg {
   @media (max-width: 620px) {
     display: none;
+  }
+}
+
+// ПОИСК
+.search--eg {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 10px;
+  // border: 1px solid #bd0000;
+  // border-color: var(--bord-hr);
+  // border-radius: 5px;
+  // background-color: var(--act-bg);
+  &:hover {
+    width: 100%;
+    &__inp {
+      background-color: var(--act-bg-hov);
+    }
+  }
+  .search--eg__inp,
+  .search--eg__btn {
+    // border: 0;
+    // background-color: var(--act-bg);
+  }
+  &__inp {
+    flex: 1 1 0;
+    border-radius: 0px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-right-width: 0;
+  }
+  &__btn {
+    border-radius: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left-width: 0;
   }
 }
 

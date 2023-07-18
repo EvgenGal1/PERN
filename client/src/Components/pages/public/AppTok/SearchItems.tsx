@@ -1,227 +1,206 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, Col } from "react-bootstrap";
+import { useState, useEffect, useContext } from "react";
+// import { useNavigate } from "react-router-dom";
+import { Form, Card, Col } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { PRODUCT_ROUTE } from "../../../../utils/consts";
+// import { PRODUCT_ROUTE } from "../../../../utils/consts";
 import {
-  updateProduct,
-  fetchProdRating,
-  createProdRating,
+  // updateProduct,
+  // fetchProdRating,
+  // createProdRating,
+  // fetchCategories,
+  // fetchBrands,
+  fetchAllProducts,
 } from "../../../../http/Tok/catalogAPI_Tok";
+// компоненты
+// import CategoryBar from "./CategoryBar";
+// import BrandBar from "./BrandBar";
 
-// Комп.Рейтинга. Пуст./Полн.
-const OutlineStar = () => {
-  const OutlineStar = "☆";
-  return <>{OutlineStar}</>;
-};
-const FillStar = () => {
-  const FillStar = "★";
-  return <>{FillStar}</>;
-};
+const defaultValue = { name: "", price: "", category: "", brand: "" };
 
-const SearchItems = ({ data }: any) => {
-  const { user }: any = useContext(AppContext);
-  const navigate = useNavigate();
-
-  const isValid = (value: any) => {
-    const result: any = {};
-    const pattern = /^[1-5][0-5]*$/;
-    // for (let key in value) {
-    // if (key === "name") result.name = value.name.trim() !== "";
-    // if (key === "price") result.price = pattern.test(value.price.trim());
-    if (value > 0) result.rating = value;
-    // if (key === "category") result.category = pattern.test(value.category);
-    // if (key === "brand") result.brand = pattern.test(value.brand);
-    // }
-    return result;
-  };
-
-  // сост.Рейтинга и наведения на него
-  const [numberStar, setNuberStar] = useState(data.rating);
-  const [hoverStar, setHoverStar] = useState(0);
-
-  let ratingNew = data.rating;
-  const handleSubmit = async (rating: number) => {
-    console.log("ratingNew 0 ", ratingNew);
-    const correct = isValid(rating);
-    if (user.isAuth && correct.rating) {
-      console.log("user.id ", user.id);
-      await createProdRating(user.id, data.id, rating)
-        .then((data) => {
-          console.log("CRA data ", data);
-          ratingNew = data.ratingAll;
-          setNuberStar(data.ratingAll);
-          data.rating = data.ratingAll;
-          console.log("ratingNew 1 ", ratingNew);
-        })
-        .finally(() => setNuberStar(ratingNew));
-
-      // ^ получ.Рейтинга (пока всё сделанно в createProdRating)
-      // const one = fetchProdRating(data.id).then((data) => {
-      //   console.log("ONE data ", data);
-      // });
-      // console.log("one ====================== ", one);
-
-      // ^ менять Рейтинг ч/з UpdProd (нет доступов для role USER)
-      // const correct = isValid(rating);
-      // if (correct.rating) {
-      //   const prod = {
-      //     name: data.name,
-      //     price: data.price.toString(),
-      //     rating: rating.toString(),
-      //     category: data.categoryId.toString(),
-      //     brand: data.brandId.toString(),
-      //   };
-      //   updateProduct(data.id, prod)
-      //     .then((data) => {
-      //       console.log("UPDprod data ", data);
-      //       setNuberStar(data.rating);
-      //     })
-      //     .catch((error) => alert(error.response.data.message));
-      // }
+const SearchItems = ({ show, setShow, children }: any) => {
+  // ~ console.log("body ", body);
+  // перем./логика/fn по блокировки прокрутки body
+  let body = document.querySelector("body");
+  if (body != null) {
+    body.style.overflowY = "hidden";
+  }
+  const changeShowValue = () => {
+    if (body != null) {
+      body.style.overflowY = "auto";
     }
   };
 
-  // логика обрезания/замены последн.БУКВ
-  let str = data.category.name;
-  // удал.посл.эл.
-  str = str.slice(0, -1);
-  if (str === "букв") str = str + "а";
-  if (str === "геро") str = str + "й";
-  if (str === "сердц") str = str + "е";
-  if (str === "молекул") str = str + "а";
-  // логика сокращения ЦЕНЫ
-  let price = data.price.toString();
-  if (price > 1000000000) {
-    // ! не раб. split + splice + join. приходится разбивать
-    // console.log("price", price.split("").splice(2, 0, ":").join(""));
-    // убираем последн.нули, добавл. B(биллион)
-    price = price.replace(/000000$/g, " B");
-    // разбив.на массив
-    let priceSpit = price.split("");
-    // с инд.1, удал.0, добав.запятую(,)
-    priceSpit.splice(1, 0, ",");
-    // превращ.в строку
-    price = priceSpit.join("");
-    // ^ доп.разбиение на 3 цифры
-    // var num = 1234567890;
-    // var result11 = num.toLocaleString(); // 1 234 567 890
-    // function numberWithSpaces(x: any) {
-    //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    // }
-    // numberWithSpaces(1003540) // 1 003 540
-  }
-  if (price > 1000000) {
-    price = price.toString().replace(/000000$/g, " M");
-  }
+  const { catalog }: any = useContext(AppContext);
+  // ~ console.log("catalog ", catalog);
+
+  const [products, setProducts] = useState([]);
+  // ~ console.log("products 0 ", products);
+
+  // нач.загрузка всего
+  useEffect(() => {
+    fetchAllProducts(null, null, 1, 10000, "ASC", "name").then((data: any) => {
+      // ~ console.log("MODAL data ", data);
+      setProducts(data.rows);
+    });
+  }, []);
+
+  const handleClick = (id: number) => {
+    if (id === catalog.category) {
+      catalog.category = null;
+    } else {
+      catalog.category = id;
+    }
+    // при каждом клике добавляем в историю браузера новый элемент
+    const params: any = {};
+    if (catalog.category) params.category = catalog.category;
+    if (catalog.brand) params.brand = catalog.brand;
+    if (catalog.page > 1) params.page = catalog.page;
+    if (catalog.limit) params.limit = catalog.limit;
+    if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField) params.sortField = catalog.sortField;
+    // navigate({
+    //   pathname: "/",
+    //   search: "?" + createSearchParams(params),
+    // });
+  };
+
+  const [value, setValue] = useState(defaultValue);
+  const handleInputChange = (event: any) => {
+    const data = { ...value, [event.target.name]: event.target.value };
+    // setValue(data);
+    // setValid(isValid(data));
+  };
+
+  const handleClickChoiceParam = (event: any) => {
+    event.currentTarget.classList.toggle("choice-param-show");
+  };
 
   return (
-    <Col
-      md={3}
-      lg={4}
-      sm={6}
-      // ! врем.откл. переход в Карточку
-      // onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
-    >
-      <Card style={{ cursor: "pointer" }} className="mt-3 card__eg">
-        {data.image ? (
-          <Card.Img
-            variant="top"
-            src={process.env.REACT_APP_IMG_URL_TOK + data.image}
-          />
-        ) : (
-          <Card.Img variant="top" src="http://via.placeholder.com/200" />
-        )}
-        <Card.Body
-          style={{ height: "100%", overflow: "hidden", padding: "10px" }}
+    <div className="modal--eg__prost">
+      <div
+        // onClick={() => setShow(false)}
+        className={`overlay ${show ? "show" : ""}`}
+      ></div>
+      <div className={`modal--eg ${show ? "show" : ""}`}>
+        <svg
+          onClick={() => {
+            changeShowValue();
+            setShow(false);
+            // showValue = false;
+          }}
+          height="200"
+          viewBox="0 0 200 200"
+          width="200"
         >
-          <div>
-            {/* Цена: */}
-            <span
-              style={{
-                fontSize: "50px",
-                opacity: "0.5",
-              }}
-            >
-              {price}
-            </span>
-          </div>
-          <div>
-            <div>
-              {/* Рейтинг: */}
-              {ratingNew} = {data.rating} _{ratingNew} -{" "}
-              {data.ratingAll ? data.ratingAll : data.rating}
-            </div>
-            {/* <br /> */}
-            <div
-              className="youtube__v=McF22__Jz_I"
-              style={{
-                position: "relative",
-              }}
-            >
-              {/* Рейтинг: */}
-              <span
-                style={{
-                  position: "absolute",
-                  fontSize: "40px",
-                  opacity: "0.5",
-                  top: "50%",
-                  right: "0",
-                  letterSpacing: "-4px",
-                  transform: "translate(-50%, -50%)",
-                }}
+          <title />
+          <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
+        </svg>
+        {/* {children} */}
+        {/* Блок с Параметрами */}
+        <div className="modal-choice-param choice-param">
+          {/* Колонка 1 */}
+          <div className="choice-param__col">
+            {/* Категории */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
               >
-                {/* Рейтинг: */} {ratingNew}{" "}
-                {/* {data.rating} {ratingNew} {data.rating} */}
-              </span>
-              {Array(5)
-                .fill(0)
-                .map((_, index) =>
-                  numberStar >= index + 1 || hoverStar >= index + 1 ? (
-                    <span
-                      onMouseOver={() => setHoverStar(index + 1)}
-                      onMouseLeave={() => setHoverStar(0)}
-                      onClick={() => handleSubmit(index + 1)}
-                      style={{
-                        fontWeight: "100",
-                        display: "inline-block",
-                        fontSize: "35px",
-                        color: "orange",
-                      }}
-                      key={index}
-                    >
-                      <FillStar />
-                    </span>
-                  ) : (
-                    <span
-                      onMouseOver={() => setHoverStar(index + 1)}
-                      onMouseLeave={() => setHoverStar(0)}
-                      onClick={() => handleSubmit(index + 1)}
-                      style={{
-                        fontWeight: "100",
-                        display: "inline-block",
-                        fontSize: "35px",
-                        color: "orange",
-                      }}
-                      key={index}
-                    >
-                      <OutlineStar />
-                    </span>
-                  )
-                )}
+                Категория
+              </button>
+              <div className="choice-param__prm">
+                {catalog.categories.map((item: any) => (
+                  <label
+                    key={item.id}
+                    //onClick={() => handleClick(item.id)}
+                  >
+                    <input type="checkbox" name={item.name} id="" />
+                    <div>{item.name}</div>
+                  </label>
+                ))}
+              </div>
             </div>
-            {/* <br /> */}
+            {/* Бренды */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                Бренд
+              </button>
+              <div className="choice-param__prm">
+                {catalog.brands.map((item: any) => (
+                  <label
+                    key={item.id}
+                    //onClick={() => handleClick(item.id)}
+                  >
+                    <input type="checkbox" name={item.name} id="" />
+                    <div>{item.name}</div>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
-          {/* <br /> */}
-          <div>
-            <strong>
-              {str} {data.brand.name} {data.name}
-            </strong>
+          {/* Колонка 2 */}
+          <div className="choice-param__col">
+            {/* Цены */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                Цена
+              </button>
+              <div className="choice-param__prm">СДЕЛАТЬ ВЫБОРКУ ЦЕН</div>
+            </div>
+            {/* Рейтинг */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                Рейтинг
+              </button>
+              <div className="choice-param__prm">СДЕЛАТЬ ВЫБОР РЕЙТИНГА</div>
+            </div>
           </div>
-        </Card.Body>
-      </Card>
-    </Col>
+          {/* Колонка 3 */}
+          <div className="choice-param__col">
+            {/* ЕЩЁ_1 */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                ЕЩЁ_1
+              </button>
+              <div className="choice-param__prm">ДОБАВИТЬ_1</div>
+            </div>
+            {/* ЕЩЁ_2 */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                ЕЩЁ_2
+              </button>
+              <div className="choice-param__prm">ДОБАВИТЬ_2</div>
+            </div>
+            {/* ЕЩЁ_3 */}
+            <div className="choice-param__item">
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                ЕЩЁ_3
+              </button>
+              <div className="choice-param__prm">ДОБАВИТЬ_3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
