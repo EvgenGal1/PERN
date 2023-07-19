@@ -12,6 +12,8 @@ class Product {
     try {
       const { categoryId = null, brandId = null } = req.params;
       let {
+        categoryId_q = null,
+        brandId_q = null,
         limit = null,
         page = null,
         sortOrd = null,
@@ -23,7 +25,16 @@ class Product {
           : 20;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
       sortOrd = sortOrd === null || sortOrd === "ASC" ? "ASC" : "DESC";
-      const options = { categoryId, brandId, limit, page, sortOrd, sortField };
+      const options = {
+        categoryId,
+        categoryId_q,
+        brandId,
+        brandId_q,
+        limit,
+        page,
+        sortOrd,
+        sortField,
+      };
       const products = await ProductService.getAll(options);
       res.json(products);
     } catch (e) {

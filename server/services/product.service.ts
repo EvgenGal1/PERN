@@ -67,10 +67,26 @@ class Product {
   // async getAll(params) {
   async getAll(options: any) {
     // const { categoryId, brandId } = params;
-    const { categoryId, brandId, limit, page, sortOrd, sortField } = options;
-    const where: any = {};
-    if (categoryId) where.categoryId = categoryId;
-    if (brandId) where.brandId = brandId;
+    const {
+      categoryId,
+      categoryId_q,
+      brandId,
+      brandId_q,
+      limit,
+      page,
+      sortOrd,
+      sortField,
+    } = options;
+    let where: any = {};
+    if (categoryId_q != null) {
+      if (categoryId_q?.length > 1) {
+        where.categoryId = categoryId_q;
+      }
+    }
+    if (categoryId_q === null) {
+      if (categoryId) where.categoryId = categoryId;
+      if (brandId) where.brandId = brandId;
+    }
     // Кол-во эл. `Найдите и посчитайте все`
     let countAll = await ProductMapping.findAndCountAll({
       where,
@@ -87,12 +103,8 @@ class Product {
       offset = (page - 1) * limit;
     }
     // е/и эл.в BD МЕНЬШЕ чем в запросе(offset)
-    if (countAll.count <= offset) {
-      // offset =
-      //   countAll.count -
-      //   (countAll.count - limit * Math.floor(countAll.count / limit));
-      offset = countAll.count - limit;
-    }
+    if (countAll.count <= offset) offset = countAll.count - limit;
+    // защита от минусового результата
     if (offset < 0) offset = 0;
     const products = await ProductMapping.findAndCountAll({
       where,
@@ -100,7 +112,10 @@ class Product {
       offset,
       // для каждого товара получаем бренд и категорию
       include: [
-        { model: BrandMapping, as: "brand" },
+        {
+          model: BrandMapping,
+          as: "brand",
+        },
         { model: CategoryMapping, as: "category" },
       ],
       order: [[sortField || "name", sortOrd || "ASC"]],
