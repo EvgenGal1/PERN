@@ -85,8 +85,22 @@ export const fetchAllProducts = async (
 ) => {
   let url = "product/getall";
   // фильтрация товаров по категории и/или бренду
-  if (categoryId) url = url + "/categoryId/" + categoryId;
-  if (brandId) url = url + "/brandId/" + brandId;
+  if (categoryId != null || brandId != null) {
+    // логика добавления к URL до.парам. е/и их больше 1го
+    if (categoryId?.length > 1 || brandId?.length > 1) {
+      var myArray = categoryId;
+      var baseUrl = url;
+      var paramName = "categoryId_q=";
+      var arrayAsString = "?" + paramName + myArray.join("&" + paramName);
+      var urlWithParams = baseUrl + arrayAsString;
+      url = urlWithParams;
+    }
+
+    if (categoryId?.length < 2 || brandId?.length < 2) {
+      if (categoryId) url = url + "/categoryId/" + categoryId;
+      if (brandId) url = url + "/brandId/" + brandId;
+    }
+  }
   const { data } = await guestInstance.get(url, {
     params: {
       // GET-параметры для постраничной навигации

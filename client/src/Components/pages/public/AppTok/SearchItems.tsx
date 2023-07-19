@@ -1,26 +1,14 @@
 import { useState, useEffect, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
-import { Form, Card, Col } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-// import { PRODUCT_ROUTE } from "../../../../utils/consts";
-import {
-  // updateProduct,
-  // fetchProdRating,
-  // createProdRating,
-  // fetchCategories,
-  // fetchBrands,
-  fetchAllProducts,
-} from "../../../../http/Tok/catalogAPI_Tok";
-// компоненты
-// import CategoryBar from "./CategoryBar";
-// import BrandBar from "./BrandBar";
+import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
 
-const defaultValue = { name: "", price: "", category: "", brand: "" };
+let defaultValue: any = { name: [], price: [], category: [], brand: [] };
 
 const SearchItems = ({ show, setShow, children }: any) => {
-  // ~ console.log("body ", body);
-  // перем./логика/fn по блокировки прокрутки body
+  const { catalog }: any = useContext(AppContext);
+
+  // логика по блок.прокрутки body при modal Расшир.Поиске
   let body = document.querySelector("body");
   if (body != null) {
     body.style.overflowY = "hidden";
@@ -31,50 +19,62 @@ const SearchItems = ({ show, setShow, children }: any) => {
     }
   };
 
-  const { catalog }: any = useContext(AppContext);
-  // ~ console.log("catalog ", catalog);
-
-  const [products, setProducts] = useState([]);
-  // ~ console.log("products 0 ", products);
-
-  // нач.загрузка всего
-  useEffect(() => {
-    fetchAllProducts(null, null, 1, 10000, "ASC", "name").then((data: any) => {
-      // ~ console.log("MODAL data ", data);
-      setProducts(data.rows);
-    });
-  }, []);
-
-  const handleClick = (id: number) => {
-    if (id === catalog.category) {
-      catalog.category = null;
-    } else {
-      catalog.category = id;
-    }
-    // при каждом клике добавляем в историю браузера новый элемент
-    const params: any = {};
-    if (catalog.category) params.category = catalog.category;
-    if (catalog.brand) params.brand = catalog.brand;
-    if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit) params.limit = catalog.limit;
-    if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField) params.sortField = catalog.sortField;
-    // navigate({
-    //   pathname: "/",
-    //   search: "?" + createSearchParams(params),
-    // });
-  };
-
-  const [value, setValue] = useState(defaultValue);
-  const handleInputChange = (event: any) => {
-    const data = { ...value, [event.target.name]: event.target.value };
-    // setValue(data);
-    // setValid(isValid(data));
-  };
-
+  // показ блока с Параметрами
   const handleClickChoiceParam = (event: any) => {
     event.currentTarget.classList.toggle("choice-param-show");
   };
+
+  const [products, setProducts] = useState([]);
+  // console.log("products 0 ", products);
+
+  // нач.загрузка всего
+  useEffect(() => {
+    // if (products.length === 0) {
+    fetchAllProducts(null, null, 1, 10000, "ASC", "name").then((data: any) => {
+      console.log("MODAL data ", data);
+      setProducts(data.rows);
+    });
+    // }
+    // console.log("products 1 ", products);
+  }, []);
+
+  const [value, setValue] = useState(/* {} */ /* [] */ defaultValue);
+  const handleInputChange = (event: any, id: number, item: any) => {
+    if (event.target.checked) {
+      let data = {
+        ...value,
+      };
+      for (const key in data) {
+        if (key === item) {
+          const element2 = data[key].push(id);
+        }
+      }
+      setValue(data);
+    }
+  };
+
+  useEffect(() => {
+    if (value.category.length > 0) {
+      console.log("MODAL usEf AND 1 ", 1);
+      fetchAllProducts(
+        // value.category.join("&"),
+        value.category,
+        null,
+        1,
+        10000,
+        "ASC",
+        "name"
+      )
+        .then((data: any) => {
+          console.log("MODAL AND data ", data);
+          // setProducts(data);
+          catalog.products = data.rows;
+          catalog.limit = Math.ceil(data.limit);
+          catalog.count = Math.ceil(data.count / data.limit);
+        })
+        .finally(() => console.log("999 ", 999) /* setProducts(data) */);
+    }
+  });
 
   return (
     <div className="modal--eg__prost">
@@ -114,8 +114,17 @@ const SearchItems = ({ show, setShow, children }: any) => {
                   <label
                     key={item.id}
                     //onClick={() => handleClick(item.id)}
+                    // onChange={(e) => handleInputChange(e, item.id, item)}
                   >
-                    <input type="checkbox" name={item.name} id="" />
+                    <input
+                      // onChange={(e) => handleInputChange(e, item.id, item)}
+                      onChange={(e) =>
+                        handleInputChange(e, item.id, "category")
+                      }
+                      type="checkbox"
+                      name={item.name}
+                      id=""
+                    />
                     <div>{item.name}</div>
                   </label>
                 ))}

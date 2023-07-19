@@ -97,8 +97,8 @@ const Shop = observer(() => {
       catalog.sortField
     )
       .then((data: any) => {
-        catalog.products = data.rows;
         console.log("SHP usEf 000 data ", data);
+        catalog.products = data.rows;
         catalog.limit = Math.ceil(data.limit);
         catalog.count = Math.ceil(data.count / data.limit);
       })
@@ -141,8 +141,8 @@ const Shop = observer(() => {
       catalog.sortField
     )
       .then((data) => {
-        catalog.products = data.rows;
         console.log("SHP usEf 2 data ", data);
+        catalog.products = data.rows;
         catalog.count = Math.ceil(data.count / catalog.limit);
       })
       .finally(() => setProductsFetching(false));

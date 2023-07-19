@@ -17,14 +17,6 @@ const Search = observer(() => {
   // результ.поиска
   // const [filteredResults, setFilteredResults] = useState([]);
 
-  // РАСШИР.ПОИСК
-  // блок показа Расшир.Поиска
-  const [showExtendedSearch, setShowExtendedSearch] = useState(false);
-  const handleBtnClick = () => {
-    setShowExtendedSearch((prevState) => !prevState);
-  };
-
-  // ПОИСК
   // по измен.searchAll,searchInput,catalog начин.фильтр.из searchAll
   useEffect(() => {
     const filteredData = searchAll.filter(({ name, price, rating }: any) => {
@@ -40,7 +32,6 @@ const Search = observer(() => {
     catalog.products = filteredData;
   }, [searchAll, searchInput, catalog]);
 
-  // ПОИСК
   // `Поиск элементов`. Загр.ВСЕХ Товаров в searchAll
   const searchItems = async (searchValue: any) => {
     if (searchValue !== "") {
@@ -72,6 +63,13 @@ const Search = observer(() => {
         catalog.count = Math.ceil(data.count / data.limit);
       });
     }
+  };
+
+  // РАСШИР.ПОИСК
+  // блок показа Расшир.Поиска
+  const [showExtendedSearch, setShowExtendedSearch] = useState(false);
+  const handleBtnClick = () => {
+    setShowExtendedSearch((prevState) => !prevState);
   };
 
   return (
