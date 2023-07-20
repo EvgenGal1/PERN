@@ -4,6 +4,8 @@ import {
   CONTACTS_ROUTE,
   NOTFOUND_ROUTE,
   SHOP_ROUTE,
+  SHOP_ROUTE_CATALOG,
+  SHOP_ROUTE_SEARCH,
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
   PRODUCT_ROUTE,
@@ -49,8 +51,11 @@ import AdminProducts from "../../pages/admin/AdminProducts";
 // Доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
 export const publicRoutes = [
   // ^ {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
-  // Замена 2 Комп.Login|Signup на один Комп.с разн.маршр. в строке запроса
+  // путь Магазина, Каталога(+доп.к URL), Поиска(+доп.к URL)
   { /* "/", */ path: SHOP_ROUTE, Component: Shop },
+  { path: SHOP_ROUTE_CATALOG, Component: Shop },
+  { path: SHOP_ROUTE_SEARCH, Component: Shop },
+  // Замена 2 Комп.Login|Signup на один Комп.с разн.маршр. в строке запроса
   { path: LOGIN_ROUTE, Component: /* Login */ Auth },
   { path: SIGNUP_ROUTE, Component: /* Signup */ Auth },
   { path: PRODUCT_ROUTE + "/:id", Component: Product },

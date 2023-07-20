@@ -21,13 +21,22 @@ const CategoryBar = observer(() => {
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit) params.limit = catalog.limit;
+    if (catalog.limit !== 20) params.limit = catalog.limit;
     if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
     if (catalog.sortField) params.sortField = catalog.sortField;
-    navigate({
-      pathname: "/",
-      search: "?" + createSearchParams(params),
-    });
+
+    // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
+    if (catalog.brand || catalog.category) {
+      navigate({
+        pathname: "/catalog/list/",
+        search: "?" + createSearchParams(params),
+      });
+    } else {
+      navigate({
+        pathname: "/",
+        search: "?" + createSearchParams(params),
+      });
+    }
   };
 
   return (

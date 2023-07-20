@@ -19,10 +19,19 @@ export const PaginSortLimit = (props: any) => {
     if (catalog.limit) params.limit = catalog.limit;
     if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
     if (catalog.sortField) params.sortField = catalog.sortField;
-    navigate({
-      pathname: "/",
-      search: "?" + createSearchParams(params),
-    });
+
+    // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
+    if (catalog.brand || catalog.category) {
+      navigate({
+        pathname: "/catalog/list/",
+        search: "?" + createSearchParams(params),
+      });
+    } else {
+      navigate({
+        pathname: "/",
+        search: "?" + createSearchParams(params),
+      });
+    }
   };
 
   // обраб.КЛИК по № СТР.

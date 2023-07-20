@@ -1,5 +1,7 @@
 // ОБЩИЙ ДОСТУП
 export const SHOP_ROUTE = "/";
+export const SHOP_ROUTE_CATALOG = "/catalog/list?";
+export const SHOP_ROUTE_SEARCH = "/catalog/search?";
 // общ.эл.
 export const DEVICE_ROUTE = "/device";
 export const DELIVERY_ROUTE = "/delivery";
