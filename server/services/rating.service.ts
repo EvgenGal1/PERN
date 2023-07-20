@@ -29,19 +29,32 @@ class Rating {
     if (!user) {
       throw new Error("Пользователь не найден в БД");
     }
-    // находим/удаляем данн.Рейтинга пользователя е/и он уже голосовал
-    const ratingUserId = await RatingMapping.findOne({ where: { userId } });
-    if (ratingUserId.userId === userId) {
+
+    // находим/удаляем данн.Рейтинга/Пользователя е/и он уже голосовал
+    const ratingUserId = await RatingMapping.findOne({
+      where: { userId: userId, productId: productId },
+    });
+    if (
+      ratingUserId?.userId == userId &&
+      ratingUserId?.productId == productId
+    ) {
       await RatingMapping.destroy({
-        where: { userId: userId },
+        where: { userId: userId, productId: productId },
       });
     }
+
     // созд.нов.Рейтинг
-    const rating = await RatingMapping.create({ rate, productId, userId });
-    // запросы для вычисления средн.Рейтинга
+    const rating = await RatingMapping.create({
+      rate: rate,
+      productId: productId,
+      userId: userId,
+    });
+
+    // запросы для вычисления средн.Рейтинга (ставки, голоса)
     const votes = await RatingMapping.count({ where: { productId } });
     const rates = await RatingMapping.sum("rate", { where: { productId } });
     const ratingAll = rates / votes;
+
     // перем./запрос для обнов.Товара
     let name = product.name;
     let price = product.price;
@@ -58,9 +71,10 @@ class Rating {
         brandId: brandId,
       });
     }
+
     // return rating;
     // return { ...rating, ratingAll };
-    return { ...rating.dataValues, ratingAll };
+    return { ...rating.dataValues, ratingAll, votes /* , rates */ };
   }
 }
 

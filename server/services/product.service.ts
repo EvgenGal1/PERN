@@ -80,9 +80,20 @@ class Product {
     let where: any = {};
     if (categoryId_q != null) {
       if (categoryId_q?.length > 1) {
+        // whereParam_q = `
+        //
+        // where = `
+        //   where: {
+        //     categoryId: {
+        //       [Op.and]: ${categoryId_q},
+        //     },
+        //   },`;
+        //
         where.categoryId = categoryId_q;
+        // where.categoryId = { [Op.and]: categoryId_q };
       }
     }
+
     if (categoryId_q === null) {
       if (categoryId) where.categoryId = categoryId;
       if (brandId) where.brandId = brandId;
@@ -115,6 +126,17 @@ class Product {
         {
           model: BrandMapping,
           as: "brand",
+          // whereParam_q,
+          //
+          // where: {
+          //   [Op.and]: [{ categoryId: 12 }, { categoryId: 13 }],
+          // },
+          //
+          // where: {
+          //   categoryId: {
+          //     [Op.or]: [12, 13],
+          //   },
+          // },
         },
         { model: CategoryMapping, as: "category" },
       ],
