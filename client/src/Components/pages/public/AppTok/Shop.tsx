@@ -55,7 +55,7 @@ const getSearchParams = (searchParams: any) => {
 };
 
 // При начальной загрузке каталога мы проверяем наличие GET-параметров и если они есть — выполняем запрос на сервер с учетом выбранной категории, бренда и страницы.
-// ^ observer `наблюдатель` - обётрка Комп.для слежен.за obser-значен., используемые Комп-ми и render при измен.
+// ^ оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач. для renderа при измен.
 const Shop = observer(() => {
   const { catalog }: any = useContext(AppContext);
 
@@ -81,12 +81,14 @@ const Shop = observer(() => {
 
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
+    console.log("SHP usEf 000 searchParams ", searchParams);
+
     catalog.category = category;
     catalog.brand = brand;
     catalog.page = page ?? 1;
     catalog.limit = limit ?? 0;
-    catalog.sortOrd = sortOrd;
-    catalog.sortField = sortField;
+    catalog.sortOrd = sortOrd ?? "ASC";
+    catalog.sortField = sortField ?? "name";
 
     fetchAllProducts(
       catalog.category,
@@ -110,22 +112,29 @@ const Shop = observer(() => {
   useEffect(() => {
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
+    console.log("SHP usEf 1 searchParams ", searchParams);
 
     if (category || brand || page || limit) {
+      console.log("SHP usEf 1 IF  ", 11);
       if (category !== catalog.category) catalog.category = category;
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
-      if (limit !== catalog.limit) catalog.limit = limit;
-      if (sortOrd !== catalog.sortOrd) catalog.sortOrd = sortOrd;
-      if (sortField !== catalog.sortField) catalog.sortField = sortField;
+      if (limit !== catalog.limit) catalog.limit = limit ?? 20;
+      if (sortOrd !== catalog.sortOrd) catalog.sortOrd = sortOrd ?? "ASC";
+      if (sortField !== catalog.sortField)
+        catalog.sortField = sortField ?? "name";
     } else {
+      console.log("SHP usEf 1 ELSE  ", 22);
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;
-      catalog.limit = 0;
-      catalog.sortOrd = null; //"ASC";
-      catalog.sortField = null; //"name";
+      // eslint-disable-next-line no-self-assign
+      catalog.sortOrd = catalog.sortOrd; //null; //"ASC";
+      // eslint-disable-next-line no-self-assign
+      catalog.sortField = catalog.sortField; // null; //"name";
     }
+
+    console.log("SHP usEf 1 location.search ", location.search);
     // eslint-disable-next-line
   }, [location.search]);
 
@@ -143,7 +152,7 @@ const Shop = observer(() => {
       .then((data) => {
         console.log("SHP usEf 2 data ", data);
         catalog.products = data.rows;
-        catalog.count = Math.ceil(data.count / catalog.limit);
+        catalog.count = Math.ceil(data.count / /* catalog */ data.limit);
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line

@@ -21,9 +21,10 @@ const CategoryBar = observer(() => {
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== 20) params.limit = catalog.limit;
-    if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField) params.sortField = catalog.sortField;
+    if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
+    if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField !== ("name" || null))
+      params.sortField = catalog.sortField;
 
     // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
     if (catalog.brand || catalog.category) {

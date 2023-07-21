@@ -1,16 +1,13 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
 import { Card, Col } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { PRODUCT_ROUTE } from "../../../../utils/consts";
 import {
-  updateProduct,
   fetchProdRating,
   createProdRating,
 } from "../../../../http/Tok/catalogAPI_Tok";
 
-// Комп.Рейтинга. Пуст./Полн.
+// Звезд.Комп.Рейтинга. Пуст./Полн.
 const OutlineStar = () => {
   const OutlineStar = "☆";
   return <>{OutlineStar}</>;
@@ -21,49 +18,28 @@ const FillStar = () => {
 };
 
 const ProductItem = ({ data }: any) => {
-  const { user }: any = useContext(AppContext);
-  const navigate = useNavigate();
+  const { catalog, user }: any = useContext(AppContext);
 
-  const isValid = (value: any) => {
-    const result: any = {};
-    const pattern = /^[1-5][0-5]*$/;
-    // for (let key in value) {
-    // if (key === "name") result.name = value.name.trim() !== "";
-    // if (key === "price") result.price = pattern.test(value.price.trim());
-    if (value > 0) result.rating = value;
-    // if (key === "category") result.category = pattern.test(value.category);
-    // if (key === "brand") result.brand = pattern.test(value.brand);
-    // }
-    return result;
-  };
-
-  // сост.Рейтинга и наведения на него
+  // сост.Рейтинга, наведения на него, кол-во головов из БД
   const [numberStar, setNuberStar] = useState(data.rating);
   const [hoverStar, setHoverStar] = useState(0);
+  const [votes, setVotes] = useState(0);
 
-  let ratingNew = data.rating;
+  // загр.Рейтинга из БД для голосов
+  useEffect(() => {
+    fetchProdRating(data.id).then((data: any) => setVotes(data.votes));
+  });
+  // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
-    console.log("ratingNew 0 ", ratingNew);
-    const correct = isValid(rating);
-    if (user.isAuth && correct.rating) {
-      console.log("user.id ", user.id);
-      await createProdRating(user.id, data.id, rating)
-        .then((data) => {
-          console.log("CRA data ", data);
-          ratingNew = data.ratingAll;
-          setNuberStar(data.ratingAll);
-          data.rating = data.ratingAll;
-          console.log("ratingNew 1 ", ratingNew);
-        })
-        .finally(() => setNuberStar(ratingNew));
-
-      // ^ получ.Рейтинга (пока всё сделанно в createProdRating)
-      // const one = fetchProdRating(data.id).then((data) => {
-      //   console.log("ONE data ", data);
-      // });
-      // console.log("one ====================== ", one);
+    if (user.isAuth) {
+      await createProdRating(user.id, data.id, rating).then((data) => {
+        setNuberStar(data.ratingAll);
+        setVotes(data.votes);
+        catalog.rating = data.ratingAll;
+      });
 
       // ^ менять Рейтинг ч/з UpdProd (нет доступов для role USER)
+      // * Обощёл доступ для USER в БД
       // const correct = isValid(rating);
       // if (correct.rating) {
       //   const prod = {
@@ -83,11 +59,10 @@ const ProductItem = ({ data }: any) => {
     }
   };
 
-  // логика обрезания/замены последн.БУКВ КАТЕГОРИИ
+  // логика Сокращ./Обрез./Замены БУКВ/ЦИФР/КАТЕГОРИй
   let strCat = data.category.name;
   // удал.посл.эл.назв.
   strCat = strCat.slice(0, -1);
-  // console.log("strCat ", strCat);
   if (strCat === "букв" || strCat === "амбиграмм" || strCat === "молекул")
     strCat = strCat + "а";
   if (strCat === "амбиграмма") strCat = "⇔";
@@ -169,7 +144,6 @@ const ProductItem = ({ data }: any) => {
   let price = data.price.toString();
   if (price > 1000000000) {
     // ! не раб. split + splice + join. приходится разбивать
-    // console.log("price", price.split("").splice(2, 0, ":").join(""));
     // убираем последн.нули, добавл. B(биллион)
     price = price.replace(/000000$/g, " B");
     // разбив.на массив
@@ -210,45 +184,37 @@ const ProductItem = ({ data }: any) => {
         <Card.Body
           style={{ height: "100%", overflow: "hidden", padding: "10px" }}
         >
+          {/* Цена: */}
           <div>
-            {/* Цена: */}
             <span
               style={{
-                fontSize: "50px",
+                fontSize: "30px",
                 opacity: "0.5",
               }}
             >
               {price}
             </span>
-          </div>
-          <div>
-            <div>
-              {/* Рейтинг: */}
-              {ratingNew} = {data.rating} _{ratingNew} -{" "}
-              {data.ratingAll ? data.ratingAll : data.rating}
-            </div>
-            {/* <br /> */}
-            <div
-              className="youtube__v=McF22__Jz_I"
+            <span
               style={{
-                position: "relative",
+                fontSize: "20px",
+                opacity: "0.5",
+                textDecoration: "line-through",
+                marginLeft: "10px",
               }}
             >
-              {/* Рейтинг: */}
-              <span
-                style={{
-                  position: "absolute",
-                  fontSize: "40px",
-                  opacity: "0.5",
-                  top: "50%",
-                  right: "0",
-                  letterSpacing: "-4px",
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                {/* Рейтинг: */} {ratingNew}{" "}
-                {/* {data.rating} {ratingNew} {data.rating} */}
-              </span>
+              {Math.round(price * 1.35)}
+            </span>
+          </div>
+          {/* Рейтинг: */}
+          <div
+            className="youtube__v=McF22__Jz_I"
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {/* Звёзды */}
+            <div style={{ display: "flex", marginRight: "10px" }}>
               {Array(5)
                 .fill(0)
                 .map((_, index) =>
@@ -258,9 +224,9 @@ const ProductItem = ({ data }: any) => {
                       onMouseLeave={() => setHoverStar(0)}
                       onClick={() => handleSubmit(index + 1)}
                       style={{
+                        display: "flex",
+                        fontSize: "25px",
                         fontWeight: "100",
-                        display: "inline-block",
-                        fontSize: "35px",
                         color: "orange",
                       }}
                       key={index}
@@ -273,9 +239,9 @@ const ProductItem = ({ data }: any) => {
                       onMouseLeave={() => setHoverStar(0)}
                       onClick={() => handleSubmit(index + 1)}
                       style={{
+                        display: "flex",
+                        fontSize: "25px",
                         fontWeight: "100",
-                        display: "inline-block",
-                        fontSize: "35px",
                         color: "orange",
                       }}
                       key={index}
@@ -285,10 +251,18 @@ const ProductItem = ({ data }: any) => {
                   )
                 )}
             </div>
-            {/* <br /> */}
+            {/* Цифра/Голоса */}
+            <span
+              style={{
+                fontSize: "25px",
+                opacity: "0.5",
+              }}
+            >
+              {numberStar} {votes ? <> / {votes}</> : ""}
+            </span>
           </div>
-          {/* <br /> */}
-          <div>
+          {/* Категор./Бренд/Назв./ */}
+          <div style={{ marginTop: "5px" }}>
             <strong>
               {strCat} {data.brand.name} {strName}
             </strong>

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import { useNavigate, useLocation, createSearchParams } from "react-router-dom";
 import { Button, Form, Pagination } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
@@ -8,6 +8,7 @@ export const PaginSortLimit = (props: any) => {
   const { catalog }: any = useContext(AppContext);
   const { setFetching, setChange }: any = props;
   const navigate = useNavigate();
+  const location = useLocation();
 
   // созд.парам.поиска в строку URL
   const fnCreateSearchParams = () => {
@@ -16,9 +17,10 @@ export const PaginSortLimit = (props: any) => {
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit) params.limit = catalog.limit;
-    if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField) params.sortField = catalog.sortField;
+    if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
+    if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField !== ("name" || null))
+      params.sortField = catalog.sortField;
 
     // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
     if (catalog.brand || catalog.category) {
@@ -86,14 +88,13 @@ export const PaginSortLimit = (props: any) => {
 
   // ЛИМИТ. изменен.сост.ограничения
   const changeLimitState = (limit: number) => {
-    console.log("PaSoLi limit ", limit);
     if (limit !== catalog.limit) {
       catalog.limit = limit;
-      if (!props.admin) {
-        fnCreateSearchParams();
-      }
-      setChange((state: any) => !state);
+    } else catalog.limit = 20;
+    if (!props.admin) {
+      fnCreateSearchParams();
     }
+    setChange((state: any) => !state);
   };
 
   return (
