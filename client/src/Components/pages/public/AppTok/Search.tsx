@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
 import SearchItems from "./SearchItems";
-import BegPrj_Modal from "../../../ui/Modal/BegPrj_Modal";
+// import BegPrj_Modal from "../../../ui/Modal/BegPrj_Modal";
 
 const Search = observer(() => {
   const { catalog }: any = useContext(AppContext);
+  const navigate = useNavigate();
 
-  // ПОИСК
+  // ^ ПОИСК на FRONT (данн.из БД в отд.стат)
   // все данн.с сервера
   const [searchAll, setSearchAll] = useState([]);
   // inp.поиска
@@ -34,6 +36,7 @@ const Search = observer(() => {
 
   // `Поиск элементов`. Загр.ВСЕХ Товаров в searchAll
   const searchItems = async (searchValue: any) => {
+    console.log("SEH searchValue ", searchValue);
     if (searchValue !== "") {
       await fetchAllProducts(
         catalog.category,
@@ -65,11 +68,32 @@ const Search = observer(() => {
     }
   };
 
-  // РАСШИР.ПОИСК
+  // ^ РАСШИР.ПОИСК на FRONT (данн.из БД в отд.стат)
   // блок показа Расшир.Поиска
   const [showExtendedSearch, setShowExtendedSearch] = useState(false);
   const handleBtnClick = () => {
     setShowExtendedSearch((prevState) => !prevState);
+  };
+
+  // ^ ПОИСК на FRONT (данн.из БД в Общ.стат)
+  const handleClick = (id: number) => {
+    if (id === catalog.category) {
+      catalog.category = null;
+    } else {
+      catalog.category = id;
+    }
+    // при каждом клике добавляем в историю браузера новый элемент
+    const params: any = {};
+    if (catalog.category) params.category = catalog.category;
+    if (catalog.brand) params.brand = catalog.brand;
+    if (catalog.page > 1) params.page = catalog.page;
+    if (catalog.limit) params.limit = catalog.limit;
+    if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField) params.sortField = catalog.sortField;
+    navigate({
+      pathname: "/",
+      search: "search?" + createSearchParams(params),
+    });
   };
 
   return (

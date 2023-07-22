@@ -83,24 +83,79 @@ export const fetchAllProducts = async (
   sortOrd: string,
   sortField: string
 ) => {
+  // http://localhost:5050/api/product/getall?page=1&limit=20
+  // http://proektory/26960370/filters?text=проектор&hid=191219&local-offers-first=0&rs=eJwzam
   let url = "product/getall";
   // фильтрация товаров по категории и/или бренду
+  // console.log("fetProd categoryId " + categoryId);
+  // console.log("fetProd brandId " + brandId);
+  // console.log("fetProd limit " + limit);
+
   if (categoryId != null || brandId != null) {
+    // console.log(categoryId?.length);
+    // console.log("000 : " + 0);
     // логика добавления к URL до.парам. е/и их больше 1го
     if (categoryId?.length > 1 || brandId?.length > 1) {
+      // console.log("111 : " + 111);
+      // ~ попеременное подтягивание (первые i стирает, оставляет последний)
+      // for (let i of categoryId) {
+      // console.log(i);
+      // let url2 = url;
+      //
+      // url2 = url2 + "?" + "categoryId" + "=" + i;
+      // url = url + "?" + "categoryId" + "=" + i;
+      //
+      // let url2 = new URL("https://google.com/");
+      // url2.searchParams.set("categoryId", i);
+      // console.log(url /* 2 */);
+      // }
+      // ~ раб
       var myArray = categoryId;
       var baseUrl = url;
       var paramName = "categoryId_q=";
       var arrayAsString = "?" + paramName + myArray.join("&" + paramName);
       var urlWithParams = baseUrl + arrayAsString;
       url = urlWithParams;
+      // console.log("urlWithParams : " + urlWithParams);
+      //
+      // field1=value1&field2=value2&field3=value3
+      //
+      // let url = new URL('https://google.com/search');
+      // url.searchParams.set('q', 'test me!'); // добавим параметр, содержащий пробел и !
+      // alert(url); // https://google.com/search?q=test+me%21
     }
 
-    if (categoryId?.length < 2 || brandId?.length < 2) {
+    // е/и Один параметр
+    // console.log("brandIdtypeof : " + typeof brandId);
+    // console.log("brandId.length : " + brandId?.length);
+    // console.log("categoryId typeof : " + typeof categoryId);
+    // console.log("categoryId.length : " + categoryId?.length);
+    // console.log("222 : " + 222);
+    // console.log(typeof categoryId === "number");
+    // console.log(isNaN(categoryId));
+    // console.log(typeof brandId === "number");
+    // console.log(isNaN(brandId));
+    if (
+      // (categoryId != null || brandId != null) &&
+      // categoryId.length === 1 || brandId.length === 1
+      //
+      // categoryId?.length < 2 ||
+      // brandId?.length < 2
+      //
+      // typeof categoryId === "number" ||
+      // typeof brandId === "number"
+      //
+      typeof categoryId === ("number" || "object") ||
+      typeof brandId === ("number" || "object")
+    ) {
+      // console.log("333 : " + 333);
+      // if (categoryId.length === 1 || brandId.length === 1) {
       if (categoryId) url = url + "/categoryId/" + categoryId;
       if (brandId) url = url + "/brandId/" + brandId;
+      // }
     }
   }
+  // console.log("url ВСЁ : " + url);
   const { data } = await guestInstance.get(url, {
     params: {
       // GET-параметры для постраничной навигации

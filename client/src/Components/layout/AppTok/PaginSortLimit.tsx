@@ -118,6 +118,7 @@ export const PaginSortLimit = (props: any) => {
         <option value="name">Название</option>
         <option value="price">Цена</option>
         <option value="rating">Рейтинг</option>
+        <option value="rating">Голоса</option>
       </Form.Select>
       {/* СОРТИРОВКА ПО ПОРЯДКУ */}
       <Button
