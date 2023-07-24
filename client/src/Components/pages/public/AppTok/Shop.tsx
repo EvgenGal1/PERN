@@ -102,7 +102,8 @@ const Shop = observer(() => {
         console.log("SHP usEf 000 data ", data);
         catalog.products = data.rows;
         catalog.limit = Math.ceil(data.limit);
-        catalog.count = Math.ceil(data.count / data.limit);
+        // catalog.count = Math.ceil(data.count / data.limit);
+        catalog.count = data.count;
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line
@@ -152,7 +153,9 @@ const Shop = observer(() => {
       .then((data) => {
         console.log("SHP usEf 2 data ", data);
         catalog.products = data.rows;
-        catalog.count = Math.ceil(data.count / /* catalog */ data.limit);
+        // catalog.count = Math.ceil(data.count /  data.limit);
+        catalog.count = data.count;
+        catalog.limit = data.limit;
       })
       .finally(() => setProductsFetching(false));
     // eslint-disable-next-line

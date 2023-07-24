@@ -48,7 +48,7 @@ export const PaginSortLimit = (props: any) => {
   };
   // содер.Комп.`Страница`
   const pages: any = [];
-  for (let page = 1; page <= catalog.count; page++) {
+  for (let page = 1; page <= Math.ceil(catalog.count / catalog.limit); page++) {
     // console.log("PaSoLi FOR catalog.count ===== ", catalog.count);
     // console.log("PaSoLi FOR catalog.limit ===== ", catalog.limit);
     pages.push(
@@ -69,6 +69,8 @@ export const PaginSortLimit = (props: any) => {
     if (e === "name") catalog.sortField = e;
     if (e === "price") catalog.sortField = e;
     if (e === "rating") catalog.sortField = e;
+    // ! не раб.сорт.с БД
+    if (e === "votes") catalog.sortField = e;
     if (!props.admin) {
       fnCreateSearchParams();
     }
@@ -100,7 +102,7 @@ export const PaginSortLimit = (props: any) => {
   return (
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
-      {catalog.count > 1 && (
+      {catalog.count > catalog.limit && (
         <Pagination
           style={{ margin: "0", flexWrap: "wrap" }}
           className="pagination--eg"
@@ -118,7 +120,8 @@ export const PaginSortLimit = (props: any) => {
         <option value="name">Название</option>
         <option value="price">Цена</option>
         <option value="rating">Рейтинг</option>
-        <option value="rating">Голоса</option>
+        {/* // ! не раб.сорт.с БД */}
+        <option value="votes">Голоса</option>
       </Form.Select>
       {/* СОРТИРОВКА ПО ПОРЯДКУ */}
       <Button
@@ -139,36 +142,77 @@ export const PaginSortLimit = (props: any) => {
         )}
       </Button>
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
-      <div className="limit--eg" style={{ display: "flex" }}>
-        <Button
-          size="sm"
-          onClick={() => changeLimitState(10)}
-          className={`btn-primary--eg${catalog.limit === 10 ? " active" : ""}`}
-        >
-          10
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => changeLimitState(25)}
-          className={`btn-primary--eg${catalog.limit === 25 ? " active" : ""}`}
-        >
-          25
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => changeLimitState(50)}
-          className={`btn-primary--eg${catalog.limit === 50 ? " active" : ""}`}
-        >
-          50
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => changeLimitState(100)}
-          className={`btn-primary--eg${catalog.limit === 100 ? " active" : ""}`}
-        >
-          100
-        </Button>
-      </div>
+      {catalog.count > 10 ? (
+        <div className="limit--eg" style={{ display: "flex" }}>
+          {catalog.count > 10 ? (
+            <Button
+              size="sm"
+              onClick={() => changeLimitState(10)}
+              className={`btn-primary--eg${
+                catalog.limit === 10 ? " active" : ""
+              }`}
+            >
+              10
+            </Button>
+          ) : (
+            ""
+          )}
+          {catalog.count > 10 ? (
+            <Button
+              size="sm"
+              onClick={() => changeLimitState(25)}
+              className={`btn-primary--eg${
+                catalog.limit === 25 ? " active" : ""
+              }`}
+            >
+              25
+            </Button>
+          ) : (
+            ""
+          )}
+          {catalog.count > 25 ? (
+            <Button
+              size="sm"
+              onClick={() => changeLimitState(50)}
+              className={`btn-primary--eg${
+                catalog.limit === 50 ? " active" : ""
+              }`}
+            >
+              50
+            </Button>
+          ) : (
+            ""
+          )}
+          {catalog.count > 50 ? (
+            <Button
+              size="sm"
+              onClick={() => changeLimitState(100)}
+              className={`btn-primary--eg${
+                catalog.limit === 100 ? " active" : ""
+              }`}
+            >
+              100
+            </Button>
+          ) : (
+            ""
+          )}
+          {catalog.count > 100 ? (
+            <Button
+              size="sm"
+              onClick={() => changeLimitState(500)}
+              className={`btn-primary--eg${
+                catalog.limit === 500 ? " active" : ""
+              }`}
+            >
+              500
+            </Button>
+          ) : (
+            ""
+          )}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -41,8 +41,14 @@ const Product = () => {
   const [rating, setRating]: any = useState(null);
 
   useEffect(() => {
-    fetchOneProduct(id).then((data: any) => setProduct(data));
-    fetchProdRating(id).then((data: any) => setRating(data));
+    fetchOneProduct(id).then((data: any) => {
+      console.log("Prod prod data ", data);
+      setProduct(data);
+    });
+    fetchProdRating(id).then((data: any) => {
+      console.log("Prod ratg data ", data);
+      setRating(data);
+    });
   }, [id]);
 
   // На странице товара добавим обработчик клика по кнопке «Добавить в корзину»:

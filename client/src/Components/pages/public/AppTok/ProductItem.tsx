@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Col } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
@@ -6,19 +7,21 @@ import {
   fetchProdRating,
   createProdRating,
 } from "../../../../http/Tok/catalogAPI_Tok";
+import { PRODUCT_ROUTE } from "../../../../utils/consts";
 
 // Звезд.Комп.Рейтинга. Пуст./Полн.
 const OutlineStar = () => {
-  const OutlineStar = "☆";
-  return <>{OutlineStar}</>;
+  const OutlineStar = <span>☆</span>;
+  return OutlineStar;
 };
 const FillStar = () => {
-  const FillStar = "★";
-  return <>{FillStar}</>;
+  const FillStar = <span>★</span>;
+  return FillStar;
 };
 
 const ProductItem = ({ data }: any) => {
   const { catalog, user }: any = useContext(AppContext);
+  const navigate = useNavigate();
 
   // сост.Рейтинга, наведения на него, кол-во головов из БД
   const [numberStar, setNuberStar] = useState(data.rating);
@@ -27,7 +30,10 @@ const ProductItem = ({ data }: any) => {
 
   // загр.Рейтинга из БД для голосов
   useEffect(() => {
-    fetchProdRating(data.id).then((data: any) => setVotes(data.votes));
+    fetchProdRating(data.id).then((data: any) => {
+      // console.log("ProdItm data ", data);
+      setVotes(data.votes);
+    });
   });
   // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
@@ -141,17 +147,35 @@ const ProductItem = ({ data }: any) => {
     strName += " (з)";
   }
   // логика сокращения ЦЕНЫ
-  let price = data.price.toString();
-  if (price > 1000000000) {
-    // ! не раб. split + splice + join. приходится разбивать
-    // убираем последн.нули, добавл. B(биллион)
-    price = price.replace(/000000$/g, " B");
-    // разбив.на массив
-    let priceSpit = price.split("");
-    // с инд.1, удал.0, добав.запятую(,)
-    priceSpit.splice(1, 0, ",");
-    // превращ.в строку
-    price = priceSpit.join("");
+  let priceLet = data.price.toString();
+  // перем.СКИДКИ для Больших цен
+  let priceLetDiscount: any = "";
+  const priceLetBM = (priceLetBM: any) => {
+    priceLet = priceLetBM.toString();
+    // для цены больше 1 Биллиона
+    if (priceLet > 1000000000) {
+      // ! не раб. split + splice + join. приходится разбивать
+      // находим кол-во 0, вставл.в конце " B"(биллион)
+      // priceLet = priceLet.replace(/000000$/g, "");
+      // убираем послед.8 знаков
+      priceLet = priceLet.slice(0, -6);
+      // разбив.на массив
+      priceLet = priceLet.split("");
+      // с инд.1, удал.0, добав.запятую(,)
+      priceLet.splice(1, 0, ".");
+      // запись в цену скидки
+      priceLetDiscount = priceLet.join("");
+      priceLetDiscount = parseFloat(priceLetDiscount);
+      // превращ.в строку вставл.в конце " B"
+      priceLet = priceLet.join("") + " B";
+      // priceLet = Math.round(priceLet * 1.35);
+    }
+    // для цены больше 1 Миллиона
+    if (priceLet > 1000000) {
+      priceLet = priceLet.slice(0, -6);
+      priceLetDiscount = +priceLet;
+      priceLet = priceLet + " M";
+    }
     // ^ доп.разбиение на 3 цифры
     // var num = 1234567890;
     // var result11 = num.toLocaleString(); // 1 234 567 890
@@ -159,9 +183,9 @@ const ProductItem = ({ data }: any) => {
     //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     // }
     // numberWithSpaces(1003540) // 1 003 540
-  }
-  if (price > 1000000) {
-    price = price.toString().replace(/000000$/g, " M");
+  };
+  if (priceLet > 1000000) {
+    priceLetBM(priceLet);
   }
 
   return (
@@ -192,7 +216,7 @@ const ProductItem = ({ data }: any) => {
                 opacity: "0.5",
               }}
             >
-              {price}
+              {priceLet}
             </span>
             <span
               style={{
@@ -202,7 +226,11 @@ const ProductItem = ({ data }: any) => {
                 marginLeft: "10px",
               }}
             >
-              {Math.round(price * 1.35)}
+              {data.price < 1000000 ? (
+                Math.round(data.price * 1.35)
+              ) : (
+                <>{priceLetDiscount * 1.5}</>
+              )}
             </span>
           </div>
           {/* Рейтинг: */}
