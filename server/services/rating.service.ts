@@ -5,6 +5,7 @@ import { User as UserMapping } from "../models/mapping";
 
 class Rating {
   async getOne(productId: number) {
+    // console.log("productId : " + productId);
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -21,6 +22,9 @@ class Rating {
   }
 
   async create(rate: number, productId: number, userId: number) {
+    console.log("rate : " + rate);
+    console.log("productId : " + productId);
+    console.log("userId : " + userId);
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -29,11 +33,13 @@ class Rating {
     if (!user) {
       throw new Error("Пользователь не найден в БД");
     }
-
+    console.log("1 : " + 1);
     // находим/удаляем данн.Рейтинга/Пользователя е/и он уже голосовал
     const ratingUserId = await RatingMapping.findOne({
       where: { userId: userId, productId: productId },
     });
+    console.log("2 : " + 2);
+    console.log("ratingUserId : " + ratingUserId);
     if (
       ratingUserId?.userId == userId &&
       ratingUserId?.productId == productId

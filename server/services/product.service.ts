@@ -4,6 +4,7 @@ import {
   ProductProp as ProductPropMapping,
   Brand as BrandMapping,
   Category as CategoryMapping,
+  Rating as RatingMapping,
 } from "../models/mapping";
 import FileService from "./file.service";
 
@@ -64,9 +65,7 @@ interface Brand {
 }
 
 class Product {
-  // async getAll(params) {
   async getAll(options: any) {
-    // const { categoryId, brandId } = params;
     const {
       categoryId,
       categoryId_q,
@@ -77,7 +76,11 @@ class Product {
       sortOrd,
       sortField,
     } = options;
+
+    // перем.для уточнения запроса к др.Табл.
     let where: any = {};
+    // для сорт по Неск-им знач.
+    // ! врем.здесь(под расшир.поиск будет созд.отд.метод)
     if (categoryId_q != null) {
       if (categoryId_q?.length > 1) {
         // whereParam_q = `
@@ -89,15 +92,17 @@ class Product {
         //     },
         //   },`;
         //
-        where.categoryId = categoryId_q;
         // where.categoryId = { [Op.and]: categoryId_q };
+        where.categoryId = categoryId_q;
       }
     }
-
+    // ! врем.здесь(под расшир.поиск будет созд.отд.метод)
+    // для сорт по одному знач.
     if (categoryId_q === null) {
       if (categoryId) where.categoryId = categoryId;
       if (brandId) where.brandId = brandId;
     }
+
     // Кол-во эл. `Найдите и посчитайте все`
     let countAll = await ProductMapping.findAndCountAll({
       where,
@@ -107,41 +112,58 @@ class Product {
         { model: CategoryMapping, as: "category" },
       ],
     });
-    // Пропускаем n первых эл.в BD (для 1 стр.)
+
+    // для сорт.по голосу(из Табл.Rating)
+    let sortFieldVotes: any = {};
+    console.log("sortFieldVotes 0 : " + sortFieldVotes);
+    console.log(sortFieldVotes);
+    if (sortField === "votes") {
+      sortFieldVotes = `{ model: RatingMapping, as: "ratings" }`;
+      console.log("sortFieldVotes : " + sortFieldVotes);
+      console.log(sortFieldVotes);
+    }
+    let sortFieldParam = sortField;
+    if (sortField === "votes") {
+      // ! не раб.сортировка по votes, userId, rate|s, rating|s
+      // sortFieldParam = `RatingMapping, "votes"`;
+      sortFieldParam = `{ model: RatingMapping, as: "ratings" }, "rates"`;
+    }
+
+    // Пропускаем n первых эл.в БД (для 1 стр.)
     let offset = 0;
-    // Пропуск n эл.в BD е/и page > 1
+    // Пропуск n(limit) эл.в БД е/и page > 1
     if (page > 1) {
       offset = (page - 1) * limit;
     }
-    // е/и эл.в BD МЕНЬШЕ чем в запросе(offset)
+    // е/и эл.в БД МЕНЬШЕ чем в запросе(offset)
     if (countAll.count <= offset) offset = countAll.count - limit;
     // защита от минусового результата
     if (offset < 0) offset = 0;
+
+    console.log("sortFieldVotes 111 : " + sortFieldVotes);
+    console.log("where : " + where);
+    console.log(where);
     const products = await ProductMapping.findAndCountAll({
       where,
       limit,
       offset,
       // для каждого товара получаем бренд и категорию
       include: [
-        {
-          model: BrandMapping,
-          as: "brand",
-          // whereParam_q,
-          //
-          // where: {
-          //   [Op.and]: [{ categoryId: 12 }, { categoryId: 13 }],
-          // },
-          //
-          // where: {
-          //   categoryId: {
-          //     [Op.or]: [12, 13],
-          //   },
-          // },
-        },
+        // получаем все модели, вместе со связанными с ними моделями
+        // { all: true, nested: true },
+        { model: BrandMapping, as: "brand" },
         { model: CategoryMapping, as: "category" },
+        // { model: ProductPropMapping, as: "props" },
+        // sortFieldVotes
+        { model: RatingMapping, as: "ratings" },
       ],
-      order: [[sortField || "name", sortOrd || "ASC"]],
+      order: [[sortFieldParam || "name", sortOrd || "ASC"]],
     });
+    // console.log("products : " + products);
+    // console.log(products.rows[0]);
+    // console.log("products.count " + products.count);
+    // console.log(products.rows[0]);
+    // console.log(products.count);
     // return products;
     return { ...products, limit };
   }
@@ -156,6 +178,7 @@ class Product {
         // получать категорию и бренд
         { model: BrandMapping, as: "brand" },
         { model: CategoryMapping, as: "category" },
+        // { model: RatingMapping, as: "ratings" },
       ],
     });
     if (!product) {

@@ -45,6 +45,7 @@ const Brand = sequelize.define("brand", {
 
 // связь между товаром и пользователем через промежуточную таблицу «rating» у этой таблицы будет составной первичный ключ (product_id + user_id)
 const Rating = sequelize.define("rating", {
+  // id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   rate: { type: DataTypes.FLOAT, allowNull: false },
 });
 
@@ -171,9 +172,9 @@ User.belongsToMany(Product, { through: Rating, onDelete: "CASCADE" });
 
 // super many-to-many https://sequelize.org/master/manual/advanced-many-to-many.html
 // это обеспечит возможность любых include при запросах findAll, findOne, findByPk
-Product.hasMany(Rating);
+Product.hasMany(Rating /* , { as: "rating", onDelete: "RESTRICT" } */);
 Rating.belongsTo(Product);
-User.hasMany(Rating);
+User.hasMany(Rating /* , { as: "rating", onDelete: "RESTRICT" } */);
 Rating.belongsTo(User);
 
 // связь товара с его свойствами: у товара может быть несколько свойств, но каждое свойство связано только с одним товаром
