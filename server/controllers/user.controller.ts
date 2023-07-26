@@ -13,8 +13,8 @@ const makeJwt = (id, email, role) => {
 class User {
   // Регистрация
   async signup(req, res, next) {
-    const { email, password, role = "USER" } = req.body;
     try {
+      const { email, password, role = "USER" } = req.body;
       if (!email || !password) {
         throw new Error("Пустой email или пароль");
       }

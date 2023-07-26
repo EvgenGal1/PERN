@@ -70,7 +70,7 @@ const Product = () => {
             <Image
               width={300}
               height={300}
-              src={process.env.REACT_APP_IMG_URL_TOK + product.image}
+              src={process.env.REACT_APP_IMG_URL_PERN + product.image}
             />
           ) : (
             <Image

@@ -192,7 +192,7 @@ User.hasMany(Order, { as: "orders", onDelete: "SET NULL" });
 Order.belongsTo(User);
 
 export {
-  /* default */ User,
+  User,
   Basket,
   Product,
   Category,

@@ -2,12 +2,11 @@
 import Sequelize from "sequelize";
 
 export default new Sequelize(
-  process.env.DB_NAME_Tok, // база данных
+  process.env.DB_NAME_PERN /* Tok */, // база данных
   process.env.DB_USER, // пользователь
-  // process.env.DB_PASSWORD, // пароль
-  "Qaz123PoS!", // пароль
+  process.env.DB_PASS_PERN, // пароль
   {
-    dialect: "postgres",
+    dialect: process.env.DB_USER,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     define: {
@@ -24,7 +23,7 @@ export default new Sequelize(
       // updatedAt: 'updateTimestamp',
     },
     // ^ Формат даты заказа. 1ый способ. ? Нужно для 2го ?
-    logging: false,
+    // logging: false, // ! не ?перезаписывает? Таблицы (нет лога созд.Табл.)
     timezone: "Europe/Moscow",
   }
 );

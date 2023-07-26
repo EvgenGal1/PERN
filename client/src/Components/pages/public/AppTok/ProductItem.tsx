@@ -69,21 +69,21 @@ const ProductItem = ({ data }: any) => {
   let strCat = data.category.name;
   // удал.посл.эл.назв.
   strCat = strCat.slice(0, -1);
-  if (strCat === "букв" || strCat === "амбиграмм" || strCat === "молекул")
+  if (strCat === "Букв" || strCat === "Амбиграмм" || strCat === "Молекул")
     strCat = strCat + "а";
-  if (strCat === "амбиграмма") strCat = "⇔";
-  if (strCat === "буква") strCat = "¶";
-  if (strCat === "молекула") strCat = "⚙";
-  if (strCat === "геро") {
+  if (strCat === "Амбиграмма") strCat = "⇔";
+  if (strCat === "Буква") strCat = "¶";
+  if (strCat === "Молекула") strCat = "⚙";
+  if (strCat === "Геро") {
     // strCat = strCat + "й";
     strCat = "ν";
   }
-  if (strCat === "сердц") {
+  if (strCat === "Сердц") {
     // strCat = strCat + "е";
     strCat = "❤";
   }
-  if (strCat === "холодильник") strCat = "❉";
-  if (strCat === "смартфон")
+  if (strCat === "Холодильник") strCat = "❉";
+  if (strCat === "Смартфон")
     strCat = (
       <>
         <svg
@@ -200,7 +200,7 @@ const ProductItem = ({ data }: any) => {
         {data.image ? (
           <Card.Img
             variant="top"
-            src={process.env.REACT_APP_IMG_URL_TOK + data.image}
+            src={process.env.REACT_APP_IMG_URL_PERN + data.image}
           />
         ) : (
           <Card.Img variant="top" src="http://via.placeholder.com/200" />

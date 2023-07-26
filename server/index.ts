@@ -13,7 +13,7 @@ import router from "./routes/index.routes";
 import ErrorHandler from "./middleware/ErrorHandler";
 // import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 
-const PORT = process.env.PORT_Tok || 5000;
+const PORT = process.env.PORT_PERN || 5000;
 
 const app = express();
 // Совместное использование ресурсов между источниками + разрешить cookie от клиента

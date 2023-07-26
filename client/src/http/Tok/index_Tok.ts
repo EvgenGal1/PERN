@@ -3,14 +3,14 @@ import axios from "axios";
 
 // 1ый экземпляр req на сервер от любого посетителя
 const guestInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL_TOK,
+  baseURL: process.env.REACT_APP_API_URL_PERN,
   // отправлять cookie с id корзины при http-запросах к серверу
   withCredentials: true,
 });
 
 // 2ый экземпляр req на сервер от авториз.посетителя
 const authInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL_TOK,
+  baseURL: process.env.REACT_APP_API_URL_PERN,
   // отправлять cookie с id корзины при http-запросах к серверу
   withCredentials: true,
 });

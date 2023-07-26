@@ -155,7 +155,7 @@ class Product {
         { model: CategoryMapping, as: "category" },
         // { model: ProductPropMapping, as: "props" },
         // sortFieldVotes
-        { model: RatingMapping, as: "ratings" },
+        // { model: RatingMapping, as: "ratings" },
       ],
       order: [[sortFieldParam || "name", sortOrd || "ASC"]],
     });
