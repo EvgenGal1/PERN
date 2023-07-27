@@ -9,8 +9,18 @@ import {
 } from "../../../http/Tok/catalogAPI_Tok";
 import CreateProperties from "./CreateProperties";
 
+// перем.Валидации/Значений по умолч.
 const defaultValue = { name: "", price: "", category: "", brand: "" };
 const defaultValid = { name: null, price: null, category: null, brand: null };
+
+// перем. Значений для доп.ФормДат по умолч.
+let defaultValueBulk: { [key: string | number]: any } = {
+  name: [],
+  price: [],
+  category: [],
+  brand: [],
+  image: [],
+};
 
 const isValid = (value: any) => {
   const result: any = {};
@@ -28,9 +38,7 @@ const CreateProduct = (props: any) => {
   const { show, setShow, setChange } = props;
 
   const [value, setValue] = useState(defaultValue);
-  console.log("value ", value);
   const [valid, setValid] = useState(defaultValid);
-  console.log("valid ", valid);
 
   // выбранное для загрузки изображение товара
   const [image, setImage]: any = useState(null);
@@ -38,29 +46,60 @@ const CreateProduct = (props: any) => {
   // список характеристик товара
   const [properties, setProperties] = useState([]);
 
-  // список категорий и список брендов для возможности выбора
+  // список Категорий/Брендов для возможности выбора
   const [categories, setCategories]: any = useState(null);
   const [brands, setBrands]: any = useState(null);
 
-  // показ.доп.ФормДаты для n-ых Товаров
+  // доп.ФормДаты для неск.Товаров
+  const [valueBulk, setValueBulk]: any = useState(defaultValueBulk);
+  // показ.доп.ФормДаты для +n-ых Товаров
   const [showBulkFormData, setShowBulkFormData] = useState(0);
 
-  // нужно получить с сервера список категорий и список брендов
+  // fn() сброса на нач.знач. statов и ФормДат ?нужна ли?
+  const resetValueAndValidAndVBulk = () => {
+    // приводим форму в изначальное состояние
+    // event.target.image.value = "";
+    setValue(defaultValue);
+    setValid(defaultValid);
+    setProperties([]);
+    // сброс доп.ФормДат
+    setShowBulkFormData(0);
+    setValueBulk(defaultValueBulk);
+  };
+
+  // изначально получить с сервера списки Категорий/Брендов
   useEffect(() => {
     fetchCategories().then((data) => setCategories(data));
     fetchBrands().then((data) => setBrands(data));
   }, []);
 
+  // сохр.данн в state
   const handleInputChange = (event: any) => {
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
     setValid(isValid(data));
   };
-
+  // сохр.Изо в state
   const handleImageChange = (event: any) => {
     setImage(event.target.files[0]);
   };
 
+  // сохр.данн в state для масс.запроса от доп.ФормДат
+  const bulkHandleInputChange = (event: any) => {
+    if (event.target.value) {
+      let data = {
+        ...valueBulk,
+      };
+      for (const key in data) {
+        if (key === event.target.name) {
+          data[key].push(event.target.value);
+        }
+      }
+      setValueBulk(data);
+    }
+  };
+
+  // кнп.Сохранить(отправка/получ.данн.Сервера)
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
@@ -88,13 +127,19 @@ const CreateProduct = (props: any) => {
         }
       }
 
+      // отправка/получение data на/с Сервера
       createProduct(data)
         .then((data) => {
           // приводим форму в изначальное состояние
           event.target.image.value = "";
-          setValue(defaultValue);
-          setValid(defaultValid);
-          setProperties([]);
+          // ^ переезд в fn()resetValueAndValidAndVBulk ?нужна ли?
+          // setValue(defaultValue);
+          // setValid(defaultValid);
+          // setProperties([]);
+          // // сброс доп.ФормДат
+          // setShowBulkFormData(0);
+          // setValueBulk(defaultValueBulk);
+          resetValueAndValidAndVBulk();
           // закрываем модальное окно создания товара
           setShow(false);
           // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
@@ -110,8 +155,13 @@ const CreateProduct = (props: any) => {
       {/* Название */}
       <Form.Control
         name="name"
-        value={value.name}
-        onChange={(e) => handleInputChange(e)}
+        // блок на все знач.из state для неск.ФормДат
+        // value={value.name}
+        onChange={(e) => {
+          // пока 2 fn() записи знач.(для 1го Товара и Нескольких)
+          handleInputChange(e);
+          bulkHandleInputChange(e);
+        }}
         isValid={valid.name === true}
         isInvalid={valid.name === false}
         placeholder="Название товара..."
@@ -122,8 +172,11 @@ const CreateProduct = (props: any) => {
         <Col>
           <Form.Select
             name="category"
-            value={value.category}
-            onChange={(e) => handleInputChange(e)}
+            // value={value.category}
+            onChange={(e) => {
+              handleInputChange(e);
+              bulkHandleInputChange(e);
+            }}
             isValid={valid.category === true}
             isInvalid={valid.category === false}
           >
@@ -139,8 +192,11 @@ const CreateProduct = (props: any) => {
         <Col>
           <Form.Select
             name="brand"
-            value={value.brand}
-            onChange={(e) => handleInputChange(e)}
+            // value={value.brand}
+            onChange={(e) => {
+              handleInputChange(e);
+              bulkHandleInputChange(e);
+            }}
             isValid={valid.brand === true}
             isInvalid={valid.brand === false}
           >
@@ -159,8 +215,12 @@ const CreateProduct = (props: any) => {
         <Col>
           <Form.Control
             name="price"
-            value={value.price}
-            onChange={(e) => handleInputChange(e)}
+            // value="value"
+            // value={value.price}
+            onChange={(e) => {
+              handleInputChange(e);
+              bulkHandleInputChange(e);
+            }}
             isValid={valid.price === true}
             isInvalid={valid.price === false}
             placeholder="Цена товара..."
@@ -170,7 +230,10 @@ const CreateProduct = (props: any) => {
           <Form.Control
             name="image"
             type="file"
-            onChange={(e) => handleImageChange(e)}
+            onChange={(e) => {
+              handleImageChange(e);
+              bulkHandleInputChange(e);
+            }}
             placeholder="Фото товара..."
           />
         </Col>
@@ -191,7 +254,11 @@ const CreateProduct = (props: any) => {
   return (
     <Modal
       show={show}
-      onHide={() => setShow(false)}
+      onHide={() => {
+        setShow(false);
+        // вызов fn() сброса на нач.знач. statов и ФормДат ?нужна ли?
+        resetValueAndValidAndVBulk();
+      }}
       size="lg"
       className="modal--eg-bootstr"
     >
@@ -201,7 +268,9 @@ const CreateProduct = (props: any) => {
 
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
+          {/* ФормДата для загр.1го Товара */}
           <div>{FormsParam}</div>
+          {/* доп.ФормДаты для масс.загр.Товаров */}
           {Array(showBulkFormData)
             .fill(0)
             .map((_, index) =>
