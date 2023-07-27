@@ -14,8 +14,8 @@ interface Products {
   name: string;
   price: number;
   image: string;
-  categoryId: number | null;
-  brandId: number | null;
+  categoryId: number | null | any;
+  brandId: number | null | any;
   props?: ProductProp[];
   category?: Category;
   brand?: Brand;
@@ -24,11 +24,11 @@ interface Products {
 }
 
 interface CreateData {
-  name: string;
-  price: number;
-  categoryId?: number | null;
-  brandId?: number | null;
-  props?: string;
+  name: string | any;
+  price: number | any;
+  categoryId?: number | null | any;
+  brandId?: number | null | any;
+  props?: string | any;
 }
 
 interface UpdateData {
@@ -42,24 +42,24 @@ interface UpdateData {
 }
 
 interface ProductProp {
-  id: number;
-  name: string;
-  value: string;
-  productId: number;
+  id: number | any;
+  name: string | any;
+  value: string | any;
+  productId: number | any;
   // createdAt: Date;
   // updatedAt: Date;
 }
 
 interface Category {
-  id: number;
-  name: string;
+  id: number | any;
+  name: string | any;
   // createdAt: Date;
   // updatedAt: Date;
 }
 
 interface Brand {
-  id: number;
-  name: string;
+  id: number | any;
+  name: string | any;
   // createdAt: Date;
   // updatedAt: Date;
 }
@@ -194,29 +194,135 @@ class Product {
     // поскольку image не допускает null, задаем пустую строку
     const image = FileService.save(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
-    const product = await ProductMapping.create({
-      name,
-      price,
-      image,
-      categoryId,
-      brandId,
-    });
-    // свойства товара
-    if (data.props) {
-      // ! ошб. Unexpected token o in JSON at position 1 - коммит parse от не нужного преобразованя JSON в объ.
-      const props: ProductProp[] = JSON.parse(data.props);
-      for (let prop of props) {
-        await ProductPropMapping.create({
-          name: prop.name,
-          value: prop.value,
-          productId: product.id,
+    console.log("data : " + data);
+    console.log(data);
+    console.log("name : " + name);
+    console.log("price : " + price);
+    console.log("categoryId : " + categoryId);
+    console.log("brandId : " + brandId);
+    console.log("brandId===null : " + brandId == null);
+    console.log("brandId != null : " + brandId != null);
+
+    let created: any = {};
+
+    console.log("000 : " + 0);
+    // е/и знач.не пусты
+    if ((name && price && categoryId && brandId) != null) {
+      console.log("111 : " + 111);
+      // перем.для уточнения запроса к др.Табл.
+      let where: any = {};
+      // ^ для запись Неск-им знач.
+      if (categoryId?.length > 1 || brandId?.length > 1) {
+        console.log("Для Многих : " + 999);
+        // where.categoryId = categoryId;
+        // where.brandId = brandId;
+        where.name = name;
+        where.price = price;
+        where.image = image;
+        where.categoryId = categoryId;
+        where.brandId = brandId;
+        console.log("Мн. where : " + where);
+        console.log(where);
+
+        console.log("1 : " + 1);
+        const productBulk = await ProductMapping.bulkCreate([
+          {
+            name,
+            price,
+            image,
+            categoryId,
+            brandId,
+          },
+        ]);
+
+        console.log("2 : " + 2);
+        if (data.props) {
+          console.log("Мн. data.props : " + data.props);
+          console.log(data.props);
+          const props: ProductProp[] = JSON.parse(data.props);
+          console.log("props : " + props);
+          for (let prop of props) {
+            console.log("Мн. prop : " + prop);
+            console.log(prop);
+            await ProductPropMapping.bulkCreate({
+              name: prop.name,
+              value: prop.value,
+              productId: productBulk.id,
+            });
+          }
+        }
+
+        console.log("3 : " + 3);
+        created = await ProductMapping.findAndCountAll(
+          /* productBulk.id, */ {
+            where,
+            include: [{ model: ProductPropMapping, as: "props" }],
+          }
+        );
+
+        // const products = await ProductMapping.findAndCountAll({
+        //   where,
+        //   limit,
+        //   offset,
+        //   // для каждого товара получаем бренд и категорию
+        //   include: [
+        //     // получаем все модели, вместе со связанными с ними моделями
+        //     // { all: true, nested: true },
+        //     { model: BrandMapping, as: "brand" },
+        //     { model: CategoryMapping, as: "category" },
+        //     // { model: ProductPropMapping, as: "props" },
+        //     // sortFieldVotes
+        //     // { model: RatingMapping, as: "ratings" },
+        //   ],
+        //   order: [[sortFieldParam || "name", sortOrd || "ASC"]],
+        // });
+      }
+      //  }
+
+      console.log(
+        "TYPEOF categoryId brandId price : " + typeof categoryId,
+        typeof brandId,
+        typeof price
+      );
+      // ^ для записи по одному знач.
+      if (
+        (typeof categoryId || typeof brandId || typeof price) === "number" ||
+        "string"
+      ) {
+        console.log("Для 1го : " + 1);
+        // созд.1го
+        const product = await ProductMapping.create({
+          name,
+          price,
+          image,
+          categoryId,
+          brandId,
+        });
+        // свойства товара
+        if (data.props) {
+          // ! ошб. Unexpected token o in JSON at position 1 - коммит parse от не нужного преобразованя JSON в объ.
+          const props: ProductProp[] = JSON.parse(data.props);
+          console.log("1го data.props : " + data.props);
+          console.log(data.props);
+          for (let prop of props) {
+            console.log("1го prop : " + prop);
+            console.log(prop);
+            await ProductPropMapping.create({
+              name: prop.name,
+              value: prop.value,
+              productId: product.id,
+            });
+          }
+        }
+        // возвращать будем товар со свойствами
+        created = await ProductMapping.findByPk(product.id, {
+          include: [{ model: ProductPropMapping, as: "props" }],
         });
       }
     }
-    // возвращать будем товар со свойствами
-    const created = await ProductMapping.findByPk(product.id, {
-      include: [{ model: ProductPropMapping, as: "props" }],
-    });
+    console.log("333 : " + 333);
+    console.log("created : " + created);
+    console.log(created);
     return created;
   }
 

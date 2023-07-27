@@ -59,6 +59,8 @@ class Product {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для создания");
       }
+      console.log("req.body : " + req.body);
+      console.log(req.body);
       const product = await ProductService.create(req.body, req.files?.image);
       res.json(product);
     } catch (e) {
