@@ -28,7 +28,9 @@ const CreateProduct = (props: any) => {
   const { show, setShow, setChange } = props;
 
   const [value, setValue] = useState(defaultValue);
+  console.log("value ", value);
   const [valid, setValid] = useState(defaultValid);
+  console.log("valid ", valid);
 
   // выбранное для загрузки изображение товара
   const [image, setImage]: any = useState(null);
@@ -39,6 +41,9 @@ const CreateProduct = (props: any) => {
   // список категорий и список брендов для возможности выбора
   const [categories, setCategories]: any = useState(null);
   const [brands, setBrands]: any = useState(null);
+
+  // показ.доп.ФормДаты для n-ых Товаров
+  const [showBulkFormData, setShowBulkFormData] = useState(0);
 
   // нужно получить с сервера список категорий и список брендов
   useEffect(() => {
@@ -99,6 +104,90 @@ const CreateProduct = (props: any) => {
     }
   };
 
+  // перем.с полями Параметров Формы (Назв.,Категории,Бренда,Цены,Изо,Хар-ик)
+  const FormsParam = (
+    <>
+      {/* Название */}
+      <Form.Control
+        name="name"
+        value={value.name}
+        onChange={(e) => handleInputChange(e)}
+        isValid={valid.name === true}
+        isInvalid={valid.name === false}
+        placeholder="Название товара..."
+        className="mb-3"
+      />
+      {/* Категория/Бренд */}
+      <Row className="mb-3">
+        <Col>
+          <Form.Select
+            name="category"
+            value={value.category}
+            onChange={(e) => handleInputChange(e)}
+            isValid={valid.category === true}
+            isInvalid={valid.category === false}
+          >
+            <option value="">Категория</option>
+            {categories &&
+              categories.map((item: any) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+          </Form.Select>
+        </Col>
+        <Col>
+          <Form.Select
+            name="brand"
+            value={value.brand}
+            onChange={(e) => handleInputChange(e)}
+            isValid={valid.brand === true}
+            isInvalid={valid.brand === false}
+          >
+            <option value="">Бренд</option>
+            {brands &&
+              brands.map((item: any) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+          </Form.Select>
+        </Col>
+      </Row>
+      {/* Цена/Изо */}
+      <Row className="mb-3">
+        <Col>
+          <Form.Control
+            name="price"
+            value={value.price}
+            onChange={(e) => handleInputChange(e)}
+            isValid={valid.price === true}
+            isInvalid={valid.price === false}
+            placeholder="Цена товара..."
+          />
+        </Col>
+        <Col>
+          <Form.Control
+            name="image"
+            type="file"
+            onChange={(e) => handleImageChange(e)}
+            placeholder="Фото товара..."
+          />
+        </Col>
+      </Row>
+      {/* Характеристики */}
+      <CreateProperties properties={properties} setProperties={setProperties} />
+      <hr
+        style={{
+          margin: "1rem 0",
+          order: "1px solid",
+          opacity: "1",
+          color: "var(--bord-hr)",
+        }}
+      />
+    </>
+  );
+
   return (
     <Modal
       show={show}
@@ -106,94 +195,66 @@ const CreateProduct = (props: any) => {
       size="lg"
       className="modal--eg-bootstr"
     >
-      <Modal.Header closeButton>
-        <Modal.Title>Новый товар</Modal.Title>
+      <Modal.Header closeButton style={{ padding: "5px" }}>
+        <Modal.Title style={{ position: "relative" }}>Новый товар</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Form.Control
-            name="name"
-            value={value.name}
-            onChange={(e) => handleInputChange(e)}
-            isValid={valid.name === true}
-            isInvalid={valid.name === false}
-            placeholder="Название товара..."
-            className="mb-3"
-          />
-          <Row className="mb-3">
-            <Col>
-              <Form.Select
-                name="category"
-                value={value.category}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.category === true}
-                isInvalid={valid.category === false}
+          <div>{FormsParam}</div>
+          {Array(showBulkFormData)
+            .fill(0)
+            .map((_, index) =>
+              showBulkFormData > 0 ? <div key={index}>{FormsParam}</div> : ""
+            )}
+          <div className="mt-2" style={{ display: "block" }}>
+            {/* кнп.Добавить/Убрать Товар */}
+            <Col
+              className="mb-3"
+              style={{ display: "flex", margin: "0px !important" }}
+            >
+              <Button
+                type="submit"
+                size="sm"
+                variant="primary"
+                className="btn-primary--eg"
+                style={{ width: "100%" }}
+                onClick={() => setShowBulkFormData(showBulkFormData + 1)}
               >
-                <option value="">Категория</option>
-                {categories &&
-                  categories.map((item: any) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Col>
-            <Col>
-              <Form.Select
-                name="brand"
-                value={value.brand}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.brand === true}
-                isInvalid={valid.brand === false}
+                Добавить Товар
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                variant="danger"
+                className="btn-danger--eg"
+                style={{ width: "100%", marginLeft: "10px" }}
+                onClick={() => setShowBulkFormData(showBulkFormData - 1)}
               >
-                <option value="">Бренд</option>
-                {brands &&
-                  brands.map((item: any) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-              </Form.Select>
+                Убрать Товар
+              </Button>
             </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="price"
-                value={value.price}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.price === true}
-                isInvalid={valid.price === false}
-                placeholder="Цена товара..."
-              />
-            </Col>
-            <Col>
-              <Form.Control
-                name="image"
-                type="file"
-                onChange={(e) => handleImageChange(e)}
-                placeholder="Фото товара..."
-              />
-            </Col>
-          </Row>
-          {/* <Button type="submit">Сохранить</Button> */}
-          <CreateProperties
-            properties={properties}
-            setProperties={setProperties}
-          />
-          <Row>
+            <hr
+              style={{
+                margin: "1rem 0",
+                order: "1px solid",
+                opacity: "1",
+                color: "var(--bord-hr)",
+              }}
+            />
+            {/* кнп.Сохранить */}
             <Col>
               <Button
                 type="submit"
                 size="sm"
                 variant="success"
                 className="btn-success--eg"
+                style={{ width: "100%" }}
               >
                 Сохранить
               </Button>
             </Col>
-          </Row>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

@@ -11,11 +11,15 @@ const CreateCategory = (props: any) => {
   const [valid, setValid]: any = useState(null);
 
   const handleChange = (event: any) => {
+    console.log("CraCat Chng event" + event);
+    console.log(event);
     setName(event.target.value);
     setValid(event.target.value.trim() !== "");
   };
 
   const handleSubmit = (event: any) => {
+    console.log("CraCat Sbm event" + event);
+    console.log(event);
     event.preventDefault();
     /*
      * На первый взгляд кажется, что переменная correct не нужна, можно обойтись valid, но это не так. Нельзя использовать значение valid сразу после изменения этого значения — ф-ция setValid не изменяет значение состояния мгновенно. Вызов функции лишь означает — React «принял к сведению» наше сообщение, что состояние нужно изменить.

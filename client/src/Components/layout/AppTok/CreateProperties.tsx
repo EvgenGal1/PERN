@@ -21,14 +21,19 @@ const CreateProperties = (props: any) => {
 
   return (
     <>
-      <h5>Характеристики</h5>
+      {/* <h5>Характеристики</h5> */}
       <Button
         onClick={append}
         variant="outline-primary"
         size="sm"
         className="btn-primary--eg mb-2"
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "center",
+        }}
       >
-        Добавить
+        Добавить Характеристики Товара
       </Button>
       {properties.map((item: any) => (
         <Row key={item.number} className="mb-2">
@@ -56,6 +61,7 @@ const CreateProperties = (props: any) => {
               size="sm"
               variant="outline-danger"
               className="btn-primary--eg danger"
+              style={{ width: "100%" }}
             >
               Удалить
             </Button>

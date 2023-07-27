@@ -432,6 +432,7 @@ img.card-img-top {
 }
 // }
 
+// модал под stl bootstr
 .modal--eg-bootstr {
   box-shadow: 0 3px 5px black;
   transition: all 0.5s ease-in-out;
@@ -454,7 +455,7 @@ img.card-img-top {
       border-bottom: 2px solid var(--bord-hr) !important;
       // border: 2px solid var(--bord-hr) !important;
       .btn-close {
-        margin: 5px;
+        margin: 0 5px;
       }
       .modal-title {
         width: 100%;
@@ -469,6 +470,11 @@ img.card-img-top {
       }
     }
   }
+}
+// убираем из потока кнп.закр.модал для ровн текта title
+.modal-title + button.btn-close {
+  position: absolute;
+  right: 0;
 }
 
 // Список группы
