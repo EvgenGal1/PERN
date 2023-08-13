@@ -59,17 +59,6 @@ class Product {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для создания");
       }
-      console.log("req.body : " + req.body);
-      console.log(req.body);
-      console.log("req.body?.image : " + req.body?.image);
-      console.log(req.body?.image);
-      console.log(req.body?.image?.name);
-      console.log("req.files?.image : " + req.files?.image);
-      // console.log(req.files?.image);
-      console.log("1 : " + 1);
-      // console.log("req?.files : " + req?.files);
-      console.log(req?.files);
-      console.log("2 : " + 2);
       const product = await ProductService.create(req.body, req.files?.image);
       res.json(product);
     } catch (e) {

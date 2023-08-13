@@ -14,9 +14,9 @@ class FileService {
       const fileName = uuid.v4() + ".jpg";
       // путь для сохр.
       const filePath = path.resolve("static", fileName);
+      file.mv(filePath);
       // ^ ИЛИ обобщаем всё вместе - `движение`перемещ.файлы с клиента в static/ |
       // file.mv(path.resolve(__dirname, "..", "static", fileName));
-      file.mv(filePath);
       return fileName;
     } catch (error) {
       console.log(error);
