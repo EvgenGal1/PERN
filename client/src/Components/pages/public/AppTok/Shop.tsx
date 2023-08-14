@@ -1,5 +1,5 @@
 // пакеты
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
@@ -81,7 +81,6 @@ const Shop = observer(() => {
 
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
-    console.log("SHP usEf 000 searchParams ", searchParams);
 
     catalog.category = category;
     catalog.brand = brand;
@@ -99,7 +98,7 @@ const Shop = observer(() => {
       catalog.sortField
     )
       .then((data: any) => {
-        console.log("SHP usEf 000 data ", data);
+        // console.log("SHP usEf 000 data ", data);
         catalog.products = data.rows;
         catalog.limit = Math.ceil(data.limit);
         // catalog.count = Math.ceil(data.count / data.limit);
@@ -113,10 +112,10 @@ const Shop = observer(() => {
   useEffect(() => {
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
-    console.log("SHP usEf 1 searchParams ", searchParams);
+    // console.log("SHP usEf 1 searchParams ", searchParams);
 
     if (category || brand || page || limit) {
-      console.log("SHP usEf 1 IF  ", 11);
+      // console.log("SHP usEf 1 IF  ", 11);
       if (category !== catalog.category) catalog.category = category;
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
@@ -125,7 +124,7 @@ const Shop = observer(() => {
       if (sortField !== catalog.sortField)
         catalog.sortField = sortField ?? "name";
     } else {
-      console.log("SHP usEf 1 ELSE  ", 22);
+      // console.log("SHP usEf 1 ELSE  ", 22);
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;
@@ -135,12 +134,13 @@ const Shop = observer(() => {
       catalog.sortField = catalog.sortField; // null; //"name";
     }
 
-    console.log("SHP usEf 1 location.search ", location.search);
+    // console.log("SHP usEf 1 location.search ", location.search);
     // eslint-disable-next-line
   }, [location.search]);
 
   // при клике на категорию, бренд, номер страницы или при нажатии кнопки  «Назад» браузера — получам с сервера список товаров, потому что это уже другой список
   useEffect(() => {
+    // useLayoutEffect(() => {
     setProductsFetching(true);
     fetchAllProducts(
       catalog.category,
@@ -151,7 +151,7 @@ const Shop = observer(() => {
       catalog.sortField
     )
       .then((data) => {
-        console.log("SHP usEf 2 data ", data);
+        // console.log("SHP usEf 2 data ", data);
         catalog.products = data.rows;
         // catalog.count = Math.ceil(data.count /  data.limit);
         catalog.count = data.count;

@@ -253,10 +253,6 @@ const CreateProduct = (props: any) => {
 
       let formData = new FormData();
       for (let key in valueBulk) {
-        // разбивка масс.на строку разд. - ";"
-        // let ert2 = valueBulk[key].join(";"); // toString(); a,b,c
-        // console.log("ert2 ", ert2);
-
         if (key === "name") formData.append("name", valueBulk.name);
         if (key === "price") formData.append("price", valueBulk.price);
         if (key === "category")
@@ -264,34 +260,15 @@ const CreateProduct = (props: any) => {
         if (key === "brand") formData.append("brandId", valueBulk.brand);
         if (key === "image") {
           let imgLenght = valueBulk.image.length;
-          // console.log("imgLenght ", imgLenght);
           for (var i = 0; i < imgLenght; i++) {
-            // console.log("valueBulk.image[i] ", valueBulk.image[i]);
-            // console.log(valueBulk.image[i]);
             formData.append(
               "image",
-              // image, // на front передаёт ОДИН послд.перезап.файл. записи img нет, т.к. перебирать на back нечего
-              valueBulk.image[i], // на front передаёт ОДИН послд.перезап.файл. записи img нет, т.к. перебирать на back нечего
-              // valueBulk.image, // ! не раб.ошб. - Не удалось выполнить «дополнение» к «FormData»: параметр 2 не имеет типа «Blob».
-              // image.name // на front передаёт ОДИН послд.перезап.файл. записи img нет, т.к. перебирать на back нечего
-              valueBulk.image[i].name // на front передаёт ОДИН послд.перезап.файл. записи img нет, т.к. перебирать на back нечего
-              // valueBulk.image.name // ! не раб.ошб. - Не удалось выполнить «дополнение» к «FormData»: параметр 2 не имеет типа «Blob».
+              valueBulk.image[i],
+              valueBulk.image[i].name
             );
           }
         }
       }
-      //
-
-      // ^ раб верс.без image(запись img есть, не разбор на SRV)
-      // let data: any = {};
-      // for (let key in valueBulk) {
-      //   if (key === "name") data.name = valueBulk.name;
-      //   if (key === "price") data.price = valueBulk.price;
-      //   if (key === "category") data.categoryId = valueBulk.category;
-      //   if (key === "brand") data.brandId = valueBulk.brand;
-      //   if (key === "image")
-      //     data.image = valueBulk.image /* , valueBulk.image.name */;
-      // }
 
       // ~ проверки
       // вывод каждого значения
@@ -445,6 +422,8 @@ const CreateProduct = (props: any) => {
         // вызов fn() сброса на нач.знач. statов и ФормДат ?нужна ли?
         resetValueAndValidAndVBulk();
       }}
+      // блок на закрытие при клике вне Modal
+      backdrop="static"
       size="lg"
       className="modal--eg-bootstr"
     >

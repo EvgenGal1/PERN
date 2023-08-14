@@ -441,6 +441,9 @@ img.card-img-top {
     left: 50% !important;
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
+    // для доп.ФормДаты добав.Товара
+    top: 0% !important;
+    transform: translate(-50%, 0%) !important;
   }
   .modal-content {
     background-color: var(--ui-bg);

@@ -12,7 +12,6 @@ export const PaginSortLimit = (props: any) => {
 
   // созд.парам.поиска в строку URL
   const fnCreateSearchParams = () => {
-    console.log("fnSerch -- ", 0);
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
@@ -21,6 +20,7 @@ export const PaginSortLimit = (props: any) => {
     if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
     if (catalog.sortField !== ("name" || null))
       params.sortField = catalog.sortField;
+    console.log("fnSerch params -- ", params);
 
     // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
     if (catalog.brand || catalog.category) {

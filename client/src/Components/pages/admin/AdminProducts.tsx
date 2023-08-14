@@ -72,13 +72,10 @@ const AdminProducts = () => {
       catalog.sortField
     )
       .then((data) => {
+        // console.log("AdmProd usEf data ", data);
         setProducts(data.rows);
-        console.log("PSL usEf 1 data ", data);
-        let InterLimit = catalog.limit;
-        if (catalog.limit === 0) InterLimit = /* data.rows.length */ 11;
         catalog.limit = Math.ceil(data.limit);
-        catalog.InterLimit = Math.ceil(data.limit);
-        catalog.count = Math.ceil(data.count / data.limit);
+        catalog.count = data.count;
       })
       .finally(() => setFetching(false));
   }, [

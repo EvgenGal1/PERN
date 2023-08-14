@@ -128,15 +128,7 @@ const ProductItem = ({ data }: any) => {
   }
   if (strName.includes(" (копия)")) {
     strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
-  }
-  if (strName.includes(" (копия)")) {
-    strName = strName.slice(0, -8);
+    strName += " (=+1)";
   }
   if (strName.includes(" (распозн)")) {
     strName = strName.slice(0, -10);
