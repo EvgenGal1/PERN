@@ -134,102 +134,102 @@ const CreateProduct = (props: any) => {
     fetchBrands().then((data) => setBrands(data));
   }, []);
 
-  // сохр.данн в state для ?1го ли только?
-  const handleInputChange = (event: any) => {
-    console.log("1го ", 1);
-    // const data = { ...value, [event.target.name]: event.target.value };
-    let data = { ...value };
-    // , [event.target.name]: event.target.value };
-    for (let key in data) {
-      // console.log("key ", key);
-      if (key === event.target.name && event.target.name !== "image") {
-        // console.log("hndlInp data[key] ", data[key]);
-        // console.log(data[key]);
-        // data[key].push(evtVal);
-        console.log("data ", data);
-        console.log("..data[key] ", { ...data[key] });
-        console.log("[event.target.name] ", [event.target.name]);
-        console.log("...[event.target.name] ", ...[event.target.name]);
-        // data = { ...data, [event.target.name]: event.target.value };
-        data[key] = data[key] + ";" + event.target.value;
-        console.log("data[key] ", data[key]);
-        console.log(data[key]);
-      }
-      if (key === event.target.name && event.target.name === "image") {
-        // console.log("hndlInp IMG data[key] ", data[key]);
-        // console.log(data[key]);
-        console.log("event.target.files ", event.target.files);
-        console.log("event.target.files[0] ", event.target.files[0]);
-        // data[key].push(
-        // /* event.target.files[0].name, */ event.target.files[0]
-        // );
-        data[key].push(/* event.target.files[0].name, */ event.target.files[0]);
-        // data[key] = { ...[key], ...event.target.files };
-        // console.log("...[key] ", ...[key]);
-        // console.log("...event.target.files[0] ", ...event.target.files[0]);
-        // key = { ...[key], [event.target.name]: event.target.files[0] };
-        // console.log(data[key]);
-        // data = { ...data, [event.target.name]: event.target.value };
-        console.log("[event.target.name] ", [event.target.name]);
-        console.log("key ", key);
-        // let ert = {...[event.target.name], event.target.files[0]}
-        // data = { ...data, [event.target.name]: event.target.files[0] };
-      }
-    }
-    console.log("Для 1го data ", data);
-    setValue(data);
-    setValid(isValid(data));
-  };
-  // сохр.Изо в state
-  const handleImageChange = (event: any) => {
-    setImage(event.target.files[0]);
-  };
+  // // сохр.данн в state для ?1го ли только?
+  // const handleInputChange = (event: any) => {
+  //   console.log("1го ", 1);
+  //   // const data = { ...value, [event.target.name]: event.target.value };
+  //   let data = { ...value };
+  //   // , [event.target.name]: event.target.value };
+  //   for (let key in data) {
+  //     // console.log("key ", key);
+  //     if (key === event.target.name && event.target.name !== "image") {
+  //       // console.log("hndlInp data[key] ", data[key]);
+  //       // console.log(data[key]);
+  //       // data[key].push(evtVal);
+  //       console.log("data ", data);
+  //       console.log("..data[key] ", { ...data[key] });
+  //       console.log("[event.target.name] ", [event.target.name]);
+  //       console.log("...[event.target.name] ", ...[event.target.name]);
+  //       // data = { ...data, [event.target.name]: event.target.value };
+  //       data[key] = data[key] + ";" + event.target.value;
+  //       console.log("data[key] ", data[key]);
+  //       console.log(data[key]);
+  //     }
+  //     if (key === event.target.name && event.target.name === "image") {
+  //       // console.log("hndlInp IMG data[key] ", data[key]);
+  //       // console.log(data[key]);
+  //       console.log("event.target.files ", event.target.files);
+  //       console.log("event.target.files[0] ", event.target.files[0]);
+  //       // data[key].push(
+  //       // /* event.target.files[0].name, */ event.target.files[0]
+  //       // );
+  //       data[key].push(/* event.target.files[0].name, */ event.target.files[0]);
+  //       // data[key] = { ...[key], ...event.target.files };
+  //       // console.log("...[key] ", ...[key]);
+  //       // console.log("...event.target.files[0] ", ...event.target.files[0]);
+  //       // key = { ...[key], [event.target.name]: event.target.files[0] };
+  //       // console.log(data[key]);
+  //       // data = { ...data, [event.target.name]: event.target.value };
+  //       console.log("[event.target.name] ", [event.target.name]);
+  //       console.log("key ", key);
+  //       // let ert = {...[event.target.name], event.target.files[0]}
+  //       // data = { ...data, [event.target.name]: event.target.files[0] };
+  //     }
+  //   }
+  //   console.log("Для 1го data ", data);
+  //   setValue(data);
+  //   setValid(isValid(data));
+  // };
+  // // сохр.Изо в state
+  // const handleImageChange = (event: any) => {
+  //   setImage(event.target.files[0]);
+  // };
 
   // сохр.данн в state для масс.запроса от доп.ФормДат
   const bulkHandleInputChange = (event: any) => {
-    console.log("hndlInp 000 defaultValueBulk ", defaultValueBulk);
-    console.log(
-      "hndlInp event.target.name|value ",
-      event.target?.name,
-      event.target?.value
-    );
-    // let evtVal: any = event.target.value;
-    // if (
-    //   event.target.name === "price" ||
-    //   event.target.name === "category" ||
-    //   event.target.name === "brand"
-    // ) {
-    //   console.log("0 ++ ", 0);
-    //   evtVal = Number(evtVal);
-    // }
-    // console.log("hndlInp event.target.files ", event.target?.files);
+    // console.log("hndlInp 000 event.target.name|value ", event.target?.name, event.target?.value);
 
+    // запись доп.ФормДаты из state в перем.
     let data = {
       ...valueBulk,
     };
+
     console.log("hndlInp data 000 ", data);
-    // if (event.target.value) {
-    if (event.target.name /* !=="image" */) {
+    if (event.target.name) {
+      // перебор парам.в data по key
       for (const key in data) {
-        // console.log("hndlInp key ", key);
+        // выборка name,category,brand,price для записи
         if (key === event.target.name && event.target.name !== "image") {
-          // console.log("hndlInp data[key] ", data[key]);
-          // console.log(data[key]);
-          // data[key].push(evtVal);
-          data[key].push(event.target.value);
+          let num: number = 0;
+
+          // ^ находим id formы родителя для опред.в какое место параметра массива записывать значение
+          // имя
+          if (event.target?.name === "name")
+            num = Number(event.target.parentElement.id);
+          // categor | brand | price | img
+          if (
+            event.target?.name === "category" ||
+            event.target?.name === "brand" ||
+            event.target?.name === "price"
+          )
+            num = Number(
+              event.target.parentElement.parentElement.parentElement.id
+            );
+
+          // data[key].push(event.target.value);
+          data[key][num] = event.target.value;
         }
+        // выборка изо для записи
         if (key === event.target.name && event.target.name === "image") {
-          // console.log("hndlInp IMG data[key] ", data[key]);
-          // console.log(data[key]);
-          // console.log("event.target.files ", event.target.files);
-          console.log("event.target.files[0] ", event.target.files[0]);
-          data[key].push(
-            /* event.target.files[0].name, */ event.target.files[0]
+          let num = Number(
+            event.target.parentElement.parentElement.parentElement.id
           );
           // data[key] = { ...[key], ...event.target.files };
+          // data[key].push(/* event.target.files[0].name, */ event.target.files[0]);
+          data[key][num] = event.target.files[0];
         }
       }
-      console.log("hndlInp DATA 111 ", data);
+      // console.log("hndlInp DATA 111 ", data);
       setValueBulk(data);
     }
   };
@@ -294,19 +294,16 @@ const CreateProduct = (props: any) => {
       // }
 
       // ~ проверки
+      // вывод каждого значения
       const pairs = Array.from(formData.entries());
       for (let /* pair */ [key, value] of pairs) {
-        console.log(
-          "кажд кл./знач. pair ",
-          12345,
-          `${key}: ${value}` /* pair */
-        );
+        console.log("кажд кл./знач. pair ", `${key}: ${value}` /* pair */);
       }
-      // Также используется по умолчанию для ... указанного Symbol.iterator
+      // вывод каждого масс.в объ.
       console.log(...pairs);
-      // Появляется только в Devtool (не здесь, в этом фрагменте кода)
+      // вывод Таблицы
       console.table([...pairs]);
-      // Не работайте в IE (используйте последнюю пару, если такая же ключ используется больше)
+      // вывод объ.со значениями
       console.log(Object.fromEntries(pairs));
 
       // характеристики нового товара
@@ -458,12 +455,22 @@ const CreateProduct = (props: any) => {
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           {/* ФормДата для загр.1го Товара */}
-          <div>{FormsParam}</div>
+          <div id="0">{FormsParam}</div>
           {/* доп.ФормДаты для масс.загр.Товаров */}
           {Array(showBulkFormData)
             .fill(0)
             .map((_, index) =>
-              showBulkFormData > 0 ? <div key={index}>{FormsParam}</div> : ""
+              showBulkFormData > 0 ? (
+                <div
+                  // id + 1 для опред.места записи в масс.парам. ФормДаты
+                  id={`` + (index + 1)}
+                  key={index}
+                >
+                  {FormsParam}
+                </div>
+              ) : (
+                ""
+              )
             )}
           <div className="mt-2" style={{ display: "block" }}>
             {/* кнп.Добавить/Убрать Товар */}

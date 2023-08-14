@@ -9,7 +9,7 @@ class FileService {
     if (!file) return null;
     try {
       // ^ заливка 1го ИЗО
-      if (file.length < 2) {
+      if (!file.length) {
         // достаём формат файла из mimetype ч/з split после слеша(/)
         const [, ext] = file.mimetype.split("/");
         // генирир.уник.имя(ч/з fn v4(подтвержд.уч.зап.) + раздел.имени/формата(.) + формат)
@@ -21,11 +21,12 @@ class FileService {
       }
 
       // ^ масс.заливка ИЗО
-      if (file.length > 1) {
+      if (file?.length > 1) {
         // перем.масс.всех названий
         let allNames: any = [];
         // перебор по длине
         for (var i = 0; i < file.length; i++) {
+          // перем.1го файла
           const oneFile = file[i];
           const [, ext] = oneFile.mimetype.split("/");
           const fileName = uuid.v4() + "." + ext;
