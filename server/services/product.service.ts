@@ -195,13 +195,14 @@ class Product {
     const image = FileService.save(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
 
-    // перем.для вызова метода записи с Неск-им/Одним знач.
-    let created: any = {};
-    // перем.для уточнения запроса к др.Табл.
+    // перем.для уточнения записи запроса к др.Табл.
     let where: any = {};
+    // перем.для вызова метода возврата Товара с Неск-им/Одним знач.
+    let returned: any = {};
 
     // ^ для записи 1го знач.
     if ((categoryId.length || brandId.length || price.length) < 2) {
+      // созд.1го Товара
       const product = await ProductMapping.create({
         name,
         price,
@@ -209,7 +210,7 @@ class Product {
         categoryId,
         brandId,
       });
-      // свойства товара
+      // созд.свойства 1го Товара
       if (data.props) {
         // ! ошб. Unexpected token o in JSON at position 1 - коммит parse от не нужного преобразованя JSON в объ.
         const props: ProductProp[] = JSON.parse(data.props);
@@ -221,8 +222,8 @@ class Product {
           });
         }
       }
-      // возвращать будем товар со свойствами
-      created = await ProductMapping.findByPk(product.id, {
+      // возврат 1го Товар со свойствами
+      returned = await ProductMapping.findByPk(product.id, {
         include: [{ model: ProductPropMapping, as: "props" }],
       });
     }
@@ -232,7 +233,11 @@ class Product {
       // перем.всех разбитых парам.
       const resultAll = [];
       // разбивка вход стр./объ. на масс. по запятой
+      console.log("name : " + name);
+      console.log(name);
       let nameAll = name.split(",");
+      console.log("nameAll : " + nameAll);
+      console.log(nameAll);
       let priceAll = price.split(",");
       let brandIdAll = brandId.split(",");
       let categoryIdAll = categoryId.split(",");
@@ -253,32 +258,51 @@ class Product {
 
       // массовое созд.
       const productBulk = await ProductMapping.bulkCreate(resultAll);
+      console.log("productBulk?.id : " + productBulk?.id);
+      console.log(productBulk?.id);
 
       // е/и есть Хар-ки Товара
       if (data.props) {
-        // console.log("Мн. data.props : " + data.props);
-        // console.log(data.props);
-        const props: ProductProp[] = JSON.parse(data.props);
-        // console.log("props : " + props);
-        for (let prop of props) {
-          // console.log("Мн. prop : " + prop);
-          // console.log(prop);
-          await ProductPropMapping.bulkCreate({
-            name: prop.name,
-            value: prop.value,
-            productId: productBulk.id,
-          });
+        console.log("Мн. data.props : " + data.props);
+        console.log(data.props);
+
+        // перем.всех props
+        let propsDate = data.props;
+        // перем.всех разбитых хар-ик.
+        const resultAll = [];
+        // разбивка вход стр./объ. на масс. по запятой
+        let propsAll = propsDate.split(",");
+        console.log("propsAll : " + propsAll);
+        console.log(propsAll);
+
+        // цикл по длине какого-либо хар-ки.
+        for (var i = 0; i < propsAll.length; i++) {
+          console.log("i : " + i);
+          console.log(i);
+          // props
+          const propsOne: ProductProp[] = JSON.parse(propsAll);
+          console.log("propsOne : " + propsOne);
+          console.log(propsOne);
+          for (let prop of propsOne) {
+            console.log("Мн. prop : " + prop);
+            console.log(prop);
+            await ProductPropMapping.bulkCreate({
+              name: prop.name,
+              value: prop.value,
+              productId: productBulk.id,
+            });
+          }
         }
       }
 
-      created = await ProductMapping.findAndCountAll({
+      returned = await ProductMapping.findAndCountAll({
         where,
         include: [{ model: ProductPropMapping, as: "props" }],
       });
     }
 
     // возвращ.результ.созд.
-    return created;
+    return returned;
   }
 
   async update(

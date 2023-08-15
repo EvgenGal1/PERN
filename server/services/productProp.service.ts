@@ -30,11 +30,21 @@ class ProductProp {
   }
 
   async create(productId, data) {
+    console.log("PP -- productId : " + productId);
+    console.log(productId);
+    console.log("PP -- data : " + data);
+    console.log(data);
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
+    console.log("PP -- product : " + product);
+    console.log(product);
     const { name, value } = data;
+    console.log("PP -- name : " + name);
+    console.log(name);
+    console.log("PP -- value : " + value);
+    console.log(value);
     const property = await ProductPropMapping.create({
       name,
       value,
