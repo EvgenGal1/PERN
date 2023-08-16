@@ -30,6 +30,7 @@ class ProductProp {
   }
 
   async create(productId, data) {
+    console.log("PP -- 135 : " + 135);
     console.log("PP -- productId : " + productId);
     console.log(productId);
     console.log("PP -- data : " + data);
@@ -50,6 +51,7 @@ class ProductProp {
       value,
       productId,
     });
+    console.log("PP -- 567 : " + 567);
     return property;
   }
 

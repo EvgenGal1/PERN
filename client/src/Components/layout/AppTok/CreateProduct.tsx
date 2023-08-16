@@ -90,6 +90,8 @@ const CreateProduct = (props: any) => {
 
   // список характеристик товара
   const [properties, setProperties] = useState(defaultValueBulkProps);
+  // const [properties, setProperties] = useState([]);
+  // console.log("properties ", properties);
 
   // список Категорий/Брендов для возможности выбора
   const [categories, setCategories]: any = useState(null);
@@ -101,7 +103,11 @@ const CreateProduct = (props: any) => {
     // приводим форму в изначальное состояние
     // setValue(defaultValue);
     setValid(defaultValid);
-    setProperties([]);
+    // сброс Хар-ик
+    // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
+    // setProperties([]);
+    defaultValueBulkProps = { 0: [] };
+    setProperties(defaultValueBulkProps);
     // сброс доп.ФормДат
     setShowBulkFormData(0);
     // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
@@ -225,17 +231,17 @@ const CreateProduct = (props: any) => {
       console.log(Object.fromEntries(pairs));
 
       // характеристики нового товара
-      if (properties.length) {
-        // ! врем.откл. проверку для отраб.масс.загр.Хар-ик Товара
-        // const props = properties.filter(
-        //   (prop: any) => prop.name.trim() !== "" && prop.value.trim() !== ""
-        // );
-        // if (props.length) {
-        if (properties) {
-          formData.append("props", JSON.stringify(properties));
-          // data.push("props", JSON.stringify(props));
-        }
+      // if (properties.length) {
+      // ! врем.откл. проверку для отраб.масс.загр.Хар-ик Товара
+      // const props = properties.filter(
+      //   (prop: any) => prop.name.trim() !== "" && prop.value.trim() !== ""
+      // );
+      // if (props.length) {
+      if (properties) {
+        formData.append("props", JSON.stringify(properties));
+        // data.push("props", JSON.stringify(props));
       }
+      // }
       console.log("SBM formData ", formData);
 
       // отправка/получение data на/с Сервера
