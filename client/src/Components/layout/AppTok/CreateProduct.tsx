@@ -15,8 +15,6 @@ const defaultValue: any = {
   price: "",
   category: "",
   brand: "",
-  // image: {},
-  // image: File[],
   image: [],
 };
 const defaultValid = {
@@ -29,17 +27,16 @@ const defaultValid = {
 
 // перем. Значений для доп.ФормДат по умолч.
 let defaultValueBulk: { [key: string | number]: any } = {
-  // let defaultValueBulk: any = {
   name: [],
   price: [],
   category: [],
   brand: [],
   image: [],
-  // name: {},
-  // price: {},
-  // category: {},
-  // brand: {},
-  // image: {},
+};
+
+// перем. Характеристик для доп.ФормДат по умолч.
+let defaultValueBulkProps: { [key: string | number]: any } = {
+  0: [],
 };
 
 const isValid = (value: any) => {
@@ -82,26 +79,21 @@ const isValid = (value: any) => {
 const CreateProduct = (props: any) => {
   const { show, setShow, setChange } = props;
 
-  const [value, setValue] = useState(defaultValue);
+  // валидация // ! врем.откл.
   const [valid, setValid] = useState(defaultValid);
-
-  // выбранное для загрузки изображение товара
-  const [image, setImage]: any = useState(null);
-  // console.log("image ", image);
-  // console.log(image);
+  // state для 1го Товара (упразднён)
+  // const [value, setValue] = useState(defaultValue);
+  // доп.ФормДаты для неск.Товаров
+  const [valueBulk, setValueBulk] = useState(defaultValueBulk);
+  // показ.доп.ФормДаты для +n-ых Товаров
+  const [showBulkFormData, setShowBulkFormData] = useState(0);
 
   // список характеристик товара
-  const [properties, setProperties] = useState([]);
+  const [properties, setProperties] = useState(defaultValueBulkProps);
 
   // список Категорий/Брендов для возможности выбора
   const [categories, setCategories]: any = useState(null);
   const [brands, setBrands]: any = useState(null);
-
-  // доп.ФормДаты для неск.Товаров
-  const [valueBulk, setValueBulk] = useState(defaultValueBulk);
-  // console.log("valueBulk ", valueBulk);
-  // показ.доп.ФормДаты для +n-ых Товаров
-  const [showBulkFormData, setShowBulkFormData] = useState(0);
 
   // fn() сброса на нач.знач. statов и ФормДат ?нужна ли?
   const resetValueAndValidAndVBulk = () => {
@@ -133,57 +125,6 @@ const CreateProduct = (props: any) => {
     fetchCategories().then((data) => setCategories(data));
     fetchBrands().then((data) => setBrands(data));
   }, []);
-
-  // // сохр.данн в state для ?1го ли только?
-  // const handleInputChange = (event: any) => {
-  //   console.log("1го ", 1);
-  //   // const data = { ...value, [event.target.name]: event.target.value };
-  //   let data = { ...value };
-  //   // , [event.target.name]: event.target.value };
-  //   for (let key in data) {
-  //     // console.log("key ", key);
-  //     if (key === event.target.name && event.target.name !== "image") {
-  //       // console.log("hndlInp data[key] ", data[key]);
-  //       // console.log(data[key]);
-  //       // data[key].push(evtVal);
-  //       console.log("data ", data);
-  //       console.log("..data[key] ", { ...data[key] });
-  //       console.log("[event.target.name] ", [event.target.name]);
-  //       console.log("...[event.target.name] ", ...[event.target.name]);
-  //       // data = { ...data, [event.target.name]: event.target.value };
-  //       data[key] = data[key] + ";" + event.target.value;
-  //       console.log("data[key] ", data[key]);
-  //       console.log(data[key]);
-  //     }
-  //     if (key === event.target.name && event.target.name === "image") {
-  //       // console.log("hndlInp IMG data[key] ", data[key]);
-  //       // console.log(data[key]);
-  //       console.log("event.target.files ", event.target.files);
-  //       console.log("event.target.files[0] ", event.target.files[0]);
-  //       // data[key].push(
-  //       // /* event.target.files[0].name, */ event.target.files[0]
-  //       // );
-  //       data[key].push(/* event.target.files[0].name, */ event.target.files[0]);
-  //       // data[key] = { ...[key], ...event.target.files };
-  //       // console.log("...[key] ", ...[key]);
-  //       // console.log("...event.target.files[0] ", ...event.target.files[0]);
-  //       // key = { ...[key], [event.target.name]: event.target.files[0] };
-  //       // console.log(data[key]);
-  //       // data = { ...data, [event.target.name]: event.target.value };
-  //       console.log("[event.target.name] ", [event.target.name]);
-  //       console.log("key ", key);
-  //       // let ert = {...[event.target.name], event.target.files[0]}
-  //       // data = { ...data, [event.target.name]: event.target.files[0] };
-  //     }
-  //   }
-  //   console.log("Для 1го data ", data);
-  //   setValue(data);
-  //   setValid(isValid(data));
-  // };
-  // // сохр.Изо в state
-  // const handleImageChange = (event: any) => {
-  //   setImage(event.target.files[0]);
-  // };
 
   // сохр.данн в state для масс.запроса от доп.ФормДат
   const bulkHandleInputChange = (event: any) => {
@@ -432,7 +373,12 @@ const CreateProduct = (props: any) => {
       </Modal.Header>
 
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form
+          noValidate
+          onSubmit={handleSubmit}
+          // ! врем.стиль для расшир.отражения
+          // style={{ minWidth: "800px" }}
+        >
           {/* ФормДата для загр.1го Товара */}
           <div id="0">{FormsParam}</div>
           {/* доп.ФормДаты для масс.загр.Товаров */}
