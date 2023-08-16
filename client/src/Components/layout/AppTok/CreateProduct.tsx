@@ -160,7 +160,7 @@ const CreateProduct = (props: any) => {
           // data[key].push(event.target.value);
           data[key][num] = event.target.value;
         }
-        // выборка изо для записи
+        // выборка Изо для записи
         if (key === event.target.name && event.target.name === "image") {
           let num = Number(
             event.target.parentElement.parentElement.parentElement.id
@@ -226,11 +226,13 @@ const CreateProduct = (props: any) => {
 
       // характеристики нового товара
       if (properties.length) {
-        const props = properties.filter(
-          (prop: any) => prop.name.trim() !== "" && prop.value.trim() !== ""
-        );
-        if (props.length) {
-          formData.append("props", JSON.stringify(props));
+        // ! врем.откл. проверку для отраб.масс.загр.Хар-ик Товара
+        // const props = properties.filter(
+        //   (prop: any) => prop.name.trim() !== "" && prop.value.trim() !== ""
+        // );
+        // if (props.length) {
+        if (properties) {
+          formData.append("props", JSON.stringify(properties));
           // data.push("props", JSON.stringify(props));
         }
       }

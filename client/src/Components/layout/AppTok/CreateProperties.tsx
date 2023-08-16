@@ -10,7 +10,7 @@ const CreateProperties = (props: any) => {
 
   // ^ Добавление
   const append = (event: any) => {
-    console.log("1 ", 1);
+    console.log("append 1.1 ", 1.1);
     // стар.код
     // setProperties([...properties, { name: "", value: "", number: Date.now() }]);
 
@@ -18,34 +18,59 @@ const CreateProperties = (props: any) => {
     // перем.Хар-ик state, id, шаблона
     let dataProps = { ...properties };
     let idProps = event.target.parentElement.id; // без Number() т.к. key String
-    let template = { name: "", value: "", number: Date.now() };
+    let template = { name: "", value: "" };
 
     for (const key in dataProps) {
-      // console.log("ap key - idProps ", key, " - ", idProps);
+      console.log("ap key - idProps ", key, " - ", idProps);
       // е/и key и id равны - добавл.шаблон к key
       if (key === idProps) {
-        // console.log("ap 222 === ", 222);
+        console.log("ap 222 = ", 222);
         dataProps[key].push(template);
       }
       // е/и ключ не равен id и id нет в state - добавл.шаблон с нов.id
       if (key !== idProps && !(idProps in dataProps)) {
-        // console.log("ap 333 !=! ", 333);
+        console.log("ap 333 != ", 333);
         dataProps = { ...dataProps, [idProps]: [template] };
       }
     }
+    console.log("ap dataProps === ", dataProps);
     setProperties(dataProps);
-  };
-
-  // ^ Удаление
-  const remove = (number: any) => {
-    // setProperties(properties.filter((item: any) => item.number !== number));
-    console.log("2 ", 2);
   };
 
   // ^ Изменение
   const change = (event: any) => {
     //   setProperties(properties.map((item: any) => item.number === number ? { ...item, [key]: value } : item) );
-    console.log("3 ", 3);
+    console.log("change 1.3 ", 1.3);
+
+    // перем.Хар-ик state, id, id родителя, name и value
+    let dataProps = { ...properties };
+    let idProps = event.target.parentElement.parentElement.parentElement.id;
+    let idParentProps =
+      event.target.parentElement.parentElement.parentElement.parentElement.id;
+    let nameForm = event.target.name;
+    let valueForm = event.target.value;
+
+    console.log(
+      "chg форма & e.T.pE.id хар-ки | name & value  ",
+      idParentProps,
+      "-",
+      idProps,
+      "|",
+      nameForm,
+      "=",
+      valueForm
+    );
+    dataProps[idParentProps][idProps] = {
+      ...dataProps[idParentProps][idProps],
+      [nameForm]: valueForm,
+    };
+    console.log("chg dataProps === ", dataProps);
+  };
+
+  // ^ Удаление
+  const remove = (number: any) => {
+    // setProperties(properties.filter((item: any) => item.number !== number));
+    console.log("remove 1.2 ", 1.2);
   };
 
   // перем.с полями Параметров Формы (Назв.,Категории,Бренда,Цены,Изо,Хар-ик)
@@ -54,7 +79,7 @@ const CreateProperties = (props: any) => {
       <Row className="mb-2">
         <Col>
           <Form.Control
-            name={"name_"}
+            name={"name"}
             // value={item.name}
             onChange={(e) => change(e)}
             placeholder={"Название... "}
@@ -63,7 +88,7 @@ const CreateProperties = (props: any) => {
         </Col>
         <Col>
           <Form.Control
-            name={"value_"}
+            name={"value"}
             // value={item.value}
             onChange={(e) => change(e)}
             placeholder={"Значение... "}
@@ -107,13 +132,14 @@ const CreateProperties = (props: any) => {
       >
         Добавить Характеристики Товара
       </Button>
+      {/* масс.Хар-ик для каждого блока ФормДаты по showBulkFormData */}
       {Array(showBulkFormData)
         .fill(0)
         .map((_, index) =>
           showBulkFormData > 0 ? (
             <div
               // id + 1 для опред.места записи в масс.Хар-ик от ФормДаты
-              id={`` + (index + 1)}
+              id={`` + index}
               key={index}
             >
               {FormsParamProps}
