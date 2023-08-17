@@ -191,8 +191,6 @@ class Product {
     data: CreateData,
     img: any /* : Express.Multer.File */
   ): Promise<Products> {
-    console.log("data : " + data);
-    console.log(data);
     // поскольку image не допускает null, задаем пустую строку
     const image = FileService.save(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
@@ -204,7 +202,6 @@ class Product {
 
     // ^ для записи 1го знач.
     if ((categoryId.length || brandId.length || price.length) < 2) {
-      console.log("1го : " + 0, "0", 0);
       // созд.1го Товара
       const product = await ProductMapping.create({
         name,
@@ -215,21 +212,10 @@ class Product {
       });
       // созд.свойства 1го Товара
       if (data.props) {
-        console.log("111 : " + 111);
-        console.log("data.props : " + data.props);
-        console.log(data.props);
-        // ! ошб. Unexpected token o in JSON at position 1 - коммит parse от не нужного преобразованя JSON в объ. // ^ уже раскомит, т.к. в front приходит stringifay от ошибки парса и чёт такое
-        // ! коммит типы массива т.к. приходит объек. переделать на объ
-        const propsParse /* : ProductProp[] */ = JSON.parse(data.props);
-        console.log("propsParse : " + propsParse);
-        console.log(propsParse);
+        const propsParse = JSON.parse(data.props);
         // получ.всегда первого массива
         let props = propsParse["0"];
-        console.log("props : " + props);
-        console.log(props); // [ { name: '1', value: '1' } ]
         for (let prop of props) {
-          console.log("prop : " + prop);
-          console.log(prop); // { name: '1', value: '1' }
           await ProductPropMapping.create({
             name: prop.name,
             value: prop.value,
@@ -244,16 +230,11 @@ class Product {
     }
 
     // ^ для запись Неск-им знач.
-    if (categoryId?.length > 1 || brandId?.length > 1) {
-      console.log("999 : " + 999);
+    if (categoryId?.length > 1 || brandId?.length > 1 || price?.length > 1) {
       // перем.всех разбитых парам.
       const resultAll = [];
       // разбивка вход стр./объ. на масс. по запятой
-      console.log("name : " + name);
-      console.log(name);
       let nameAll = name.split(",");
-      console.log("nameAll : " + nameAll);
-      console.log(nameAll);
       let priceAll = price.split(",");
       let brandIdAll = brandId.split(",");
       let categoryIdAll = categoryId.split(",");
@@ -277,109 +258,23 @@ class Product {
 
       // е/и есть Хар-ки Товара
       if (data.props) {
-        console.log("Мн. data.props : " + data.props);
-
-        // преобразуем вход.строку в объ
+        // преобразуем вход.строку в объ с масс.объ.
         const propsParse = JSON.parse(data.props);
-        console.log("propsParse : " + propsParse);
-        console.log(propsParse);
 
-        // ~ проверки/допы
-        // получ.key объ. // value // entries - пары [ [ '0', [ [Object] ] ], [ '1', [ [Object] ] ] ]
-        // let keyProp = Object.keys(propsParse);
-        // console.log("keyProp : " + keyProp);
-        // console.log(keyProp);
-        // let valuesProp = Object.values(propsParse);
-        // console.log("valuesProp : " + valuesProp);
-        // console.log(valuesProp);
-
-        // перебор key
+        // перебор key в Хар-ах
         for (let key of Object.keys(propsParse)) {
-          // ~ проверки/допы
-          // name: "John",  age: 30 | // alert(key); // name, затем age
-          // console.log("TYPEOF key : " + key, typeof key);
-          // console.log("Number(key) : " + Number(key));
-          // console.log(Number(key));
+          // получ. позиц., id нов.Товаров по key имеющихся Хар-ик (каждому Товару свои Хар-ки)
+          let productBulkId = productBulk[key].id;
+          // перем. массив значение опред.key
+          let value = propsParse[key];
 
-          // получ.id нов.Товаров по key имеющихся Хар-ик
-          let productBulkArr = productBulk[key];
-          let productBulkId = productBulkArr.id;
-          console.log("productBulkArr : " + productBulkArr);
-          console.log(productBulkArr);
-          console.log("productBulkId : " + productBulkId);
-          console.log(productBulkId);
-
-          // попытки разделить и записать value в необходимый Товар(productBulkId)
-          // if (productBulkId === Number(key)) {
-          // перебор value
-          for (let value of Object.values(propsParse)) {
-            console.log("value : " + value);
-            console.log(value);
-
-            let valArr: any = value;
-
-            // ? передод масс.value - [ { name: '1', value: '1' } ]
-            for (let prop of valArr) {
-              console.log("prop : " + prop);
-              console.log(prop);
-              await ProductPropMapping.create({
-                name: prop.name,
-                value: prop.value,
-                // productId: product.id,
-                // productId: productBulkId.id,
-                productId: productBulkId,
-              });
-            }
-          }
-          // }
-        }
-
-        // console.log("productBulk : " + productBulk);
-        // console.log(productBulk);
-
-        return;
-
-        let props = propsParse["0"];
-        console.log("props : " + props);
-        console.log(props);
-
-        for (let prop of props) {
-          // console.log("prop : " + prop);
-          // console.log(prop);
-          await ProductPropMapping.create({
-            name: prop.name,
-            value: prop.value,
-            // productId: product.id,
-          });
-          // console.log("222 : " + 222);
-        }
-        // console.log("333 : " + 333);
-        // }
-
-        // перем.всех props
-        let propsDate = data.props;
-        // перем.всех разбитых хар-ик.
-        const resultAll = [];
-        // разбивка вход стр./объ. на масс. по запятой
-        let propsAll = propsDate.split(",");
-        console.log("propsAll : " + propsAll);
-        console.log(propsAll);
-
-        // цикл по длине какого-либо хар-ки.
-        for (var i = 0; i < propsAll.length; i++) {
-          console.log("i : " + i);
-          console.log(i);
-          // props
-          const propsOne: ProductProp[] = JSON.parse(propsAll);
-          console.log("propsOne : " + propsOne);
-          console.log(propsOne);
-          for (let prop of propsOne) {
-            console.log("Мн. prop : " + prop);
-            console.log(prop);
-            await ProductPropMapping.bulkCreate({
+          // перебор объ.в опред.масс.значении
+          for (let prop of value) {
+            // запись каждого объ.
+            await ProductPropMapping.create({
               name: prop.name,
               value: prop.value,
-              productId: productBulk.id,
+              productId: productBulkId,
             });
           }
         }
@@ -390,7 +285,7 @@ class Product {
         include: [{ model: ProductPropMapping, as: "props" }],
       });
     }
-    console.log("5678 : " + 5678);
+
     // возвращ.результ.созд.
     return returned;
   }
