@@ -261,11 +261,11 @@ class Product {
         // преобразуем вход.строку в объ с масс.объ.
         const propsParse = JSON.parse(data.props);
 
-        // перебор key в Хар-ах
+        // перебор всех key в Хар-ах
         for (let key of Object.keys(propsParse)) {
           // получ. позиц., id нов.Товаров по key имеющихся Хар-ик (каждому Товару свои Хар-ки)
           let productBulkId = productBulk[key].id;
-          // перем. массив значение опред.key
+          // перем. массив значение определённого key
           let value = propsParse[key];
 
           // перебор объ.в опред.масс.значении

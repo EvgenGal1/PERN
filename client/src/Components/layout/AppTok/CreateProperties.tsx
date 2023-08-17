@@ -10,39 +10,28 @@ const CreateProperties = (props: any) => {
 
   // ^ Добавление
   const append = (event: any) => {
-    console.log("append 1.1 ", 1.1);
-    // стар.код
-    // setProperties([...properties, { name: "", value: "", number: Date.now() }]);
-
-    // ^ нов.код под масс.загр.Хар-ик
-    // перем.Хар-ик state, id, шаблона
+    // перем. state, id Хар-ки, шаблона
     let dataProps = { ...properties };
-    let idProps = event.target.parentElement.id; // без Number() т.к. key String
+    let idProps = event.target.parentElement.id;
     let template = { name: "", value: "" };
 
+    // перебор state по key
     for (const key in dataProps) {
-      console.log("ap key - idProps ", key, " - ", idProps);
-      // е/и key и id равны - добавл.шаблон к key
-      if (key === idProps) {
-        console.log("ap 222 = ", 222);
-        dataProps[key].push(template);
-      }
+      // е/и key и id равны - добавл.шаблон по key
+      if (key === idProps) dataProps[key].push(template);
+
       // е/и ключ не равен id и id нет в state - добавл.шаблон с нов.id
-      if (key !== idProps && !(idProps in dataProps)) {
-        console.log("ap 333 != ", 333);
+      if (key !== idProps && !(idProps in dataProps))
         dataProps = { ...dataProps, [idProps]: [template] };
-      }
     }
-    console.log("ap dataProps === ", dataProps);
+
+    // запись в state
     setProperties(dataProps);
   };
 
   // ^ Изменение
   const change = (event: any) => {
-    //   setProperties(properties.map((item: any) => item.number === number ? { ...item, [key]: value } : item) );
-    console.log("change 1.3 ", 1.3);
-
-    // перем.Хар-ик state, id, id родителя, name и value
+    // перем. state, и Хар-ик id, id Родителя, name и value
     let dataProps = { ...properties };
     let idProps = event.target.parentElement.parentElement.parentElement.id;
     let idParentProps =
@@ -50,27 +39,30 @@ const CreateProperties = (props: any) => {
     let nameForm = event.target.name;
     let valueForm = event.target.value;
 
-    console.log(
-      "chg форма & e.T.pE.id хар-ки | name & value  ",
-      idParentProps,
-      "-",
-      idProps,
-      "|",
-      nameForm,
-      "=",
-      valueForm
-    );
+    // в state под id Родителя запись - name:value
     dataProps[idParentProps][idProps] = {
       ...dataProps[idParentProps][idProps],
       [nameForm]: valueForm,
     };
-    console.log("chg dataProps === ", dataProps);
   };
 
   // ^ Удаление
-  const remove = (number: any) => {
-    // setProperties(properties.filter((item: any) => item.number !== number));
-    console.log("remove 1.2 ", 1.2);
+  const remove = (event: any) => {
+    // перем. state и id Хар-ки id, id Родителя, масс.объ.одного Родителя
+    let dataProps = { ...properties };
+    let idProps = event.target.parentElement.parentElement.parentElement.id;
+    let idParentProps =
+      event.target.parentElement.parentElement.parentElement.parentElement.id;
+    let arrParentProps = dataProps[idParentProps];
+
+    // перебор масс.ключей Родителя
+    for (let key of Object.keys(arrParentProps)) {
+      // е/и key и id равны - добавл.шаблон по key
+      if (key === idProps) arrParentProps.splice(idProps, 1);
+    }
+
+    // запись в state
+    setProperties(dataProps);
   };
 
   // перем.с полями Параметров Формы (Назв.,Категории,Бренда,Цены,Изо,Хар-ик)
@@ -98,7 +90,7 @@ const CreateProperties = (props: any) => {
         <Col>
           <Button
             onClick={(e) => {
-              // remove(item.number)
+              remove(e);
               setShowBulkFormData(showBulkFormData - 1);
             }}
             size="sm"
@@ -132,13 +124,13 @@ const CreateProperties = (props: any) => {
       >
         Добавить Характеристики Товара
       </Button>
-      {/* масс.Хар-ик для каждого блока ФормДаты по showBulkFormData */}
+      {/* масс.Хар-ик для каждого блока ФормДаты по showBulkFormData // ! удаляет ТОЛЬКО последний элемент, в state всё ровно, НО render НЕТ */}
       {Array(showBulkFormData)
         .fill(0)
         .map((_, index) =>
           showBulkFormData > 0 ? (
             <div
-              // id + 1 для опред.места записи в масс.Хар-ик от ФормДаты
+              // id для опред.места записи в масс.Хар-ик от ФормДаты
               id={`` + index}
               key={index}
             >
