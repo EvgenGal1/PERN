@@ -26,6 +26,7 @@ const defaultValid = {
 };
 
 // перем. Значений для доп.ФормДат по умолч.
+// ^ для render|state|загрузка на ОБЪЕКТЕ
 let defaultValueBulk: { [key: string | number]: any } = {
   name: [],
   price: [],
@@ -35,6 +36,7 @@ let defaultValueBulk: { [key: string | number]: any } = {
 };
 
 // перем. Характеристик для доп.ФормДат по умолч.
+// ^ для render|state|загрузка на ОБЪЕКТЕ
 let defaultValueBulkProps: { [key: string | number]: any } = {
   0: [],
 };
@@ -81,17 +83,24 @@ const CreateProduct = (props: any) => {
 
   // валидация // ! врем.откл.
   const [valid, setValid] = useState(defaultValid);
-  // state для 1го Товара (упразднён)
-  // const [value, setValue] = useState(defaultValue);
   // доп.ФормДаты для неск.Товаров
+  // ^ для render|state|загрузки на ОБЪЕКТЕ
   const [valueBulk, setValueBulk] = useState(defaultValueBulk);
+  // console.log("valueBulk ", valueBulk);
   // показ.доп.ФормДаты для +n-ых Товаров
   const [showBulkFormData, setShowBulkFormData] = useState(0);
+  // ^ для render|state|загрузка на МАССИВЕ
+  const [valueBulkArr, setValueBulkArr] = useState([]);
+  // console.log("valueBulkArr ", valueBulkArr);
 
   // список характеристик товара
+  // ^ для render|state|загрузка на ОБЪЕКТЕ
   const [properties, setProperties] = useState(defaultValueBulkProps);
-  // const [properties, setProperties] = useState([]);
   // console.log("properties ", properties);
+  // {0: Array(1), 1: Array(2)} >>> {0: [0: {name: '12', value: '12'}], 1: [0: {name: '23', value: '23'} 1: {name: '2323', value: '2323'}]} - объ.с массивами объектов
+  // ^ для render|state|загрузка на МАССИВЕ
+  const [propertiesArr, setPropertiesArr] = useState([]);
+  // console.log("propertiesArr ", propertiesArr);
 
   // список Категорий/Брендов для возможности выбора
   const [categories, setCategories]: any = useState(null);
@@ -103,13 +112,10 @@ const CreateProduct = (props: any) => {
     // приводим форму в изначальное состояние
     // setValue(defaultValue);
     setValid(defaultValid);
-    // сброс Хар-ик
-    // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
-    // setProperties([]);
-    defaultValueBulkProps = { 0: [] };
-    setProperties(defaultValueBulkProps);
     // сброс доп.ФормДат
+    // ^ для render|state|загрузка на ОБЪЕКТЕ
     setShowBulkFormData(0);
+    // setValueBulk(defaultValueBulk);
     // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
     defaultValueBulk = {
       name: [],
@@ -124,6 +130,14 @@ const CreateProduct = (props: any) => {
       // image: {},
     };
     setValueBulk(defaultValueBulk);
+    // сброс Хар-ик
+    // setProperties([]);
+    // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
+    // ^ для render|state|загрузка на ОБЪЕКТЕ
+    defaultValueBulkProps = { 0: [] };
+    setProperties(defaultValueBulkProps);
+    // ^ для render|state|загрузка на МАССИВЕ
+    setPropertiesArr([]);
   };
 
   // изначально получить с сервера списки Категорий/Брендов
@@ -351,7 +365,12 @@ const CreateProduct = (props: any) => {
         </Col>
       </Row>
       {/* Характеристики */}
-      <CreateProperties properties={properties} setProperties={setProperties} />
+      <CreateProperties
+        properties={properties}
+        setProperties={setProperties}
+        propertiesArr={propertiesArr}
+        setPropertiesArr={setPropertiesArr}
+      />
       <hr
         style={{
           margin: "1rem 0",
@@ -390,6 +409,7 @@ const CreateProduct = (props: any) => {
           {/* ФормДата для загр.1го Товара */}
           <div id="0">{FormsParam}</div>
           {/* доп.ФормДаты для масс.загр.Товаров */}
+          {/* // ^ для render|state|загрузка на ОБЪЕКТЕ (ч/з доп.state кол-ва эл. showBulkFormData) */}
           {Array(showBulkFormData)
             .fill(0)
             .map((_, index) =>
