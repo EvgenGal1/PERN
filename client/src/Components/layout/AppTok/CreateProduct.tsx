@@ -227,6 +227,7 @@ const CreateProduct = (props: any) => {
   // ^ УДАЛЕНИЕ
   const handlerDeleteBulkValue = (event: any) => {
     event.preventDefault();
+    console.log("ARR DEL event ", event);
 
     // перем. id блока нумерованная
     let idParentPropsNum = Number(event.target.parentElement.id);
@@ -257,6 +258,7 @@ const CreateProduct = (props: any) => {
   const handlerChangeBulkValue = (event: any) => {
     event.preventDefault();
     // запись доп.ФормДаты из state в перем.
+    console.log("INPT event ", event);
     let dataArr = [...valueBulkArr];
     // перем. Имени и Значения поля формы
     let nameForm = event.target.name;
@@ -314,6 +316,7 @@ const CreateProduct = (props: any) => {
      */
     // const correct = isValid(value);
     const correct = isValid(valueBulk);
+    const correctArr = isValid(valueBulkArr);
     setValid(correct);
 
     // все поля формы прошли проверку, можно отправлять данные на сервер
@@ -341,18 +344,59 @@ const CreateProduct = (props: any) => {
         }
       }
 
+      // ^ для render|state|загрузки на МАССИВЕ
+      let formData_2 = new FormData();
+      correctArr.map((fd: any) => {
+        console.log("SBM ARR fd ", fd);
+        // let resultArr = {}
+        for (let key in fd) {
+          // console.log("fd.name ", fd.name);
+          console.log("SBM ARR key ", key);
+          if (key === "name") formData_2.append("name", fd.name);
+          if (key === "price") formData_2.append("price", fd.price);
+          if (key === "category") formData_2.append("categoryId", fd.category);
+          if (key === "brand") formData_2.append("brandId", fd.brand);
+          if (key === "image") {
+            console.log("fd.image ", fd.image);
+            console.log("fd.image.name ", fd.image.name);
+            let imgLenght = fd.image.length;
+            for (var i = 0; i < imgLenght; i++) {
+              // formData_2.append("image", fd.image[i], fd.image[i].name);
+              formData_2.append("image", fd?.image, fd?.image?.name);
+            }
+          }
+        }
+
+        // console.log('resultArr ', resultArr);
+        // return resultArr;
+      });
+      console.log("correctArr ", correctArr);
+
       // ~ проверки
-      // вывод каждого значения
+      // // вывод каждого значения
       const pairs = Array.from(formData.entries());
-      for (let /* pair */ [key, value] of pairs) {
+      // for (let /* pair */ [key, value] of pairs) {
+      //   console.log("кажд кл./знач. pair ", `${key}: ${value}` /* pair */);
+      // }
+      // // вывод каждого масс.в объ.
+      // console.log(...pairs);
+      // // вывод Таблицы
+      // console.table([...pairs]);
+      // // вывод объ.со значениями
+      console.log("OBJ pairs " + Object.fromEntries(pairs));
+      console.log(Object.fromEntries(pairs));
+
+      // ^ для render|state|загрузки на МАССИВЕ
+      const pairs_2 = Array.from(formData_2.entries());
+      for (let /* pair */ [key, value] of pairs_2) {
         console.log("кажд кл./знач. pair ", `${key}: ${value}` /* pair */);
       }
       // вывод каждого масс.в объ.
-      console.log(...pairs);
+      console.log(...pairs_2);
       // вывод Таблицы
-      console.table([...pairs]);
+      console.table([...pairs_2]);
       // вывод объ.со значениями
-      console.log(Object.fromEntries(pairs));
+      console.log(Object.fromEntries(pairs_2));
 
       // характеристики нового товара
       // if (properties.length) {
@@ -369,15 +413,17 @@ const CreateProduct = (props: any) => {
       console.log("SBM formData ", formData);
 
       // отправка/получение data на/с Сервера
-      createProduct(formData)
+      // createProduct(formData)
+      createProduct(formData_2)
         .then((data) => {
-          // приводим форму в изначальное состояние
-          event.target.image.value = "";
-          resetValueAndValidAndVBulk();
-          // закрываем модальное окно создания товара
-          setShow(false);
-          // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
-          setChange((state: any) => !state);
+          console.log("SBM CrePPP data ", data);
+          //     // приводим форму в изначальное состояние
+          //     event.target.image.value = "";
+          //     resetValueAndValidAndVBulk();
+          //     // закрываем модальное окно создания товара
+          //     setShow(false);
+          //     // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
+          //     setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));
     }

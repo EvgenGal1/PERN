@@ -233,21 +233,35 @@ class Product {
     if (categoryId?.length > 1 || brandId?.length > 1 || price?.length > 1) {
       // перем.всех разбитых парам.
       const resultAll = [];
-      // разбивка вход стр./объ. на масс. по запятой
-      let nameAll = name.split(",");
-      let priceAll = price.split(",");
-      let brandIdAll = brandId.split(",");
-      let categoryIdAll = categoryId.split(",");
-      let imageAll = image.split(",");
+
+      // ^ для render|state|загрузки на ОБЪЕКТЕ
+      // // разбивка вход стр./объ. на масс. по запятой
+      // let nameAll = name.split(",");
+      // let priceAll = price.split(",");
+      // let brandIdAll = brandId.split(",");
+      // let categoryIdAll = categoryId.split(",");
+      // let imageAll = image.split(",");
+
       // цикл по длине какого-либо парам.
-      for (var i = 0; i < nameAll.length; i++) {
+      // ^ для render|state|загрузки на ОБЪЕКТЕ
+      // for (var i = 0; i < nameAll.length; i++) {
+      // ^ для render|state|загрузки на МАССИВЕ
+      for (var i = 0; i < name.length; i++) {
         // один Товар в переборе
         const allParam = {
-          name: nameAll[i],
-          price: priceAll[i],
-          brandId: brandIdAll[i],
-          categoryId: categoryIdAll[i],
-          image: imageAll[i] || "",
+          // ^ для render|state|загрузки на ОБЪЕКТЕ
+          // name: nameAll[i],
+          // price: priceAll[i],
+          // brandId: brandIdAll[i],
+          // categoryId: categoryIdAll[i],
+          // image: imageAll[i] || "",
+
+          // ^ для render|state|загрузки на МАССИВЕ
+          name: name[i],
+          price: price[i],
+          brandId: brandId[i],
+          categoryId: categoryId[i],
+          image: image[i] || "",
         };
         // запись одного Товара в общ.перем.
         resultAll.push(allParam);
