@@ -88,13 +88,13 @@ const CreateProduct = (props: any) => {
   const [valueBulk, setValueBulk] = useState(defaultValueBulk);
   // console.log("valueBulk ", valueBulk);
   // {brand:['1', '2'], category:['2', '3'], image:[], name:['11', '22'], price:['11', '22']}
-  // показ.доп.ФормДаты для +n-ых Товаров
-  const [showBulkFormData, setShowBulkFormData] = useState(0);
+  // показ.доп.ФормДаты для +n-ых Товаров // ! упраздён т.к. render не ч/з Array(showBulkFormData).fill(0).map а ч/з state
+  // const [showBulkFormData, setShowBulkFormData] = useState(0);
   // ^ для render|state|загрузки на МАССИВЕ
   // шаблон и state
   let templateAtt = { brand: "", category: "", image: "", name: "", price: "" };
   const [valueBulkArr, setValueBulkArr]: any = useState([templateAtt]);
-  console.log("valueBulkArr ", valueBulkArr);
+  // console.log("valueBulkArr ", valueBulkArr);
 
   // список характеристик товара
   // ^ для render|state|загрузки на ОБЪЕКТЕ
@@ -123,9 +123,10 @@ const CreateProduct = (props: any) => {
     // приводим форму в изначальное состояние
     // setValue(defaultValue);
     setValid(defaultValid);
+
     // сброс доп.ФормДат
     // ^ для render|state|загрузки на ОБЪЕКТЕ
-    setShowBulkFormData(0);
+    // setShowBulkFormData(0);
     // setValueBulk(defaultValueBulk);
     // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
     defaultValueBulk = {
@@ -141,6 +142,9 @@ const CreateProduct = (props: any) => {
       // image: {},
     };
     setValueBulk(defaultValueBulk);
+    // ^ для render|state|загрузки на МАССИВЕ
+    setValueBulkArr([templateAtt]);
+
     // сброс Хар-ик
     // setProperties([]);
     // ! не раб.востан.перем.по умолч. Происходит запись в перем.даже при const
@@ -260,9 +264,11 @@ const CreateProduct = (props: any) => {
     // запись доп.ФормДаты из state в перем.
     console.log("INPT event ", event);
     let dataArr = [...valueBulkArr];
+
     // перем. Имени и Значения поля формы
     let nameForm = event.target.name;
     let valueForm = event.target.value;
+
     // перем./расчёт id блока события на разной вложенности
     let numId: number = 0;
     let idParentProps = event.target.parentElement.id;
@@ -325,6 +331,7 @@ const CreateProduct = (props: any) => {
     ) {
       console.log("SBM IF 1 ", 1);
 
+      // ^ для render|state|загрузки на ОБЪЕКТЕ
       let formData = new FormData();
       for (let key in valueBulk) {
         if (key === "name") formData.append("name", valueBulk.name);
@@ -345,36 +352,26 @@ const CreateProduct = (props: any) => {
       }
 
       // ^ для render|state|загрузки на МАССИВЕ
-      let formData_2 = new FormData();
+      let formDataArr = new FormData();
       correctArr.map((fd: any) => {
         console.log("SBM ARR fd ", fd);
         // let resultArr = {}
         for (let key in fd) {
           // console.log("fd.name ", fd.name);
           console.log("SBM ARR key ", key);
-          if (key === "name") formData_2.append("name", fd.name);
-          if (key === "price") formData_2.append("price", fd.price);
-          if (key === "category") formData_2.append("categoryId", fd.category);
-          if (key === "brand") formData_2.append("brandId", fd.brand);
-          if (key === "image") {
-            console.log("fd.image ", fd.image);
-            console.log("fd.image.name ", fd.image.name);
-            let imgLenght = fd.image.length;
-            for (var i = 0; i < imgLenght; i++) {
-              // formData_2.append("image", fd.image[i], fd.image[i].name);
-              formData_2.append("image", fd?.image, fd?.image?.name);
-            }
-          }
+          if (key === "name") formDataArr.append("name", fd.name);
+          if (key === "price") formDataArr.append("price", fd.price);
+          if (key === "category") formDataArr.append("categoryId", fd.category);
+          if (key === "brand") formDataArr.append("brandId", fd.brand);
+          if (key === "image")
+            formDataArr.append("image", fd?.image, fd?.image?.name);
         }
-
-        // console.log('resultArr ', resultArr);
-        // return resultArr;
       });
-      console.log("correctArr ", correctArr);
 
       // ~ проверки
+      // ^ для render|state|загрузки на ОБЪЕКТЕ
       // // вывод каждого значения
-      const pairs = Array.from(formData.entries());
+      // const pairs = Array.from(formData.entries());
       // for (let /* pair */ [key, value] of pairs) {
       //   console.log("кажд кл./знач. pair ", `${key}: ${value}` /* pair */);
       // }
@@ -383,11 +380,11 @@ const CreateProduct = (props: any) => {
       // // вывод Таблицы
       // console.table([...pairs]);
       // // вывод объ.со значениями
-      console.log("OBJ pairs " + Object.fromEntries(pairs));
-      console.log(Object.fromEntries(pairs));
+      // console.log("OBJ pairs " + Object.fromEntries(pairs));
+      // console.log(Object.fromEntries(pairs));
 
       // ^ для render|state|загрузки на МАССИВЕ
-      const pairs_2 = Array.from(formData_2.entries());
+      const pairs_2 = Array.from(formDataArr.entries());
       for (let /* pair */ [key, value] of pairs_2) {
         console.log("кажд кл./знач. pair ", `${key}: ${value}` /* pair */);
       }
@@ -414,16 +411,16 @@ const CreateProduct = (props: any) => {
 
       // отправка/получение data на/с Сервера
       // createProduct(formData)
-      createProduct(formData_2)
+      createProduct(formDataArr)
         .then((data) => {
           console.log("SBM CrePPP data ", data);
-          //     // приводим форму в изначальное состояние
-          //     event.target.image.value = "";
-          //     resetValueAndValidAndVBulk();
-          //     // закрываем модальное окно создания товара
-          //     setShow(false);
-          //     // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
-          //     setChange((state: any) => !state);
+          // приводим форму в изначальное состояние
+          event.target.image.value = "";
+          resetValueAndValidAndVBulk();
+          // закрываем модальное окно создания товара
+          setShow(false);
+          // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
+          setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));
     }
@@ -524,179 +521,179 @@ const CreateProduct = (props: any) => {
 
   // перем.с полями Параметров Формы (Назв.,Категории,Бренда,Цены,Изо,Хар-ик)
   // const FormsParam = ( // ! не приним propsы
-  // const FormsParam = ({ prop, index, event }: any) => { // ! форма обн.на кажд.нажатие
-  const FormsParam = (propsArr: any) => {
-    // console.log("КОМП propsArr ", propsArr);
-    // console.log("КОМП propsArr.index ", propsArr.index);
-    // console.log("КОМП propsArr.prop.name ", propsArr.prop.name);
+  // ! форма обн.на кажд.нажатие
+  // const FormsParamComp = (propsArr: any) => {
+  //   // console.log("КОМП propsArr ", propsArr);
+  //   // console.log("КОМП propsArr.index ", propsArr.index);
+  //   // console.log("КОМП propsArr.prop.name ", propsArr.prop.name);
 
-    return (
-      <div id={propsArr.index}>
-        {/* Название */}
-        <Form.Control
-          name="name"
-          // блок на все знач.из state для неск.ФормДат
-          // value={value.name}
-          // берём знач.из state для кажд.эл.
-          value={propsArr.prop.name}
-          onChange={(e) => {
-            // пока 2 fn() записи знач.(для 1го Товара и Нескольких)
-            // handleInputChange(e);
-            bulkHandleInputChange(e);
-            // setTimeout(() => {
-            handlerChangeBulkValue(e);
-            // }, 5000);
-          }}
-          isValid={valid.name === true}
-          isInvalid={valid.name === false}
-          placeholder="Название товара..."
-          className="mb-3"
-        />
-        {/* Категория/Бренд */}
-        <Row className="mb-3">
-          <Col>
-            <Form.Select
-              name="category"
-              // value={value.category}
-              value={propsArr.prop.category}
-              onChange={(e) => {
-                // handleInputChange(e);
-                bulkHandleInputChange(e);
-                handlerChangeBulkValue(e);
-              }}
-              isValid={valid.category === true}
-              isInvalid={valid.category === false}
-            >
-              {/* // ! не раб.скрытие 1го opt.при откр.select */}
-              <option value="">Категория</option>
-              {categories &&
-                categories.map((item: any) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-            </Form.Select>
-          </Col>
-          <Col>
-            <Form.Select
-              name="brand"
-              // value={value.brand}
-              value={propsArr.prop.brand}
-              onChange={(e) => {
-                // handleInputChange(e);
-                bulkHandleInputChange(e);
-                handlerChangeBulkValue(e);
-              }}
-              isValid={valid.brand === true}
-              isInvalid={valid.brand === false}
-            >
-              <option value="">Бренд</option>
-              {brands &&
-                brands.map((item: any) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-            </Form.Select>
-          </Col>
-        </Row>
-        {/* Цена/Изо */}
-        <Row className="mb-3">
-          <Col>
-            <Form.Control
-              name="price"
-              // value={value.price}
-              value={propsArr.prop.price}
-              onChange={(e) => {
-                // handleInputChange(e);
-                bulkHandleInputChange(e);
-                handlerChangeBulkValue(e);
-              }}
-              isValid={valid.price === true}
-              isInvalid={valid.price === false}
-              placeholder="Цена товара..."
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              name="image"
-              type="file"
-              onChange={(e) => {
-                // handleImageChange(e);
-                // handleInputChange(e);
-                bulkHandleInputChange(e);
-                handlerChangeBulkValue(e);
-              }}
-              placeholder="Фото товара..."
-            />
-          </Col>
-        </Row>
-        {/* // ^ ХАРАКТЕРИСТИКИ */}
-        <Button
-          onClick={(e) => {
-            // append(e);
-            appendArr(e);
-            // setShowBulkFormData(showBulkFormData + 1);
-          }}
-          variant="outline-primary"
-          size="sm"
-          className="btn-primary--eg mb-2"
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "center",
-          }}
-        >
-          Добавить Характеристики Товара
-        </Button>
-        {propertiesArr.map((props: any, index: any) => {
-          // console.log("props ", props);
-          return (
-            <div key={index}>
-              {/* <h2>Name: {employee.name}</h2> */}
+  //   return (
+  //     <div id={propsArr.index}>
+  //       {/* Название */}
+  //       <Form.Control
+  //         name="name"
+  //         // блок на все знач.из state для неск.ФормДат
+  //         // value={value.name}
+  //         // берём знач.из state для кажд.эл.
+  //         value={propsArr.prop.name}
+  //         onChange={(e) => {
+  //           // пока 2 fn() записи знач.(для 1го Товара и Нескольких)
+  //           // handleInputChange(e);
+  //           bulkHandleInputChange(e);
+  //           // setTimeout(() => {
+  //           handlerChangeBulkValue(e);
+  //           // }, 5000);
+  //         }}
+  //         isValid={valid.name === true}
+  //         isInvalid={valid.name === false}
+  //         placeholder="Название товара..."
+  //         className="mb-3"
+  //       />
+  //       {/* Категория/Бренд */}
+  //       <Row className="mb-3">
+  //         <Col>
+  //           <Form.Select
+  //             name="category"
+  //             // value={value.category}
+  //             value={propsArr.prop.category}
+  //             onChange={(e) => {
+  //               // handleInputChange(e);
+  //               bulkHandleInputChange(e);
+  //               handlerChangeBulkValue(e);
+  //             }}
+  //             isValid={valid.category === true}
+  //             isInvalid={valid.category === false}
+  //           >
+  //             {/* // ! не раб.скрытие 1го opt.при откр.select */}
+  //             <option value="">Категория</option>
+  //             {categories &&
+  //               categories.map((item: any) => (
+  //                 <option key={item.id} value={item.id}>
+  //                   {item.name}
+  //                 </option>
+  //               ))}
+  //           </Form.Select>
+  //         </Col>
+  //         <Col>
+  //           <Form.Select
+  //             name="brand"
+  //             // value={value.brand}
+  //             value={propsArr.prop.brand}
+  //             onChange={(e) => {
+  //               // handleInputChange(e);
+  //               bulkHandleInputChange(e);
+  //               handlerChangeBulkValue(e);
+  //             }}
+  //             isValid={valid.brand === true}
+  //             isInvalid={valid.brand === false}
+  //           >
+  //             <option value="">Бренд</option>
+  //             {brands &&
+  //               brands.map((item: any) => (
+  //                 <option key={item.id} value={item.id}>
+  //                   {item.name}
+  //                 </option>
+  //               ))}
+  //           </Form.Select>
+  //         </Col>
+  //       </Row>
+  //       {/* Цена/Изо */}
+  //       <Row className="mb-3">
+  //         <Col>
+  //           <Form.Control
+  //             name="price"
+  //             // value={value.price}
+  //             value={propsArr.prop.price}
+  //             onChange={(e) => {
+  //               // handleInputChange(e);
+  //               bulkHandleInputChange(e);
+  //               handlerChangeBulkValue(e);
+  //             }}
+  //             isValid={valid.price === true}
+  //             isInvalid={valid.price === false}
+  //             placeholder="Цена товара..."
+  //           />
+  //         </Col>
+  //         <Col>
+  //           <Form.Control
+  //             name="image"
+  //             type="file"
+  //             onChange={(e) => {
+  //               // handleImageChange(e);
+  //               // handleInputChange(e);
+  //               bulkHandleInputChange(e);
+  //               handlerChangeBulkValue(e);
+  //             }}
+  //             placeholder="Фото товара..."
+  //           />
+  //         </Col>
+  //       </Row>
+  //       {/* // ^ ХАРАКТЕРИСТИКИ */}
+  //       <Button
+  //         onClick={(e) => {
+  //           // append(e);
+  //           appendArr(e);
+  //           // setShowBulkFormData(showBulkFormData + 1);
+  //         }}
+  //         variant="outline-primary"
+  //         size="sm"
+  //         className="btn-primary--eg mb-2"
+  //         style={{
+  //           display: "flex",
+  //           width: "100%",
+  //           justifyContent: "center",
+  //         }}
+  //       >
+  //         Добавить Характеристики Товара
+  //       </Button>
+  //       {propertiesArr.map((props: any, index: any) => {
+  //         // console.log("props ", props);
+  //         return (
+  //           <div key={index}>
+  //             {/* <h2>Name: {employee.name}</h2> */}
 
-              {props.map((prop: any, index: any) => {
-                // console.log("prop ", prop);
-                return <div key={index}>{<h2>prop: {prop.name}</h2>}</div>;
-              })}
+  //             {props.map((prop: any, index: any) => {
+  //               // console.log("prop ", prop);
+  //               return <div key={index}>{<h2>prop: {prop.name}</h2>}</div>;
+  //             })}
 
-              <hr />
-            </div>
-          );
-        })}
-        {/* <CreateProperties
-        properties={properties}
-        setProperties={setProperties}
-        propertiesArr={propertiesArr}
-        setPropertiesArr={setPropertiesArr}
-      /> */}
-        {/* // ^ кнп. УДАЛЕНИЯ */}
-        {valueBulkArr.length > 1 && (
-          <Button
-            // type="submit"
-            size="sm"
-            variant="danger"
-            className="btn-danger--eg"
-            style={{ width: "100%" }}
-            onClick={(e) => {
-              setShowBulkFormData(showBulkFormData - 1);
-              handlerDeleteBulkValue(e);
-            }}
-          >
-            Убрать Товар
-          </Button>
-        )}
-        <hr
-          style={{
-            margin: "2rem 0",
-            order: "1px solid",
-            opacity: "1",
-            color: "var(--bord-hr)",
-          }}
-        />
-      </div>
-    );
-  };
+  //             <hr />
+  //           </div>
+  //         );
+  //       })}
+  //       {/* <CreateProperties
+  //       properties={properties}
+  //       setProperties={setProperties}
+  //       propertiesArr={propertiesArr}
+  //       setPropertiesArr={setPropertiesArr}
+  //     /> */}
+  //       {/* // ^ кнп. УДАЛЕНИЯ */}
+  //       {valueBulkArr.length > 1 && (
+  //         <Button
+  //           // type="submit"
+  //           size="sm"
+  //           variant="danger"
+  //           className="btn-danger--eg"
+  //           style={{ width: "100%" }}
+  //           onClick={(e) => {
+  //             setShowBulkFormData(showBulkFormData - 1);
+  //             handlerDeleteBulkValue(e);
+  //           }}
+  //         >
+  //           Убрать Товар
+  //         </Button>
+  //       )}
+  //       <hr
+  //         style={{
+  //           margin: "2rem 0",
+  //           order: "1px solid",
+  //           opacity: "1",
+  //           color: "var(--bord-hr)",
+  //         }}
+  //       />
+  //     </div>
+  //   );
+  // };
 
   return (
     <Modal
@@ -710,8 +707,6 @@ const CreateProduct = (props: any) => {
       backdrop="static"
       size="lg"
       className="modal--eg-bootstr"
-      // ! врем.стиль для расшир.отражения
-      style={{ minWidth: "850px" }}
     >
       <Modal.Header closeButton style={{ padding: "5px" }}>
         <Modal.Title style={{ position: "relative" }}>Новый товар</Modal.Title>
@@ -745,9 +740,165 @@ const CreateProduct = (props: any) => {
             )} */}
           {/* // ^ для render|state|загрузки на МАССИВЕ */}
           {valueBulkArr.map((prop: any, index: any) => (
-            <Fragment key={index}>
-              {<FormsParam prop={prop} index={index} />}
-            </Fragment>
+            // Комп // ! state чётко, но форма обн.на кажд.нажатие (вносится по 1ой букв/цифр)
+            // <Fragment key={index}>
+            // <FormsParamComp key={index} prop={prop} index={index} />
+            // </Fragment>
+            // перем. // ! state чётко, но render при удален убирает только последний эл.(нет считывания value из props)
+            // <div id={index} key={index}>
+            //   {FormsParam}
+            // </div>
+            // напрямую // * state чётко, render чётко
+            <div id={index} key={index}>
+              {/* Название */}
+              <Form.Control
+                name="name"
+                value={prop.name}
+                onChange={(e) => {
+                  handlerChangeBulkValue(e);
+                }}
+                isValid={valid.name === true}
+                isInvalid={valid.name === false}
+                placeholder="Название товара..."
+                className="mb-3"
+              />
+              {/* Категория/Бренд */}
+              <Row className="mb-3">
+                <Col>
+                  <Form.Select
+                    name="category"
+                    value={prop.category}
+                    onChange={(e) => {
+                      handlerChangeBulkValue(e);
+                    }}
+                    isValid={valid.category === true}
+                    isInvalid={valid.category === false}
+                  >
+                    {/* // ! не раб.скрытие 1го opt.при откр.select */}
+                    <option value="">Категория</option>
+                    {categories &&
+                      categories.map((item: any) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+                <Col>
+                  <Form.Select
+                    name="brand"
+                    value={prop.brand}
+                    onChange={(e) => {
+                      handlerChangeBulkValue(e);
+                    }}
+                    isValid={valid.brand === true}
+                    isInvalid={valid.brand === false}
+                  >
+                    <option value="">Бренд</option>
+                    {brands &&
+                      brands.map((item: any) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+              </Row>
+              {/* Цена/Изо */}
+              <Row className="mb-3">
+                <Col>
+                  <Form.Control
+                    name="price"
+                    value={prop.price}
+                    onChange={(e) => {
+                      handlerChangeBulkValue(e);
+                    }}
+                    isValid={valid.price === true}
+                    isInvalid={valid.price === false}
+                    placeholder="Цена товара..."
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="image"
+                    type="file"
+                    onChange={(e) => {
+                      handlerChangeBulkValue(e);
+                    }}
+                    placeholder="Фото товара..."
+                  />
+                </Col>
+              </Row>
+              {/* // ^ ХАРАКТЕРИСТИКИ */}
+              <Button
+                onClick={(e) => {
+                  // append(e);
+                  appendArr(e);
+                }}
+                variant="outline-primary"
+                size="sm"
+                className="btn-primary--eg mb-2"
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: "center",
+                }}
+              >
+                Добавить Характеристики Товара
+              </Button>
+              {propertiesArr.map((props: any, index: any) => {
+                // console.log("props ", props);
+                return (
+                  <div key={index}>
+                    {/* <h2>Name: {employee.name}</h2> */}
+
+                    {props.map((prop: any, index: any) => {
+                      // console.log("prop ", prop);
+                      return (
+                        <div key={index}>{<h2>prop: {prop.name}</h2>}</div>
+                      );
+                    })}
+
+                    <hr />
+                  </div>
+                );
+              })}
+              {/* <CreateProperties
+              properties={properties}
+              setProperties={setProperties}
+              propertiesArr={propertiesArr}
+              setPropertiesArr={setPropertiesArr}
+            /> */}
+              {/* // ^ кнп. УДАЛЕНИЯ */}
+              {valueBulkArr.length > 1 && (
+                <Button
+                  // type="submit"
+                  size="sm"
+                  variant="danger"
+                  className="btn-danger--eg"
+                  style={{ width: "100%" }}
+                  onClick={(e) => {
+                    handlerDeleteBulkValue(e);
+                    // setValueBulkArr((existingItems: any) => {
+                    //   return [
+                    //     ...existingItems.slice(0, index),
+                    //     ...existingItems.slice(index + 1),
+                    //   ];
+                    // });
+                  }}
+                >
+                  Убрать Товар
+                </Button>
+              )}
+              <hr
+                style={{
+                  margin: "2rem 0",
+                  order: "1px solid",
+                  opacity: "1",
+                  color: "var(--bord-hr)",
+                }}
+              />
+            </div>
           ))}
           <div className="mt-2" style={{ display: "block" }}>
             {/* кнп.Добавить/Убрать Товар */}
@@ -762,16 +913,13 @@ const CreateProduct = (props: any) => {
                 className="btn-primary--eg"
                 style={{ width: "100%" }}
                 onClick={() => {
-                  setShowBulkFormData(showBulkFormData + 1);
                   handlerAddBulkValue();
-                  // setValueBulkArr([
-                  //   ...valueBulkArr,
-                  //   { brand: "", category: "", image: "", name: "", price: "" },
-                  // ]);
+                  // setValueBulkArr([...valueBulkArr, templateAtt]);
                 }}
               >
                 Добавить Товар
               </Button>
+              {/* // ! перезд в ФормДату для удал.кажд.эл.по отдельности */}
               {/* <Button
                 // type="submit"
                 size="sm"

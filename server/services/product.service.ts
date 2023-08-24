@@ -223,6 +223,7 @@ class Product {
           });
         }
       }
+
       // возврат 1го Товар со свойствами
       returned = await ProductMapping.findByPk(product.id, {
         include: [{ model: ProductPropMapping, as: "props" }],
@@ -240,7 +241,9 @@ class Product {
       // let priceAll = price.split(",");
       // let brandIdAll = brandId.split(",");
       // let categoryIdAll = categoryId.split(",");
-      // let imageAll = image.split(",");
+
+      // для image отдельный split т.к. FileService возвращ.стр.имена ч/з запятую
+      let imageAll = image.split(",");
 
       // цикл по длине какого-либо парам.
       // ^ для render|state|загрузки на ОБЪЕКТЕ
@@ -261,8 +264,9 @@ class Product {
           price: price[i],
           brandId: brandId[i],
           categoryId: categoryId[i],
-          image: image[i] || "",
+          image: imageAll[i] || "",
         };
+
         // запись одного Товара в общ.перем.
         resultAll.push(allParam);
       }
@@ -294,6 +298,7 @@ class Product {
         }
       }
 
+      // возврат неск. Товаров со свойствами и кол-ом
       returned = await ProductMapping.findAndCountAll({
         where,
         include: [{ model: ProductPropMapping, as: "props" }],
