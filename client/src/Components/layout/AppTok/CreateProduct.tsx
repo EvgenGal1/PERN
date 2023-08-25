@@ -247,7 +247,7 @@ const CreateProduct = (props: any) => {
       // );
     });
 
-    // Характеристики Товара
+    // Характеристики Товара. Удал.эл.м/у эл-ми масс.
     setPropertiesArr((existingItems: any) => {
       // для 0 indexa
       if (idParentPropsNum === 0) {
@@ -374,7 +374,8 @@ const CreateProduct = (props: any) => {
           if (key === "price") formDataArr.append("price", fd.price);
           if (key === "category") formDataArr.append("categoryId", fd.category);
           if (key === "brand") formDataArr.append("brandId", fd.brand);
-          if (key === "image")
+          // доп.проверка е/и нет ИЗО
+          if (key === "image" && typeof fd.image !== "string")
             formDataArr.append("image", fd?.image, fd?.image?.name);
         }
       });
@@ -414,11 +415,8 @@ const CreateProduct = (props: any) => {
       // );
       // if (props.length) {
       if (propertiesArr) {
-        formData.append("props", JSON.stringify(propertiesArr));
-        // data.push("props", JSON.stringify(props));
+        formDataArr.append("props", JSON.stringify(propertiesArr));
       }
-      // }
-      console.log("SBM formData ", formData);
 
       // отправка/получение data на/с Сервера
       // createProduct(formData)
@@ -574,8 +572,6 @@ const CreateProduct = (props: any) => {
               {/* // ^ ХАРАКТЕРИСТИКИ */}
               <CreateProperties
                 index={index}
-                properties={properties}
-                setProperties={setProperties}
                 propertiesArr={propertiesArr}
                 setPropertiesArr={setPropertiesArr}
               />

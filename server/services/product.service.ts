@@ -201,7 +201,7 @@ class Product {
     let returned: any = {};
 
     // ^ для записи 1го знач.
-    if ((categoryId.length || brandId.length || price.length) < 2) {
+    if ((categoryId.length || brandId.length) < 2) {
       // созд.1го Товара
       const product = await ProductMapping.create({
         name,
@@ -214,8 +214,10 @@ class Product {
       if (data.props) {
         const propsParse = JSON.parse(data.props);
         // получ.всегда первого массива
-        let props = propsParse["0"];
+        let props = propsParse[0];
+        // перебор масс. по эл.
         for (let prop of props) {
+          // данн.из кажд.эл.сохр.по отдельности
           await ProductPropMapping.create({
             name: prop.name,
             value: prop.value,
@@ -231,7 +233,7 @@ class Product {
     }
 
     // ^ для запись Неск-им знач.
-    if (categoryId?.length > 1 || brandId?.length > 1 || price?.length > 1) {
+    if (categoryId?.length > 1 || brandId?.length > 1) {
       // перем.всех разбитых парам.
       const resultAll = [];
 
@@ -276,19 +278,29 @@ class Product {
 
       // е/и есть Хар-ки Товара
       if (data.props) {
-        // преобразуем вход.строку в объ с масс.объ.
+        // преобразуем вход.строку в объ/масс. с масс.объ.
         const propsParse = JSON.parse(data.props);
+        // [
+        //   0: [ { name: '1212', value: 'qw' }, { name: '121212', value: 'qwqw' } ],
+        //   1: [ { name: '9898', value: 'as' } ]
+        // ]
 
         // перебор всех key в Хар-ах
         for (let key of Object.keys(propsParse)) {
-          // получ. позиц., id нов.Товаров по key имеющихся Хар-ик (каждому Товару свои Хар-ки)
-          let productBulkId = productBulk[key].id;
-          // перем. массив значение определённого key
-          let value = propsParse[key];
+          // Object.keys(propsParse) - ['0', '1'] | key - 0 затем 1
 
-          // перебор объ.в опред.масс.значении
+          // получ.позиц.id нов.Товаров по key имеющихся Хар-ик (каждому Товару свои Хар-ки)
+          let productBulkId = productBulk[key].id;
+          // 304 затем 305
+
+          // перем. масс.значений определённого key
+          let value = propsParse[key];
+          // [ { name: '1212', value: 'qw' }, { name: '121212', value: 'qwqw' } ]
+
+          // перебор объ.в опред.масс.значений
           for (let prop of value) {
-            // запись каждого объ.
+            // prop - { name: '1212', value: 'qw' } затем { name: '121212', value: 'qwqw' }
+            // запись данн.каждого объ.по отдельности
             await ProductPropMapping.create({
               name: prop.name,
               value: prop.value,

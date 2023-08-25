@@ -3,8 +3,7 @@ import { Fragment, useState } from "react";
 import { Row, Col, Button, Form } from "react-bootstrap";
 
 const CreateProperties = (props: any) => {
-  const { index, properties, setProperties, propertiesArr, setPropertiesArr } =
-    props;
+  const { index, propertiesArr, setPropertiesArr } = props;
 
   // шаблон Характеристик Товаров
   let templateProp = { name: "", value: "" };
@@ -116,7 +115,7 @@ const CreateProperties = (props: any) => {
     }
 
     // запись в state
-    setProperties(dataProps);
+    setPropertiesArr(dataProps);
   };
 
   // перем.с полями Параметров Формы (Назв.,Категории,Бренда,Цены,Изо,Хар-ик)
