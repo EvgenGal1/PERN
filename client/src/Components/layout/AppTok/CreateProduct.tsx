@@ -223,14 +223,16 @@ const CreateProduct = (props: any) => {
     event.preventDefault();
     console.log("ARR DEL event ", event);
 
-    // перем. id блока нумерованная
-    let idParentPropsNum = Number(event.target.parentElement.id);
+    // перем. id блока ФормДаты
+    let idParentPropsNum = Number(
+      event.target.parentElement.parentElement.parentElement.id
+    );
 
     // ^ Товар. Удал.эл.м/у эл-ми масс.(копир данные до и после indexa(idParentPropsNum))
     setValueBulkArr((existingItems: any) => {
       // для 0 indexa
       if (idParentPropsNum === 0) {
-        return existingItems.slice(1);
+        return [...existingItems.slice(1)];
       }
       // для всех остальных index
       else {
@@ -251,7 +253,7 @@ const CreateProduct = (props: any) => {
     setPropertiesArr((existingItems: any) => {
       // для 0 indexa
       if (idParentPropsNum === 0) {
-        return existingItems.slice(1);
+        return existingItems.slice(1); // ! existingItems.slice is not a function
       }
       // для всех остальных index
       else {
@@ -260,12 +262,6 @@ const CreateProduct = (props: any) => {
           ...existingItems.slice(idParentPropsNum + 1),
         ];
       }
-      // аналогично
-      // return existingItems.reduce(
-      //   (prev: string | any[], x: any, i: number) =>
-      //     prev.concat(i === idParentPropsNum ? [] : x),
-      //   []
-      // );
     });
   };
 
@@ -274,53 +270,100 @@ const CreateProduct = (props: any) => {
     event.preventDefault();
     // запись доп.ФормДаты из state в перем.
     console.log("INPT event ", event);
-    let dataArr = [...valueBulkArr];
+    let dataProduct = [...valueBulkArr];
 
     // перем. Имени и Значения поля формы
     let nameForm = event.target.name;
     let valueForm = event.target.value;
 
-    // перем./расчёт id блока события на разной вложенности
-    let numId: number = 0;
-    let idParentProps = event.target.parentElement.id;
-    let idParentPropsNest =
-      event.target.parentElement.parentElement.parentElement.id;
-    if (nameForm === "name") {
-      numId = Number(idParentProps);
-    } else {
-      numId = Number(idParentPropsNest);
-    }
+    // перем.id блока события
+    let idParentPropsNum = Number(
+      event.target.parentElement.parentElement.parentElement.id
+    );
 
     // выбор.в масс. объ.по id блока
-    let idDaraArr = dataArr[numId];
+    let idDataProduct = dataProduct[idParentPropsNum];
     // реребор объ.по key
-    for (const key in idDaraArr) {
+    for (const key in idDataProduct) {
       // запись е/и key = name, кроме image
       if (key === nameForm && nameForm !== "image") {
-        idDaraArr[key] = valueForm;
+        idDataProduct[key] = valueForm;
       }
       // запись е/и key = image
       if (key === nameForm && nameForm === "image") {
-        idDaraArr[key] = event.target.files[0];
+        idDataProduct[key] = event.target.files[0];
       }
     }
 
     // ^ обнов.сразу state (копир до и после indx и вставляя нов.объ. между)
     setValueBulkArr((existingItems: any) => {
       return [
-        ...existingItems.slice(0, numId),
-        // {
-        //   ...existingItems[idParentProps],
-        //   nameForm: existingItems[idParentProps].valueForm,
-        // },
-        //
-        idDaraArr,
-        ...existingItems.slice(numId + 1),
+        ...existingItems.slice(0, idParentPropsNum),
+        idDataProduct,
+        ...existingItems.slice(idParentPropsNum + 1),
       ];
-      // аналогично
-      //   return existingItems.map((item) => {
-      //     return item.id === currentId ? { ...item, score: item.score + 1 } : item;
-      //   });
+    });
+  };
+
+  // ^ КОПИРОВАНИЕ
+  const handlerCloneBulkValue = (event: any) => {
+    event.preventDefault();
+    // запись доп.ФормДаты из state в перем.
+    console.log("CLONE event ", event);
+    let dataProduct = [...valueBulkArr];
+    let dataProps = [...propertiesArr];
+
+    // перем.id блока события
+    let idParentPropsNum = Number(
+      event.target.parentElement.parentElement.parentElement.id
+    );
+    console.log("idParentPropsNum ", idParentPropsNum);
+
+    // выбор.в statах объ.Товара/масс.Хар-ик по id блока ФормДаты
+    let idDataProduct = dataProduct[idParentPropsNum];
+    let idDataProps = dataProps[idParentPropsNum];
+    console.log("idDataProduct ", idDataProduct);
+    console.log("idDataProps ", idDataProps);
+
+    // клоны Товара/Хар-ик
+    console.log("idDataProduct.name ", idDataProduct.name);
+    let cloneProduct = idDataProduct;
+    // cloneProduct.map((items: any) => {
+    //   console.log("items ", items);
+    //   console.log("items.name ", items.name);
+    // });
+
+    for (const key in cloneProduct) {
+      console.log("key ", key);
+      if (key === "name" || key === "image") {
+        console.log("cloneProduct[key] ", cloneProduct[key]);
+        console.log(
+          "cloneProduct[key][idParentPropsNum]  ",
+          cloneProduct[key][idParentPropsNum]
+        );
+        //  cloneProduct[key][idParentPropsNum]  = "";
+        cloneProduct[key] = "";
+      }
+    }
+
+    let cloneProps = idDataProps.slice();
+    console.log("cloneProduct -=- cloneProps ", cloneProduct, cloneProps);
+
+    setValueBulkArr((existingItems: any) => {
+      return [
+        ...existingItems.slice(0, idParentPropsNum),
+        idDataProduct,
+        cloneProduct,
+        ...existingItems.slice(idParentPropsNum + 1),
+      ];
+    });
+    setPropertiesArr((existingItems: any) => {
+      return [
+        ...existingItems.slice(0, idParentPropsNum),
+        idDataProps,
+        cloneProps,
+        ...existingItems.slice(idParentPropsNum + 1),
+      ];
     });
   };
 
@@ -449,7 +492,9 @@ const CreateProduct = (props: any) => {
       className="modal--eg-bootstr"
     >
       <Modal.Header closeButton style={{ padding: "5px" }}>
-        <Modal.Title style={{ position: "relative" }}>Новый товар</Modal.Title>
+        <Modal.Title style={{ position: "relative" }}>
+          {valueBulkArr.length > 1 ? <>Новые товары</> : <>Новый товар</>}
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -457,7 +502,7 @@ const CreateProduct = (props: any) => {
           noValidate
           onSubmit={handleSubmit}
           // ! врем.стиль для расшир.отражения
-          // style={{ minWidth: "800px" }}
+          style={{ minWidth: "800px", border: "none", padding: "0" }}
         >
           {/* ФормДата для загр.1го Товара */}
           {/* <div id="0">{FormsParam}</div> */}
@@ -489,19 +534,32 @@ const CreateProduct = (props: any) => {
             //   {FormsParam}
             // </div>
             // напрямую // * state чётко, render чётко
-            <div key={index} id={index}>
+            <div
+              key={index}
+              id={index}
+              style={{
+                padding: "1rem",
+                marginBottom: "1rem",
+                borderRadius: "10px",
+                border: "2px solid #490005",
+              }}
+            >
               {/* Название */}
-              <Form.Control
-                name="name"
-                value={product.name}
-                onChange={(e) => {
-                  handlerChangeBulkValue(e);
-                }}
-                isValid={valid.name === true}
-                isInvalid={valid.name === false}
-                placeholder="Название товара..."
-                className="mb-3"
-              />
+              <Row>
+                <Col>
+                  <Form.Control
+                    name="name"
+                    value={product.name}
+                    onChange={(e) => {
+                      handlerChangeBulkValue(e);
+                    }}
+                    isValid={valid.name === true}
+                    isInvalid={valid.name === false}
+                    placeholder="Название товара..."
+                    className="mb-3"
+                  />
+                </Col>
+              </Row>
               {/* Категория/Бренд */}
               <Row className="mb-3">
                 <Col>
@@ -575,35 +633,59 @@ const CreateProduct = (props: any) => {
                 propertiesArr={propertiesArr}
                 setPropertiesArr={setPropertiesArr}
               />
-              {/* // ^ кнп. УДАЛЕНИЯ */}
-              {valueBulkArr.length > 1 && (
-                <Button
-                  // type="submit"
-                  size="sm"
-                  variant="danger"
-                  className="btn-danger--eg"
-                  style={{ width: "100%" }}
-                  onClick={(e) => {
-                    handlerDeleteBulkValue(e);
-                    // setValueBulkArr((existingItems: any) => {
-                    //   return [
-                    //     ...existingItems.slice(0, index),
-                    //     ...existingItems.slice(index + 1),
-                    //   ];
-                    // });
-                  }}
+              {/* // ^ кнп. УДАЛЕНИЯ | КОПИРОВАНИЯ */}
+              {(valueBulkArr.length > 1 ||
+                product.category ||
+                product.brand) && (
+                <Row
+                  className="mt-3"
+                  style={{ marginBottom: "0rem !important" }}
                 >
-                  Убрать Товар
-                </Button>
+                  {/* е/и Товаров больше 1го */}
+                  {valueBulkArr.length > 1 && (
+                    <Col>
+                      <Button
+                        // type="submit"
+                        size="sm"
+                        variant="danger"
+                        className="btn-danger--eg"
+                        style={{ width: "100%" }}
+                        onClick={(e) => {
+                          handlerDeleteBulkValue(e);
+                          // setValueBulkArr((existingItems: any) => {
+                          //   return [
+                          //     ...existingItems.slice(0, index),
+                          //     ...existingItems.slice(index + 1),
+                          //   ];
+                          // });
+                        }}
+                      >
+                        Убрать Товар
+                      </Button>
+                    </Col>
+                  )}
+                  {
+                    // е/и в Товары есть значения то можно копир блок
+                    // (product.category.length || product.brand.length) && (
+                    (product.category || product.brand) && (
+                      <Col>
+                        <Button
+                          // type="submit"
+                          size="sm"
+                          variant="primary"
+                          className="btn-primary--eg"
+                          style={{ width: "100%" }}
+                          onClick={(e) => {
+                            handlerCloneBulkValue(e);
+                          }}
+                        >
+                          Копировать Товар
+                        </Button>
+                      </Col>
+                    )
+                  }
+                </Row>
               )}
-              <hr
-                style={{
-                  margin: "2rem 0",
-                  order: "1px solid",
-                  opacity: "1",
-                  color: "var(--bord-hr)",
-                }}
-              />
             </div>
           ))}
           <div className="mt-2" style={{ display: "block" }}>
@@ -643,6 +725,7 @@ const CreateProduct = (props: any) => {
                 order: "1px solid",
                 opacity: "1",
                 color: "var(--bord-hr)",
+                borderTop: "2px solid",
               }}
             />
             {/* кнп.Сохранить */}

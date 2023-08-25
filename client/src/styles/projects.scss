@@ -444,6 +444,9 @@ img.card-img-top {
     // для доп.ФормДаты добав.Товара
     top: 0% !important;
     transform: translate(-50%, 0%) !important;
+    // ! врем.стиль для расшир.отражения
+    // width: 100%;
+    max-width: 100%;
   }
   .modal-content {
     background-color: var(--ui-bg);

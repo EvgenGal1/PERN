@@ -71,7 +71,7 @@ const CreateProperties = (props: any) => {
   // ^ Изменение
   const change = (event: any) => {
     // перем. state, и Хар-ик id, id Родителя, name и value
-    let dataProps = { ...propertiesArr };
+    let dataProps = [...propertiesArr];
     let idProps = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
@@ -99,7 +99,7 @@ const CreateProperties = (props: any) => {
   // ^ Удаление
   const remove = (event: any) => {
     // перем. state и id Хар-ки id, id Родителя, масс.Хар-ик одного Родителя
-    let dataProps = { ...propertiesArr };
+    let dataProps = [...propertiesArr];
     let idProps = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
@@ -233,10 +233,10 @@ const CreateProperties = (props: any) => {
                 }}
                 size="sm"
                 variant="outline-danger"
-                className="btn-primary--eg danger"
+                className="btn-danger--eg"
                 style={{ width: "100%" }}
               >
-                Удалить
+                Удалить Хар-ку
               </Button>
             </Col>
           </Row>
