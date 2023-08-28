@@ -308,8 +308,7 @@ const CreateProduct = (props: any) => {
   // ^ КОПИРОВАНИЕ
   const handlerCloneBulkValue = (event: any) => {
     event.preventDefault();
-    // запись доп.ФормДаты из state в перем.
-    console.log("CLONE event ", event);
+    // запись данн.ФормДат из state в перем.
     let dataProduct = [...valueBulkArr];
     let dataProps = [...propertiesArr];
 
@@ -317,54 +316,41 @@ const CreateProduct = (props: any) => {
     let idParentPropsNum = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
-    console.log("idParentPropsNum ", idParentPropsNum);
 
     // выбор.в statах объ.Товара/масс.Хар-ик по id блока ФормДаты
     let idDataProduct = dataProduct[idParentPropsNum];
     let idDataProps = dataProps[idParentPropsNum];
-    console.log("idDataProduct ", idDataProduct);
-    console.log("idDataProps ", idDataProps);
 
     // клоны Товара/Хар-ик
-    console.log("idDataProduct.name ", idDataProduct.name);
-    let cloneProduct = idDataProduct;
-    // cloneProduct.map((items: any) => {
-    //   console.log("items ", items);
-    //   console.log("items.name ", items.name);
-    // });
+    const cloneProduct = Object.assign({}, idDataProduct); // альтерн. { ...idDataProduct } | JSON.parse(JSON.stringify(idDataProduct))
+    const cloneProps = JSON.parse(JSON.stringify(idDataProps)); // slice() | [...spread] копир.по ссылке т.к. в масс.объ (не подходят - измен.оба эл.)
 
+    // убир.Имя и Изо из копии Товара для уник.знач.
     for (const key in cloneProduct) {
-      console.log("key ", key);
-      if (key === "name" || key === "image") {
-        console.log("cloneProduct[key] ", cloneProduct[key]);
-        console.log(
-          "cloneProduct[key][idParentPropsNum]  ",
-          cloneProduct[key][idParentPropsNum]
-        );
-        //  cloneProduct[key][idParentPropsNum]  = "";
-        cloneProduct[key] = "";
-      }
+      if (key === "name" || key === "image") cloneProduct[key] = "";
     }
 
-    let cloneProps = idDataProps.slice();
-    console.log("cloneProduct -=- cloneProps ", cloneProduct, cloneProps);
-
-    setValueBulkArr((existingItems: any) => {
-      return [
-        ...existingItems.slice(0, idParentPropsNum),
-        idDataProduct,
-        cloneProduct,
-        ...existingItems.slice(idParentPropsNum + 1),
-      ];
-    });
-    setPropertiesArr((existingItems: any) => {
-      return [
-        ...existingItems.slice(0, idParentPropsNum),
-        idDataProps,
-        cloneProps,
-        ...existingItems.slice(idParentPropsNum + 1),
-      ];
-    });
+    // запись в state после копир.эл.
+    dataProduct.splice(idParentPropsNum + 1, 0, cloneProduct);
+    setValueBulkArr(dataProduct);
+    // setValueBulkArr((existingItems: any) => {
+    //   return [
+    //     ...existingItems.slice(0, idParentPropsNum),
+    //     idDataProduct,
+    //     cloneProduct,
+    //     ...existingItems.slice(idParentPropsNum + 1),
+    //   ];
+    // });
+    dataProps.splice(idParentPropsNum + 1, 0, cloneProps);
+    setPropertiesArr(dataProps);
+    // setPropertiesArr((existingItems: any) => {
+    //   return [
+    //     ...existingItems.slice(0, idParentPropsNum),
+    //     idDataProps,
+    //     cloneProps,
+    //     ...existingItems.slice(idParentPropsNum + 1),
+    //   ];
+    // });
   };
 
   // ^ кнп.Сохранить(отправка/получ.данн.Сервера)
@@ -665,9 +651,10 @@ const CreateProduct = (props: any) => {
                     </Col>
                   )}
                   {
-                    // е/и в Товары есть значения то можно копир блок
-                    // (product.category.length || product.brand.length) && (
+                    // е/и в Товаре есть значения то можно копир блок
                     (product.category || product.brand) && (
+                      /* || propertiesArr[index][0]["name"] || propertiesArr[index][0]["value"] // ! не раб. чёт не отрабатывает  */
+                      //
                       <Col>
                         <Button
                           // type="submit"
