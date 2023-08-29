@@ -37,25 +37,6 @@ const ProductItem = ({ data }: any) => {
         setVotes(data.votes);
         catalog.rating = data.ratingAll;
       });
-
-      // ^ менять Рейтинг ч/з UpdProd (нет доступов для role USER)
-      // * Обощёл доступ для USER в БД
-      // const correct = isValid(rating);
-      // if (correct.rating) {
-      //   const prod = {
-      //     name: data.name,
-      //     price: data.price.toString(),
-      //     rating: rating.toString(),
-      //     category: data.categoryId.toString(),
-      //     brand: data.brandId.toString(),
-      //   };
-      //   updateProduct(data.id, prod)
-      //     .then((data) => {
-      //       console.log("UPDprod data ", data);
-      //       setNuberStar(data.rating);
-      //     })
-      //     .catch((error) => alert(error.response.data.message));
-      // }
     }
   };
 
@@ -180,7 +161,14 @@ const ProductItem = ({ data }: any) => {
       lg={4}
       sm={6}
       // ! врем.откл. переход в Карточку для указ.Рейтинга
-      onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
+      // onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`,{data.id})}
+      onClick={() =>
+        navigate(
+          PRODUCT_ROUTE + `/${data.id}`
+          // передача props в Комп ч/з navigate/useNavigate/react-router-dom
+          // , { state: {userId: data.id,},}
+        )
+      }
     >
       <Card style={{ cursor: "pointer" }} className="mt-3 card--eg">
         {data.image ? (

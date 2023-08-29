@@ -21,7 +21,12 @@ import { append } from "../../../../http/Tok/basketAPI_Tok";
 import { StarFill } from "../../../layout/AppTok/StarFill";
 import { StarOutline } from "../../../layout/AppTok/StarOutline";
 
-const Product = () => {
+const Product = (/* props: any */) => {
+  // е/и есть передача props ч/з navigate/useNavigate/react-router-dom
+  // const location = useLocation();
+  // const locationState = location.state as { userId?: number };
+  // let userId = locationState.userId // || location.state.userId;
+
   // эффект нажатия кнопки
   const [isPressed, setIsPressed] = useState(false);
   const styles = {
@@ -39,16 +44,17 @@ const Product = () => {
     setIsPressed(false);
   };
 
+  // id Товара, Context, state Товара
   const { id }: any = useParams();
   const { basket, catalog, user }: any = useContext(AppContext);
   const [product, setProduct]: any = useState(null);
-  // const [rating, setRating]: any = useState(0);
 
   // сост.Рейтинга, наведения на него, кол-во головов из БД
   const [numberStar, setNuberStar] = useState(0);
   const [hoverStar, setHoverStar] = useState(0);
   const [votes, setVotes] = useState(0);
 
+  // изнач.загр.Товара/Хар-ик + Рейтинг/Голоса
   useEffect(() => {
     fetchOneProduct(id).then((data: any) => {
       console.log("Prod prod data ", data);
@@ -75,7 +81,7 @@ const Product = () => {
     }
   };
 
-  // На странице товара добавим обработчик клика по кнопке «Добавить в корзину»:
+  // обраб.клк по кнп. «Добавить в корзину»:
   const handleClick = (productId: any) => {
     append(productId).then((data: any) => {
       basket.products = data.products;
@@ -87,6 +93,10 @@ const Product = () => {
   }
 
   return (
+    // {/* можно из Contexta подтянуть нужный эл.по id из useParams ч/з filter, но там нет Хар-ик */}
+    // {catalog.products
+    //   .filter((product: any) => { return product.id === parseFloat(id); })
+    //   .map((product: any) => { return (
     <Container>
       <Row className="mt-3 mb-3">
         <Col lg={4}>
@@ -180,6 +190,7 @@ const Product = () => {
           </Button>
         </Col>
       </Row>
+      {/* Характеристики */}
       {!!product.props.length && (
         <Row>
           <Col>
@@ -198,6 +209,7 @@ const Product = () => {
         </Row>
       )}
     </Container>
+    // );})}
   );
 };
 
