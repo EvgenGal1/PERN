@@ -8,16 +8,9 @@ import {
   createProdRating,
 } from "../../../../http/Tok/catalogAPI_Tok";
 import { PRODUCT_ROUTE } from "../../../../utils/consts";
-
 // Звезд.Комп.Рейтинга. Пуст./Полн.
-const OutlineStar = () => {
-  const OutlineStar = <span>☆</span>;
-  return OutlineStar;
-};
-const FillStar = () => {
-  const FillStar = <span>★</span>;
-  return FillStar;
-};
+import { StarFill } from "../../../layout/AppTok/StarFill";
+import { StarOutline } from "../../../layout/AppTok/StarOutline";
 
 const ProductItem = ({ data }: any) => {
   const { catalog, user }: any = useContext(AppContext);
@@ -31,7 +24,7 @@ const ProductItem = ({ data }: any) => {
   // загр.Рейтинга из БД для голосов
   useEffect(() => {
     fetchProdRating(data.id).then((data: any) => {
-      // console.log("ProdItm data ", data);
+      // console.log("ProdItm FTH data ", data);
       setVotes(data.votes);
     });
   });
@@ -39,6 +32,7 @@ const ProductItem = ({ data }: any) => {
   const handleSubmit = async (rating: number) => {
     if (user.isAuth) {
       await createProdRating(user.id, data.id, rating).then((data) => {
+        // console.log("ProdItm CRE data ", data);
         setNuberStar(data.ratingAll);
         setVotes(data.votes);
         catalog.rating = data.ratingAll;
@@ -153,9 +147,9 @@ const ProductItem = ({ data }: any) => {
       priceLet = priceLet.slice(0, -6);
       // разбив.на массив
       priceLet = priceLet.split("");
-      // с инд.1, удал.0, добав.запятую(,)
+      // с инд.1, удал.0, добав.точку(,)
       priceLet.splice(1, 0, ".");
-      // запись в цену скидки
+      // запись в цену скидки(собир.в строку, превращ.в цифру)
       priceLetDiscount = priceLet.join("");
       priceLetDiscount = parseFloat(priceLetDiscount);
       // превращ.в строку вставл.в конце " B"
@@ -185,8 +179,8 @@ const ProductItem = ({ data }: any) => {
       md={3}
       lg={4}
       sm={6}
-      // ! врем.откл. переход в Карточку
-      // onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
+      // ! врем.откл. переход в Карточку для указ.Рейтинга
+      onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
     >
       <Card style={{ cursor: "pointer" }} className="mt-3 card--eg">
         {data.image ? (
@@ -208,7 +202,12 @@ const ProductItem = ({ data }: any) => {
                 opacity: "0.5",
               }}
             >
-              {priceLet}
+              {/* е/и цена < 100 лимонов то разбиваем по 3 числа */}
+              {data.price < 100000000 ? (
+                <>{parseFloat(priceLet).toLocaleString()}</>
+              ) : (
+                <>{priceLet}</>
+              )}
             </span>
             <span
               style={{
@@ -218,10 +217,21 @@ const ProductItem = ({ data }: any) => {
                 marginLeft: "10px",
               }}
             >
-              {data.price < 1000000 ? (
-                Math.round(data.price * 1.35)
+              {data.price > 1000000 ? (
+                <>
+                  {data.price < 1000000000 ? (
+                    // е/и > 1 лимона но < 1 билиона, берём.сокращ.скидочную цену, умнож.на процент и на 100, округляем до запятой, делим на 100, подставляем М
+                    <>
+                      {Math.round((priceLetDiscount * 1.35 * 100) / 100) + " M"}
+                    </>
+                  ) : (
+                    // е/и > 1 билиона, берём.сокращ.скидочную цену, умнож.на процент и оставляем 3 знака после запятой, подставляем B
+                    <>{(priceLetDiscount * 1.45).toFixed(3) + " B"}</>
+                  )}
+                </>
               ) : (
-                <>{priceLetDiscount * 1.5}</>
+                // превращ.в цифру, умнож.на процент, разбиваем по 3 числа - 1 234 567
+                <>{(parseFloat(priceLet) * 1.6).toLocaleString()}</>
               )}
             </span>
           </div>
@@ -251,7 +261,7 @@ const ProductItem = ({ data }: any) => {
                       }}
                       key={index}
                     >
-                      <FillStar />
+                      <StarFill />
                     </span>
                   ) : (
                     <span
@@ -266,7 +276,7 @@ const ProductItem = ({ data }: any) => {
                       }}
                       key={index}
                     >
-                      <OutlineStar />
+                      <StarOutline />
                     </span>
                   )
                 )}

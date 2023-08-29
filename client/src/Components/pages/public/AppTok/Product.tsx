@@ -10,12 +10,16 @@ import {
   Table,
 } from "react-bootstrap";
 
+import { AppContext } from "../../../layout/AppTok/AppContext";
 import {
+  createProdRating,
   fetchOneProduct,
   fetchProdRating,
 } from "../../../../http/Tok/catalogAPI_Tok";
 import { append } from "../../../../http/Tok/basketAPI_Tok";
-import { AppContext } from "../../../layout/AppTok/AppContext";
+// Звезд.Комп.Рейтинга. Пуст./Полн.
+import { StarFill } from "../../../layout/AppTok/StarFill";
+import { StarOutline } from "../../../layout/AppTok/StarOutline";
 
 const Product = () => {
   // эффект нажатия кнопки
@@ -36,9 +40,14 @@ const Product = () => {
   };
 
   const { id }: any = useParams();
-  const { basket }: any = useContext(AppContext);
+  const { basket, catalog, user }: any = useContext(AppContext);
   const [product, setProduct]: any = useState(null);
-  const [rating, setRating]: any = useState(null);
+  // const [rating, setRating]: any = useState(0);
+
+  // сост.Рейтинга, наведения на него, кол-во головов из БД
+  const [numberStar, setNuberStar] = useState(0);
+  const [hoverStar, setHoverStar] = useState(0);
+  const [votes, setVotes] = useState(0);
 
   useEffect(() => {
     fetchOneProduct(id).then((data: any) => {
@@ -46,10 +55,25 @@ const Product = () => {
       setProduct(data);
     });
     fetchProdRating(id).then((data: any) => {
-      console.log("Prod ratg data ", data);
-      setRating(data);
+      console.log("Prod rating data ", data);
+      // setRating(data);
+      setNuberStar(data.rating);
+      setVotes(data.votes);
     });
   }, [id]);
+
+  // созд. Рейтинга в БД
+  const handleSubmit = async (rating: number) => {
+    if (user.isAuth) {
+      await createProdRating(user.id, product.id, rating).then((data) => {
+        console.log("ProdItm CRE data ", data);
+        // setRating(data);
+        setNuberStar(data.ratingAll);
+        setVotes(data.votes);
+        catalog.rating = data.ratingAll;
+      });
+    }
+  };
 
   // На странице товара добавим обработчик клика по кнопке «Добавить в корзину»:
   const handleClick = (productId: any) => {
@@ -82,17 +106,65 @@ const Product = () => {
         </Col>
         <Col lg={8}>
           <h1>{product.name}</h1>
-          <h3>{product.price}.00 руб.</h3>
+          <h3>
+            {product.price.toLocaleString()}
+            {/* .00 */} руб.
+          </h3>
           <p>Бренд: {product.brand.name}</p>
           <p>Категория: {product.category.name}</p>
           <div>
-            {rating ? (
+            {/* {rating ? (
               <p>
-                Рейтинг: {rating.rating}, голосов {rating.votes}
+                <p>
+                  Рейтинг: {rating.rating}, голосов {rating.votes}
+                </p>
               </p>
             ) : (
               <Spinner animation="border" />
-            )}
+            )} */}
+            <p>
+              Рейтинг: {numberStar} {votes ? <> / {votes}</> : ""} Голосов
+            </p>
+          </div>
+          {/* Звёзды */}
+          <div style={{ display: "flex", marginRight: "10px" }}>
+            {Array(5)
+              .fill(0)
+              .map((_, index) =>
+                numberStar >= index + 1 || hoverStar >= index + 1 ? (
+                  // rating.rating >= index + 1 || hoverStar >= index + 1 ? (
+                  // product.rating >= index + 1 || hoverStar >= index + 1 ? (
+                  <span
+                    onMouseOver={() => setHoverStar(index + 1)}
+                    onMouseLeave={() => setHoverStar(0)}
+                    onClick={() => handleSubmit(index + 1)}
+                    style={{
+                      display: "flex",
+                      fontSize: "25px",
+                      fontWeight: "100",
+                      color: "orange",
+                    }}
+                    key={index}
+                  >
+                    <StarFill />
+                  </span>
+                ) : (
+                  <span
+                    onMouseOver={() => setHoverStar(index + 1)}
+                    onMouseLeave={() => setHoverStar(0)}
+                    onClick={() => handleSubmit(index + 1)}
+                    style={{
+                      display: "flex",
+                      fontSize: "25px",
+                      fontWeight: "100",
+                      color: "orange",
+                    }}
+                    key={index}
+                  >
+                    <StarOutline />
+                  </span>
+                )
+              )}
           </div>
           <Button
             onClick={() => handleClick(product.id)}
@@ -102,7 +174,7 @@ const Product = () => {
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp}
             variant="primary"
-            className="btn-primary--eg"
+            className="btn-primary--eg mt-3"
           >
             Добавить в корзину
           </Button>
