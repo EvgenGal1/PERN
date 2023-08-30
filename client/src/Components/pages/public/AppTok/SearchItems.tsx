@@ -1,28 +1,16 @@
 import { useState, useEffect, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
-import { Form, Card, Col } from "react-bootstrap";
+import { Col, Button } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-// import { PRODUCT_ROUTE } from "../../../../utils/consts";
-import {
-  // updateProduct,
-  // fetchProdRating,
-  // createProdRating,
-  // fetchCategories,
-  // fetchBrands,
-  fetchAllProducts,
-} from "../../../../http/Tok/catalogAPI_Tok";
+import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
 // компоненты
 // import CategoryBar from "./CategoryBar";
 // import BrandBar from "./BrandBar";
 
 let defaultValue: any = { name: [], price: [], category: [], brand: [] };
 
-const SearchItems = ({ show, setShow, children }: any) => {
-  const { catalog }: any = useContext(AppContext);
-  // console.log("catalog ", catalog);
-  // console.log("catalog.category ", catalog.category);
-  // console.log("catalog.categories ", catalog.categories);
+const SearchItems = ({ show, setShow }: any) => {
+  const { catalog } = useContext(AppContext);
 
   // логика по блок.прокрутки body при modal Расшир.Поиске
   let body = document.querySelector("body");
@@ -40,137 +28,37 @@ const SearchItems = ({ show, setShow, children }: any) => {
     event.currentTarget.classList.toggle("choice-param-show");
   };
 
-  // const [products, setProducts] = useState([]);
-  // // console.log("products 0 ", products);
+  const [value, setValue] = useState(defaultValue);
+  console.log("value 000 ", value);
 
-  // // нач.загрузка всего
-  // useEffect(() => {
-  //   // if (products.length === 0) {
-  //   fetchAllProducts(null, null, 1, 10000, "ASC", "name").then((data: any) => {
-  //     console.log("MODAL data ", data);
-  //     setProducts(data.rows);
-  //   });
-  //   // }
-  //   // console.log("products 1 ", products);
-  // }, []);
-
-  // const filteredData = searchAll.filter(({ name, price, rating }: any) => {
-  //   // const filteredData = catalog.products.filter(({ name, price, rating }: any) => {
-  //   if (
-  //     name.toLowerCase().includes(searchInput.toLowerCase()) ||
-  //     String(price).includes(searchInput) ||
-  //     String(rating).includes(searchInput)
-  //   ) {
-  //     return name;
-  //   }
-  // });
-  // catalog.products = filteredData;
-
-  //  ----------------------------------------------------------------------------------
-  // const prob = ["rt", [1, 2], "erfs", [123, "asd"], ["as", "asd", 32]];
-  // let prod2 = { cas: "as", asd: [1, 2, 3], erfs: ["asd", 12, 32] };
-  // console.log("prod2 ", prod2);
-  // console.log("prod2 ++ ", prod2.asd[2]);
-  // console.log("prod2 ", prod2);
-  //  ^ раб код масс в объ. ---------------------------------------------------------------------------
-  // let data: any = {
-  //   // name: "Ankit",
-  //   // age: 24,
-  //   // workingDay: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-  //   cat: ["asd3", "das2", "asd1"],
-  //   cat12: ["asd1"],
-  // };
-  // console.log("data 1 ", data);
-  // for (const key in data) {
-  //   console.log("111 ", 111);
-  //   console.log("key ", key);
-  //   let cat = "cat";
-  //   // data[key]
-  //   if (key === cat) {
-  //     const element2: any = data[key].push(cat);
-  //     console.log("element2 ", element2);
-  //   }
-  //   if (data.hasOwnProperty(key)) {
-  //     const element: any = data[key];
-  //     console.log(key + ": ", element);
-  //     console.log("data[key] ", data[key]);
-  //     // if (data[key] === cat) {
-  //   }
-  // }
-  // console.log("data 2 ", data);
-  //  ^ раб код масс в объ. ---------------------------------------------------------------------------
-  //  ---------------------------------------------------------------------
-  // const [value, setValue] = useState<string[]>([] /* defaultValue */);
-  const [value, setValue] = useState(/* {} */ /* [] */ defaultValue);
-  console.log("value ", value);
-  const handleInputChange = (event: any, id: number, item: any) => {
-    console.log("id ", id);
-    console.log("event ", event);
-    console.log("item ", item);
-    console.log("event.target.checked ", event.target.checked);
-    // console.log("event.target.name ", event.target.name);
-    // console.log("event.target.value ", event.target.value);
-    if (event.target.checked) {
-      // let data: any[] = [];
-      let data = {
-        // const data = [
-        ...value,
-        // [event.target.name]: /* event.target.value */ id,
-        // [item], /* event.target.value */ [].push(id),
-        // item, [id],
-        // item[id],
-        // [item].push(id),
-        // ];
-      };
-      for (const key in data) {
-        // console.log("key ", key);
-        // let cat = "cat";
-        // data[key]
-        // console.log('data[key] ', data[key]);
-        if (key === item) {
-          // data[key]
-          const element2 = data[key].push(id);
-          console.log("element2 ", element2);
-        }
-      }
-      // data.{item}
-      // data: item;
-      setValue(data);
+  function handleInputChange(event: any, id: any) {
+    // перем.state
+    let data = {
+      ...value,
+    };
+    // е/и парам.выбран, в мас.знач.под key из inputa, добавл.id парам.
+    if (event.target.checked) data[event.target.name].push(id);
+    // е/и парам. НЕ выбран, из мас.знач.под key из inputa, отфилтровываем id парам.
+    else {
+      data[event.target.name] = data[event.target.name].filter(
+        (item: any) => item !== id
+      );
     }
-    // setValid(isValid(data));
-  };
+    // запись в state
+    setValue(data);
+  }
 
-  // console.log("value.category ", value.category);
-  // console.log("typeof value.category ", typeof value.category);
   useEffect(() => {
-    // console.log('value.category.join("&") ', value.category.join("&"));
-    // let promez = value.category.join("&");
-    // console.log("promez ", promez);
-    // console.log("typeof promez ", promez.join("&"));
-    // let result = promez.replace(",", "&");
-    // console.log("result ", result);
-    // console.log("0 ", 0);
     if (value.category.length > 0) {
-      console.log("MODAL usEf AND 1 ", 1);
-      console.log("value.category ", value.category);
-      console.log("typeof value.category ", typeof value.category);
-      fetchAllProducts(
-        // value.category.join("&"),
-        value.category,
-        null,
-        1,
-        10000,
-        "ASC",
-        "name"
-      )
-        .then((data: any) => {
-          console.log("MODAL AND data ", data);
+      fetchAllProducts(value.category, null, 1, 10000, "ASC", "name").then(
+        (data: any) => {
+          // console.log("MODAL AND data ", data);
           // setProducts(data);
           catalog.products = data.rows;
           catalog.limit = Math.ceil(data.limit);
-          catalog.count = Math.ceil(data.count / data.limit);
-        })
-        .finally(() => console.log("999 ", 999) /* setProducts(data) */);
+          catalog.count = data.count;
+        }
+      );
     }
   });
 
@@ -209,18 +97,11 @@ const SearchItems = ({ show, setShow, children }: any) => {
               </button>
               <div className="choice-param__prm">
                 {catalog.categories.map((item: any) => (
-                  <label
-                    key={item.id}
-                    //onClick={() => handleClick(item.id)}
-                    // onChange={(e) => handleInputChange(e, item.id, item)}
-                  >
+                  <label key={item.id}>
                     <input
-                      // onChange={(e) => handleInputChange(e, item.id, item)}
-                      onChange={(e) =>
-                        handleInputChange(e, item.id, "category")
-                      }
+                      onChange={(e) => handleInputChange(e, item.id)}
                       type="checkbox"
-                      name={item.name}
+                      name="category"
                       id=""
                     />
                     <div>{item.name}</div>
@@ -305,6 +186,27 @@ const SearchItems = ({ show, setShow, children }: any) => {
               <div className="choice-param__prm">ДОБАВИТЬ_3</div>
             </div>
           </div>
+        </div>
+        <div>
+          <span style={{ marginBottom: "10px" }}>
+            Отражать количество эл. Прописать отд.serv с возвратом просто суммы
+            (подсчёт совпадений) и возврат данн.Товаров/Хар-ик. Для
+            одного/нескольких/смешанных параметров
+          </span>
+          <Col>
+            <Button
+              // type="submit"
+              size="sm"
+              variant="danger"
+              className="btn-danger--eg"
+              style={{ width: "100%" }}
+              onClick={(e) => {
+                // handlerDeleteBulkValue(e);
+              }}
+            >
+              Применить
+            </Button>
+          </Col>
         </div>
       </div>
     </div>

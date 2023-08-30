@@ -47,10 +47,9 @@ const Search = observer(() => {
         catalog.sortOrd,
         catalog.sortField
       ).then((data: any) => {
+        // console.log("SEH IF data ", data);
         setSearchAll(data.rows);
-        // catalog.products = data.rows;
-        // catalog.limit = Math.ceil(data.limit);
-        // catalog.count = Math.ceil(data.count / data.limit);
+        catalog.limit = Math.ceil(catalog.limit);
       });
     } else {
       fetchAllProducts(
@@ -61,9 +60,10 @@ const Search = observer(() => {
         catalog.sortOrd,
         catalog.sortField
       ).then((data: any) => {
+        // console.log("SEH ELSE data ", data);
         catalog.products = data.rows;
         catalog.limit = Math.ceil(data.limit);
-        catalog.count = Math.ceil(data.count / data.limit);
+        catalog.count = data.count;
       });
     }
   };
