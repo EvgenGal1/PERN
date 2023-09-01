@@ -195,31 +195,6 @@ img.card-img-top {
   }
 }
 
-// лист групп Категор.,Бренд
-.list-group--eg {
-  border-radius: 5px;
-  div {
-    color: #111;
-    background-color: var(--ui-bg);
-    border: 1px solid var(--bord-hr);
-    // transition: color 0.5s; // создаёт перескок/смещение при выборе
-    &:first-child {
-      border-top-left-radius: inherit;
-      border-top-right-radius: inherit;
-    }
-    &:last-child {
-      border-bottom-right-radius: inherit;
-      border-bottom-left-radius: inherit;
-    }
-    &.active {
-      font-weight: bold;
-      color: #000;
-      border-color: black;
-      background-color: var(--ui-act-col);
-    }
-  }
-}
-
 // `нумерация страниц`
 .pagination--eg {
   li.page-item {
@@ -421,11 +396,16 @@ img.card-img-top {
   // Параметры
   &__prm {
     label {
-      position: relative;
+      // position: relative;
+      display: flex;
       input {
-        position: absolute;
+        // position: absolute;
         height: 100%;
         left: 0;
+      }
+      div {
+        display: inline-block;
+        margin-left: 15px;
       }
     }
   }
@@ -483,29 +463,67 @@ img.card-img-top {
   right: 0;
 }
 
-// Список группы
+// Список|Лист группы Категор.,Бренд
 .list-group--eg {
-  .list-group-item {
-    // color: #000;
+  display: flex;
+  border: 1px solid var(--bord-hr);
+  // background-color: var(--ui-bg);
+  border-radius: 5px;
+  // transition: color 0.5s; // создаёт перескок/смещение при выборе
+
+  // общие для дочек
+  .list-group-item,
+  .list-group-item--eg {
+    padding: 0.5rem 1rem;
+    color: #222;
     font-weight: 500;
     border: 1px solid var(--bord-hr);
     background-color: var(--act-bg);
+    cursor: pointer;
+    // рамки вертикаль
+    &:first-child {
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+    }
+    &:last-child {
+      border-bottom-right-radius: inherit;
+      border-bottom-left-radius: inherit;
+    }
+    // рамка между дочками
+    &:not(:last-child) {
+      border-bottom-width: 0px;
+    }
+    // рамки горизонталь
+    &.hrz {
+      &:first-child {
+        border-top-right-radius: 0;
+        border-bottom-left-radius: inherit;
+      }
+      &:last-child {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: inherit;
+      }
+      // рамка между дочками
+      &:not(:last-child) {
+        border-right-width: 0px;
+        border-bottom-width: inherit;
+      }
+    }
+    // эффекты
     &:hover {
       color: #000;
       // font-weight: 700;
       background-color: var(--act-bg-hov);
-      // border: 1px solid rgba(253, 237, 13, 0.25);
     }
     &.active {
-      color: var(--ui-act-col);
       // font-weight: bold;
+      color: var(--ui-act-col);
       background-color: var(--act-bg-hov);
-      border: 1px solid rgba(250, 39, 39, 0.25);
-      border: 1px solid #4b0000;
+      // border: 1px solid #4b0000;
     }
-    &:focus {
-      border: 1px solid rgba(253, 237, 13, 0.25);
-    }
+    // &:focus {
+    //   border: 1px solid rgba(253, 237, 13, 0.25);
+    // }
   }
 }
 

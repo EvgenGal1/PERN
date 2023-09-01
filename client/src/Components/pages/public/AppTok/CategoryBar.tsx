@@ -10,6 +10,7 @@ const CategoryBar = observer(() => {
 
   const navigate = useNavigate();
 
+  // перенаправить по маршруту URL по параметру
   const handleClick = (id: number) => {
     if (id === catalog.category) {
       catalog.category = null;
@@ -29,7 +30,7 @@ const CategoryBar = observer(() => {
     // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
     if (catalog.brand || catalog.category) {
       navigate({
-        pathname: "/catalog/list/",
+        pathname: "/catalog/list",
         search: "?" + createSearchParams(params),
       });
     } else {
@@ -40,19 +41,58 @@ const CategoryBar = observer(() => {
     }
   };
 
+  // показ блока с Параметрами
+  const handleClickChoiceParam = (event: any) => {
+    event.currentTarget.classList.toggle("choice-param-show");
+  };
+
   return (
-    <ListGroup className="list-group--eg">
-      {catalog.categories.map((item: any) => (
-        <ListGroup.Item
-          key={item.id}
-          active={item.id === catalog.category}
-          onClick={() => handleClick(item.id)}
-          style={{ cursor: "pointer" }}
-        >
-          {item.name}
-        </ListGroup.Item>
-      ))}
-    </ListGroup>
+    <>
+      {/* <ListGroup className="list-group--eg" style={{ margin: "0 0 15px" }}>
+        {catalog.categories.map((item: any) => (
+          <ListGroup.Item
+            key={item.id}
+            active={item.id === catalog.category}
+            onClick={() => handleClick(item.id)}
+            style={{ cursor: "pointer" }}
+          >
+            {item.name}
+          </ListGroup.Item>
+        ))}
+      </ListGroup> */}
+      <div className="list-group--eg flcol">
+        {catalog.categories.map((item: any) => (
+          <div
+            key={item.id}
+            className={`list-group-item--eg ${
+              item.id === catalog.category ? "active" : ""
+            }`}
+            onClick={() => handleClick(item.id)}
+          >
+            {item.name}
+          </div>
+        ))}
+      </div>
+      {/* Категории */}
+      <div className="choice-param__item" style={{ marginTop: "15px" }}>
+        <button className="choice-param__btn" onClick={handleClickChoiceParam}>
+          Категория
+        </button>
+        <div className="choice-param__prm">
+          {catalog.categories.map((item: any) => (
+            <label key={item.id}>
+              <input
+                // onChange={(e) => handleInputChange(e, item.id)}
+                type="checkbox"
+                name="category"
+                id=""
+              />
+              <div>{item.name}</div>
+            </label>
+          ))}
+        </div>
+      </div>
+    </>
   );
 });
 

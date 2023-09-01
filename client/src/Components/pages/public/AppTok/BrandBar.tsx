@@ -10,6 +10,7 @@ const BrandBar = observer(() => {
 
   const navigate = useNavigate();
 
+  // перенаправить по маршруту URL по параметру
   const handleClick = (id: number) => {
     if (id === catalog.brand) {
       catalog.brand = null;
@@ -29,7 +30,7 @@ const BrandBar = observer(() => {
     // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
     if (catalog.brand || catalog.category) {
       navigate({
-        pathname: "/catalog/list/",
+        pathname: "/catalog/list",
         search: "?" + createSearchParams(params),
       });
     } else {
@@ -41,18 +42,33 @@ const BrandBar = observer(() => {
   };
 
   return (
-    <ListGroup horizontal className="list-group--eg">
-      {catalog.brands.map((item: any) => (
-        <ListGroup.Item
-          key={item.id}
-          active={item.id === catalog.brand}
-          onClick={() => handleClick(item.id)}
-          style={{ cursor: "pointer" }}
-        >
-          {item.name}
-        </ListGroup.Item>
-      ))}
-    </ListGroup>
+    <>
+      {/* <ListGroup horizontal className="list-group--eg">
+        {catalog.brands.map((item: any) => (
+          <ListGroup.Item
+            key={item.id}
+            active={item.id === catalog.brand}
+            onClick={() => handleClick(item.id)}
+            style={{ cursor: "pointer" }}
+          >
+            {item.name}
+          </ListGroup.Item>
+        ))}
+      </ListGroup> */}
+      <div className="list-group--eg flrow">
+        {catalog.brands.map((item: any) => (
+          <div
+            key={item.id}
+            className={`list-group-item--eg hrz ${
+              item.id === catalog.brand ? "active" : ""
+            }`}
+            onClick={() => handleClick(item.id)}
+          >
+            {item.name}
+          </div>
+        ))}
+      </div>
+    </>
   );
 });
 

@@ -164,6 +164,18 @@ span {
   }
 }
 
+// Заполнители Рамки/Заливки ----------------------------------------------------------------------------------
+.bbb_1 {
+  border-radius: 5px;
+  border: 1px solid var(--bord-hr); // --DeepRedBrown: #490005;
+  background-color: var(--ui-bg); // --DeerBrown: #59351f;
+}
+.bbb_2 {
+  border-radius: 5px;
+  border: 1px solid var(--bord-hr); // --DeepRedBrown: #490005;
+  background-color: var(--act-bg); // --WetAsphalt: #505050;
+}
+
 // hr ----------------------------------------------------------------------------------
 hr.hr {
   // display: block;
@@ -263,6 +275,16 @@ code {
       }
     }
   }
+}
+
+// flex направление ----------------------------------------------------------------------------------
+.flrow {
+  display: flex;
+  flex-direction: row;
+}
+.flcol {
+  display: flex;
+  flex-direction: column;
 }
 
 // КНП ----------------------------------------------------------------------------------
