@@ -98,7 +98,7 @@ const Shop = observer(() => {
       catalog.sortField
     )
       .then((data: any) => {
-        // console.log("SHP usEf 000 data ", data);
+        console.log("SHP usEf 000 data ", data);
         catalog.products = data.rows;
         catalog.limit = Math.ceil(data.limit);
         // catalog.count = Math.ceil(data.count / data.limit);
@@ -112,7 +112,12 @@ const Shop = observer(() => {
   useEffect(() => {
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
-    // console.log("SHP usEf 1 searchParams ", searchParams);
+    console.log(
+      "SHP usEf 1 location 000 pathname|search : ",
+      location.pathname,
+      "|",
+      location.search
+    );
 
     if (category || brand || page || limit) {
       // console.log("SHP usEf 1 IF  ", 11);
@@ -134,7 +139,12 @@ const Shop = observer(() => {
       catalog.sortField = catalog.sortField; // null; //"name";
     }
 
-    // console.log("SHP usEf 1 location.search ", location.search);
+    console.log(
+      "SHP usEf 1 location === pathname|search : ",
+      location.pathname,
+      "|",
+      location.search
+    );
     // eslint-disable-next-line
   }, [location.search]);
 
@@ -151,7 +161,7 @@ const Shop = observer(() => {
       catalog.sortField
     )
       .then((data) => {
-        // console.log("SHP usEf 2 data ", data);
+        console.log("SHP usEf 2 data ", data);
         catalog.products = data.rows;
         // catalog.count = Math.ceil(data.count /  data.limit);
         catalog.count = data.count;
@@ -219,18 +229,7 @@ const Shop = observer(() => {
             {/* БРАНДЫ */}
             {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
             {/* INP.ПОИСКА */}
-            {/* <div className="search"> */}
-            {/* <input
-                className="search--eg"
-                placeholder="Поиск..."
-                onChange={(e) => {
-                  searchItems(e.target.value);
-                  // ~ асинхр.usSt не даёт нов.знач. Запись напрямую
-                  setSearchInput(e.target.value);
-                }}
-              /> */}
             <Search />
-            {/* </div> */}
           </div>
           <div>
             {productsFetching ? (

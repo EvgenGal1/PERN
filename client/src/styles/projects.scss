@@ -466,7 +466,7 @@ img.card-img-top {
 // Список|Лист группы Категор.,Бренд
 .list-group--eg {
   display: flex;
-  border: 1px solid var(--bord-hr);
+  // border: 1px solid var(--bord-hr);
   // background-color: var(--ui-bg);
   border-radius: 5px;
   // transition: color 0.5s; // создаёт перескок/смещение при выборе
@@ -507,6 +507,7 @@ img.card-img-top {
       &:not(:last-child) {
         border-right-width: 0px;
         border-bottom-width: inherit;
+        border-bottom-width: 1px;
       }
     }
     // эффекты
