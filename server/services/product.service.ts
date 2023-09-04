@@ -76,33 +76,109 @@ class Product {
       sortOrd,
       sortField,
     } = options;
+    console.log("options : " + options);
+    console.log(options);
+
+    console.log(
+      "categoryId TYPE ARR : " + categoryId,
+      typeof categoryId,
+      Array.isArray(categoryId)
+    );
+    console.log(
+      "brandId TYPE ARR : " + brandId,
+      typeof brandId,
+      Array.isArray(brandId)
+    );
+
+    console.log("categoryId_q : " + categoryId_q);
+    console.log("brandId_q : " + brandId_q);
+
+    if (categoryId?.includes(",")) {
+      console.log("includes categoryId : " + categoryId);
+    }
+    if (brandId?.includes(",")) {
+      console.log("includes brandId : " + brandId);
+      console.log("typeof brandId : " + typeof brandId);
+      console.log("Array.isArray(brandId) : " + Array.isArray(brandId));
+    }
 
     // перем.для уточнения запроса к др.Табл.
     let where: any = {};
     // ^ для сорт по Неск-им знач.
     // ! врем.здесь(под расшир.поиск будет созд.отд.метод)
-    if (categoryId_q != null) {
-      if (categoryId_q?.length > 1) {
-        // whereParam_q = `
-        //
-        // where = `
-        //   where: {
-        //     categoryId: {
-        //       [Op.and]: ${categoryId_q},
-        //     },
-        //   },`;
-        //
-        // where.categoryId = { [Op.and]: categoryId_q };
-        where.categoryId = categoryId_q;
+    // if (categoryId_q != null || brandId_q != null) {
+    if (categoryId?.includes(",") || brandId?.includes(",")) {
+      console.log("999 : " + 999);
+      // if (categoryId_q?.length > 1) {
+      // whereParam_q = `
+      //
+      // where = `
+      //   where: {
+      //     categoryId: {
+      //       [Op.and]: ${categoryId_q},
+      //     },
+      //   },`;
+      //
+      // where.categoryId = { [Op.and]: categoryId_q };
+      // where.categoryId = categoryId_q;
+      // where.categoryId = brandId_q;
+      // }
+
+      const resultAll = [];
+
+      let brandIdAll = brandId?.split(",");
+      console.log("brandIdAll?.length : " + brandIdAll?.length);
+
+      let categoryIdAll = categoryId?.split(",");
+      console.log("categoryIdAll?.length : " + categoryIdAll?.length);
+
+      // цикл по длине какого-либо парам.
+      // ^ для render|state|загрузки на ОБЪЕКТЕ
+      for (var i = 0; i < brandIdAll?.length; i++) {
+        // ^ для render|state|загрузки на МАССИВЕ
+        // for (var i = 0; i < name.length; i++) {
+        // один Товар в переборе
+        const allParam = {
+          // ^ для render|state|загрузки на ОБЪЕКТЕ
+          brandId: brandIdAll[i],
+          // categoryId: categoryIdAll[i],
+
+          // ^ для render|state|загрузки на МАССИВЕ
+          // brandId: brandId[i],
+          // categoryId: categoryId[i],
+        };
+
+        // запись одного Товара в общ.перем.
+        resultAll.push(allParam);
       }
+
+      for (var i = 0; i < categoryIdAll?.length; i++) {
+        const allParam = {
+          categoryId: categoryIdAll[i],
+        };
+        resultAll.push(allParam);
+      }
+      console.log("resultAll : " + resultAll);
+      console.log(resultAll);
+
+      // const productBulk = await ProductMapping.bulkCreate(resultAll);
     }
     // ! врем.здесь(под расшир.поиск будет созд.отд.метод)
     // ^ для сорт по одному знач.
-    if (categoryId_q === null) {
+    // if (categoryId_q === null || brandId_q === null) {
+    if (
+      (typeof categoryId === "string" && !categoryId?.includes(",")) ||
+      (typeof brandId === "string" && !brandId?.includes(","))
+    ) {
+      console.log("123 : " + 123);
+
+      // массовое созд.
       if (categoryId) where.categoryId = categoryId;
       if (brandId) where.brandId = brandId;
     }
 
+    console.log("COUNT where : " + where);
+    console.log(where);
     // Кол-во эл. `Найдите и посчитайте все`
     let countAll = await ProductMapping.findAndCountAll({
       where,
@@ -140,6 +216,8 @@ class Product {
     // защита от минусового результата
     if (offset < 0) offset = 0;
 
+    console.log("ALL where : " + where);
+    console.log(where);
     // console.log("sortFieldVotes 111 : " + sortFieldVotes);
     // console.log("where : " + where);
     // console.log(where);

@@ -15,13 +15,20 @@ import ProductPropController from "../controllers/productProp.controller";
 // ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
 // список товаров выбранной категории и выбранного бренда
 router.get(
-  "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
+  // "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
+  // запрос под неск.парам.ч/з запятую
+  "/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)",
   ProductController.getAll
 );
 // список товаров выбранной категории
-router.get("/getall/categoryId/:categoryId([0-9]+)", ProductController.getAll);
+// router.get("/getall/categoryId/:categoryId([0-9]+)", ProductController.getAll);
+router.get(
+  "/getall/categoryId/:categoryId(,?[0-9]+*)",
+  ProductController.getAll
+);
 // список товаров выбранного бренда
-router.get("/getall/brandId/:brandId([0-9]+)", ProductController.getAll);
+// router.get("/getall/brandId/:brandId([0-9]+)", ProductController.getAll);
+router.get("/getall/brandId/:brandId(,?[0-9]+*)", ProductController.getAll);
 
 // ^ Стандартные
 // список всех товаров каталога
