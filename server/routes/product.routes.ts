@@ -16,19 +16,42 @@ import ProductPropController from "../controllers/productProp.controller";
 // список товаров выбранной категории и выбранного бренда
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
-  // запрос под неск.парам.ч/з запятую
+  // ~ варианты
+  // [0-9]+(,[0-9]+)+
+  // ^\d+(,\d+)*$   d - цифра, но не везде поддерживается
+  // ^[0-9]+(,[0-9]+)*$
+  // /^(?:\d\,?)+$/ после цифры запятой может и небыть
+  // /^(?:\d+\,)+\d?$/  Если через запятую будут указаны большие числа (132,564,234324):
+  // /^(?:\d\,)+\d?$/  Если нужно искать без запятой в конце:
+  //
+  //
+  // ~ проверки
+  // ^ проверка brandId
+  // [0-9]+(,[0-9]+)+  -  req.params : {'0':',5', categoryId: '3', brandId: '1,5' }
+  // [0-9]+(,[0-9]+))  -  аналог
+  // [0-9]+.)  -  только {categoryId: '3'}
+  // /d+/g   - ничего
+  // [0-9],[0-9]+  -  // ~ {categoryId:'3',brandId:'1,5'}, НО не раб. с еденичным знач
+  // [0-9].[0-9]+  - ничего
+  // [0-9]+ и [0-9]+.  - ничего
+  // [0-9]+,?[0-9]+? и [0-9]+,?  // ~ {categoryId:'3',brandId:'1,5'}, НО не раб. с еденичным знач
+  // [0-9]+,?[0-9]+?  -  только {categoryId: '3'}
+  // ^ запрос под неск.парам.ч/з запятую
   "/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)",
   ProductController.getAll
 );
 // список товаров выбранной категории
-// router.get("/getall/categoryId/:categoryId([0-9]+)", ProductController.getAll);
 router.get(
+  // "/getall/categoryId/:categoryId([0-9]+)",
   "/getall/categoryId/:categoryId(,?[0-9]+*)",
   ProductController.getAll
 );
 // список товаров выбранного бренда
-// router.get("/getall/brandId/:brandId([0-9]+)", ProductController.getAll);
-router.get("/getall/brandId/:brandId(,?[0-9]+*)", ProductController.getAll);
+router.get(
+  // "/getall/brandId/:brandId([0-9]+)",
+  "/getall/brandId/:brandId(,?[0-9]+*)",
+  ProductController.getAll
+);
 
 // ^ Стандартные
 // список всех товаров каталога
