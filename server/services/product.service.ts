@@ -81,14 +81,14 @@ class Product {
     // перем.для уточнения запроса к др.Табл.
     let where: any = {};
 
-    // ^ определение/запись кол-ва значений (if - мн. if else - одно)
+    // ^ определение/запись кол-ва значений ч/з разделитель(_) (if - мн. if else - одно)
     // Категории
-    if (categoryId?.includes(",")) where.categoryId = categoryId.split(",");
-    else if (categoryId && !categoryId?.includes(","))
+    if (categoryId?.includes("_")) where.categoryId = categoryId.split("_");
+    else if (categoryId && !categoryId?.includes("_"))
       where.categoryId = categoryId;
     // Бренд
-    if (brandId?.includes(",")) where.brandId = brandId.split(",");
-    else if (brandId && !brandId?.includes(",")) where.brandId = brandId;
+    if (brandId?.includes("_")) where.brandId = brandId.split("_");
+    else if (brandId && !brandId?.includes("_")) where.brandId = brandId;
 
     // Кол-во эл. `Найдите и посчитайте все`
     let countAll = await ProductMapping.findAndCountAll({
