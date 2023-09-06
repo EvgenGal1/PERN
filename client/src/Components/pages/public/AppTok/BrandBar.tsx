@@ -12,11 +12,25 @@ const BrandBar = observer(() => {
 
   // перенаправить по маршруту URL по параметру
   const handleClick = (id: number) => {
-    if (id === catalog.brand) {
-      catalog.brand = null;
-    } else {
-      catalog.brand = id;
-    }
+    // ^ стар.логика (е/и brand = id то перевод в null, иначе id)
+    // if (id === catalog.brand) {
+    //   catalog.brand = null;
+    // } else {
+    //   catalog.brand = id;
+    // }
+
+    // ^ нов.логика (проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения)
+    if (catalog.brand !== null)
+      if (!String(catalog.brand).includes("_"))
+        if (id === Number(catalog.brand)) catalog.brand = null;
+        else catalog.brand = catalog.brand + "_" + id;
+      else if (catalog.brand.includes(String(id)))
+        if (catalog.brand.match(`(?<=_)${id}`))
+          catalog.brand = catalog.brand.replace("_" + id, "");
+        else catalog.brand = catalog.brand.replace(id + "_", "");
+      else catalog.brand = catalog.brand + "_" + id;
+    else catalog.brand = id;
+
     // при каждом клике добавляем в историю браузера новый элемент
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
@@ -39,6 +53,11 @@ const BrandBar = observer(() => {
         search: "?" + createSearchParams(params),
       });
     }
+  };
+
+  // показ блока с Параметрами
+  const handleClickChoiceParam = (event: any) => {
+    event.currentTarget.classList.toggle("choice-param-show");
   };
 
   return (
@@ -64,9 +83,27 @@ const BrandBar = observer(() => {
             }`}
             onClick={() => handleClick(item.id)}
           >
-            {item.name}
+            {item.name} - {item.id}
           </div>
         ))}
+      </div>
+      <div className="choice-param__item" style={{ marginTop: "0px" }}>
+        <button className="choice-param__btn" onClick={handleClickChoiceParam}>
+          Бренды
+        </button>
+        <div className="choice-param__prm">
+          {catalog.brands.map((item: any) => (
+            <label key={item.id}>
+              <input
+                onClick={() => handleClick(item.id)}
+                type="checkbox"
+                name="category"
+                id=""
+              />
+              <div>{item.name}</div>
+            </label>
+          ))}
+        </div>
       </div>
     </>
   );

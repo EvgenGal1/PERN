@@ -12,11 +12,64 @@ const CategoryBar = observer(() => {
 
   // перенаправить по маршруту URL по параметру
   const handleClick = (id: number) => {
-    if (id === catalog.category) {
-      catalog.category = null;
-    } else {
+    // ^ стар.логика (е/и category = id то перевод в null, иначе id)
+    // if (id === catalog.category) {
+    //   catalog.category = null;
+    // } else {
+    //   catalog.category = id;
+    // }
+
+    // ^ нов.логика (проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения)
+    // е/и в category что-то есть
+    if (catalog.category !== null) {
+      // е/и нет разделителя (_) значений
+      if (!String(catalog.category).includes("_")) {
+        // е/и category = id, то перевод в null
+        if (id === Number(catalog.category)) {
+          catalog.category = null;
+        }
+        // е/и category не = id, то ч/з разделитель добавляем
+        else {
+          catalog.category = catalog.category + "_" + id;
+        }
+      }
+      // е/и в строке есть разделитель (_) значений
+      else {
+        // е/и в строке есть id
+        if (catalog.category.includes(String(id))) {
+          // ^ Позитив.ретроспективная проверка: (?<=Y)X, ищет совпадение с X при условии, что перед ним ЕСТЬ Y.
+          // регулярное выражение с перем.
+          // let regexp = new RegExp(`(?<=_)` + String(id));
+
+          // е/и перед id есть разделитель (_)
+          // ^ str.match(regexp) - ищет совпадения с regexp в строке str. Вызов на строке. Альтер - regexp.exec(str) то же. Вызов на регул.выраж.
+          if (
+            catalog.category.match(
+              // regexp // перем.
+              // "(?<=_)" + id // конкатенация
+              `(?<=_)${id}` // интерполяция
+            )
+          ) {
+            // убираем разделитель впереди id и сам id из строки
+            // ^ str.replace(str|regexp, str|func) - поиска(1ое знач.) и замена(на 2ое знач.)
+            catalog.category = catalog.category.replace("_" + id, "");
+          }
+          // е/и перед id нет разделителя (_), то убираем id и разделитель после него
+          else {
+            catalog.category = catalog.category.replace(id + "_", "");
+          }
+        }
+        // е/и в строке нет id, то ч/з разделитель добавляем
+        else {
+          catalog.category = catalog.category + "_" + id;
+        }
+      }
+    }
+    // е/и category пуст, то добавляем id
+    else {
       catalog.category = id;
     }
+
     // при каждом клике добавляем в историю браузера новый элемент
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
@@ -69,7 +122,7 @@ const CategoryBar = observer(() => {
             }`}
             onClick={() => handleClick(item.id)}
           >
-            {item.name}
+            {item.name} - {item.id}
           </div>
         ))}
       </div>
@@ -82,7 +135,7 @@ const CategoryBar = observer(() => {
           {catalog.categories.map((item: any) => (
             <label key={item.id}>
               <input
-                // onChange={(e) => handleInputChange(e, item.id)}
+                onClick={() => handleClick(item.id)}
                 type="checkbox"
                 name="category"
                 id=""

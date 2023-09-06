@@ -21,12 +21,18 @@ import ProductList from "./ProductList";
 // `получить параметры поиска`
 const getSearchParams = (searchParams: any) => {
   let category = searchParams.get("category");
-  if (category && /[1-9][0-9]*/.test(category)) {
-    category = parseInt(category);
+  // ^ стар.логика (для 1го значения)
+  // if (category && /[1-9][0-9]*/.test(category)) {
+  // category = parseInt(category);
+  // ^ нов.логика (для неск.значен.ч/з разделитель(_))
+  if (category && /(_?[0-9]+)*/.test(category)) {
+    category = "" + category;
   }
   let brand = searchParams.get("brand");
-  if (brand && /[1-9][0-9]*/.test(brand)) {
-    brand = parseInt(brand);
+  // if (brand && /[1-9][0-9]*/.test(brand)) {
+  //   brand = parseInt(brand);
+  if (brand && /(_?[0-9]+)*/.test(brand)) {
+    brand = "" + brand;
   }
   let page = searchParams.get("page");
   if (page && /[1-9][0-9]*/.test(page)) {
@@ -112,6 +118,7 @@ const Shop = observer(() => {
   useEffect(() => {
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
+    console.log("SHP usEf 1 location ", location);
     console.log(
       "SHP usEf 1 location 000 pathname|search : ",
       location.pathname,
