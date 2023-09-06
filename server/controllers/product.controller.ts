@@ -19,12 +19,14 @@ class Product {
         sortOrd = null,
         sortField = null,
       } = req.query;
+
       limit =
         limit && /[0-9]+/.test(limit) && parseInt(limit) && limit > 0
           ? parseInt(limit)
           : 20;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
       sortOrd = sortOrd === null || sortOrd === "ASC" ? "ASC" : "DESC";
+
       const options = {
         categoryId,
         categoryId_q,
@@ -36,6 +38,7 @@ class Product {
         sortField,
       };
       const products = await ProductService.getAll(options);
+
       res.json(products);
     } catch (e) {
       next(AppError.badRequest(e.message));

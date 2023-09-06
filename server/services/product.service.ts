@@ -77,193 +77,30 @@ class Product {
       sortOrd,
       sortField,
     } = options;
-    console.log("options : " + options);
-    console.log(options);
-
-    console.log(
-      "categoryId TYPE ARR : " + categoryId,
-      typeof categoryId,
-      Array.isArray(categoryId)
-    );
-    console.log(
-      "brandId TYPE ARR : " + brandId,
-      typeof brandId,
-      Array.isArray(brandId)
-    );
-
-    console.log("categoryId_q : " + categoryId_q);
-    console.log("brandId_q : " + brandId_q);
-
-    if (categoryId?.includes(",")) {
-      console.log("includes categoryId : " + categoryId);
-    }
-    if (brandId?.includes(",")) {
-      console.log("includes brandId : " + brandId);
-      console.log("typeof brandId : " + typeof brandId);
-      console.log("Array.isArray(brandId) : " + Array.isArray(brandId));
-    }
 
     // перем.для уточнения запроса к др.Табл.
     let where: any = {};
 
-    // ^ для сорт по Неск-им знач.
-    // ! врем.здесь(под расшир.поиск будет созд.отд.метод)
-    // if (categoryId_q != null || brandId_q != null) {
-    // if (categoryId?.includes(",") || brandId?.includes(",")) {
-    //   console.log("999 : " + 999);
-    // if (categoryId_q?.length > 1) {
-    // whereParam_q = `
-    //
-    // where = `
-    //   where: {
-    //     categoryId: {
-    //       [Op.and]: ${categoryId_q},
-    //     },
-    //   },`;
-    //
-    // where.categoryId = { [Op.and]: categoryId_q };
-    // where.categoryId = categoryId_q;
-    // where.categoryId = brandId_q;
-    // }
-
-    //   const resultAll = [];
-
-    //   let brandIdAll = brandId?.split(",");
-    //   console.log("brandIdAll : " + brandIdAll);
-    //   console.log(brandIdAll);
-    //   console.log("Array.isArray(brandIdAll) : " + Array.isArray(brandIdAll));
-    //   console.log("brandIdAll?.length : " + brandIdAll?.length);
-
-    //   let categoryIdAll = categoryId?.split(",");
-    //   console.log("categoryIdAll?.length : " + categoryIdAll?.length);
-
-    //   if(categoryId?.includes(",")) where.categoryId = categoryIdAll;
-    //   if(brandId?.includes(","))  where.brandId = brandIdAll;
-
-    // цикл по длине какого-либо парам.
-    // ^ для render|state|загрузки на ОБЪЕКТЕ
-    // for (var i = 0; i < brandIdAll?.length; i++) {
-    // ^ для render|state|загрузки на МАССИВЕ
-    // for (var i = 0; i < name.length; i++) {
-    // один Товар в переборе
-    //   const allParam = {
-    // ^ для render|state|загрузки на ОБЪЕКТЕ
-    //     brandId: brandIdAll[i],
-    // categoryId: categoryIdAll[i],
-
-    // ^ для render|state|загрузки на МАССИВЕ
-    // brandId: brandId[i],
-    // categoryId: categoryId[i],
-    // };
-
-    //   // запись одного Товара в общ.перем.
-    //   resultAll.push(allParam);
-    // }
-
-    // for (var i = 0; i < categoryIdAll?.length; i++) {
-    //   const allParam = {
-    //     categoryId: categoryIdAll[i],
-    //   };
-    //   resultAll.push(allParam);
-    // }
-    // console.log("resultAll : " + resultAll);
-    // console.log(resultAll);
-
-    // const productBulk = await ProductMapping.bulkCreate(resultAll);
-    // }
-    // ! врем.здесь(под расшир.поиск будет созд.отд.метод)
-    // ^ для сорт по одному знач.
-    // if (categoryId_q === null || brandId_q === null) {
-    // if (
-    //   (typeof categoryId === "string" && !categoryId?.includes(",")) ||
-    //   (typeof brandId === "string" && !brandId?.includes(","))
-    // ) {
-    //   console.log("123 : " + 123);
-
-    //   // массовое созд.
-    //   if (categoryId) where.categoryId = categoryId;
-    //   if (brandId) where.brandId = brandId;
-    // }
-
-    // ^ для получ.мн.ч/з or/или
-    if (categoryId?.includes(",")) {
-      // let categoryIdAll = categoryId?.split(",");
-      // console.log("categoryIdAll?.length : " + categoryIdAll?.length);
-      // console.log("categoryIdAll : " + categoryIdAll);
-      // console.log(categoryIdAll);
-      //
-      // where.categoryId = categoryIdAll;
-      //
-      // where.categoryId = `{${[Op.or]} : ${categoryIdAll}}`;
-      //
-      let categoryIdPerem = {};
-      // categoryIdPerem[Op.or] = categoryId.split(",");
-      let orr = Op.or; // ~ or разложена - {'or(...args) {\n return {[Op.or]: args };\n }': ['5','2']}
-      // let orr = `$or`; // ! or строка - {'$or': [ '3', '2' ] }
-      categoryIdPerem[orr] = categoryId.split(",");
-      console.log("categoryIdPerem : " + categoryIdPerem);
-      console.log(categoryIdPerem);
-      where.categoryId = categoryIdPerem;
-      console.log("where CAT IF : " + where);
-      console.log(where);
-
-      // ^ нужно получ.
-      // where: {
-      //   categoryId: {
-      //     [Op.or]: [2, 3],
-      //   },
-      // },
-      // ! получая пока
-      // {
-      //   categoryId: { 'or(...args) {\n    return { [Op.or]: args };\n  }': [ '3', '2' ] }
-      // }
-    }
-    // ^ получ.1го
-    else if (categoryId && !categoryId?.includes(",")) {
+    // ^ определение/запись кол-ва значений (if - мн. if else - одно)
+    // Категории
+    if (categoryId?.includes(",")) where.categoryId = categoryId.split(",");
+    else if (categoryId && !categoryId?.includes(","))
       where.categoryId = categoryId;
-      console.log("where CAT ELSE : " + where);
-      console.log(where);
-    }
-    if (brandId?.includes(",")) {
-      let brandIdAll = brandId?.split(",");
-      console.log("brandIdAll : " + brandIdAll);
-      console.log(brandIdAll);
-      // console.log("Array.isArray(brandIdAll) : " + Array.isArray(brandIdAll));
-      // console.log("brandIdAll?.length : " + brandIdAll?.length);
-      // where.brandId = brandIdAll;
-      where.brandId = `{${[Op.or]} : ${brandIdAll}}`;
-      console.log("where BRND IF : " + where);
-      console.log(where);
-    } else if (brandId && !brandId?.includes(",")) {
-      where.brandId = brandId;
-      console.log("where BRND ELSE : " + where);
-      console.log(where);
-      // ИЛИ
-      // where: {
-      //   [Op.or]: [{ authorId: 2 }, { authorId: 3 }],
-      // },
-    }
+    // Бренд
+    if (brandId?.includes(",")) where.brandId = brandId.split(",");
+    else if (brandId && !brandId?.includes(",")) where.brandId = brandId;
 
-    console.log("COUNT where : " + where);
-    console.log(where);
     // Кол-во эл. `Найдите и посчитайте все`
     let countAll = await ProductMapping.findAndCountAll({
       where,
-      // ИЛИ
-      // where: {
-      //   // [Op.or]: [{ authorId: 2 }, { authorId: 3 }],
-      //   $or: [{ authorId: 2 }, { authorId: 3 }],
-      // },
-      // для каждого товара получаем бренд и категорию
+      // для каждого товара получаем Бренд и Категорию
       include: [
         { model: BrandMapping, as: "brand" },
         { model: CategoryMapping, as: "category" },
       ],
     });
-    console.log("countAll : " + countAll);
-    console.log(countAll?.count);
 
-    // для сорт.по голосу(из Табл.Rating)
+    // ! дораб - для сорт.по голосу(из Табл.Rating)
     let sortFieldVotes: any = {};
     // console.log("sortFieldVotes 0 : " + sortFieldVotes);
     // console.log(sortFieldVotes);
@@ -290,12 +127,6 @@ class Product {
     // защита от минусового результата
     if (offset < 0) offset = 0;
 
-    console.log("offset : " + offset);
-    console.log("ALL where : " + where);
-    console.log(where);
-    // console.log("sortFieldVotes 111 : " + sortFieldVotes);
-    // console.log("where : " + where);
-    // console.log(where);
     const products = await ProductMapping.findAndCountAll({
       where,
       limit,
@@ -312,12 +143,7 @@ class Product {
       ],
       order: [[sortFieldParam || "name", sortOrd || "ASC"]],
     });
-    // console.log("products : " + products);
-    // console.log(products.rows[0]);
-    // console.log("products.count " + products.count);
-    // console.log(products.rows[0]);
-    // console.log(products.count);
-    // return products;
+
     return { ...products, limit };
   }
 
