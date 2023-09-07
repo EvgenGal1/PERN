@@ -113,7 +113,8 @@ const CategoryBar = observer(() => {
           </ListGroup.Item>
         ))}
       </ListGroup> */}
-      <div className="list-group--eg flcol">
+      {/*  */}
+      {/* <div className="list-group--eg flcol">
         {catalog.categories.map((item: any) => (
           <div
             key={item.id}
@@ -125,22 +126,23 @@ const CategoryBar = observer(() => {
             {item.name} - {item.id}
           </div>
         ))}
-      </div>
+      </div> */}
+      {/*  */}
       {/* Категории */}
-      <div className="choice-param__item" style={{ marginTop: "15px" }}>
+      <div className="choice-param" /* style={{ marginTop: "15px" }} */>
         <button className="choice-param__btn" onClick={handleClickChoiceParam}>
           Категория
         </button>
-        <div className="choice-param__prm">
+        <div className="choice-param__item">
           {catalog.categories.map((item: any) => (
             <label key={item.id}>
               <input
                 onClick={() => handleClick(item.id)}
                 type="checkbox"
-                name="category"
-                id=""
+                name={`category.${item.name}`}
+                value={item.name}
               />
-              <div>{item.name}</div>
+              <span>{item.name}</span>
             </label>
           ))}
         </div>

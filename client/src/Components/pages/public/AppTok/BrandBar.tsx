@@ -12,22 +12,14 @@ const BrandBar = observer(() => {
 
   // перенаправить по маршруту URL по параметру
   const handleClick = (id: number) => {
-    // ^ стар.логика (е/и brand = id то перевод в null, иначе id)
-    // if (id === catalog.brand) {
-    //   catalog.brand = null;
-    // } else {
-    //   catalog.brand = id;
-    // }
-
-    // ^ нов.логика (проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения)
     if (catalog.brand !== null)
       if (!String(catalog.brand).includes("_"))
-        if (id === Number(catalog.brand)) catalog.brand = null;
-        else catalog.brand = catalog.brand + "_" + id;
+        catalog.brand =
+          id === Number(catalog.brand) ? null : catalog.brand + "_" + id;
       else if (catalog.brand.includes(String(id)))
-        if (catalog.brand.match(`(?<=_)${id}`))
-          catalog.brand = catalog.brand.replace("_" + id, "");
-        else catalog.brand = catalog.brand.replace(id + "_", "");
+        catalog.brand = catalog.brand.match(`(?<=_)${id}`)
+          ? catalog.brand.replace("_" + id, "")
+          : catalog.brand.replace(id + "_", "");
       else catalog.brand = catalog.brand + "_" + id;
     else catalog.brand = id;
 
@@ -74,7 +66,8 @@ const BrandBar = observer(() => {
           </ListGroup.Item>
         ))}
       </ListGroup> */}
-      <div className="list-group--eg flrow">
+      {/*  */}
+      {/* <div className="list-group--eg flrow">
         {catalog.brands.map((item: any) => (
           <div
             key={item.id}
@@ -86,21 +79,22 @@ const BrandBar = observer(() => {
             {item.name} - {item.id}
           </div>
         ))}
-      </div>
-      <div className="choice-param__item" style={{ marginTop: "0px" }}>
+      </div> */}
+      {/*  */}
+      <div className="choice-param" style={{ marginTop: "15px" }}>
         <button className="choice-param__btn" onClick={handleClickChoiceParam}>
           Бренды
         </button>
-        <div className="choice-param__prm">
+        <div className="choice-param__item">
           {catalog.brands.map((item: any) => (
             <label key={item.id}>
               <input
                 onClick={() => handleClick(item.id)}
                 type="checkbox"
-                name="category"
-                id=""
+                name={`brand.${item.name}`}
+                value={item.name}
               />
-              <div>{item.name}</div>
+              <span>{item.name}</span>
             </label>
           ))}
         </div>

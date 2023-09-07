@@ -230,11 +230,12 @@ const Shop = observer(() => {
           ) : (
             <CategoryBar />
           )}
+          {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
         </Col>
         <Col md={9}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {/* БРАНДЫ */}
-            {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
+            {/* {brandsFetching ? <Spinner animation="border" /> : <BrandBar />} */}
             {/* INP.ПОИСКА */}
             <Search />
           </div>
