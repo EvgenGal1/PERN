@@ -36,7 +36,7 @@ const Search = observer(() => {
 
   // `Поиск элементов`. Загр.ВСЕХ Товаров в searchAll
   const searchItems = async (searchValue: any) => {
-    console.log("SEH searchValue ", searchValue);
+    console.log("SEH searchValue : ", searchValue);
     if (searchValue !== "") {
       await fetchAllProducts(
         catalog.category,
@@ -47,9 +47,14 @@ const Search = observer(() => {
         catalog.sortOrd,
         catalog.sortField
       ).then((data: any) => {
-        // console.log("SEH IF data ", data);
+        console.log("SEH IF data : ", data);
         setSearchAll(data.rows);
+        // catalog.products = data.rows;
+        // catalog.limit = Math.ceil(data.limit);
+        console.log("catalog.limit IF > ", catalog.limit);
         catalog.limit = Math.ceil(catalog.limit);
+        console.log("catalog.limit IF = ", catalog.limit);
+        // catalog.count = Math.ceil(data.count / data.limit);
       });
     } else {
       fetchAllProducts(
@@ -60,12 +65,14 @@ const Search = observer(() => {
         catalog.sortOrd,
         catalog.sortField
       ).then((data: any) => {
-        // console.log("SEH ELSE data ", data);
+        console.log("SEH ELSE data : ", data);
         catalog.products = data.rows;
-        catalog.limit = Math.ceil(data.limit);
+        // catalog.limit = Math.ceil(data.limit);
+        // catalog.count = Math.ceil(data.count / data.limit);
         catalog.count = data.count;
       });
     }
+    console.log("catalog.limit === ", catalog.limit);
   };
 
   // ^ РАСШИР.ПОИСК на FRONT (данн.из БД в отд.стат)
@@ -95,6 +102,19 @@ const Search = observer(() => {
       search: "search?" + createSearchParams(params),
     });
   };
+  // перенаправление по маршруту при расш.Поиске
+  // console.log("Search showExtendedSearch ", showExtendedSearch);
+  // if (showExtendedSearch) {
+  //   navigate({
+  //     pathname: "/search/filters",
+  //     search: "?",
+  //   });
+  // } else {
+  //   navigate({
+  //     pathname: "/",
+  //     search: "?",
+  //   });
+  // }
 
   return (
     <>

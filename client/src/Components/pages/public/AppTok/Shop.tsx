@@ -77,6 +77,12 @@ const Shop = observer(() => {
 
   // первая загрузка?
   useEffect(() => {
+    console.log("SHP usEf 000 ", "000");
+    console.log("SHP usEf catalog.categories ", catalog.categories);
+    console.log(catalog.categories);
+    console.log("SHP usEf catalog.brands ", catalog.brands);
+    console.log(catalog.brands);
+
     fetchCategories()
       .then((data: any) => (catalog.categories = data))
       .finally(() => setCategoriesFetching(false));
@@ -85,8 +91,11 @@ const Shop = observer(() => {
       .then((data: any) => (catalog.brands = data))
       .finally(() => setBrandsFetching(false));
 
+    console.log("SHP usEf 000 111 ", "000", 111);
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
+
+    console.log("SHP usEf 000 location ", location);
 
     catalog.category = category;
     catalog.brand = brand;
