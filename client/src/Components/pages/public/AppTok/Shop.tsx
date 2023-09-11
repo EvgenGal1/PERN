@@ -79,9 +79,9 @@ const Shop = observer(() => {
   useEffect(() => {
     console.log("SHP usEf 000 ", "000");
     console.log("SHP usEf catalog.categories ", catalog.categories);
-    // console.log(catalog.categories);
+    console.log(catalog.categories);
     console.log("SHP usEf catalog.brands ", catalog.brands);
-    // console.log(catalog.brands);
+    console.log(catalog.brands);
 
     fetchCategories()
       .then((data: any) => (catalog.categories = data))
