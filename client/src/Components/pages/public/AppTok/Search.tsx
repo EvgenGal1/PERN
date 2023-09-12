@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  createSearchParams /* , Navigate */,
+} from "react-router-dom";
 import { observer } from "mobx-react-lite";
+// import { Button } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
-import SearchItems from "./SearchItems";
-// import BegPrj_Modal from "../../../ui/Modal/BegPrj_Modal";
 
 const Search = observer(() => {
   const { catalog }: any = useContext(AppContext);
@@ -77,55 +79,43 @@ const Search = observer(() => {
 
   // ^ РАСШИР.ПОИСК на FRONT (данн.из БД в отд.стат)
   // блок показа Расшир.Поиска
-  const [showExtendedSearch, setShowExtendedSearch] = useState(false);
-  const handleBtnClick = () => {
-    setShowExtendedSearch((prevState) => !prevState);
-  };
+  // const [showExtendedSearch, setShowExtendedSearch] = useState(false);
+  // const handleBtnClick = () => {
+  //   setShowExtendedSearch((prevState) => !prevState);
+  // };
 
   // ^ ПОИСК на FRONT (данн.из БД в Общ.стат)
-  const handleClick = (id: number) => {
-    if (id === catalog.category) {
-      catalog.category = null;
-    } else {
-      catalog.category = id;
-    }
+  const handleClick = (/* id: number */) => {
+    // if (id === catalog.category) {
+    //   catalog.category = null;
+    // } else {
+    //   catalog.category = id;
+    // }
     // при каждом клике добавляем в историю браузера новый элемент
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit) params.limit = catalog.limit;
-    if (catalog.sortOrd) params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField) params.sortField = catalog.sortField;
+    if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
+    if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField !== ("name" || null))
+      params.sortField = catalog.sortField;
+
     navigate({
-      pathname: "/",
-      search: "search?" + createSearchParams(params),
+      pathname: "/search",
+      search: "?" + createSearchParams(params),
     });
   };
-  // перенаправление по маршруту при расш.Поиске
-  // console.log("Search showExtendedSearch ", showExtendedSearch);
-  // if (showExtendedSearch) {
-  //   navigate({
-  //     pathname: "/search/filters",
-  //     search: "?",
-  //   });
-  // } else {
-  //   navigate({
-  //     pathname: "/",
-  //     search: "?",
-  //   });
-  // }
 
   return (
     <>
       {/* РАСШИР.ПОИСК */}
-      {showExtendedSearch && (
-        <SearchItems
+      {/* {showExtendedSearch && (
+        <SearchFilter
           show={showExtendedSearch}
           setShow={setShowExtendedSearch}
         />
-      )}
-      {/* {showExtendedSearch && <BegPrj_Modal />} */}
+      )} */}
       {/* ПОИСК */}
       <div className="search--eg">
         {/* INP.ПОИСКА */}
@@ -141,12 +131,20 @@ const Search = observer(() => {
         {/* КНП.РАСШИРЕН/ПОИСКА */}
         <button
           onClick={() => {
-            handleBtnClick();
+            // handleBtnClick();
+            handleClick();
           }}
           className="search--eg__btn btn--eg"
         >
           [расширенный поиск]
         </button>
+        {/* <Button
+            variant="primary"
+            onClick={() => navigate(FILTER_ROUTE)}
+            className="btn-primary--eg"
+          >
+            [расширенный поиск]
+          </Button> */}
       </div>
       {/* СПИСОК ПРОДУКТОВ */}
       {/* {searchInput.length > 0 ? (
