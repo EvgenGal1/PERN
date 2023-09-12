@@ -4,8 +4,8 @@ import {
   CONTACTS_ROUTE,
   NOTFOUND_ROUTE,
   SHOP_ROUTE,
-  SHOP_ROUTE_CATALOG,
-  SHOP_ROUTE_SEARCH,
+  SHOP_CATALOG_ROUTE,
+  FILTER_ROUTE,
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
   PRODUCT_ROUTE,
@@ -31,6 +31,7 @@ import NotFound from "../../pages/public/NotFound";
 // import Login from "../../pages/public/AppTok/Login";
 // import Signup from "../../pages/public/AppTok/Signup";
 import Shop from "../../pages/public/AppTok/Shop";
+import SearchFilter from "../../pages/public/AppTok/SearchFilter";
 import Auth from "../../pages/public/AppTok/Auth";
 import Product from "../../pages/public/AppTok/Product";
 import Basket from "../../pages/public/AppTok/Basket";
@@ -53,8 +54,8 @@ export const publicRoutes = [
   // ^ {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
   // путь Магазина, Каталога(+доп.к URL), Поиска(+доп.к URL)
   { /* "/", */ path: SHOP_ROUTE, Component: Shop },
-  { path: SHOP_ROUTE_CATALOG, Component: Shop },
-  { path: SHOP_ROUTE_SEARCH, Component: Shop },
+  { path: SHOP_CATALOG_ROUTE, Component: Shop },
+  { path: FILTER_ROUTE, Component: SearchFilter },
   // Замена 2 Комп.Login|Signup на один Комп.с разн.маршр. в строке запроса
   { path: LOGIN_ROUTE, Component: /* Login */ Auth },
   { path: SIGNUP_ROUTE, Component: /* Signup */ Auth },

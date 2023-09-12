@@ -3,6 +3,7 @@ import { useNavigate, useLocation, createSearchParams } from "react-router-dom";
 import { Button, Form, Pagination } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
+import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../utils/consts";
 
 export const PaginSortLimit = (props: any) => {
   const { catalog }: any = useContext(AppContext);
@@ -22,15 +23,15 @@ export const PaginSortLimit = (props: any) => {
       params.sortField = catalog.sortField;
     console.log("fnSerch params -- ", params);
 
-    // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
+    // при наличии (category,brand) отправка на URL /catalog/list иначе главная
     if (catalog.brand || catalog.category) {
       navigate({
-        pathname: "/catalog/list/",
+        pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
       });
     } else {
       navigate({
-        pathname: "/",
+        pathname: SHOP_ROUTE,
         search: "?" + createSearchParams(params),
       });
     }

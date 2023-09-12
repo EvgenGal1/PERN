@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import { ListGroup } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
+import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
 
 const BrandBar = observer(() => {
   const { catalog } = useContext(AppContext);
@@ -33,15 +33,15 @@ const BrandBar = observer(() => {
     if (catalog.sortField !== ("name" || null))
       params.sortField = catalog.sortField;
 
-    // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
+    // при наличии (category,brand) отправка на URL /catalog/list иначе главная
     if (catalog.brand || catalog.category) {
       navigate({
-        pathname: "/catalog/list",
+        pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
       });
     } else {
       navigate({
-        pathname: "/",
+        pathname: SHOP_ROUTE,
         search: "?" + createSearchParams(params),
       });
     }
@@ -54,33 +54,6 @@ const BrandBar = observer(() => {
 
   return (
     <>
-      {/* <ListGroup horizontal className="list-group--eg">
-        {catalog.brands.map((item: any) => (
-          <ListGroup.Item
-            key={item.id}
-            active={item.id === catalog.brand}
-            onClick={() => handleClick(item.id)}
-            style={{ cursor: "pointer" }}
-          >
-            {item.name}
-          </ListGroup.Item>
-        ))}
-      </ListGroup> */}
-      {/*  */}
-      {/* <div className="list-group--eg flrow">
-        {catalog.brands.map((item: any) => (
-          <div
-            key={item.id}
-            className={`list-group-item--eg hrz ${
-              item.id === catalog.brand ? "active" : ""
-            }`}
-            onClick={() => handleClick(item.id)}
-          >
-            {item.name} - {item.id}
-          </div>
-        ))}
-      </div> */}
-      {/*  */}
       <div className="choice-param" style={{ marginTop: "15px" }}>
         <button className="choice-param__btn" onClick={handleClickChoiceParam}>
           Бренды
