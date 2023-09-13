@@ -4,7 +4,11 @@ import { Col, Button } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
-import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
+import {
+  SHOP_ROUTE,
+  SHOP_CATALOG_ROUTE,
+  FILTER_ROUTE,
+} from "../../../../utils/consts";
 
 let defaultValue: any = { name: [], price: [], category: [], brand: [] };
 
@@ -29,8 +33,16 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
     event.currentTarget.classList.toggle("choice-param-show");
   };
 
+  // сброс Filtra и возврат в Магазин
+  const redirectToShop = () => {
+    navigate({
+      pathname: SHOP_ROUTE,
+      // search: "?" + createSearchParams(params),
+    });
+  };
+
   // перенаправить по маршруту URL по параметру
-  const handleClick = (/* id: number */) => {
+  const handleClick = (id: number) => {
     // при каждом клике добавляем в историю браузера новый элемент
     const params: any = {};
 
@@ -41,6 +53,9 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
     if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
     if (catalog.sortField !== ("name" || null))
       params.sortField = catalog.sortField;
+
+    // console.log("FILTER    catalog ", catalog);
+    // console.log("FILTER    params ", params);
 
     // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
     if (catalog.brand || catalog.category) {
@@ -77,7 +92,7 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
   const [value, setValue] = useState(defaultValue);
   // console.log("FILTER    value 000 ", value);
 
-  // fn измен.парам.поиска в state
+  // fn измен.парам.поиска в state объект с массивами
   function handleInputChange(event: any, id: any) {
     // перем.state
     let data = {
@@ -134,9 +149,7 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
         <svg
           onClick={() => {
             changeShowValue();
-            handleClick();
-            // setShow(false);
-            // showValue = false;
+            redirectToShop();
           }}
           height="200"
           viewBox="0 0 200 200"
@@ -185,10 +198,7 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
               </button>
               <div className="choice-param__prm">
                 {catalog.brands.map((item: any) => (
-                  <label
-                    key={item.id}
-                    //onClick={() => handleClick(item.id)}
-                  >
+                  <label key={item.id}>
                     <input type="checkbox" name={item.name} id="" />
                     <div>{item.name}</div>
                   </label>
@@ -222,7 +232,7 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
           {/* Колонка 3 */}
           <div className="choice-param__col" style={{ flex: "1" }}>
             {/* ЕЩЁ_1 */}
-            <div className="choice-param__item">
+            {/* <div className="choice-param__item">
               <button
                 className="choice-param__btn"
                 onClick={handleClickChoiceParam}
@@ -230,6 +240,27 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
                 ЕЩЁ_1
               </button>
               <div className="choice-param__prm">ДОБАВИТЬ_1</div>
+            </div> */}
+            <div className="choice-param" style={{ marginTop: "15px" }}>
+              <button
+                className="choice-param__btn"
+                onClick={handleClickChoiceParam}
+              >
+                Бренды
+              </button>
+              <div className="choice-param__item">
+                {catalog.brands.map((item: any) => (
+                  <label key={item.id}>
+                    <input
+                      onClick={() => handleClick(item.id)}
+                      type="checkbox"
+                      name={`brand.${item.name}`}
+                      value={item.name}
+                    />
+                    <span>{item.name}</span>
+                  </label>
+                ))}
+              </div>
             </div>
             {/* ЕЩЁ_2 */}
             <div className="choice-param__item">

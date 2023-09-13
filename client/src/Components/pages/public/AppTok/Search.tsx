@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
+import { FILTER_ROUTE } from "../../../../utils/consts";
 
 const Search = observer(() => {
   const { catalog }: any = useContext(AppContext);
@@ -102,7 +103,7 @@ const Search = observer(() => {
       params.sortField = catalog.sortField;
 
     navigate({
-      pathname: "/search",
+      pathname: FILTER_ROUTE,
       search: "?" + createSearchParams(params),
     });
   };
