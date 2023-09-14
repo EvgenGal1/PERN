@@ -125,6 +125,13 @@ span.bd {
   // line-height: 1.3;
 }
 
+// текста (скрыть длинную строку)
+.hideLongTxt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 // модальные окна
 .modal--eg {
   z-index: 3;

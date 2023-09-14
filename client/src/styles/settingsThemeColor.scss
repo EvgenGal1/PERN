@@ -289,6 +289,12 @@ body[data-theme="light"] {
       &:hover:not(:has(form)) {
         background-color: var(--ui-act-col);
       }
+      // Товар/Описание
+      &__product {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
     // карточка с контентом (form)
     .card-form--eg {

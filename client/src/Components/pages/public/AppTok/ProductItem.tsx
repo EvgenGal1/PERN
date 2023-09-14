@@ -183,7 +183,7 @@ const ProductItem = ({ data }: any) => {
           style={{ height: "100%", overflow: "hidden", padding: "10px" }}
         >
           {/* Цена: */}
-          <div>
+          <div className="card--eg__price">
             <span
               style={{
                 fontSize: "30px",
@@ -225,7 +225,7 @@ const ProductItem = ({ data }: any) => {
           </div>
           {/* Рейтинг: */}
           <div
-            className="youtube__v=McF22__Jz_I"
+            className="card--eg__pating youtube__v=McF22__Jz_I"
             style={{
               display: "flex",
               alignItems: "center",
@@ -280,7 +280,7 @@ const ProductItem = ({ data }: any) => {
             </span>
           </div>
           {/* Категор./Бренд/Назв./ */}
-          <div style={{ marginTop: "5px" }}>
+          <div className="card--eg__product" style={{ marginTop: "5px" }}>
             <strong>
               {strCat} {data.brand.name} {strName}
             </strong>
