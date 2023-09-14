@@ -1,7 +1,7 @@
 // пакеты
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
-import { Container, Row, Col, Spinner } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 // логика/настр.
@@ -17,6 +17,7 @@ import CategoryBar from "./CategoryBar";
 import BrandBar from "./BrandBar";
 import Search from "./Search";
 import ProductList from "./ProductList";
+import { FILTER_ROUTE } from "../../../../utils/consts";
 
 // `получить параметры поиска`
 const getSearchParams = (searchParams: any) => {
@@ -67,6 +68,8 @@ const Shop = observer(() => {
 
   const location = useLocation();
   const [searchParams] = useSearchParams();
+
+  const navigate = useNavigate();
 
   const [categoriesFetching, setCategoriesFetching] = useState(true);
   const [brandsFetching, setBrandsFetching] = useState(true);
@@ -134,9 +137,14 @@ const Shop = observer(() => {
       "|",
       location.search
     );
+    // console.log("category ", category);
 
-    if (category || brand || page || limit) {
-      // console.log("SHP usEf 1 IF  ", 11);
+    // if (category || brand || page || limit) {
+    if (
+      (category || brand || page || limit) &&
+      location.pathname !== "/search"
+    ) {
+      console.log("SHP usEf 1 IF  ", 11);
       if (category !== catalog.category) catalog.category = category;
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
@@ -145,7 +153,7 @@ const Shop = observer(() => {
       if (sortField !== catalog.sortField)
         catalog.sortField = sortField ?? "name";
     } else {
-      // console.log("SHP usEf 1 ELSE  ", 22);
+      console.log("SHP usEf 1 ELSE  ", 22);
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;
@@ -231,33 +239,46 @@ const Shop = observer(() => {
   // };
 
   return (
-    <Container>
-      <Row className="mt-2">
-        <Col md={3} className="mb-3">
+    <div className="container">
+      <div>
+        <Search />
+      </div>
+      <div className="row">
+        <div className="col-md-3">
           {categoriesFetching ? (
             <Spinner animation="border" />
           ) : (
-            <CategoryBar />
+            <div className="mt-3">
+              <CategoryBar />
+            </div>
           )}
-          {brandsFetching ? <Spinner animation="border" /> : <BrandBar />}
-        </Col>
-        <Col md={9}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {/* БРАНДЫ */}
-            {/* {brandsFetching ? <Spinner animation="border" /> : <BrandBar />} */}
-            {/* INP.ПОИСКА */}
+          {brandsFetching ? (
+            <Spinner animation="border" />
+          ) : (
+            <div className="mt-3">
+              <BrandBar />
+            </div>
+          )}
+          {(catalog.category || catalog.brand) !== null && (
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={() => navigate(FILTER_ROUTE)}
+                className="btn--eg btn-primary--eg w1"
+              >
+                [расширенный поиск]
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="col-md-9">
+          {/* <div className="mt-3">
             <Search />
-          </div>
-          <div>
-            {productsFetching ? (
-              <Spinner animation="border" />
-            ) : (
-              <ProductList />
-            )}
-          </div>
-        </Col>
-      </Row>
-    </Container>
+          </div> */}
+          {productsFetching ? <Spinner animation="border" /> : <ProductList />}
+        </div>
+      </div>
+    </div>
   );
 });
 

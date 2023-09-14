@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { useNavigate, useLocation, createSearchParams } from "react-router-dom";
-import { Button, Form, Pagination } from "react-bootstrap";
+import { useNavigate, createSearchParams } from "react-router-dom";
+import { Form, Pagination } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../utils/consts";
@@ -9,7 +9,6 @@ export const PaginSortLimit = (props: any) => {
   const { catalog }: any = useContext(AppContext);
   const { setFetching, setChange }: any = props;
   const navigate = useNavigate();
-  const location = useLocation();
 
   // созд.парам.поиска в строку URL
   const fnCreateSearchParams = () => {
@@ -114,7 +113,7 @@ export const PaginSortLimit = (props: any) => {
       {/* СОРТИРОВКА ПО ПОЛЮ */}
       <Form.Select
         size="sm"
-        className="select--eg"
+        className="select--eg" /* ef-bs */
         defaultValue={catalog.sortField}
         onChange={(e) => changeSortField(e.target.value)}
       >
@@ -125,13 +124,14 @@ export const PaginSortLimit = (props: any) => {
         <option value="votes">Голоса</option>
       </Form.Select>
       {/* СОРТИРОВКА ПО ПОРЯДКУ */}
-      <Button
-        size="sm"
+      <button
         onClick={() => changeSortOrder()}
-        variant="primary"
-        className="btn-primary--eg"
+        type="button"
+        className="btn--eg btn-primary--eg"
       >
-        <span className="mini-1--eg">порядок</span>{" "}
+        <span className="mini-1--eg">порядок</span>
+        {/* Узкий пробел */}
+        &ensp;
         {catalog.sortOrd === "ASC" || catalog.sortOrd === null ? (
           <span>
             <span className="mini-2--eg">А-Я | 1-9</span> ▲
@@ -141,72 +141,72 @@ export const PaginSortLimit = (props: any) => {
             <span className="mini-2--eg">Я-А | 9-1</span> ▼
           </span>
         )}
-      </Button>
+      </button>
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
       {catalog.count > 10 ? (
         <div className="limit--eg" style={{ display: "flex" }}>
           {catalog.count > 10 ? (
-            <Button
-              size="sm"
+            <button
+              type="button"
               onClick={() => changeLimitState(10)}
-              className={`btn-primary--eg${
+              className={`btn--eg btn-primary--eg${
                 catalog.limit === 10 ? " active" : ""
               }`}
             >
               10
-            </Button>
+            </button>
           ) : (
             ""
           )}
           {catalog.count > 10 ? (
-            <Button
-              size="sm"
+            <button
+              type="button"
               onClick={() => changeLimitState(25)}
-              className={`btn-primary--eg${
+              className={`btn--eg btn-primary--eg${
                 catalog.limit === 25 ? " active" : ""
               }`}
             >
               25
-            </Button>
+            </button>
           ) : (
             ""
           )}
           {catalog.count > 25 ? (
-            <Button
-              size="sm"
+            <button
+              type="button"
               onClick={() => changeLimitState(50)}
-              className={`btn-primary--eg${
+              className={`btn--eg btn-primary--eg${
                 catalog.limit === 50 ? " active" : ""
               }`}
             >
               50
-            </Button>
+            </button>
           ) : (
             ""
           )}
           {catalog.count > 50 ? (
-            <Button
-              size="sm"
+            <button
+              type="button"
               onClick={() => changeLimitState(100)}
-              className={`btn-primary--eg${
+              className={`btn--eg btn-primary--eg${
                 catalog.limit === 100 ? " active" : ""
               }`}
             >
               100
-            </Button>
+            </button>
           ) : (
             ""
           )}
           {catalog.count > 100 ? (
-            <Button
-              size="sm"
+            <button
+              type="button"
               onClick={() => changeLimitState(500)}
-              className={`btn-primary--eg${
+              className={`btn--eg btn-primary--eg${
                 catalog.limit === 500 ? " active" : ""
               }`}
             >
               500
-            </Button>
+            </button>
           ) : (
             ""
           )}

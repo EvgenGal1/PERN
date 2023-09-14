@@ -199,6 +199,7 @@ img.card-img-top {
 .pagination--eg {
   li.page-item {
     .page-link {
+      padding: var(--sz10) var(--sz15);
       color: #000;
       border: 1px solid var(--bord-hr);
       background-color: var(--act-bg);
@@ -336,8 +337,9 @@ img.card-img-top {
 
 // блоки выбора Параметров/Категорий/Брендов в модал.окне
 .choice-param {
-  border-radius: 5px;
-  border: 1px solid var(--bord-hr);
+  // border-radius: 5px;
+  // border: 1px solid var(--bord-hr);
+
   // скрытие Параметров после btn
   &__btn + div {
     display: none;
@@ -353,7 +355,8 @@ img.card-img-top {
     position: relative;
     width: 100%;
     // margin: 0 0 5px;
-    padding: 0.5rem 1rem;
+    // padding: 0.5rem 1rem;
+    padding: 10px 15px;
     background-color: var(--act-bg);
     color: #222;
     font-weight: 500;
@@ -629,6 +632,7 @@ img.card-img-top {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  font-size: 16px !important;
   &:hover {
     &__inp {
       background-color: var(--act-bg-hov);
@@ -647,10 +651,18 @@ img.card-img-top {
     border-right-width: 0;
   }
   &__btn {
-    border-radius: 0px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-left-width: 0;
+    border-radius: 0px !important;
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    border-left-width: 0 !important;
+  }
+}
+
+// media
+:root body #root .main {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
   }
 }
 

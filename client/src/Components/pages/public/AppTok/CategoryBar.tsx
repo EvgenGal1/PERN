@@ -102,7 +102,7 @@ const CategoryBar = observer(() => {
   return (
     <>
       {/* Категории */}
-      <div className="choice-param" /* style={{ marginTop: "15px" }} */>
+      <div className="choice-param bbb-2" /* ef-bs */>
         <button className="choice-param__btn" onClick={handleClickChoiceParam}>
           Категория
         </button>

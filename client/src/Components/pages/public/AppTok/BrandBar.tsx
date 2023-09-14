@@ -54,7 +54,7 @@ const BrandBar = observer(() => {
 
   return (
     <>
-      <div className="choice-param" style={{ marginTop: "15px" }}>
+      <div className="choice-param bbb-2" /* ef-bs */>
         <button className="choice-param__btn" onClick={handleClickChoiceParam}>
           Бренды
         </button>
