@@ -10,8 +10,8 @@ const CategoryBar = observer(() => {
 
   const navigate = useNavigate();
 
-  // перенаправить по маршруту URL по параметру
-  const handleClick = (id: number) => {
+  // при клике перенаправление на URL маршрут по параметрам поиска
+  const onClickRedirectToSearchParamsURL = (id: number) => {
     // ^ стар.логика (е/и category = id то перевод в null, иначе id)
     // if (id === catalog.category) {
     //   catalog.category = null;
@@ -70,7 +70,7 @@ const CategoryBar = observer(() => {
       catalog.category = id;
     }
 
-    // при каждом клике добавляем в историю браузера новый элемент
+    // запись в перем.параметров из catalog
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
@@ -80,7 +80,7 @@ const CategoryBar = observer(() => {
     if (catalog.sortField !== ("name" || null))
       params.sortField = catalog.sortField;
 
-    // при наличии (category,brand) отправка на URL /catalog/list иначе главная
+    // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
     if (catalog.brand || catalog.category) {
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
@@ -110,7 +110,7 @@ const CategoryBar = observer(() => {
           {catalog.categories.map((item: any) => (
             <label key={item.id}>
               <input
-                onClick={() => handleClick(item.id)}
+                onClick={() => onClickRedirectToSearchParamsURL(item.id)}
                 type="checkbox"
                 name={`category.${item.name}`}
                 value={item.name}

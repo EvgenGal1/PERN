@@ -10,8 +10,9 @@ const BrandBar = observer(() => {
 
   const navigate = useNavigate();
 
-  // перенаправить по маршруту URL по параметру
-  const handleClick = (id: number) => {
+  // при клике перенаправление на URL маршрут по параметрам поиска
+  const onClickRedirectToSearchParamsURL = (id: number) => {
+    // проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения
     if (catalog.brand !== null)
       if (!String(catalog.brand).includes("_"))
         catalog.brand =
@@ -23,7 +24,7 @@ const BrandBar = observer(() => {
       else catalog.brand = catalog.brand + "_" + id;
     else catalog.brand = id;
 
-    // при каждом клике добавляем в историю браузера новый элемент
+    // запись в перем.параметров из catalog
     const params: any = {};
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
@@ -33,7 +34,7 @@ const BrandBar = observer(() => {
     if (catalog.sortField !== ("name" || null))
       params.sortField = catalog.sortField;
 
-    // при наличии (category,brand) отправка на URL /catalog/list иначе главная
+    // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
     if (catalog.brand || catalog.category) {
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
@@ -62,7 +63,7 @@ const BrandBar = observer(() => {
           {catalog.brands.map((item: any) => (
             <label key={item.id}>
               <input
-                onClick={() => handleClick(item.id)}
+                onClick={() => onClickRedirectToSearchParamsURL(item.id)}
                 type="checkbox"
                 name={`brand.${item.name}`}
                 value={item.name}
