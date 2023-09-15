@@ -183,7 +183,7 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
                       name="category"
                       id=""
                     />
-                    <div>{item.name}</div>
+                    <span>{item.name}</span>
                   </label>
                 ))}
               </div>
@@ -200,7 +200,7 @@ const SearchFilter = (/* { show, setShow , children }: any */) => {
                 {catalog.brands.map((item: any) => (
                   <label key={item.id}>
                     <input type="checkbox" name={item.name} id="" />
-                    <div>{item.name}</div>
+                    <span>{item.name}</span>
                   </label>
                 ))}
               </div>

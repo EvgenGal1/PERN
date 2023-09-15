@@ -167,11 +167,13 @@ div {
 :root body #root .main {
   color: #000;
 }
+
 // img с прозрачным фоном
 img.card-img-top {
   background: radial-gradient(circle, #41464b, #000);
 }
-// таблиза корзины
+
+// таблица корзины
 .table--eg {
   thead {
     tr {
@@ -332,6 +334,19 @@ img.card-img-top {
       visibility: visible;
       transform: translate(-50%, -50%);
     }
+  }
+}
+
+// карточки/сетка блоков
+.card--eg {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  // Товар/Описание
+  &__product {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -590,11 +605,18 @@ img.card-img-top {
   }
 }
 
-// Комп.PaginSortLimit
+// Комп.PaginSortLimit (страницы, Сортировка, Выборка, Лимит эл.на стр.)
 .pagin-sort-limit {
   display: flex;
   justify-content: space-between;
-  margin: 1rem 0 0 !important;
+
+  .pagination--eg {
+    // flex-wrap: wrap;
+    margin: 0px 15px 0px 0px;
+    @media (max-width: 768px) {
+      margin: 0 10px 0 0;
+    }
+  }
 
   .select--eg {
     width: 15%;
@@ -617,12 +639,12 @@ img.card-img-top {
   font-weight: inherit;
 }
 .mini-1--eg {
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     display: none;
   }
 }
 .mini-2--eg {
-  @media (max-width: 620px) {
+  @media (max-width: 990px) {
     display: none;
   }
 }
@@ -658,24 +680,73 @@ img.card-img-top {
   }
 }
 
-// media
+// row/col (строки/колонки)
 :root body #root .main {
-  .row {
+  .row--eg {
     display: flex;
     flex-wrap: wrap;
+    // перем.для отступов
+    --gutter-x: 1.5rem;
+    --gutter-y: 0;
+    // отрицат.margin отступ (совместн. с положит.padding отступом)
+    margin-right: calc(-0.5 * var(--gutter-x));
+    margin-left: calc(-0.5 * var(--gutter-x));
+    & > * {
+      width: 100%;
+      max-width: 100%;
+      // положит.padding отступ (совместн. с отрицат.margin отступом)
+      padding-right: calc(var(--gutter-x) * 0.5);
+      padding-left: calc(var(--gutter-x) * 0.5);
+    }
   }
 }
 
 // media
 :root body #root .main {
+  // MAX
+  @media (max-width: 768px) {
+    .col-md-9 {
+      margin: 15px 0px 0px 0px;
+    }
+  }
+
+  // MINI
+  @media (min-width: 576px) {
+    .col-sm-6 {
+      flex: 0 0 auto;
+      width: 50%;
+    }
+  }
   @media (min-width: 768px) {
+    .col-md-3 {
+      flex: 0 0 auto;
+      width: 25%;
+    }
+    .col-md-9 {
+      flex: 0 0 auto;
+      width: 75%;
+    }
     .col-lg-4 {
       flex: 0 0 auto;
       width: 33.333%;
       width: 50%;
     }
   }
+  @media (min-width: 992px) {
+    .col-lg-4 {
+      flex: 0 0 auto;
+      width: 33.33333333%;
+    }
+  }
   @media (min-width: 1400px) {
+    .container,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl,
+    .container-xxl {
+      max-width: 1320px;
+    }
     .col-md-3 {
       flex: 0 0 auto;
       width: 20%;

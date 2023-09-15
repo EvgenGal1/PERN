@@ -270,6 +270,9 @@ body[data-theme="light"] {
         border-color: var(--BlackBrown);
         color: var(--MelonYellow);
       }
+      &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      }
     }
 
     // МОДАЛЬНЫЙ ОКНА
@@ -279,21 +282,12 @@ body[data-theme="light"] {
 
     // карточки/сетка блоков
     .card--eg {
-      display: flex;
-      flex-direction: column;
       background-color: var(--ui-bg);
       border: solid 1px var(--bord-hr);
-      border-radius: 7px;
       transition: 0.5s;
       // наведения для всех кроме содерж. form
       &:hover:not(:has(form)) {
         background-color: var(--ui-act-col);
-      }
-      // Товар/Описание
-      &__product {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     }
     // карточка с контентом (form)

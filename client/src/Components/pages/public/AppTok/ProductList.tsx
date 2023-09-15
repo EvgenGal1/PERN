@@ -15,13 +15,13 @@ const ProductList = observer(() => {
 
   return (
     <>
-      <Row className="mb-3">
-        {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-        {catalog.products.length ? (
-          <PaginSortLimit setFetching={setFetching} setChange={setChange} />
-        ) : (
-          ""
-        )}
+      {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
+      {catalog.products.length ? (
+        <PaginSortLimit setFetching={setFetching} setChange={setChange} />
+      ) : (
+        ""
+      )}
+      <div className="row--eg mb-3">
         {/* СПИСОК ПРОДУКТОВ */}
         {/* {searchInput.length > 0 ? (
           // ПО ПОИСКУ
@@ -47,7 +47,7 @@ const ProductList = observer(() => {
         ) : (
           <p className="m-3">По вашему запросу ничего не найдено</p>
         )}
-      </Row>
+      </div>
       {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
       {catalog.products.length ? (
         <PaginSortLimit setFetching={setFetching} setChange={setChange} />

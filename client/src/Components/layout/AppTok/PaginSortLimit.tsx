@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import { Form, Pagination } from "react-bootstrap";
+import { Pagination } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../utils/consts";
@@ -103,16 +103,10 @@ export const PaginSortLimit = (props: any) => {
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
       {catalog.count > catalog.limit && (
-        <Pagination
-          style={{ margin: "0", flexWrap: "wrap" }}
-          className="pagination--eg"
-        >
-          {pages}
-        </Pagination>
+        <Pagination className="pagination--eg">{pages}</Pagination>
       )}
       {/* СОРТИРОВКА ПО ПОЛЮ */}
-      <Form.Select
-        size="sm"
+      <select
         className="select--eg" /* ef-bs */
         defaultValue={catalog.sortField}
         onChange={(e) => changeSortField(e.target.value)}
@@ -122,23 +116,25 @@ export const PaginSortLimit = (props: any) => {
         <option value="rating">Рейтинг</option>
         {/* // ! не раб.сорт.с БД */}
         <option value="votes">Голоса</option>
-      </Form.Select>
+      </select>
       {/* СОРТИРОВКА ПО ПОРЯДКУ */}
       <button
         onClick={() => changeSortOrder()}
         type="button"
         className="btn--eg btn-primary--eg"
       >
-        <span className="mini-1--eg">порядок</span>
-        {/* Узкий пробел */}
-        &ensp;
+        <span className="mini-1--eg">
+          порядок
+          {/* Узкий пробел */}
+          &ensp;
+        </span>
         {catalog.sortOrd === "ASC" || catalog.sortOrd === null ? (
           <span>
-            <span className="mini-2--eg">А-Я | 1-9</span> ▲
+            <span className="mini-2--eg">А-Я | 1-9 </span>▲
           </span>
         ) : (
           <span>
-            <span className="mini-2--eg">Я-А | 9-1</span> ▼
+            <span className="mini-2--eg">Я-А | 9-1 </span>▼
           </span>
         )}
       </button>

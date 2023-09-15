@@ -68,15 +68,15 @@ const Shop = observer(() => {
 
   const location = useLocation();
   const [searchParams] = useSearchParams();
-
   const navigate = useNavigate();
 
+  // признаки Загрузки данных
   const [categoriesFetching, setCategoriesFetching] = useState(true);
   const [brandsFetching, setBrandsFetching] = useState(true);
   const [productsFetching, setProductsFetching] = useState(true);
 
   // обнов.списка/сост.после добав., редактир., удал.
-  const [change, setChange] = useState(false);
+  const [changeFetchingCatalog, setChangeFetchingCatalog] = useState(false);
 
   // первая загрузка?
   useEffect(() => {
@@ -163,6 +163,8 @@ const Shop = observer(() => {
       catalog.sortField = catalog.sortField; // null; //"name";
     }
 
+    setChangeFetchingCatalog(true);
+
     console.log(
       "SHP usEf 1 location === pathname|search : ",
       location.pathname,
@@ -191,18 +193,21 @@ const Shop = observer(() => {
         catalog.count = data.count;
         catalog.limit = data.limit;
       })
-      .finally(() => setProductsFetching(false));
+      .finally(() => {
+        setProductsFetching(false);
+        setChangeFetchingCatalog(false);
+      });
     // eslint-disable-next-line
   }, [
-    change,
-    catalog,
-    catalog.category,
-    catalog.brand,
-    catalog.page,
-    catalog.limit,
-    catalog.sortOrd,
-    catalog.sortField,
-    catalog.page,
+    changeFetchingCatalog,
+    // catalog,
+    // catalog.category,
+    // catalog.brand,
+    // catalog.page,
+    // catalog.limit,
+    // catalog.sortOrd,
+    // catalog.sortField,
+    // catalog.page,
   ]);
 
   // // ФИЛЬТРАЦИЯ
@@ -240,15 +245,15 @@ const Shop = observer(() => {
 
   return (
     <div className="container">
-      <div>
+      <div className="search mt-3">
         <Search />
       </div>
-      <div className="row">
+      <div className="row--eg mt-3">
         <div className="col-md-3">
           {categoriesFetching ? (
             <Spinner animation="border" />
           ) : (
-            <div className="mt-3">
+            <div className="mt-0">
               <CategoryBar />
             </div>
           )}
