@@ -59,7 +59,7 @@ const CategoryBar = observer(() => {
             catalog.category = catalog.category.replace(id + "_", "");
           }
         }
-        // е/и в строке нет id, то ч/з разделитель добавляем
+        // е/и в строке есть разелитель и нет id, то ч/з разделитель добавляем
         else {
           catalog.category = catalog.category + "_" + id;
         }
