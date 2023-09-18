@@ -21,7 +21,7 @@ let defaultIdCatalog: any = {
 
 // ^ написать fn (в helperы) по проверке/вставке/замене чего либо (str<>num<>obj) в чём либо (str<>arr<>obj). принимает 3+1 парам.(что, в чём, fn(ревёрс, удал, добав, наличие), ? разделитель)
 // запись name в state по знач.стр. поиск name в масс.объ. по совпадению id и значения из строки и подтягивания name в отд.перем. ч/з разделитель
-export function findNames(string: string, array: any) {
+export function findValueFromStringInArray(string: string, array: any) {
   // перем. разбития строка на части, масс.Имён
   const digits = string.split("_");
   const names: any[] = [];
@@ -66,28 +66,10 @@ const SearchFilter = () => {
       setOverwrittenCatalogParamsFromStore(
         (overwrittenСatalogParamsFromStore.category = false)
       );
-      // получ.Имя Categorии из Магазина по параметрам из Catalogа // ! не раб. получ по indexy (catalog.category) из масс.categories
-      // const nameCategory = catalog.categories[Number(catalog.category)].name;
-      // valueNameStat.category = nameCategory;
-      // ! на map, раб.но сложнее
-      // let splitCat = catalog.category.split("_");
-      // let nameCategory = "";
-      // for (let nameSpl of splitCat) {
-      // eslint-disable-next-line no-loop-func
-      //   catalog.categories.map((item: any) => {
-      //     if (item.id === Number(nameSpl)) {
-      //       if (nameCategory === "") {
-      //         nameCategory = item.name;
-      //       } else {
-      //         nameCategory = nameCategory + "_" + item.name;
-      //       }
-      //       valueNameStat.category = nameCategory;
-      //     }
-      //     return nameCategory;
-      //   });
-      // }
-      // * find. раб.
-      const result = findNames(catalog.category, catalog.categories);
+      const result = findValueFromStringInArray(
+        catalog.category,
+        catalog.categories
+      );
       valueNameStat.category = result;
     }
     if (catalog.brand && overwrittenСatalogParamsFromStore.brand) {
@@ -95,7 +77,7 @@ const SearchFilter = () => {
       setOverwrittenCatalogParamsFromStore(
         (overwrittenСatalogParamsFromStore.brand = false)
       );
-      const result = findNames(catalog.brand, catalog.brands);
+      const result = findValueFromStringInArray(catalog.brand, catalog.brands);
       valueNameStat.brand = result;
     }
   }
@@ -116,8 +98,8 @@ const SearchFilter = () => {
     event.currentTarget.classList.toggle("choice-param-show");
   };
 
-  // изменить и перенаправить по параметрам поиска
-  const changeAndRedirectBySearchParams = (event: any, item: any) => {
+  // изменить и дополнить по параметрам поиска для Filtra
+  const changeAndAddBySearchParamsForFilter = (event: any, item: any) => {
     // перем.state
     let dataValueName = {
       ...valueNameStat,
@@ -170,7 +152,7 @@ const SearchFilter = () => {
     dataItemId[eventName] = itemIdElem;
     setItemIdStat(dataItemId);
 
-    // дополнить URL /filter? + params
+    // дополнить URL /filter? параметрами поиска
     const params: any = {};
     if (dataValueName.category) params.category = dataValueName.category;
     if (dataValueName.brand) params.brand = dataValueName.brand;
@@ -180,8 +162,8 @@ const SearchFilter = () => {
     });
   };
 
-  // при клике "Применить" перенаправление в Магазин по параметрам поиска
-  const onClickRedirectsOnSearchParamsToStore = () => {
+  // при клике "Показать" перенаправление в Магазин по параметрам поиска
+  const redirectsOnSearchParamsToStore = () => {
     // `разблокировка прокрутки тела`
     unlockBodyScroll();
     // запись в перем.параметров из state
@@ -234,7 +216,7 @@ const SearchFilter = () => {
   useEffect(() => {});
 
   return (
-    <div className="modal--eg__prost">
+    <div className="modal--eg__filter">
       <div
         // onClick={() => setShow(false)}
         // className={`overlay ${show ? "show" : ""}`}
@@ -244,6 +226,7 @@ const SearchFilter = () => {
       <div className={`modal--eg show`}>
         {/* кнп.Выход */}
         <svg
+          className="modal__bnt-out"
           onClick={() => {
             // unlockBodyScroll();
             onClickResetToShop();
@@ -252,23 +235,19 @@ const SearchFilter = () => {
           viewBox="0 0 200 200"
           width="200"
         >
-          <title />
+          <title>СБРОС</title>
           <path d="M114,100l49-49a9.9,9.9,0,0,0-14-14L100,86,51,37A9.9,9.9,0,0,0,37,51l49,49L37,149a9.9,9.9,0,0,0,14,14l49-49,49,49a9.9,9.9,0,0,0,14-14Z" />
         </svg>
-        {/* {children} */}
         {/* Блоки с Параметрами */}
-        <div
-          className="modal-choice-param choice-param__all"
-          style={{ display: "flex" }}
-        >
+        <div className="modal__choice-param choice-param__all">
           {/* Колонка 1 */}
-          <div className="choice-param__col" style={{ flex: "1" }}>
+          <div className="choice-param__col">
             {/* Категории */}
-            <div className="choice-param__item">
+            <div className="choice-param bbb-1">
               <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 Категория
               </button>
-              <div className="choice-param__prm">
+              <div className="choice-param__item">
                 {catalog.categories.map((item: any) => (
                   <label key={item.id}>
                     <input
@@ -276,7 +255,9 @@ const SearchFilter = () => {
                       name="category"
                       value={item.name}
                       checked={itemIdStat["category"].includes(String(item.id))}
-                      onChange={(e) => changeAndRedirectBySearchParams(e, item)}
+                      onChange={(e) =>
+                        changeAndAddBySearchParamsForFilter(e, item)
+                      }
                     />
                     <span>
                       {item.name}-{item.id}
@@ -286,11 +267,11 @@ const SearchFilter = () => {
               </div>
             </div>
             {/* Бренды */}
-            <div className="choice-param__item">
+            <div className="choice-param bbb-1">
               <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 Бренд
               </button>
-              <div className="choice-param__prm">
+              <div className="choice-param__item">
                 {catalog.brands.map((item: any) => (
                   <label key={item.id}>
                     <input
@@ -298,7 +279,9 @@ const SearchFilter = () => {
                       name="brand"
                       value={item.name}
                       checked={itemIdStat["brand"].includes(String(item.id))}
-                      onChange={(e) => changeAndRedirectBySearchParams(e, item)}
+                      onChange={(e) =>
+                        changeAndAddBySearchParamsForFilter(e, item)
+                      }
                     />
                     <span>
                       {item.name}-{item.id}
@@ -309,94 +292,81 @@ const SearchFilter = () => {
             </div>
           </div>
           {/* Колонка 2 */}
-          <div className="choice-param__col" style={{ flex: "1" }}>
+          <div className="choice-param__col">
             {/* Цены */}
-            <div className="choice-param__item">
+            <div className="choice-param bbb-1">
               <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 Цена
               </button>
-              <div className="choice-param__prm">СДЕЛАТЬ ВЫБОРКУ ЦЕН</div>
+              <div className="choice-param__item">СДЕЛАТЬ ВЫБОРКУ ЦЕН</div>
             </div>
             {/* Рейтинг */}
-            <div className="choice-param__item">
+            <div className="choice-param  bbb-1">
               <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 Рейтинг
               </button>
-              <div className="choice-param__prm">СДЕЛАТЬ ВЫБОР РЕЙТИНГА</div>
+              <div className="choice-param__item">СДЕЛАТЬ ВЫБОР РЕЙТИНГА</div>
             </div>
           </div>
           {/* Колонка 3 */}
-          <div className="choice-param__col" style={{ flex: "1" }}>
+          <div className="choice-param__col">
             {/* ЕЩЁ_1 */}
-            {/* <div className="choice-param__item">
-              <button
-                className="choice-param__btn"
-                onClick={ShowChoiceParam}
-              >
+            <div className="choice-param bbb-1">
+              <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 ЕЩЁ_1
               </button>
-              <div className="choice-param__prm">ДОБАВИТЬ_1</div>
-            </div> */}
-            {/* <div className="choice-param" style={{ marginTop: "15px" }}>
-              <button className="choice-param__btn" onClick={ShowChoiceParam}>
-                Бренды
-              </button>
-              <div className="choice-param__item">
-                {catalog.brands.map((item: any) => (
-                  <label key={item.id}>
-                    <input
-                      // onClick={() => onClickRedirectToSearchParamsURL(item.id)}
-                      onClick={(e) => changeSearchParamsInState(e, item.id)}
-                      type="checkbox"
-                      // name={`brand.${item.name}`}
-                      name="brand"
-                      value={item.name}
-                    />
-                    <span>
-                      {item.name}-{item.id}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div> */}
+              <div className="choice-param__item">ДОБАВИТЬ_1</div>
+            </div>
             {/* ЕЩЁ_2 */}
-            <div className="choice-param__item">
+            <div className="choice-param bbb-1">
               <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 ЕЩЁ_2
               </button>
-              <div className="choice-param__prm">ДОБАВИТЬ_2</div>
+              <div className="choice-param__item">ДОБАВИТЬ_2</div>
             </div>
             {/* ЕЩЁ_3 */}
-            <div className="choice-param__item">
+            <div className="choice-param bbb-1">
               <button className="choice-param__btn" onClick={ShowChoiceParam}>
                 ЕЩЁ_3
               </button>
-              <div className="choice-param__prm">ДОБАВИТЬ_3</div>
+              <div className="choice-param__item">ДОБАВИТЬ_3</div>
             </div>
           </div>
         </div>
-        {/* кнп.Применить */}
-        <div>
+        <div className="modal__bnt-interactiv">
           {/* // ~ времянка */}
-          <span style={{ marginBottom: "10px" }}>
+          <div style={{ margin: "15px" }}>
             Отражать количество эл. Прописать отд.serv с возвратом просто суммы
             (подсчёт совпадений) и возврат данн.Товаров/Хар-ик. Для
             одного/нескольких/смешанных параметров
-          </span>
-          <Col>
-            <Button
-              // type="submit"
-              size="sm"
-              variant="danger"
-              className="btn-danger--eg"
-              style={{ width: "100%" }}
+          </div>
+          {/* кнп.Показать */}
+          <div>
+            <button
+              className="btn--eg btn-danger--eg"
               // onClick={(e) => {
               // handlerDeleteBulkValue(e);
               // }}
             >
-              Применить
-            </Button>
-          </Col>
+              Отменить
+            </button>
+            <button
+              className="btn--eg btn-primary--eg"
+              // onClick={(e) => {
+              // handlerDeleteBulkValue(e);
+              // }}
+            >
+              Показать `количество`
+            </button>
+            <button
+              className="btn--eg btn-danger--eg"
+              // onClick={(e) => {
+              // handlerDeleteBulkValue(e);
+              // }}
+            >
+              Сбросить
+            </button>
+          </div>
         </div>
       </div>
     </div>

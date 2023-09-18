@@ -176,18 +176,17 @@ const Product = (/* props: any */) => {
                 )
               )}
           </div>
-          <Button
+          <button
             onClick={() => handleClick(product.id)}
             style={{ ...styles.button, ...(isPressed && styles.buttonPressed) }}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onTouchStart={handleMouseDown}
             onTouchEnd={handleMouseUp}
-            variant="primary"
-            className="btn-primary--eg mt-3"
+            className="btn--eg btn-primary--eg mt-3"
           >
             Добавить в корзину
-          </Button>
+          </button>
         </Col>
       </Row>
       {/* Характеристики */}

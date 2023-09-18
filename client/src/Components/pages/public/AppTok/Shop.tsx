@@ -24,7 +24,7 @@ import Search from "./Search";
 import ProductList from "./ProductList";
 // пути/helpеры/fn(поиск знач.стр.в масс.)
 import { FILTER_ROUTE } from "../../../../utils/consts";
-import { findNames } from "./SearchFilter";
+import { findValueFromStringInArray } from "./SearchFilter";
 
 // `получить параметры поиска`
 const getSearchParams = (searchParams: any) => {
@@ -88,10 +88,6 @@ const Shop = observer(() => {
   // первая загрузка?
   useEffect(() => {
     console.log("SHP usEf 000 ", "000");
-    // console.log("SHP usEf catalog.categories ", catalog.categories);
-    // console.log(catalog.categories);
-    // console.log("SHP usEf catalog.brands ", catalog.brands);
-    // console.log(catalog.brands);
 
     fetchCategories()
       .then((data: any) => (catalog.categories = data))
@@ -101,11 +97,10 @@ const Shop = observer(() => {
       .then((data: any) => (catalog.brands = data))
       .finally(() => setBrandsFetching(false));
 
-    // console.log("SHP usEf 000 111 ", "000", 111);
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
 
-    // console.log("SHP usEf 000 location ", location);
+    console.log("SHP usEf 000 location ", location);
 
     catalog.category = category;
     catalog.brand = brand;
@@ -126,7 +121,6 @@ const Shop = observer(() => {
         console.log("SHP usEf 000 data ", data);
         catalog.products = data.rows;
         catalog.limit = Math.ceil(data.limit);
-        // catalog.count = Math.ceil(data.count / data.limit);
         catalog.count = data.count;
       })
       .finally(() => setProductsFetching(false));
@@ -138,17 +132,10 @@ const Shop = observer(() => {
     const { category, brand, page, limit, sortOrd, sortField } =
       getSearchParams(searchParams);
     console.log("SHP usEf 1 location ", location);
-    // console.log(
-    //   "SHP usEf 1 location 000 pathname|search : ",
-    //   location.pathname,
-    //   "|",
-    //   location.search
-    // );
-    // console.log("category ", category);
 
     // if (category || brand || page || limit) {
     if (category || brand || page || limit) {
-      // console.log("SHP usEf 1 IF  ", 11);
+      console.log("SHP usEf 1 IF  ", 11);
       if (category !== catalog.category) catalog.category = category;
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
@@ -157,7 +144,7 @@ const Shop = observer(() => {
       if (sortField !== catalog.sortField)
         catalog.sortField = sortField ?? "name";
     } else {
-      // console.log("SHP usEf 1 ELSE  ", 22);
+      console.log("SHP usEf 1 ELSE  ", 22);
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;
@@ -169,12 +156,6 @@ const Shop = observer(() => {
 
     setChangeFetchingCatalog(true);
 
-    // console.log(
-    //   "SHP usEf 1 location === pathname|search : ",
-    //   location.pathname,
-    //   "|",
-    //   location.search
-    // );
     // eslint-disable-next-line
   }, [location.search]);
 
@@ -193,7 +174,6 @@ const Shop = observer(() => {
       .then((data) => {
         console.log("SHP usEf 2 data ", data);
         catalog.products = data.rows;
-        // catalog.count = Math.ceil(data.count /  data.limit);
         catalog.count = data.count;
         catalog.limit = data.limit;
       })
@@ -251,11 +231,14 @@ const Shop = observer(() => {
   const redirectToFilter = () => {
     const params: any = {};
     if (catalog.category) {
-      const result = findNames(catalog.category, catalog.categories);
+      const result = findValueFromStringInArray(
+        catalog.category,
+        catalog.categories
+      );
       params.category = result;
     }
     if (catalog.brand) {
-      const result = findNames(catalog.brand, catalog.brands);
+      const result = findValueFromStringInArray(catalog.brand, catalog.brands);
       params.brand = result;
     }
 

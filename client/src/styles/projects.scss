@@ -304,6 +304,23 @@ img.card-img-top {
 
 // Модальное окно с блоком наложение
 .modal--eg__prost {
+}
+
+// карточки/сетка блоков
+.card--eg {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  // Товар/Описание
+  &__product {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// модал.окно Filtra
+.modal--eg__filter {
   // блок наложения на весь экран
   .overlay {
     position: absolute;
@@ -335,18 +352,32 @@ img.card-img-top {
       transform: translate(-50%, -50%);
     }
   }
-}
-
-// карточки/сетка блоков
-.card--eg {
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px;
-  // Товар/Описание
-  &__product {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  // блок с раскр.парам.
+  .modal__choice-param {
+    display: flex;
+    gap: 15px;
+    .choice-param__col {
+      display: flex;
+      flex: 1 1 0%;
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+  // блок с кнп./кол-ом
+  .modal__bnt-interactiv {
+    margin: 15px 0px 0 0;
+    div {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      button {
+        flex: 1 1 0;
+      }
+      // кнп.Показать
+      .btn-primary--eg {
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -655,6 +686,7 @@ img.card-img-top {
   display: flex;
   justify-content: space-between;
   font-size: 16px !important;
+  line-height: 1.5;
   &:hover {
     &__inp {
       background-color: var(--act-bg-hov);
