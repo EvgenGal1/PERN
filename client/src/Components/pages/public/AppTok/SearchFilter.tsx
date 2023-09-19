@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useLocation, useNavigate, createSearchParams } from "react-router-dom";
-import { Col, Button } from "react-bootstrap";
+import { useNavigate, createSearchParams } from "react-router-dom";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
@@ -10,6 +9,7 @@ import {
   FILTER_ROUTE,
 } from "../../../../utils/consts";
 
+// перем. Имён, Id, фильтров из Каталога, кол-ва Товаров
 let defaultValueName: any = { category: "", brand: "", name: "", price: "" };
 let defaultItemId: any = { category: "", brand: "", name: "", price: "" };
 let defaultIdCatalog: any = {
@@ -18,6 +18,7 @@ let defaultIdCatalog: any = {
   name: true,
   price: true,
 };
+let countProduct: number | string = "";
 
 // ^ написать fn (в helperы) по проверке/вставке/замене чего либо (str<>num<>obj) в чём либо (str<>arr<>obj). принимает 3+1 парам.(что, в чём, fn(ревёрс, удал, добав, наличие), ? разделитель)
 // запись name в state по знач.стр. поиск name в масс.объ. по совпадению id и значения из строки и подтягивания name в отд.перем. ч/з разделитель
@@ -55,7 +56,10 @@ const SearchFilter = () => {
   ] = useState(defaultIdCatalog);
   // console.log("FILTER    000 valueNameStat ", valueNameStat);
   // console.log("FILTER    000 itemIdStat ", itemIdStat);
-  // console.log("FILTER    000 overwrittenСatalogParamsFromStore ", overwrittenСatalogParamsFromStore);
+  // console.log(
+  //   "FILTER    000 overwrittenСatalogParamsFromStore ",
+  //   overwrittenСatalogParamsFromStore
+  // );
 
   // е/и в cataloge что-то есть (str|id параметры)
   if (catalog.category || catalog.brand) {
@@ -66,6 +70,7 @@ const SearchFilter = () => {
       setOverwrittenCatalogParamsFromStore(
         (overwrittenСatalogParamsFromStore.category = false)
       );
+      // нахожд.name по id из строки и запись в state
       const result = findValueFromStringInArray(
         catalog.category,
         catalog.categories
@@ -81,22 +86,6 @@ const SearchFilter = () => {
       valueNameStat.brand = result;
     }
   }
-
-  // блок./разблок.прокрутки body при modal Расшир.Поиске
-  let body = document.querySelector("body");
-  if (body != null) {
-    body.style.overflowY = "hidden";
-  }
-  const unlockBodyScroll = () => {
-    if (body != null) {
-      body.style.overflowY = "auto";
-    }
-  };
-
-  // показ блока с Параметрами
-  const ShowChoiceParam = (event: any) => {
-    event.currentTarget.classList.toggle("choice-param-show");
-  };
 
   // изменить и дополнить по параметрам поиска для Filtra
   const changeAndAddBySearchParamsForFilter = (event: any, item: any) => {
@@ -156,80 +145,120 @@ const SearchFilter = () => {
     const params: any = {};
     if (dataValueName.category) params.category = dataValueName.category;
     if (dataValueName.brand) params.brand = dataValueName.brand;
-    navigate({
-      // pathname: FILTER_ROUTE,
-      search: "?" + createSearchParams(params),
-    });
+    // ? нужно ли ? это в Filtre
+    // if (catalog.page > 1) params.page = catalog.page;
+    // if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
+    // if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
+    // if (catalog.sortField !== ("name" || null))
+    // params.sortField = catalog.sortField;
+
+    navigate({ search: "?" + createSearchParams(params) });
   };
 
-  // при клике "Показать" перенаправление в Магазин по параметрам поиска
-  const redirectsOnSearchParamsToStore = () => {
-    // `разблокировка прокрутки тела`
-    unlockBodyScroll();
-    // запись в перем.параметров из state
-    const params: any = {};
-    if (catalog.category) params.category = catalog.category;
-    if (catalog.brand) params.brand = catalog.brand;
-    // ? не нужно ? т.к. это не прам.поиска, а выборка/отражение/сортировка
-    // if (catalog.page > 1) params.page = catalog.page;
-    // if (catalog.limit !== (20 || 0 || 10000)) params.limit = catalog.limit;
-    // if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
-    // if (catalog.sortField !== ("name" || null)) params.sortField = catalog.sortField;
-
-    // console.log("FILTER    catalog ", catalog);
-    // console.log("FILTER    params ", params);
-
-    // при наличии (category,brand) отправка на URL /catalog/list/ иначе главная
-    if (catalog.brand || catalog.category) {
-      navigate({
-        pathname: FILTER_ROUTE,
-        search: "?" + createSearchParams(params),
-      });
-    } else {
-      navigate({
-        pathname: FILTER_ROUTE,
-        search: "?" + createSearchParams(params),
-      });
+  // блок./разблок.прокрутки body при modal Расшир.Поиске
+  let body = document.querySelector("body");
+  if (body != null) {
+    body.style.overflowY = "hidden";
+  }
+  const unlockBodyScroll = () => {
+    if (body != null) {
+      body.style.overflowY = "auto";
     }
   };
 
-  // сброс блок.body, states и возврат в Магазин
-  const onClickResetToShop = () => {
-    unlockBodyScroll();
-    defaultValueName = { category: "", brand: "", name: "", price: "" };
-    defaultItemId = { category: "", brand: "", name: "", price: "" };
-    defaultIdCatalog = {
-      category: true,
-      brand: true,
-      name: true,
-      price: true,
-    };
-    setValueNameStat(defaultValueName);
-    setItemIdStat(defaultItemId);
-    setOverwrittenCatalogParamsFromStore(defaultIdCatalog);
-    navigate({
-      pathname: SHOP_ROUTE,
-      // search: "?" + createSearchParams(params),
-    });
+  // показ блока с Параметрами
+  const ShowChoiceParam = (event: any) => {
+    event.currentTarget.classList.toggle("choice-param-show");
   };
 
-  useEffect(() => {});
+  // сбросить Filterы
+  const resetFilterDefault = (sign?: string) => {
+    countProduct = 0;
+    defaultValueName = { category: "", brand: "", name: "", price: "" };
+    defaultItemId = { category: "", brand: "", name: "", price: "" };
+    setValueNameStat(defaultValueName);
+    setItemIdStat(defaultItemId);
+    // востан.признак перезаписи
+    if (sign === "all") {
+      defaultIdCatalog = {
+        category: true,
+        brand: true,
+        name: true,
+        price: true,
+      };
+      setOverwrittenCatalogParamsFromStore(defaultIdCatalog);
+    }
+    navigate({ pathname: FILTER_ROUTE });
+  };
+
+  // возврат в Магазин назад или с/без парам.поиска и сброс states/блок.body
+  const returnToShop = (param?: string) => {
+    unlockBodyScroll();
+    resetFilterDefault("all");
+    // в Магаз по Стар.парам.поиска
+    if (param === "returnHowWasToStore") {
+      const params: any = {};
+      if (catalog.category) params.category = catalog.category;
+      if (catalog.brand) params.brand = catalog.brand;
+      if (catalog.page > 1) params.page = catalog.page;
+      if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
+      if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
+      if (catalog.sortField !== ("name" || null))
+        params.sortField = catalog.sortField;
+      navigate({
+        pathname: SHOP_CATALOG_ROUTE,
+        search: "?" + createSearchParams(params),
+      });
+    }
+    // в Магаз по Нов.парам.поиска
+    else if (param === "searchParams") {
+      const params: any = {};
+      if (itemIdStat.category) params.category = itemIdStat.category;
+      if (itemIdStat.brand) params.brand = itemIdStat.brand;
+      if (catalog.page > 1) params.page = catalog.page;
+      if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
+      if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
+      if (catalog.sortField !== ("name" || null))
+        params.sortField = catalog.sortField;
+      navigate({
+        pathname: SHOP_CATALOG_ROUTE,
+        search: "?" + createSearchParams(params),
+      });
+    }
+    // пустой сброс в магаз без парам.поиска
+    else {
+      navigate({ pathname: SHOP_ROUTE });
+    }
+  };
+
+  // получение кол-ва Товаров ч/з usEf
+  useEffect(() => {
+    fetchAllProducts(
+      itemIdStat.category,
+      itemIdStat.brand,
+      catalog.page,
+      10000,
+      catalog.sortOrd,
+      catalog.sortField
+    )
+      .then((data) => {
+        console.log("FLT usEf 000 data ", data);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        countProduct = data.count;
+      })
+      .finally(/* () => console.log("countProduct ", countProduct) */);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemIdStat]);
 
   return (
     <div className="modal--eg__filter">
-      <div
-        // onClick={() => setShow(false)}
-        // className={`overlay ${show ? "show" : ""}`}
-        className={`overlay show `}
-      ></div>
-      {/* <div className={`modal--eg ${show ? "show" : ""}`}> */}
+      <div className={`overlay show `}></div>
       <div className={`modal--eg show`}>
         {/* кнп.Выход */}
         <svg
           className="modal__bnt-out"
           onClick={() => {
-            // unlockBodyScroll();
-            onClickResetToShop();
+            returnToShop("returnHowWasToStore");
           }}
           height="200"
           viewBox="0 0 200 200"
@@ -259,9 +288,7 @@ const SearchFilter = () => {
                         changeAndAddBySearchParamsForFilter(e, item)
                       }
                     />
-                    <span>
-                      {item.name}-{item.id}
-                    </span>
+                    <span>{item.name}</span>
                   </label>
                 ))}
               </div>
@@ -283,9 +310,7 @@ const SearchFilter = () => {
                         changeAndAddBySearchParamsForFilter(e, item)
                       }
                     />
-                    <span>
-                      {item.name}-{item.id}
-                    </span>
+                    <span>{item.name}</span>
                   </label>
                 ))}
               </div>
@@ -334,37 +359,30 @@ const SearchFilter = () => {
           </div>
         </div>
         <div className="modal__bnt-interactiv">
-          {/* // ~ времянка */}
-          <div style={{ margin: "15px" }}>
-            Отражать количество эл. Прописать отд.serv с возвратом просто суммы
-            (подсчёт совпадений) и возврат данн.Товаров/Хар-ик. Для
-            одного/нескольких/смешанных параметров
-          </div>
-          {/* кнп.Показать */}
           <div>
             <button
               className="btn--eg btn-danger--eg"
-              // onClick={(e) => {
-              // handlerDeleteBulkValue(e);
-              // }}
+              onClick={() => {
+                returnToShop("returnHowWasToStore");
+              }}
             >
-              Отменить
+              Отменить и возврат
             </button>
             <button
               className="btn--eg btn-primary--eg"
-              // onClick={(e) => {
-              // handlerDeleteBulkValue(e);
-              // }}
+              onClick={() => {
+                returnToShop("searchParams");
+              }}
             >
-              Показать `количество`
+              Показать {countProduct}
             </button>
             <button
               className="btn--eg btn-danger--eg"
-              // onClick={(e) => {
-              // handlerDeleteBulkValue(e);
-              // }}
+              onClick={() => {
+                resetFilterDefault();
+              }}
             >
-              Сбросить
+              Сбросить фильтры
             </button>
           </div>
         </div>

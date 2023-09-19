@@ -11,7 +11,7 @@ const CategoryBar = observer(() => {
   const navigate = useNavigate();
 
   // при клике перенаправление на URL маршрут по параметрам поиска
-  const onClickRedirectToSearchParamsURL = (id: number) => {
+  const redirectToSearchParams = (id: number) => {
     // ^ стар.логика (е/и category = id то перевод в null, иначе id)
     // if (id === catalog.category) {
     //   catalog.category = null;
@@ -110,10 +110,11 @@ const CategoryBar = observer(() => {
           {catalog.categories.map((item: any) => (
             <label key={item.id}>
               <input
-                onClick={() => onClickRedirectToSearchParamsURL(item.id)}
                 type="checkbox"
                 name={`category.${item.name}`}
                 value={item.name}
+                checked={String(catalog.category)?.includes(String(item.id))}
+                onChange={() => redirectToSearchParams(item.id)}
               />
               <span>{item.name}</span>
             </label>

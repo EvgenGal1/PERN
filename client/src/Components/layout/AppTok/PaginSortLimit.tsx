@@ -154,7 +154,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 10 ? (
+          {catalog.count > 25 ? (
             <button
               type="button"
               onClick={() => changeLimitState(25)}
@@ -167,7 +167,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 25 ? (
+          {catalog.count > 50 ? (
             <button
               type="button"
               onClick={() => changeLimitState(50)}
@@ -180,7 +180,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 50 ? (
+          {catalog.count > 100 ? (
             <button
               type="button"
               onClick={() => changeLimitState(100)}
@@ -193,7 +193,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 100 ? (
+          {catalog.count > 500 ? (
             <button
               type="button"
               onClick={() => changeLimitState(500)}

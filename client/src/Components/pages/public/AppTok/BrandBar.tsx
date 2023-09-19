@@ -11,7 +11,7 @@ const BrandBar = observer(() => {
   const navigate = useNavigate();
 
   // при клике перенаправление на URL маршрут по параметрам поиска
-  const onClickRedirectToSearchParamsURL = (id: number) => {
+  const redirectToSearchParams = (id: number) => {
     // проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения
     if (catalog.brand !== null)
       if (!String(catalog.brand).includes("_"))
@@ -63,10 +63,11 @@ const BrandBar = observer(() => {
           {catalog.brands.map((item: any) => (
             <label key={item.id}>
               <input
-                onClick={() => onClickRedirectToSearchParamsURL(item.id)}
                 type="checkbox"
                 name={`brand.${item.name}`}
                 value={item.name}
+                onChange={() => redirectToSearchParams(item.id)}
+                checked={String(catalog.brand)?.includes(String(item.id))}
               />
               <span>{item.name}</span>
             </label>
