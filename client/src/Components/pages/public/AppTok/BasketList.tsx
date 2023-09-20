@@ -5,10 +5,9 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import {
-  // fetchBasket,
-  increment,
-  decrement,
-  remove,
+  incrementBasket,
+  decrementBasket,
+  removeBasket,
 } from "../../../../http/Tok/basketAPI_Tok";
 import { CHECKOUT_ROUTE } from "../../../../utils/consts";
 import BasketItem from "./BasketItem";
@@ -16,26 +15,27 @@ import BasketItem from "./BasketItem";
 const BasketList = observer(() => {
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
+  console.log("BasketList basket ", basket);
 
   const navigate = useNavigate();
 
   const handleIncrement = (id: number) => {
     setFetching(true);
-    increment(id)
+    incrementBasket(id)
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
   };
 
   const handleDecrement = (id: number) => {
     setFetching(true);
-    decrement(id)
+    decrementBasket(id)
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
   };
 
   const handleRemove = (id: number) => {
     setFetching(true);
-    remove(id)
+    removeBasket(id)
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
   };

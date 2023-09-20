@@ -4,7 +4,7 @@ import { Container, Row, Card, Form, Button } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { login, signup } from "../../../../http/Tok/userAPI_Tok";
+import { loginUser, signupUser } from "../../../../http/Tok/userAPI_Tok";
 import {
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
@@ -35,9 +35,9 @@ const Auth = observer(() => {
     // const data = await signup(email, password)
     let data;
     if (isLogin) {
-      data = await login(email, password);
+      data = await loginUser(email, password);
     } else {
-      data = await signup(email, password);
+      data = await signupUser(email, password);
     }
 
     // перенаправление е/и прошло верно

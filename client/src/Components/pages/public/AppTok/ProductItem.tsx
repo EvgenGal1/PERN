@@ -160,21 +160,20 @@ const ProductItem = ({ data }: any) => {
       md={3}
       lg={4}
       sm={6}
-      // ! врем.откл. переход в Карточку для указ.Рейтинга
-      // onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`,{data.id})}
-      onClick={() =>
-        navigate(
-          PRODUCT_ROUTE + `/${data.id}`
-          // передача props в Комп ч/з navigate/useNavigate/react-router-dom
-          // , { state: {userId: data.id,},}
-        )
-      }
+      // onClick={() =>
+      //   navigate(
+      //     PRODUCT_ROUTE + `/${data.id}`
+      // передача props в Комп ч/з navigate/useNavigate/react-router-dom
+      // , { state: {userId: data.id,},}
+      //   )
+      // }
     >
       <Card style={{ cursor: "pointer" }} className="mt-3 card--eg">
         {data.image ? (
           <Card.Img
             variant="top"
             src={process.env.REACT_APP_IMG_URL_PERN + data.image}
+            onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
           />
         ) : (
           <Card.Img variant="top" src="http://via.placeholder.com/200" />

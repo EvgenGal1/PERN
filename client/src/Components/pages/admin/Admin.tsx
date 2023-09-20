@@ -10,14 +10,14 @@ import {
   ADMINBRANDS_ROUTE,
   ADMINPRODUCTS_ROUTE,
 } from "../../../utils/consts";
-import { logout } from "../http/../../../http/Tok/userAPI_Tok";
+import { logoutUser } from "../http/../../../http/Tok/userAPI_Tok";
 
 const Admin = () => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogout = (event: any) => {
-    logout();
+    logoutUser();
     user.logout();
     navigate(LOGIN_ROUTE, { replace: true });
   };

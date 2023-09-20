@@ -16,7 +16,7 @@ import {
   fetchOneProduct,
   fetchProdRating,
 } from "../../../../http/Tok/catalogAPI_Tok";
-import { append } from "../../../../http/Tok/basketAPI_Tok";
+import { appendBasket } from "../../../../http/Tok/basketAPI_Tok";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
 import { StarFill } from "../../../layout/AppTok/StarFill";
 import { StarOutline } from "../../../layout/AppTok/StarOutline";
@@ -83,7 +83,9 @@ const Product = (/* props: any */) => {
 
   // обраб.клк по кнп. «Добавить в корзину»:
   const handleClick = (productId: any) => {
-    append(productId).then((data: any) => {
+    console.log("Prod productId ", productId);
+    appendBasket(productId).then((data: any) => {
+      console.log("Product basket append data ", data);
       basket.products = data.products;
     });
   };

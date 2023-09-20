@@ -4,14 +4,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { AppContext } from "./AppContext";
-import { check } from "../../../http/Tok/userAPI_Tok";
+import { checkUser } from "../../../http/Tok/userAPI_Tok";
 
 const CheckAuth = (props: any) => {
   const { user }: any = useContext(AppContext);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    check()
+    checkUser()
       .then((data: any) => {
         if (data) {
           user.login(data);

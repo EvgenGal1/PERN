@@ -4,14 +4,14 @@ import { Container, Button } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import { USERORDER_ROUTE } from "../../../utils/consts";
-import { logout } from "../../../http/Tok/userAPI_Tok";
+import { logoutUser } from "../../../http/Tok/userAPI_Tok";
 
 const User = () => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogout = (event: any) => {
-    logout();
+    logoutUser();
     user.logout();
     navigate("/login", { replace: true });
   };

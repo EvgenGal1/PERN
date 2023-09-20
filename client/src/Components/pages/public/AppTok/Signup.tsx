@@ -4,7 +4,7 @@ import { Container, Row, Card, Form, Button } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { signup } from "../../../../http/Tok/userAPI_Tok";
+import { signupUser } from "../../../../http/Tok/userAPI_Tok";
 import {
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
@@ -29,7 +29,7 @@ const Signup = observer(() => {
     event.preventDefault();
     const email = event.target.email.value.trim();
     const password = event.target.password.value.trim();
-    const data = await signup(email, password);
+    const data = await signupUser(email, password);
     if (data) {
       user.login(data);
       if (user.isAdmin) navigate(ADMIN_ROUTE);

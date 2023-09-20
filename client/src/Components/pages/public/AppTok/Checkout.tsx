@@ -5,7 +5,7 @@ import { Container, Form, Button, Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchBasket } from "../../../../http/Tok/basketAPI_Tok";
-import { check as checkAuth } from "../../../../http/Tok/userAPI_Tok";
+import { checkUser as checkAuth } from "../../../../http/Tok/userAPI_Tok";
 import { userCreate, guestCreate } from "../../../../http/Tok/orderAPI_Tok";
 import { BASKET_ROUTE } from "../../../../utils/consts";
 
@@ -67,11 +67,15 @@ const Checkout = () => {
   useEffect(() => {
     // если корзина пуста, здесь делать нечего
     fetchBasket()
-      .then((data) => (basket.products = data.products))
+      .then((data) => {
+        console.log("Checkout fetchBasket data ", data);
+        basket.products = data.products;
+      })
       .finally(() => setFetching(false));
     // нужно знать, авторизован ли пользователь
     checkAuth()
       .then((data) => {
+        console.log("Checkout checkAuth data ", data);
         if (data) {
           user.login(data);
         }

@@ -6,27 +6,28 @@ export const fetchBasket = async () => {
   return data;
 };
 
-export const append = async (id: number) => {
-  const { data } = await guestInstance.put(`basket/product/${id}/append/1`);
+export const appendBasket = async (prodId: number) => {
+  console.log("BSK_API id : " + prodId);
+  const { data } = await guestInstance.put(`basket/product/${prodId}/append/1`);
   return data;
 };
 
-export const increment = async (id: number) => {
+export const incrementBasket = async (id: number) => {
   const { data } = await guestInstance.put(`basket/product/${id}/increment/1`);
   return data;
 };
 
-export const decrement = async (id: number) => {
+export const decrementBasket = async (id: number) => {
   const { data } = await guestInstance.put(`basket/product/${id}/decrement/1`);
   return data;
 };
 
-export const remove = async (id: number) => {
+export const removeBasket = async (id: number) => {
   const { data } = await guestInstance.put(`basket/product/${id}/remove`);
   return data;
 };
 
-export const clear = async () => {
+export const clearBasket = async () => {
   const { data } = await guestInstance.put(`basket/clear`);
   return data;
 };
