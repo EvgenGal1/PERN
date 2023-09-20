@@ -12,8 +12,7 @@ export default new Sequelize(
     define: {
       // использовать snake_case вместо camelCase для полей таблиц БД. вкл.поля
       underscored: true,
-      // не добавлять поля created_at и updated_at при создании таблиц
-      // timestamps: false,
+      // timestamps: false, // не добавлять поля created_at и updated_at при создании таблиц
       timestamps: true,
       // вкл. `createdAt`
       createdAt: true,
@@ -23,7 +22,7 @@ export default new Sequelize(
       // updatedAt: 'updateTimestamp',
     },
     // ^ Формат даты заказа. 1ый способ. ? Нужно для 2го ?
-    logging: false, // ! не ?перезаписывает? Таблицы (нет лога созд.Табл.)
+    logging: false, // ! не раб - не ?перезаписывает? Таблицы (нет лога созд.Табл.)
     timezone: "Europe/Moscow",
   }
 );

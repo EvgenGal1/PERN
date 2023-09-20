@@ -20,7 +20,6 @@ export const PaginSortLimit = (props: any) => {
     if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
     if (catalog.sortField !== ("name" || null))
       params.sortField = catalog.sortField;
-    console.log("fnSerch params -- ", params);
 
     // при наличии (category,brand) отправка на URL /catalog/list иначе главная
     if (catalog.brand || catalog.category) {
@@ -49,8 +48,6 @@ export const PaginSortLimit = (props: any) => {
   // содер.Комп.`Страница`
   const pages: any = [];
   for (let page = 1; page <= Math.ceil(catalog.count / catalog.limit); page++) {
-    // console.log("PaSoLi FOR catalog.count ===== ", catalog.count);
-    // console.log("PaSoLi FOR catalog.limit ===== ", catalog.limit);
     pages.push(
       <Pagination.Item
         key={page}
@@ -65,7 +62,6 @@ export const PaginSortLimit = (props: any) => {
 
   // СОРТИРОВКА ПО ПОЛЮ. изменен.сост.параметра
   const changeSortField = (e: string) => {
-    console.log("SortField 1 ", 1);
     if (e === "name") catalog.sortField = e;
     if (e === "price") catalog.sortField = e;
     if (e === "rating") catalog.sortField = e;
@@ -78,7 +74,6 @@ export const PaginSortLimit = (props: any) => {
   };
   // СОРТИРОВКА ПО ПОРЯДКА. изменен.сост.порядка
   const changeSortOrder = () => {
-    console.log("SortOrder 1 ", 1);
     if (catalog.sortOrd === "ASC" || catalog.sortOrd === null)
       catalog.sortOrd = "DESC";
     else catalog.sortOrd = "ASC";

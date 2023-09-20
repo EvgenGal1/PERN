@@ -1,7 +1,7 @@
 // ^ панель навигации
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { Container, Navbar, Nav, Button } from "react-bootstrap";
+import { Container, Navbar, Nav } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import {
@@ -15,8 +15,6 @@ import {
   ADMIN_ROUTE,
 } from "../../../utils/consts";
 import { AppContext } from "./AppContext";
-// import CheckAuth from "./CheckAuth";
-// import FetchBasket from "./FetchBasket";
 
 const NavBar = observer(() => {
   const { user, basket }: any = useContext(AppContext);
@@ -37,9 +35,6 @@ const NavBar = observer(() => {
           <NavLink to={CONTACTS_ROUTE} className="nav-link">
             Контакты
           </NavLink>
-          {/* показ.loader до авториз. или не авториз. е/и токена нет/истёк 
-          // ^ перенос loader,получ.данн.польз(сохран.в хран-ще) в AppTok. CheckAuth не нужен */}
-          {/* <CheckAuth> */}
           {/* Авториз */}
           {user.isAuth ? (
             <>
@@ -65,15 +60,10 @@ const NavBar = observer(() => {
               </NavLink>
             </>
           )}
-          {/* </CheckAuth> */}
-          {/* Когда пользователь только зашел на сайт — надо запросить с сервера его корзину, если она существует. И показывать в главном меню ссылку на корзину + количество позиций в ней. Для этого создадим HOC-компонент FetchBasket.js и обернем в него ссылку на корзину. 
-          // ^ перенос loader,получ.данн.корзины(сохран.в хран-ще) в AppTok. FetchBasket не нужен */}
-          {/* <FetchBasket> */}
           <NavLink to={BASKET_ROUTE} className="nav-link">
             Корзина
             {!!basket.count && <span>({basket.count})</span>}
           </NavLink>
-          {/* </FetchBasket> */}
         </Nav>
       </Container>
     </Navbar>
