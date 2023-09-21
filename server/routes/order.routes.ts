@@ -15,74 +15,77 @@ router.get(
   "/admin/getall",
   authMiddleware,
   adminMiddleware,
-  OrderController.adminGetAll
+  OrderController.adminGetAllOrder
 );
 // получить список заказов пользователя
 router.get(
   "/admin/getall/user/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  OrderController.adminGetUser
+  OrderController.adminGetOrder
 );
 // получить заказ по id
 router.get(
   "/admin/getone/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  OrderController.adminGetOne
+  OrderController.adminGetOneOrder
 );
 // создать новый заказ
 router.post(
   "/admin/create",
   authMiddleware,
   adminMiddleware,
-  OrderController.adminCreate
+  OrderController.adminCreateOrder
 );
 // обновить заказ
 router.put(
   "/admin/update/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  OrderController.adminUpdate
+  OrderController.adminUpdateOrder
 );
 // удалить заказ по id
 router.delete(
   "/admin/delete/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  OrderController.adminDelete
+  OrderController.adminDeleteOrder
 );
 
 /*
  * ПОЗИЦИИ Заказа
  */
 // список позицый заказа
-router.get("/:orderId([0-9]+)/item/getall", OrderItemsController.getAll);
+router.get(
+  "/:orderId([0-9]+)/item/getall",
+  OrderItemsController.getAllOrderItems
+);
 // одна позиция заказа
 router.get(
   "/:orderId([0-9]+)/item/getone/:id([0-9]+)",
-  OrderItemsController.getOne
+  OrderItemsController.getOneOrderItems
 );
 // создать позицию заказа
 router.post(
   "/:orderId([0-9]+)/item/create",
   authMiddleware,
   adminMiddleware,
-  OrderItemsController.create
+  OrderItemsController.createOrderItems
 );
 // обновить позицию заказа
 router.put(
   "/:orderId([0-9]+)/item/update/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  OrderItemsController.update
+  OrderItemsController.updateOrderItems
 );
 // удалить позицию заказа
 router.delete(
   "/:orderId([0-9]+)/item/delete/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  OrderItemsController.delete
+  OrderItemsController.deleteOrderItems
 );
 
 /*
@@ -90,21 +93,21 @@ router.delete(
  */
 
 // получить все заказы пользователя
-router.get("/user/getall", authMiddleware, OrderController.userGetAll);
+router.get("/user/getall", authMiddleware, OrderController.userGetAllOrder);
 // получить один заказ пользователя
 router.get(
   "/user/getone/:id([0-9]+)",
   authMiddleware,
-  OrderController.userGetOne
+  OrderController.userGetOneOrder
 );
 // создать новый заказ
-router.post("/user/create", authMiddleware, OrderController.userCreate);
+router.post("/user/create", authMiddleware, OrderController.userCreateOrder);
 
 /*
  * для неавторизованного пользователя
  */
 
 // создать новый заказ
-router.post("/guest/create", OrderController.guestCreate);
+router.post("/guest/create", OrderController.guestCreateOrder);
 
 export default router;

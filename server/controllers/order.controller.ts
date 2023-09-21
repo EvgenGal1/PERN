@@ -7,20 +7,26 @@ import UserService from "../services/user.service";
 
 class Order {
   // созд.admin`администратор`
-  adminCreate = async (req, res, next) => {
-    await this.create(req, res, next, "admin");
+  adminCreateOrder = async (req, res, next) => {
+    await this.createOrder(req, res, next, "admin");
   };
   // созд.user`пользователь`
-  userCreate = async (req, res, next) => {
-    await this.create(req, res, next, "user");
+  userCreateOrder = async (req, res, next) => {
+    await this.createOrder(req, res, next, "user");
   };
   // созд.guest`гость`
-  guestCreate = async (req, res, next) => {
-    await this.create(req, res, next, "guest");
+  guestCreateOrder = async (req, res, next) => {
+    await this.createOrder(req, res, next, "guest");
   };
 
   // созд.общ.
-  async create(req /* : Request */, res: Response, next: NextFunction, type) {
+  async createOrder(
+    req /* : Request */,
+    res: Response,
+    next: NextFunction,
+    type
+  ) {
+    console.log("Order 111 : " + 111);
     try {
       const { name, email, phone, address, comment = null } = req.body;
       // данные для создания заказа
@@ -40,14 +46,14 @@ class Order {
         // проверяем существование пользователя
         userId = req.body.userId ?? null;
         if (userId) {
-          await UserService.getOne(userId); // будет исключение, если не найден
+          await UserService.getOneUser(userId); // будет исключение, если не найден
         }
       } else {
         // когда заказ делает обычный пользователь (авторизованный или нет), состав заказа получаем из корзины, а id пользователя из req.auth.id (если есть)
         if (!req.signedCookies.basketId) {
           throw new Error("Ваша корзина пуста");
         }
-        const basket = await BasketService.getOne(
+        const basket = await BasketService.getOneBasket(
           parseInt(req.signedCookies.basketId)
         );
         if (basket.products.length === 0) {
@@ -58,7 +64,7 @@ class Order {
       }
 
       // все готово, можно создавать
-      const order = await OrderService.create({
+      const order = await OrderService.createOrder({
         name,
         email,
         phone,
@@ -69,47 +75,48 @@ class Order {
       });
 
       // корзину теперь нужно очистить
-      await BasketService.clear(parseInt(req.signedCookies.basketId));
+      await BasketService.clearBasket(parseInt(req.signedCookies.basketId));
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
   // ADMIN ord
-  async adminGetAll(req, res, next) {
+  async adminGetAllOrder(req, res, next) {
     try {
-      const orders = await OrderService.getAll();
+      Order;
+      const orders = await OrderService.getAllOrder();
       res.json(orders);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async adminGetUser(req, res, next) {
+  async adminGetOrder(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");
       }
-      const order = await OrderService.getAll(req.params.id);
+      const order = await OrderService.getAllOrder(req.params.id);
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async adminGetOne(req, res, next) {
+  async adminGetOneOrder(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      const order = await OrderService.getOne(Number(req.params.id));
+      const order = await OrderService.getOneOrder(Number(req.params.id));
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async adminUpdate(req: Request, res: Response, next: NextFunction) {
+  async adminUpdateOrder(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
@@ -120,40 +127,40 @@ class Order {
       // if (!req.body.name) {
       //   throw new Error("Нет названия заказа");
       // }
-      const order = await OrderService.update(req.params.id, req.body);
+      const order = await OrderService.updateOrder(req.params.id, req.body);
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async adminDelete(req, res, next) {
+  async adminDeleteOrder(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      const order = await OrderService.delete(req.params.id);
+      const order = await OrderService.deleteOrder(req.params.id);
       res.json(order);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
   // USER ord
-  async userGetAll(req, res, next) {
+  async userGetAllOrder(req, res, next) {
     try {
-      const orders = await OrderService.getAll(req.auth.id);
+      const orders = await OrderService.getAllOrder(req.auth.id);
       res.json(orders);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async userGetOne(req, res, next) {
+  async userGetOneOrder(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id заказа");
       }
-      const order = await OrderService.getOne(
+      const order = await OrderService.getOneOrder(
         Number(req.params.id),
         Number(req.auth.id)
       );

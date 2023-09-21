@@ -2,12 +2,12 @@ import AppError from "../error/ApiError";
 import { Category as CategoryMapping } from "../models/mapping";
 
 class Category {
-  async getAll() {
+  async getAllCategory() {
     const categories = await CategoryMapping.findAll();
     return categories;
   }
 
-  async getOne(id) {
+  async getOneCategory(id) {
     const category = await CategoryMapping.findByPk(id);
     if (!category) {
       throw new Error("Категория не найдена в БД");
@@ -15,7 +15,7 @@ class Category {
     return category;
   }
 
-  async create(data) {
+  async createCategory(data) {
     const { name } = data;
     const exist = await CategoryMapping.findOne({ where: { name } });
     if (exist) {
@@ -25,7 +25,7 @@ class Category {
     return category;
   }
 
-  async update(id, data) {
+  async updateCategory(id, data) {
     const category = await CategoryMapping.findByPk(id);
     if (!category) {
       throw new Error("Категория не найдена в БД");
@@ -35,7 +35,7 @@ class Category {
     return category;
   }
 
-  async delete(id) {
+  async deleteCategory(id) {
     const category = await CategoryMapping.findByPk(id);
     if (!category) {
       throw new Error("Категория не найдена в БД");

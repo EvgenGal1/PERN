@@ -69,7 +69,7 @@ interface OrderItem {
 }
 
 class Order {
-  async getAll(userId = null) {
+  async getAllOrder(userId = null) {
     // let orders;
     // if (userId) {
     //   orders = await OrderMapping.findAll({ where: { userId } });
@@ -104,7 +104,7 @@ class Order {
     return orders;
   }
 
-  async getOne(id: any, userId /* : any */ = null) {
+  async getOneOrder(id: any, userId /* : any */ = null) {
     // ^ стар.код
     // let order;
     // if (userId) {
@@ -153,7 +153,7 @@ class Order {
     return order;
   }
 
-  async create(data: any /* CreateData */) /* : Promise<Orders> */ {
+  async createOrder(data: any /* CreateData */) /* : Promise<Orders> */ {
     // общая стоимость заказа
     const items = data.items;
     const amount: any = items.reduce(
@@ -194,7 +194,7 @@ class Order {
     return created;
   }
 
-  async update(id: string | number, data: /* any */ UpdateData) {
+  async updateOrder(id: string | number, data: /* any */ UpdateData) {
     // const order = await OrderMapping.findByPk(id);
     const order = await OrderMapping.findByPk(id, {
       include: [{ model: OrderItemMapping, as: "items" }],
@@ -281,7 +281,7 @@ class Order {
     // return pretty(order);
   }
 
-  async delete(id) {
+  async deleteOrder(id) {
     let order = await OrderMapping.findByPk(id, {
       include: [
         {

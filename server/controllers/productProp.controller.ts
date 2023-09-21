@@ -5,19 +5,21 @@ import AppError from "../error/ApiError";
 import ProductPropService from "../services/productProp.service";
 
 class ProductProp {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAllProdProp(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.productId) {
         throw new Error("Не указан id товара");
       }
-      const properties = await ProductPropService.getAll(req.params.productId);
+      const properties = await ProductPropService.getAllProdProp(
+        req.params.productId
+      );
       res.json(properties);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async getOne(req: Request, res: Response, next: NextFunction) {
+  async getOneProdProp(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.productId) {
         throw new Error("Не указан id товара");
@@ -25,7 +27,7 @@ class ProductProp {
       if (!req.params.id) {
         throw new Error("Не указано id свойства");
       }
-      const property = await ProductPropService.getOne(
+      const property = await ProductPropService.getOneProdProp(
         req.params.productId,
         req.params.id
       );
@@ -35,7 +37,7 @@ class ProductProp {
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async createProdProp(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.productId) {
         throw new Error("Не указан id товара");
@@ -43,7 +45,7 @@ class ProductProp {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для создания");
       }
-      const property = await ProductPropService.create(
+      const property = await ProductPropService.createProdProp(
         req.params.productId,
         req.body
       );
@@ -53,7 +55,7 @@ class ProductProp {
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async updateProdProp(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.productId) {
         throw new Error("Не указан id товара");
@@ -64,7 +66,7 @@ class ProductProp {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для обновления");
       }
-      const property = await ProductPropService.update(
+      const property = await ProductPropService.updateProdProp(
         req.params.productId,
         req.params.id,
         req.body
@@ -75,7 +77,7 @@ class ProductProp {
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
+  async deleteProdProp(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.productId) {
         throw new Error("Не указан id товара");
@@ -83,7 +85,7 @@ class ProductProp {
       if (!req.params.id) {
         throw new Error("Не указано id свойства");
       }
-      const property = await ProductPropService.delete(
+      const property = await ProductPropService.deleteProdProp(
         req.params.productId,
         req.params.id
       );

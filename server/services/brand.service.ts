@@ -2,12 +2,12 @@ import AppError from "../error/ApiError";
 import { Brand as BrandMapping } from "../models/mapping";
 
 class Brand {
-  async getAll() {
+  async getAllBrand() {
     const brands = await BrandMapping.findAll();
     return brands;
   }
 
-  async getOne(id) {
+  async getOneBrand(id) {
     const brand = await BrandMapping.findByPk(id);
     if (!brand) {
       throw new Error("Бренд не найден в БД");
@@ -15,13 +15,13 @@ class Brand {
     return brand;
   }
 
-  async create(data) {
+  async createBrand(data) {
     const { name } = data;
     const brand = await BrandMapping.create({ name });
     return brand;
   }
 
-  async update(id, data) {
+  async updateBrand(id, data) {
     const brand = await BrandMapping.findByPk(id);
     if (!brand) {
       throw new Error("Бренд не найден в БД");
@@ -31,7 +31,7 @@ class Brand {
     return brand;
   }
 
-  async delete(id) {
+  async deleteBrand(id) {
     const brand = await BrandMapping.findByPk(id);
     if (!brand) {
       throw new Error("Бренд не найден в БД");

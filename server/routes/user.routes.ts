@@ -5,29 +5,41 @@ import UserController from "../controllers/user.controller";
 import authMiddleware from "../middleware/authMiddleware";
 import adminMiddleware from "../middleware/adminMiddleware";
 
-router.post("/signup", UserController.signup);
-router.post("/login", UserController.login);
-router.get("/check", authMiddleware, UserController.check);
-
-router.get("/getall", authMiddleware, adminMiddleware, UserController.getAll);
+// любой
+router.post("/signup", UserController.signupUser);
+router.post("/login", UserController.loginUser);
+// USER
+router.get("/check", authMiddleware, UserController.checkUser);
+// ADMIN
+router.get(
+  "/getall",
+  authMiddleware,
+  adminMiddleware,
+  UserController.getAllUser
+);
 router.get(
   "/getone/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  UserController.getOne
+  UserController.getOneUser
 );
-router.post("/create", authMiddleware, adminMiddleware, UserController.create);
+router.post(
+  "/create",
+  authMiddleware,
+  adminMiddleware,
+  UserController.createUser
+);
 router.put(
   "/update/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  UserController.update
+  UserController.updateUser
 );
 router.delete(
   "/delete/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  UserController.delete
+  UserController.deleteUser
 );
 
 export default router;

@@ -4,7 +4,7 @@ import AppError from "../error/ApiError";
 import ProductService from "../services/product.service";
 
 class Product {
-  async getAll(
+  async getAllProduct(
     req /* : Request */ /* // ! от ошб.number не может назнач... для string */,
     res: Response,
     next: NextFunction
@@ -37,7 +37,7 @@ class Product {
         sortOrd,
         sortField,
       };
-      const products = await ProductService.getAll(options);
+      const products = await ProductService.getAllProduct(options);
 
       res.json(products);
     } catch (e) {
@@ -45,31 +45,46 @@ class Product {
     }
   }
 
-  async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getOneProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
       }
-      const product = await ProductService.getOne(Number(req.params.id));
+      const product = await ProductService.getOneProduct(Number(req.params.id));
       res.json(product);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async createProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для создания");
       }
-      const product = await ProductService.create(req.body, req.files?.image);
+      const product = await ProductService.createProduct(
+        req.body,
+        req.files?.image
+      );
       res.json(product);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async updateProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
@@ -77,7 +92,7 @@ class Product {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для обновления");
       }
-      const product = await ProductService.update(
+      const product = await ProductService.updateProduct(
         req.params.id,
         req.body,
         req.files?.image
@@ -88,12 +103,16 @@ class Product {
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async deleteProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id товара");
       }
-      const product = await ProductService.delete(req.params.id);
+      const product = await ProductService.deleteProduct(req.params.id);
       res.json(product);
     } catch (e) {
       next(AppError.badRequest(e.message));

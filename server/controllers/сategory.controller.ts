@@ -4,40 +4,40 @@ import AppError from "../error/ApiError";
 import CategoryService from "../services/category.service";
 
 class Category {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAllCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      const categories = await CategoryService.getAll();
+      const categories = await CategoryService.getAllCategory();
       res.json(categories);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async getOne(req: Request, res: Response, next: NextFunction) {
+  async getOneCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id категории");
       }
-      const category = await CategoryService.getOne(req.params.id);
+      const category = await CategoryService.getOneCategory(req.params.id);
       res.json(category);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.body.name) {
         throw new Error("Нет названия категории");
       }
-      const category = await CategoryService.create(req.body);
+      const category = await CategoryService.createCategory(req.body);
       res.json(category);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async updateCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id категории");
@@ -45,19 +45,22 @@ class Category {
       if (!req.body.name) {
         throw new Error("Нет названия категории");
       }
-      const category = await CategoryService.update(req.params.id, req.body);
+      const category = await CategoryService.updateCategory(
+        req.params.id,
+        req.body
+      );
       res.json(category);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
+  async deleteCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id категории");
       }
-      const category = await CategoryService.delete(req.params.id);
+      const category = await CategoryService.deleteCategory(req.params.id);
       res.json(category);
     } catch (e) {
       next(AppError.badRequest(e.message));

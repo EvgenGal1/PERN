@@ -18,46 +18,46 @@ router.get(
   // "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
   // ^ запрос под неск.парам.ч/з запятую (,? - опциональная запятая, * - 0 и более повторений, + - 1 и более повторений)
   "/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)",
-  ProductController.getAll
+  ProductController.getAllProduct
 );
 // список товаров выбранной категории
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)",
   "/getall/categoryId/:categoryId(,?[0-9]+*)",
-  ProductController.getAll
+  ProductController.getAllProduct
 );
 // список товаров выбранного бренда
 router.get(
   // "/getall/brandId/:brandId([0-9]+)",
   "/getall/brandId/:brandId(,?[0-9]+*)",
-  ProductController.getAll
+  ProductController.getAllProduct
 );
 
 // ^ Стандартные
 // список всех товаров каталога
-router.get("/getall", ProductController.getAll);
+router.get("/getall", ProductController.getAllProduct);
 // получить один товар каталога
-router.get("/getone/:id([0-9]+)", ProductController.getOne);
+router.get("/getone/:id([0-9]+)", ProductController.getOneProduct);
 // создать товар каталога — нужны права администратора
 router.post(
   "/create",
   authMiddleware,
   adminMiddleware,
-  ProductController.create
+  ProductController.createProduct
 );
 // обновить товар каталога  — нужны права администратора
 router.put(
   "/update/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  ProductController.update
+  ProductController.updateProduct
 );
 // удалить товар каталога  — нужны права администратора
 router.delete(
   "/delete/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  ProductController.delete
+  ProductController.deleteProduct
 );
 
 /*
@@ -65,32 +65,35 @@ router.delete(
  */
 
 // список свойств товара
-router.get("/:productId([0-9]+)/property/getall", ProductPropController.getAll);
+router.get(
+  "/:productId([0-9]+)/property/getall",
+  ProductPropController.getAllProdProp
+);
 // одно свойство товара
 router.get(
   "/:productId([0-9]+)/property/getone/:id([0-9]+)",
-  ProductPropController.getOne
+  ProductPropController.getOneProdProp
 );
 // создать свойство товара
 router.post(
   "/:productId([0-9]+)/property/create",
   authMiddleware,
   adminMiddleware,
-  ProductPropController.create
+  ProductPropController.createProdProp
 );
 // обновить свойство товара
 router.put(
   "/:productId([0-9]+)/property/update/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  ProductPropController.update
+  ProductPropController.updateProdProp
 );
 // удалить свойство товара
 router.delete(
   "/:productId([0-9]+)/property/delete/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  ProductPropController.delete
+  ProductPropController.deleteProdProp
 );
 
 export default router;

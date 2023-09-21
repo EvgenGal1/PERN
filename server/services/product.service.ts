@@ -66,7 +66,7 @@ interface Brand {
 }
 
 class Product {
-  async getAll(options: any) {
+  async getAllProduct(options: any) {
     const {
       categoryId,
       categoryId_q,
@@ -147,10 +147,7 @@ class Product {
     return { ...products, limit };
   }
 
-  async getOne(id: number) {
-    // const product = await ProductMapping.findByPk(id);
-    // const product = await ProductMapping.findOne({
-    //   where: { id: id },
+  async getOneProduct(id: number) {
     const product = await ProductMapping.findByPk(id, {
       include: [
         { model: ProductPropMapping, as: "props" },
@@ -166,16 +163,16 @@ class Product {
     return product;
   }
 
-  async create(
+  async createProduct(
     data: CreateData,
     img: any /* : Express.Multer.File */
   ): Promise<Products> {
     // поскольку image не допускает null, задаем пустую строку
-    const image = FileService.save(img) ?? "";
+    const image = FileService.saveFile(img) ?? "";
     const { name, price, categoryId = null, brandId = null } = data;
 
     // перем.для уточнения записи запроса к др.Табл.
-    let where: any = {};
+    // let where: any = {};
     // перем.для вызова метода возврата Товара с Неск-им/Одним знач.
     let returned: any = {};
 
@@ -291,7 +288,7 @@ class Product {
 
       // возврат неск. Товаров со свойствами и кол-ом
       returned = await ProductMapping.findAndCountAll({
-        where,
+        // where, // ? не нужно
         include: [{ model: ProductPropMapping, as: "props" }],
       });
     }
@@ -300,7 +297,7 @@ class Product {
     return returned;
   }
 
-  async update(
+  async updateProduct(
     id: number | string,
     data: UpdateData,
     img: any /* : Express.Multer.File */
@@ -312,10 +309,10 @@ class Product {
       throw new Error("Товар не найден в БД");
     }
     // пробуем сохранить изображение, если оно было загружено
-    const file = FileService.save(img);
+    const file = FileService.saveFile(img);
     // если загружено новое изображение — надо удалить старое
     if (file && product.image) {
-      FileService.delete(product.image);
+      FileService.deleteFile(product.image);
     }
     // подготовка вход.данн. для обнов. в БД
     const {
@@ -348,21 +345,21 @@ class Product {
     return product;
   }
 
-  async delete(id: number | string) {
+  async deleteProduct(id: number | string) {
     const product = await ProductMapping.findByPk(id);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
     if (product.image) {
       // удаляем изображение товара
-      FileService.delete(product.image);
+      FileService.deleteFile(product.image);
     }
     await product.destroy();
     return product;
   }
 
   // TODO: это вообще используется?
-  async isExist(id: number) {
+  async isExistProduct(id: number) {
     const basket = await ProductMapping.findByPk(id);
     return basket;
   }

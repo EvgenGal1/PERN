@@ -4,7 +4,7 @@ import { Order as OrderMapping } from "../models/mapping";
 import { OrderItem as OrderItemMapping } from "../models/mapping";
 
 class OrderItem {
-  async getAll(orderId) {
+  async getAllOrderItems(orderId) {
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
@@ -15,7 +15,7 @@ class OrderItem {
     return items;
   }
 
-  async getOne(orderId, id) {
+  async getOneOrderItems(orderId, id) {
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
@@ -29,7 +29,7 @@ class OrderItem {
     return item;
   }
 
-  async create(orderId, data) {
+  async createOrderItems(orderId, data) {
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
@@ -44,7 +44,7 @@ class OrderItem {
     return item;
   }
 
-  async update(orderId, id, data) {
+  async updateOrderItems(orderId, id, data) {
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
@@ -86,7 +86,7 @@ class OrderItem {
     return item;
   }
 
-  async delete(orderId, id: number | string) {
+  async deleteOrderItems(orderId, id: number | string) {
     const order = await OrderMapping.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");

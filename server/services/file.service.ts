@@ -5,7 +5,7 @@ const uuid = require("uuid");
 const path = require("path");
 
 class FileService {
-  save(file: /* : Express.Multer.File */ any): string | null {
+  saveFile(file: /* : Express.Multer.File */ any): string | null {
     if (!file) return null;
     try {
       // ^ заливка 1го ИЗО
@@ -45,7 +45,7 @@ class FileService {
     }
   }
 
-  delete(file: string): void {
+  deleteFile(file: string): void {
     if (file) {
       const filePath = path.resolve("static", file);
       if (fs.existsSync(filePath)) {

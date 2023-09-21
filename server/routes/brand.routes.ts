@@ -5,20 +5,25 @@ import authMiddleware from "../middleware/authMiddleware";
 import adminMiddleware from "../middleware/adminMiddleware";
 import BrandController from "../controllers/brand.controller";
 
-router.get("/getall", BrandController.getAll);
-router.get("/getone/:id([0-9]+)", BrandController.getOne);
-router.post("/create", authMiddleware, adminMiddleware, BrandController.create);
+router.get("/getall", BrandController.getAllBrand);
+router.get("/getone/:id([0-9]+)", BrandController.getOneBrand);
+router.post(
+  "/create",
+  authMiddleware,
+  adminMiddleware,
+  BrandController.createBrand
+);
 router.put(
   "/update/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  BrandController.update
+  BrandController.updateBrand
 );
 router.delete(
   "/delete/:id([0-9]+)",
   authMiddleware,
   adminMiddleware,
-  BrandController.delete
+  BrandController.deleteBrand
 );
 
 export default router;

@@ -4,7 +4,7 @@ import { Product as ProductMapping } from "../models/mapping";
 import { ProductProp as ProductPropMapping } from "../models/mapping";
 
 class ProductProp {
-  async getAll(productId) {
+  async getAllProdProp(productId) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -15,7 +15,7 @@ class ProductProp {
     return properties;
   }
 
-  async getOne(productId, id) {
+  async getOneProdProp(productId, id) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -29,7 +29,7 @@ class ProductProp {
     return property;
   }
 
-  async create(productId, data) {
+  async createProdProp(productId, data) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -43,7 +43,7 @@ class ProductProp {
     return property;
   }
 
-  async update(productId, id, data) {
+  async updateProdProp(productId, id, data) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -59,7 +59,7 @@ class ProductProp {
     return property;
   }
 
-  async delete(productId, id: number | string) {
+  async deleteProdProp(productId, id: number | string) {
     const product = await ProductMapping.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");

@@ -2,12 +2,12 @@ import AppError from "../error/ApiError";
 import { User as UserMapping } from "../models/mapping";
 
 class User {
-  async getAll() {
+  async getAllUser() {
     const users = await UserMapping.findAll();
     return users;
   }
 
-  async getOne(id) {
+  async getOneUser(id) {
     const user = await UserMapping.findByPk(id);
     if (!user) {
       throw new Error("Пользователь не найден в БД");
@@ -15,7 +15,7 @@ class User {
     return user;
   }
 
-  async getByEmail(email) {
+  async getByEmailUser(email) {
     const user = await UserMapping.findOne({ where: { email } });
     if (!user) {
       throw new Error("Пользователь не найден в БД");
@@ -23,7 +23,7 @@ class User {
     return user;
   }
 
-  async create(data) {
+  async createUser(data) {
     const { email, password, role } = data;
     const check = await UserMapping.findOne({ where: { email } });
     if (check) {
@@ -33,7 +33,7 @@ class User {
     return user;
   }
 
-  async update(id, data) {
+  async updateUser(id, data) {
     const user = await UserMapping.findByPk(id);
     if (!user) {
       throw new Error("Пользователь не найден в БД");
@@ -47,7 +47,7 @@ class User {
     return user;
   }
 
-  async delete(id) {
+  async deleteUser(id) {
     const user = await UserMapping.findByPk(id);
     if (!user) {
       throw new Error("Пользователь не найден в БД");

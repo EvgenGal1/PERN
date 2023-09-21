@@ -3,20 +3,20 @@ const router /* : Application */ = express();
 
 import BasketController from "../controllers/basket.controller";
 
-router.get("/getone", BasketController.getOne);
+router.get("/getone", BasketController.getOneBasket);
 router.put(
   "/product/:productId([0-9]+)/append/:quantity([0-9]+)",
-  BasketController.append
+  BasketController.appendBasket
 );
 router.put(
   "/product/:productId([0-9]+)/increment/:quantity([0-9]+)",
-  BasketController.increment
+  BasketController.incrementBasket
 );
 router.put(
   "/product/:productId([0-9]+)/decrement/:quantity([0-9]+)",
-  BasketController.decrement
+  BasketController.decrementBasket
 );
-router.put("/product/:productId([0-9]+)/remove", BasketController.remove);
-router.put("/clear", BasketController.clear);
+router.put("/product/:productId([0-9]+)/remove", BasketController.removeBasket);
+router.put("/clear", BasketController.clearBasket);
 
 export default router;

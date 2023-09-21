@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 import AppError from "../error/ApiError";
 import UserService from "../services/user.service";
+import BasketService from "../services/basket.service";
 
 const makeJwt = (id, email, role) => {
   return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
@@ -12,7 +13,7 @@ const makeJwt = (id, email, role) => {
 
 class User {
   // Регистрация
-  async signup(req, res, next) {
+  async signupUser(req, res, next) {
     try {
       const { email, password, role = "USER" } = req.body;
       if (!email || !password) {
@@ -22,8 +23,16 @@ class User {
         throw new Error("Возможна только роль USER");
       }
       const hash = await bcrypt.hash(password, 5);
-      const user = await UserService.create({ email, password: hash, role });
+      const user = await UserService.createUser({
+        email,
+        password: hash,
+        role,
+      });
       const token = makeJwt(user.id, user.email, user.role);
+      // созд.Корзину по User.id
+      if (user.id) {
+        await BasketService.createBasket(user.id);
+      }
       return res.json({ token });
     } catch (e) {
       next(AppError.badRequest(e.message));
@@ -31,11 +40,11 @@ class User {
   }
 
   // Вход
-  async login(req, res, next) {
+  async loginUser(req, res, next) {
     try {
       const { email, password } = req.body;
 
-      const user = await UserService.getByEmail(email);
+      const user = await UserService.getByEmailUser(email);
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
         throw new Error("Указан неверный пароль");
@@ -47,33 +56,34 @@ class User {
     }
   }
 
-  async check(req, res, next) {
+  async checkUser(req, res, next) {
     const token = makeJwt(req.auth.id, req.auth.email, req.auth.role);
     return res.json({ token });
   }
 
-  async getAll(req, res, next) {
+  async getAllUser(req, res, next) {
     try {
-      const users = await UserService.getAll();
+      const users = await UserService.getAllUser();
       res.json(users);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async getOne(req, res, next) {
+  async getOneUser(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");
       }
-      const user = await UserService.getOne(req.params.id);
+      const user = await UserService.getOneUser(req.params.id);
       res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async create(req, res, next) {
+  // пока отд.нет
+  async createUser(req, res, next) {
     const { email, password, role = "USER" } = req.body;
     try {
       if (!email || !password) {
@@ -83,14 +93,22 @@ class User {
         throw new Error("Недопустимое значение роли");
       }
       const hash = await bcrypt.hash(password, 5);
-      const user = await UserService.create({ email, password: hash, role });
+      const user = await UserService.createUser({
+        email,
+        password: hash,
+        role,
+      });
+      // созд.Корзину по User.id
+      if (user.id) {
+        await BasketService.createBasket(user.id);
+      }
       return res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async update(req, res, next) {
+  async updateUser(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");
@@ -105,7 +123,7 @@ class User {
       if (password) {
         password = await bcrypt.hash(password, 5);
       }
-      const user = await UserService.update(req.params.id, {
+      const user = await UserService.updateUser(req.params.id, {
         email,
         password,
         role,
@@ -116,12 +134,12 @@ class User {
     }
   }
 
-  async delete(req, res, next) {
+  async deleteUser(req, res, next) {
     try {
       if (!req.params.id) {
         throw new Error("Не указан id пользователя");
       }
-      const user = await UserService.delete(req.params.id);
+      const user = await UserService.deleteUser(req.params.id);
       res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));

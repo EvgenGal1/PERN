@@ -8,19 +8,21 @@ import AppError from "../error/ApiError";
 import OrderItemsService from "../services/orderItems.service";
 
 class orderItems {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAllOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.orderId) {
         throw new Error("Не указан id товара");
       }
-      const items = await OrderItemsService.getAll(req.params.orderId);
+      const items = await OrderItemsService.getAllOrderItems(
+        req.params.orderId
+      );
       res.json(items);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async getOne(req: Request, res: Response, next: NextFunction) {
+  async getOneOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.orderId) {
         throw new Error("Не указан id товара");
@@ -28,7 +30,7 @@ class orderItems {
       if (!req.params.id) {
         throw new Error("Не указано id свойства");
       }
-      const item = await OrderItemsService.getOne(
+      const item = await OrderItemsService.getOneOrderItems(
         req.params.orderId,
         req.params.id
       );
@@ -38,7 +40,7 @@ class orderItems {
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async createOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.orderId) {
         throw new Error("Не указан id товара");
@@ -46,14 +48,17 @@ class orderItems {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для создания");
       }
-      const item = await OrderItemsService.create(req.params.orderId, req.body);
+      const item = await OrderItemsService.createOrderItems(
+        req.params.orderId,
+        req.body
+      );
       res.json(item);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async updateOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.orderId) {
         throw new Error("Не указан id товара");
@@ -64,7 +69,7 @@ class orderItems {
       if (Object.keys(req.body).length === 0) {
         throw new Error("Нет данных для обновления");
       }
-      const item = await OrderItemsService.update(
+      const item = await OrderItemsService.updateOrderItems(
         req.params.orderId,
         req.params.id,
         req.body
@@ -75,7 +80,7 @@ class orderItems {
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
+  async deleteOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.orderId) {
         throw new Error("Не указан id товара");
@@ -83,7 +88,7 @@ class orderItems {
       if (!req.params.id) {
         throw new Error("Не указано id свойства");
       }
-      const item = await OrderItemsService.delete(
+      const item = await OrderItemsService.deleteOrderItems(
         req.params.orderId,
         req.params.id
       );
