@@ -2,19 +2,23 @@ import AppError from "../error/ApiError";
 import RatingService from "../services/rating.service";
 
 class Rating {
-  async getOne(req, res, next) {
+  async getOneRating(req, res, next) {
     try {
-      const rating = await RatingService.getOne(req.params.productId);
+      const rating = await RatingService.getOneRating(req.params.productId);
       res.json(rating);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  async create(req, res, next) {
+  async createRating(req, res, next) {
     try {
       const { productId, rate } = req.params;
-      const rating = await RatingService.create(rate, productId, req.auth.id);
+      const rating = await RatingService.createRating(
+        rate,
+        productId,
+        req.auth.id
+      );
       res.json(rating);
     } catch (e) {
       next(AppError.badRequest(e.message));

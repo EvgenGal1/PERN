@@ -350,9 +350,13 @@ class Product {
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
+    // удаляем ИЗО Товара
     if (product.image) {
-      // удаляем изображение товара
       FileService.deleteFile(product.image);
+    }
+    // удаляем Хар-ки Товара
+    if (product.prop) {
+      ProductPropMapping.destroy({ where: { productId: id } });
     }
     await product.destroy();
     return product;

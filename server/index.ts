@@ -11,7 +11,6 @@ import sequelize from "./sequelize";
 import * as mapping from "./models/mapping";
 import router from "./routes/index.routes";
 import ErrorHandler from "./middleware/ErrorHandler";
-// import ErrorHandler from "./middleware/ErrorHandler_Tok.js";
 
 const PORT = process.env.PORT_PERN || 5000;
 

@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 
 import AppError from "../error/ApiError";
 import UserService from "../services/user.service";
-import BasketService from "../services/basket.service";
+// подкл. валидацию
+const { validationResult } = require("express-validator");
 
 const makeJwt = (id, email, role) => {
   return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
@@ -12,16 +13,33 @@ const makeJwt = (id, email, role) => {
 };
 
 class User {
-  // Регистрация
+  // РЕГИСТРАЦИЯ
   async signupUser(req, res, next) {
     try {
+      // проверка вход.полей на валидацию. шаблоны в route
+      const errorsValid = validationResult(req);
+      // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
+      if (!errorsValid.isEmpty()) {
+        // throw new Error( // ! ошб.
+        // throw next(AppError.badRequest(
+        // return AppError.badRequest( // ? нет вывода на Front
+        return next(
+          AppError.badRequest(
+            // {message: "смс",errors: errorsValid.array()} // ! при передаче объ.не подтягивается errors
+            "Некорректые данные при Регистрации",
+            errorsValid.array()
+          )
+        );
+      }
+
       const { email, password, role = "USER" } = req.body;
+
       if (!email || !password) {
         throw new Error("Пустой email или пароль");
       }
-      if (role !== "USER") {
-        throw new Error("Возможна только роль USER");
-      }
+      // if (role !== "USER") {
+      //   throw new Error("Возможна только роль USER");
+      // }
       const hash = await bcrypt.hash(password, 5);
       const user = await UserService.createUser({
         email,
@@ -29,22 +47,23 @@ class User {
         role,
       });
       const token = makeJwt(user.id, user.email, user.role);
-      // созд.Корзину по User.id
-      if (user.id) {
-        await BasketService.createBasket(user.id);
-      }
+      // // созд.Корзину по User.id
+      // if (user.id) {
+      //   await BasketService.createBasket(user.id);
+      // }
       return res.json({ token });
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
   }
 
-  // Вход
+  // АВТОРИЗАЦИЯ
   async loginUser(req, res, next) {
     try {
       const { email, password } = req.body;
 
       const user = await UserService.getByEmailUser(email);
+      // `сравнение` паролей
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
         throw new Error("Указан неверный пароль");
@@ -98,10 +117,10 @@ class User {
         password: hash,
         role,
       });
-      // созд.Корзину по User.id
-      if (user.id) {
-        await BasketService.createBasket(user.id);
-      }
+      // // созд.Корзину по User.id
+      // if (user.id) {
+      //   await BasketService.createBasket(user.id);
+      // }
       return res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
