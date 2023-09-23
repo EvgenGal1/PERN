@@ -15,11 +15,8 @@ export const signupUser = async (email: string, password: string | any) => {
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
-    const var1 = e?.response?.data?.errors?.map((obj: any) => obj.msg);
-    const var2 = var1.join(",");
-    // alert(e?.response?.data?.message);
-    alert(`${e?.response?.data?.message}\n${var1}\n${var2}`);
-    return false;
+    const data = e?.response?.data;
+    return data;
   }
 };
 
