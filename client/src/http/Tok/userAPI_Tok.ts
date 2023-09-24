@@ -15,6 +15,9 @@ export const signupUser = async (email: string, password: string | any) => {
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
+    // alert(e?.response?.data?.message);
+    // return false;
+
     const data = e?.response?.data;
     return data;
   }
@@ -31,8 +34,11 @@ export const loginUser = async (email: string, password: string | any) => {
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
-    alert(e?.response?.data?.message);
-    return false;
+    // alert(e?.response?.data?.message);
+    // return false;
+
+    const data = e?.response?.data;
+    return data;
   }
 };
 

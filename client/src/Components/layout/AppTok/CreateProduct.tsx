@@ -269,7 +269,6 @@ const CreateProduct = (props: any) => {
   const handlerChangeBulkValue = (event: any) => {
     event.preventDefault();
     // запись доп.ФормДаты из state в перем.
-    console.log("INPT event ", event);
     let dataProduct = [...valueBulkArr];
 
     // перем. Имени и Значения поля формы
@@ -283,7 +282,7 @@ const CreateProduct = (props: any) => {
 
     // выбор.в масс. объ.по id блока
     let idDataProduct = dataProduct[idParentPropsNum];
-    // реребор объ.по key
+    // перебор объ.по key
     for (const key in idDataProduct) {
       // запись е/и key = name, кроме image
       if (key === nameForm && nameForm !== "image") {
