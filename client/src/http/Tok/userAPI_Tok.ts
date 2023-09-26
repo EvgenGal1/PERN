@@ -8,17 +8,13 @@ export const signupUser = async (email: string, password: string | any) => {
     const response = await guestInstance.post("user/signup", {
       email,
       password,
-      // role: "USER",
     });
     const token = response.data.token;
     const user = jwt_decode(token);
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
-    // alert(e?.response?.data?.message);
-    // return false;
-
-    const data = e?.response?.data;
+    const data = e?.response; // ?.data;
     return data;
   }
 };
@@ -34,10 +30,7 @@ export const loginUser = async (email: string, password: string | any) => {
     localStorage.setItem("token", token);
     return user;
   } catch (e: any) {
-    // alert(e?.response?.data?.message);
-    // return false;
-
-    const data = e?.response?.data;
+    const data = e?.response; // ?.data;
     return data;
   }
 };
