@@ -1,7 +1,7 @@
 // ^ Многраз.Комп.Заказа
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Button, Spinner, Row, Col, Pagination } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 import {
   adminGetOne,
@@ -10,9 +10,6 @@ import {
 } from "../../../http/Tok/orderAPI_Tok";
 import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
-
-// количество Заказов на страницу
-const ADMIN_PER_PAGE = 8;
 
 const Order = (props: any) => {
   const navigate = useNavigate();
@@ -32,30 +29,6 @@ const Order = (props: any) => {
   const [orderId, setOrderId]: any = useState(null);
   // признак удалённого Заказа
   const [delOrd, setDelOrd]: any = useState(false);
-
-  // // текущая страница списка Заказов
-  // const [currentPage, setCurrentPage] = useState(1);
-  // // сколько всего страниц списка Заказов
-  // const [totalPages, setTotalPages] = useState(1);
-  // // обработчик клика по номеру страницы
-  // const handlePageClick = (page: any) => {
-  //   setCurrentPage(page);
-  //   setFetching(true);
-  // };
-  // // содержимое компонента <Pagination>
-  // const pages: any = [];
-  // for (let page = 1; page <= totalPages; page++) {
-  //   pages.push(
-  //     <Pagination.Item
-  //       key={page}
-  //       active={page === currentPage}
-  //       activeLabel=""
-  //       onClick={() => handlePageClick(page)}
-  //     >
-  //       {page}
-  //     </Pagination.Item>
-  //   );
-  // }
 
   const handleUpdateClick = (id: any) => {
     setOrderId(id);
@@ -150,33 +123,11 @@ const Order = (props: any) => {
         setChange={setChange}
         auth={auth}
       />
-      {/* КНП Редакт./Удалить */}
-      <Row className="mb-3">
-        <Col>
-          <Button
-            variant="success"
-            size="sm"
-            onClick={() => handleUpdateClick(orders.id)}
-            style={{ marginRight: "15px" }}
-            className="btn-success--eg"
-          >
-            Редактировать
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => handleDeleteClick(orders.id)}
-            className="btn-danger--eg"
-          >
-            Удалить
-          </Button>
-        </Col>
-      </Row>
       {/* ПОЗИЦИИ Заказа */}
       <span style={{ marginBottom: "3px", display: "inline-block" }}>
         Позиции Заказа № {orders.id}
       </span>
-      <Table bordered hover size="sm" className="table--eg">
+      <table className="table--eg">
         <thead>
           <tr>
             <th>Название позиции</th>
@@ -201,7 +152,22 @@ const Order = (props: any) => {
             <td style={{ fontWeight: "bold" }}>{orders.amount}</td>
           </tr>
         </tbody>
-      </Table>
+      </table>
+      {/* КНП Редакт./Удалить */}
+      <div className="df df-row mb-3">
+        <button
+          onClick={() => handleUpdateClick(orders.id)}
+          className="btn--eg btn-success--eg mt-3"
+        >
+          Редактировать
+        </button>
+        <button
+          onClick={() => handleDeleteClick(orders.id)}
+          className="btn--eg btn-danger--eg mt-3 mlr-3"
+        >
+          Удалить
+        </button>
+      </div>
     </>
   );
 };

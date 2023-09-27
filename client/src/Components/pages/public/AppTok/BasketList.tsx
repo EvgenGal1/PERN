@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Spinner, Button } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
@@ -68,7 +68,7 @@ const BasketList = observer(() => {
       {/* // ^ решил - использ.доп.условн.рендер (fetching) */}
       {basket.count ? (
         <>
-          <Table bordered hover size="sm" className="mt-3 table--eg">
+          <table className="mt-3 table--eg">
             <thead>
               <tr>
                 <th>Наименование</th>
@@ -94,14 +94,13 @@ const BasketList = observer(() => {
                 <th>руб.</th>
               </tr>
             </tbody>
-          </Table>
-          <Button
-            variant="primary"
+          </table>
+          <button
             onClick={() => navigate(CHECKOUT_ROUTE)}
-            className="btn-primary--eg"
+            className="btn--eg btn-primary--eg"
           >
             Оформить заказ
-          </Button>
+          </button>
         </>
       ) : (
         fetching && <p>Ваша корзина пуста</p>

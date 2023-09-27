@@ -1,6 +1,6 @@
 // ^ Список Товаров
 import { useContext, useState, useEffect } from "react";
-import { Button, Container, Spinner, Table } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import {
@@ -92,16 +92,15 @@ const AdminProducts = () => {
   // }
 
   return (
-    <Container>
+    <div className="container">
       <h1>Товары</h1>
       {/* Создание Товара (btn|Комп.Modal) */}
-      <Button
+      <button
         onClick={() => setCreateShow(true)}
-        variant="primary"
-        className="btn-primary--eg"
+        className="btn--eg btn-primary--eg"
       >
         Создать товар
-      </Button>
+      </button>
       <CreateProduct
         show={createShow}
         setShow={setCreateShow}
@@ -123,7 +122,7 @@ const AdminProducts = () => {
             setFetching={setFetching}
             setChange={setChange}
           />
-          <Table bordered hover size="sm" className="mt-3 table--eg">
+          <table className="mt-3 table--eg">
             <thead>
               <tr>
                 <th style={{ width: "250px" }}>Название</th>
@@ -169,30 +168,26 @@ const AdminProducts = () => {
                     <td>{item.price}</td>
                     <td>{item.rating}</td>
                     <td style={{ textAlign: "center" }}>
-                      <Button
-                        variant="success"
-                        size="sm"
+                      <button
                         onClick={() => handleUpdateClick(item.id)}
-                        className="btn-success--eg"
+                        className="btn--eg btn-success--eg"
                       >
                         {matches ? "Редактировать" : "✎"}
-                      </Button>
+                      </button>
                     </td>
                     <td style={{ textAlign: "center" }}>
-                      <Button
-                        variant="danger"
-                        size="sm"
+                      <button
                         onClick={() => handleDeleteClick(item.id)}
-                        className="btn-danger--eg"
+                        className="btn--eg btn-danger--eg"
                       >
                         {matches ? "Удалить" : "✕"}
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
-          </Table>
+          </table>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
           <PaginSortLimit
             admin={true}
@@ -203,7 +198,7 @@ const AdminProducts = () => {
       ) : (
         <p>Список товаров пустой</p>
       )}
-    </Container>
+    </div>
   );
 };
 

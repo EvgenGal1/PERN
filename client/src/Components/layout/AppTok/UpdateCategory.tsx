@@ -1,6 +1,6 @@
 // ^ Редактирование Категории
 import { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 
 import {
   fetchCategory,
@@ -65,14 +65,9 @@ const UpdateCategory = (props: any) => {
             placeholder="Название категории..."
             className="mb-3 123"
           />
-          <Button
-            type="submit"
-            size="sm"
-            variant="success"
-            className="btn-success--eg"
-          >
+          <button type="submit" className="btn--eg btn-success--eg">
             Сохранить
-          </Button>
+          </button>
         </Form>
       </Modal.Body>
     </Modal>

@@ -1,6 +1,6 @@
 // ^ модальн.окно редактирование Заказа
 import { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
 import {
@@ -259,8 +259,8 @@ const UpdateOrder = (props: any) => {
             placeholder="Адрес"
             className="mb-3"
           />
-          <Row className="mb-3">
-            <Col>
+          <div className="df df-row mb-3">
+            <div className="df df-col">
               <Form.Control
                 name="email"
                 value={value.email}
@@ -269,8 +269,8 @@ const UpdateOrder = (props: any) => {
                 isInvalid={valid.email === false}
                 placeholder="Email"
               />
-            </Col>
-            <Col>
+            </div>
+            <div className="df df-col">
               <Form.Control
                 name="phone"
                 value={value.phone}
@@ -279,8 +279,8 @@ const UpdateOrder = (props: any) => {
                 isInvalid={valid.phone === false}
                 placeholder="Телефон"
               />
-            </Col>
-          </Row>
+            </div>
+          </div>
           <Form.Control
             name="comment"
             value={value.comment}
@@ -290,28 +290,18 @@ const UpdateOrder = (props: any) => {
             placeholder="Комментарий"
           />
           <UpdateItems items={items} setItems={setItems} />
-          <Row>
-            <Col>
-              <Button
-                type="submit"
-                size="sm"
-                variant="success"
-                className="btn-success--eg"
-              >
+          <div className="df df-row">
+            <div className="df df-col">
+              <button type="submit" className="btn--eg btn-success--eg">
                 Сохранить
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                // type="submit"
-                // variant="primary"
-                size="sm"
-                className="btn-primary--eg"
-              >
+              </button>
+            </div>
+            <div className="df df-col">
+              <button type="submit" className="btn--eg btn-primary--eg">
                 {amount}
-              </Button>
-            </Col>
-          </Row>
+              </button>
+            </div>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

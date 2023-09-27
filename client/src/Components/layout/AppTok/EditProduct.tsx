@@ -1,16 +1,7 @@
 import { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 
-import {
-  createProduct,
-  updateProduct,
-  fetchCategories,
-  fetchBrands,
-  fetchOneProduct,
-  createProperty,
-  updateProperty,
-  deleteProperty,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { createProduct, updateProduct } from "../../../http/Tok/catalogAPI_Tok";
 
 const EditProduct = (props: any) => {
   const { id, show, setShow, setChange } = props;
@@ -81,14 +72,9 @@ const EditProduct = (props: any) => {
             placeholder="Название бренда..."
             className="mb-3"
           />
-          <Button
-            type="submit"
-            size="sm"
-            variant="success"
-            className="btn-success--eg"
-          >
+          <button type="submit" className="btn--eg btn-success--eg">
             Сохранить
-          </Button>
+          </button>
         </Form>
       </Modal.Body>
     </Modal>

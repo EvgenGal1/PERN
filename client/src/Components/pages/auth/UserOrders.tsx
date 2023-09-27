@@ -1,6 +1,6 @@
 // ^ Список Заказов Usera
 import { useState, useEffect } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 import { userGetAll as getAllOrders } from "../../../http/Tok/orderAPI_Tok";
 import Orders from "../../layout/AppTok/Orders";
@@ -20,10 +20,10 @@ const UserOrders = () => {
   }
 
   return (
-    <Container>
+    <div className="container">
       <h1>Ваши заказы</h1>
       <Orders items={orders} admin={false} />
-    </Container>
+    </div>
   );
 };
 

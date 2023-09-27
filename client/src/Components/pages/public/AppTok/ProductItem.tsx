@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Col } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import {
@@ -156,10 +156,11 @@ const ProductItem = ({ data }: any) => {
   }
 
   return (
-    <Col
-      md={3}
-      lg={4}
-      sm={6}
+    <div
+      className="df df-col col-lg-4 col-md-3 col-sm-6"
+      // md={3}
+      // lg={4}
+      // sm={6}
       // onClick={() =>
       //   navigate(
       //     PRODUCT_ROUTE + `/${data.id}`
@@ -286,7 +287,7 @@ const ProductItem = ({ data }: any) => {
           </div>
         </Card.Body>
       </Card>
-    </Col>
+    </div>
   );
 };
 

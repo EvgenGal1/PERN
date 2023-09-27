@@ -1,6 +1,6 @@
 // ^ Список Заказов для Admina
 import { useState, useEffect } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 import { adminGetAll as getAllOrders } from "../../../http/Tok/orderAPI_Tok";
 import Orders from "../../layout/AppTok/Orders";
@@ -20,10 +20,10 @@ const AdminOrders = () => {
   }
 
   return (
-    <Container>
+    <div className="container">
       <h1>Все заказы</h1>
       <Orders items={orders} admin={true} />
-    </Container>
+    </div>
   );
 };
 

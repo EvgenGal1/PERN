@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Container } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import {
@@ -23,7 +22,7 @@ const Admin = () => {
   };
 
   return (
-    <Container>
+    <div className="container">
       <h1>Панель управления</h1>
       <p>Это панель управления магазином для администратора</p>
       <ul>
@@ -40,14 +39,10 @@ const Admin = () => {
           <Link to={ADMINPRODUCTS_ROUTE}>Товары каталога</Link>
         </li>
       </ul>
-      <Button
-        onClick={handleLogout}
-        variant="primary"
-        className="btn-primary--eg"
-      >
+      <button onClick={handleLogout} className="btn--eg btn-primary--eg">
         Выйти
-      </Button>
-    </Container>
+      </button>
+    </div>
   );
 };
 

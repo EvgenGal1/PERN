@@ -1,7 +1,7 @@
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Row, Card, Form, Button } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
 
 const Login = () => {
   const { user }: any = useContext(AppContext);
@@ -14,7 +14,7 @@ const Login = () => {
   // }, []);
 
   return (
-    <Container className="d-flex justify-content-center">
+    <div className="container d-flex justify-content-center">
       <Card
         style={{ width: "50%" /* // ! , :hover: { cursor: "pointer"} */ }}
         className="p-2 card-form--eg"
@@ -32,15 +32,17 @@ const Login = () => {
             placeholder="Введите ваш пароль..."
             defaultValue=""
           />
-          <Row className="d-flex justify-content-between mt-3 pl-3 pr-3">
-            <Button type="submit">Войти</Button>
+          <div className="df df-row df-jcb mt-3 pl-3 pr-3">
+            <button type="submit" className="btn--eg">
+              Войти
+            </button>
             <p className="text-center mt-2 mb-0">
               Нет аккаунта? <Link to="/signup">Зарегистрирутесь!</Link>
             </p>
-          </Row>
+          </div>
         </Form>
       </Card>
-    </Container>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 // ^ Один Заказ для Admina
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 import { adminGetOne as getOneOrder } from "../../../http/Tok/orderAPI_Tok";
 import Order from "../../layout/AppTok/Order";
@@ -28,10 +28,10 @@ const AdminOrder = () => {
   }
 
   return (
-    <Container>
+    <div className="container">
       <h1>Заказ № {order.id}</h1>
       <Order data={order.id} admin={true} />
-    </Container>
+    </div>
   );
 };
 

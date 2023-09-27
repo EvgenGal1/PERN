@@ -1,6 +1,6 @@
 // ^ Список Категорий
 import { useState, useEffect } from "react";
-import { Button, Container, Spinner, Table } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 import {
   fetchCategories,
@@ -50,16 +50,15 @@ const AdminCategories = () => {
   }
 
   return (
-    <Container>
+    <div className="container">
       <h1>Категории</h1>
       {/* Кнп. для показа Модального окна с формой */}
-      <Button
+      <button
         onClick={() => handleCreateClick()}
-        variant="primary"
-        className="btn-primary--eg"
+        className="btn--eg btn-primary--eg"
       >
         Создать категорию
-      </Button>
+      </button>
       <EditCategory
         id={categoryId}
         show={show}
@@ -68,7 +67,7 @@ const AdminCategories = () => {
       />
       {/* Таблица Категорий */}
       {categories.length > 0 ? (
-        <Table bordered hover size="sm" className="mt-3 table--eg">
+        <table className="mt-3 table--eg">
           <thead>
             <tr>
               <th>Название</th>
@@ -81,33 +80,29 @@ const AdminCategories = () => {
               <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>
-                  <Button
-                    variant="success"
-                    size="sm"
+                  <button
                     onClick={() => handleUpdateClick(item.id)}
-                    className="btn-success--eg"
+                    className="btn--eg btn-success--eg"
                   >
                     Редактировать
-                  </Button>
+                  </button>
                 </td>
                 <td>
-                  <Button
-                    variant="danger"
-                    size="sm"
+                  <button
                     onClick={() => handleDeleteClick(item.id)}
-                    className="btn-danger--eg"
+                    className="btn--eg btn-danger--eg"
                   >
                     Удалить
-                  </Button>
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
-        </Table>
+        </table>
       ) : (
         <p>Список категорий пустой</p>
       )}
-    </Container>
+    </div>
   );
 };
 

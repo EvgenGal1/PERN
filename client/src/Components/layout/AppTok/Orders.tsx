@@ -1,68 +1,15 @@
 // ^ Многраз.Комп.Заказов
-// import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Table } from "react-bootstrap";
-
-// import {
-//   adminGetAll,
-//   adminGetOne,
-//   adminUpdate,
-//   adminDelete,
-// } from "../../../http/Tok/orderAPI_Tok";
-// import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
 
 const Orders = (props: any) => {
-  // список загруженных заказов
-  // const [orders, setOrders]: any = useState([]);
-  // загрузка списка категорий с сервера
-  // const [fetching, setFetching] = useState(true);
-  // модальное окно создания-редактирования
-  // const [show, setShow] /* : any */ = useState(false);
-  // для обновления списка после добавления, редактирования, удаления — изменяем состояние
-  // const [change, setChange] = useState(false);
-  // id заказа, которую будем редактировать — для передачи в <UpdateOrder id={…} />
-  // const [orderId, setOrderId]: any = useState(null);
-
-  // useEffect(() => {
-  //   adminGetAll()
-  //     .then((data: any) => {
-  //       setOrders(data);
-  //     })
-  //     .finally(() => setFetching(false));
-  // }, [change]);
-
   if (props.items?.length === 0) {
     return <p>Список заказов пустой</p>;
   }
 
-  // const handleUpdateClick = (id: any) => {
-  //   setOrderId(id);
-  //   setShow(true);
-  // };
-
-  // const handleDeleteClick = (id: any) => {
-  //   adminGetOne(id);
-  //   alert(`Заказ «» удален`);
-  // };
-
-  // if (fetching) {
-  //   return <Spinner animation="border" />;
-  // }
-
   return (
     <>
-      ordS
-      {/* <UpdateOrder
-        id={orderId}
-        // show={updateShow}
-        // setShow={setUpdateShow}
-        show={show}
-        setShow={setShow}
-        setChange={setChange}
-      /> */}
-      {/*  */}
-      <Table bordered hover size="sm" className="mt-3 table--eg">
+      <table className="mt-3 table--eg">
         <thead>
           <tr>
             <th>№</th>
@@ -106,7 +53,7 @@ const Orders = (props: any) => {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </>
   );
 };

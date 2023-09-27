@@ -1,6 +1,6 @@
 // ^ модальн.окно редактирование Товара
 import { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
 import {
@@ -218,8 +218,8 @@ const UpdateProduct = (props: any) => {
             className="mb-3"
           />
           {/* Категория и Бренд */}
-          <Row className="mb-3">
-            <Col>
+          <div className="df df-row mb-3">
+            <div className="df df-col">
               <Form.Select
                 name="category"
                 value={value.category}
@@ -235,8 +235,8 @@ const UpdateProduct = (props: any) => {
                     </option>
                   ))}
               </Form.Select>
-            </Col>
-            <Col>
+            </div>
+            <div className="df df-col">
               <Form.Select
                 name="brand"
                 value={value.brand}
@@ -252,10 +252,10 @@ const UpdateProduct = (props: any) => {
                     </option>
                   ))}
               </Form.Select>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
+            </div>
+          </div>
+          <div className="df df-row mb-3">
+            <div className="df df-col">
               <Form.Control
                 name="price"
                 value={value.price}
@@ -264,32 +264,27 @@ const UpdateProduct = (props: any) => {
                 isInvalid={valid.price === false}
                 placeholder="Цена товара..."
               />
-            </Col>
-            <Col>
+            </div>
+            <div className="df df-col">
               <Form.Control
                 name="image"
                 type="file"
                 onChange={(e) => handleImageChange(e)}
                 placeholder="Фото товара..."
               />
-            </Col>
-          </Row>
+            </div>
+          </div>
           <UpdateProperties
             properties={properties}
             setProperties={setProperties}
           />
-          <Row>
-            <Col>
-              <Button
-                type="submit"
-                size="sm"
-                variant="success"
-                className="btn-success--eg"
-              >
+          <div className="df df-row">
+            <div className="df df-col">
+              <button type="submit" className="btn--eg btn-success--eg">
                 Сохранить
-              </Button>
-            </Col>
-          </Row>
+              </button>
+            </div>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

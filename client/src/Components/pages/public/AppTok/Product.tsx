@@ -1,14 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Image,
-  Spinner,
-  Table,
-} from "react-bootstrap";
+import { Image, Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import {
@@ -96,13 +88,9 @@ const Product = (/* props: any */) => {
   }
 
   return (
-    // {/* можно из Contexta подтянуть нужный эл.по id из useParams ч/з filter, но там нет Хар-ик */}
-    // {catalog.products
-    //   .filter((product: any) => { return product.id === parseFloat(id); })
-    //   .map((product: any) => { return (
-    <Container>
-      <Row className="mt-3 mb-3">
-        <Col lg={4}>
+    <div className="container">
+      <div className="df df-row mt-3 mb-3">
+        <div className="col-lg-4">
           {product.image ? (
             <Image
               width={300}
@@ -116,8 +104,8 @@ const Product = (/* props: any */) => {
               src="http://via.placeholder.com/300"
             />
           )}
-        </Col>
-        <Col lg={8}>
+        </div>
+        <div className="col-lg-8">
           <h1>{product.name}</h1>
           <h3>
             {product.price.toLocaleString()}
@@ -127,14 +115,14 @@ const Product = (/* props: any */) => {
           <p>Категория: {product.category.name}</p>
           <div>
             {/* {rating ? (
-              <p>
                 <p>
-                  Рейтинг: {rating.rating}, голосов {rating.votes}
+                  <p>
+                    Рейтинг: {rating.rating}, голосов {rating.votes}
+                  </p>
                 </p>
-              </p>
-            ) : (
-              <Spinner animation="border" />
-            )} */}
+              ) : (
+                <Spinner animation="border" />
+              )} */}
             <p>
               Рейтинг: {numberStar} {votes ? <> / {votes}</> : ""} Голосов
             </p>
@@ -190,14 +178,14 @@ const Product = (/* props: any */) => {
           >
             Добавить в корзину
           </button>
-        </Col>
-      </Row>
+        </div>
+      </div>
       {/* Характеристики */}
       {!!product.props.length && (
-        <Row>
-          <Col>
+        <div className="df df-row">
+          <div className="df df-col">
             <h3>Характеристики</h3>
-            <Table className="table--eg" bordered hover size="sm">
+            <table className="table--eg">
               <tbody>
                 {product.props.map((item: any) => (
                   <tr key={item.id}>
@@ -206,12 +194,11 @@ const Product = (/* props: any */) => {
                   </tr>
                 ))}
               </tbody>
-            </Table>
-          </Col>
-        </Row>
+            </table>
+          </div>
+        </div>
       )}
-    </Container>
-    // );})}
+    </div>
   );
 };
 

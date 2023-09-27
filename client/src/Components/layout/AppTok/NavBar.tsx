@@ -1,7 +1,7 @@
 // ^ панель навигации
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { Container, Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import {
@@ -19,9 +19,10 @@ import { AppContext } from "./AppContext";
 const NavBar = observer(() => {
   const { user, basket }: any = useContext(AppContext);
 
+  console.log("NavBar basket.count ", basket.count);
   return (
     <Navbar bg="dark" variant="dark">
-      <Container>
+      <div className="container">
         {/* // ^ tokmakov.blog + СВОЁ  */}
         {/* магаз */}
         <NavLink to={SHOP_ROUTE} className="navbar-brand">
@@ -65,7 +66,7 @@ const NavBar = observer(() => {
             {!!basket.count && <span>({basket.count})</span>}
           </NavLink>
         </Nav>
-      </Container>
+      </div>
     </Navbar>
   );
 });

@@ -1,5 +1,5 @@
 // ^ доп.модальн.окно редактирование Характеристик Товара
-import { Row, Col, Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
 const UpdateProperties = (props: any) => {
@@ -42,21 +42,16 @@ const UpdateProperties = (props: any) => {
   return (
     <>
       <h5>Характеристики</h5>
-      <Button
-        onClick={append}
-        variant="outline-primary"
-        size="sm"
-        className="mb-2 btn-primary--eg"
-      >
+      <button onClick={append} className="btn--eg btn-primary--eg mb-3">
         Добавить
-      </Button>
+      </button>
       {properties.map((item: any) => (
-        <Row
+        <div
           key={item.unique}
-          className="mb-2"
+          className="df df-row mb-2"
           style={{ display: item.remove ? "none" : "flex" }}
         >
-          <Col>
+          <div className="df df-col">
             <Form.Control
               name={"name_" + item.unique}
               value={item.name}
@@ -64,8 +59,8 @@ const UpdateProperties = (props: any) => {
               placeholder="Название..."
               size="sm"
             />
-          </Col>
-          <Col>
+          </div>
+          <div className="df df-col">
             <Form.Control
               name={"value_" + item.unique}
               value={item.value}
@@ -73,19 +68,17 @@ const UpdateProperties = (props: any) => {
               placeholder="Значение..."
               size="sm"
             />
-          </Col>
-          <Col>
-            <Button
+          </div>
+          <div className="df df-col">
+            <button
               onClick={() => remove(item.unique)}
-              size="sm"
-              variant="outline-danger"
-              className="btn-danger--eg"
+              className="btn--eg btn-danger--eg"
             >
               Удалить
-            </Button>
+            </button>
             {item.change && " *"}
-          </Col>
-        </Row>
+          </div>
+        </div>
       ))}
     </>
   );

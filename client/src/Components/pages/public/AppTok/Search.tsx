@@ -4,7 +4,6 @@ import {
   createSearchParams /* , Navigate */,
 } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-// import { Button } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
@@ -139,13 +138,12 @@ const Search = observer(() => {
         >
           [расширенный поиск]
         </button>
-        {/* <Button
-            variant="primary"
+        {/* <button
             onClick={() => navigate(FILTER_ROUTE)}
-            className="btn-primary--eg"
+            className="btn--eg btn-primary--eg"
           >
             [расширенный поиск]
-          </Button> */}
+          </button> */}
       </div>
       {/* СПИСОК ПРОДУКТОВ */}
       {/* {searchInput.length > 0 ? (

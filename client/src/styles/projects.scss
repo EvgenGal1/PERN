@@ -760,7 +760,10 @@ img.card-img-top {
     }
     .col-lg-4 {
       flex: 0 0 auto;
-      width: 33.333%;
+      width: 50%;
+    }
+    .col-lg-8 {
+      flex: 0 0 auto;
       width: 50%;
     }
   }
@@ -768,6 +771,10 @@ img.card-img-top {
     .col-lg-4 {
       flex: 0 0 auto;
       width: 33.33333333%;
+    }
+    .col-lg-8 {
+      flex: 0 0 auto;
+      width: 66.66666666%;
     }
   }
   @media (min-width: 1400px) {
@@ -790,6 +797,10 @@ img.card-img-top {
     .col-lg-4 {
       flex: 0 0 auto;
       width: 25%;
+    }
+    .col-lg-8 {
+      flex: 0 0 auto;
+      width: 75%;
     }
   }
   @media (min-width: 1600px) {
@@ -822,6 +833,10 @@ img.card-img-top {
     .col-lg-4 {
       flex: 0 0 auto;
       width: 20%;
+    }
+    .col-lg-8 {
+      flex: 0 0 auto;
+      width: 80%;
     }
   }
 }

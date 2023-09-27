@@ -1,5 +1,5 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
-import { Row, Col, Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
 const UpdateItems = (props: any) => {
@@ -50,12 +50,12 @@ const UpdateItems = (props: any) => {
     <>
       <h5>Позиции</h5>
       {items.map((item: any) => (
-        <Row
+        <div
           key={item.unique}
-          className="mb-2"
+          className="df df-row mb-2"
           style={{ display: item.remove ? "none" : "flex" }}
         >
-          <Col>
+          <div className="df df-col">
             <Form.Control
               name={"name_" + item.unique}
               value={item.name}
@@ -63,8 +63,8 @@ const UpdateItems = (props: any) => {
               placeholder="Имя..."
               size="sm"
             />
-          </Col>
-          <Col>
+          </div>
+          <div className="df df-col">
             <Form.Control
               name={"price_" + item.unique}
               value={item.price}
@@ -76,8 +76,8 @@ const UpdateItems = (props: any) => {
               placeholder="Цена..."
               size="sm"
             />
-          </Col>
-          <Col>
+          </div>
+          <div className="df df-col">
             <Form.Control
               name={"quantity_" + item.unique}
               value={item.quantity}
@@ -87,28 +87,17 @@ const UpdateItems = (props: any) => {
               placeholder="Количество..."
               size="sm"
             />
-          </Col>
-          {/* <Col>
-            <Form.Control
-              name={"unique_" + item.unique}
-              value={item.unique}
-              onChange={(e) => change("unique", e.target.value, item.unique)}
-              placeholder="Уникальный..."
-              size="sm"
-            />
-          </Col> */}
-          <Col>
-            <Button
+          </div>
+          <div className="df df-col">
+            <button
               onClick={() => remove(item.unique)}
-              size="sm"
-              variant="outline-danger"
-              className="btn-danger--eg"
+              className="btn--eg btn-danger--eg"
             >
               Удалить
-            </Button>
+            </button>
             {item.change && " *"}
-          </Col>
-        </Row>
+          </div>
+        </div>
       ))}
     </>
   );

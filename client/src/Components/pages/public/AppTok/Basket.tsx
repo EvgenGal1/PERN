@@ -1,12 +1,11 @@
 import BasketList from "./BasketList";
-import { Container } from "react-bootstrap";
 
 const Basket = () => {
   return (
-    <Container>
+    <div className="container">
       <h1>Корзина</h1>
       <BasketList />
-    </Container>
+    </div>
   );
 };
 

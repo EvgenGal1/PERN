@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Container, Row, Card, Form, Button } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
@@ -38,7 +38,7 @@ const Signup = observer(() => {
   };
 
   return (
-    <Container className="d-flex justify-content-center">
+    <div className="container d-flex justify-content-center">
       <Card
         style={{ width: "50%" /* // ! , :hover: { cursor: "pointer"} */ }}
         className="p-2"
@@ -56,10 +56,10 @@ const Signup = observer(() => {
             className="mt-3"
             placeholder="Введите ваш пароль..."
           />
-          <Row className="d-flex justify-content-between mt-3 pl-3 pr-3 m-0">
-            <Button variant={"outline-success"} type="submit">
+          <div className="df df-row df-jcb mt-3 pl-3 pr-3 m-0">
+            <button type="submit" className="btn--eg">
               {isLogin ? "Войти" : "Регистрация"}
-            </Button>
+            </button>
             {isLogin ? (
               <p className="text-center mt-2 mb-0">
                 Нет аккаунта? <Link to={SIGNUP_ROUTE}>Зарегистрирутесь!</Link>
@@ -69,10 +69,10 @@ const Signup = observer(() => {
                 Уже есть аккаунт? <Link to={LOGIN_ROUTE}>Войдите!</Link>
               </p>
             )}
-          </Row>
+          </div>
         </Form>
       </Card>
-    </Container>
+    </div>
   );
 });
 

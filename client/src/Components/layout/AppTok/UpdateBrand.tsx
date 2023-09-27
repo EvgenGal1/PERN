@@ -1,6 +1,6 @@
 // ^ Редактирование Бренда
 import { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 
 import { fetchBrand, updateBrand } from "../../../http/Tok/catalogAPI_Tok";
 
@@ -65,14 +65,9 @@ const UpdateBrand = (props: any) => {
             placeholder="Название бренда..."
             className="mb-3"
           />
-          <Button
-            type="submit"
-            size="sm"
-            variant="success"
-            className="btn-success--eg"
-          >
+          <button type="submit" className="btn--eg btn-success--eg">
             Сохранить
-          </Button>
+          </button>
         </Form>
       </Modal.Body>
     </Modal>

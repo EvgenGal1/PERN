@@ -1,13 +1,17 @@
 // ^ `Проверить`
 import { useState, useContext, useEffect } from "react";
-import { Navigate } from "react-router-dom";
-import { Container, Form, Button, Spinner } from "react-bootstrap";
+import { Link, Navigate } from "react-router-dom";
+import { Form, Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchBasket } from "../../../../http/Tok/basketAPI_Tok";
 import { checkUser as checkAuth } from "../../../../http/Tok/userAPI_Tok";
 import { userCreate, guestCreate } from "../../../../http/Tok/orderAPI_Tok";
-import { BASKET_ROUTE } from "../../../../utils/consts";
+import {
+  BASKET_ROUTE,
+  USERORDER_ROUTE,
+  USERORDERS_ROUTE,
+} from "../../../../utils/consts";
 
 interface CheckoutFormValues {
   name: string;
@@ -91,10 +95,15 @@ const Checkout = () => {
   // Заказ. Заказ был успешно оформлен
   if (order) {
     return (
-      <Container>
+      <div className="container">
         <h1 className="mb-4 mt-4">Заказ оформлен</h1>
         <p>Наш менеджер скоро позвонит для уточнения деталей.</p>
-      </Container>
+        <button className="btn--eg btn-primary--eg">
+          <Link className="a0" to={USERORDER_ROUTE} replace={true}>
+            Ваши заказы
+          </Link>
+        </button>
+      </div>
     );
   }
 
@@ -164,7 +173,7 @@ const Checkout = () => {
   };
 
   return (
-    <Container>
+    <div className="container">
       {/* Авториз.Корзин. Если корзина пуста — пользователь будет направлен на страницу корзины, где увидит сообщение «Ваша корзина пуста». После того, как заказ был создан, переменная order изменяет свое значение — и пользователь увидит сообщение, что заказ успешно оформлен. */}
       {basket.count === 0 && <Navigate to={BASKET_ROUTE} replace={true} />}
       {/*  */}
@@ -218,11 +227,11 @@ const Checkout = () => {
           className="mb-3"
           placeholder="Комментарий к заказу..."
         />
-        <Button type="submit" variant="primary" className="btn-primary--eg">
+        <button type="submit" className="btn--eg btn-primary--eg">
           Отправить
-        </Button>
+        </button>
       </Form>
-    </Container>
+    </div>
   );
 };
 

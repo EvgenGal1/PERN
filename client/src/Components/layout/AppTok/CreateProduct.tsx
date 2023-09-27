@@ -1,6 +1,6 @@
 // ^ Модальное окно с формой добавления Товара
 import { useState, useEffect, Fragment } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 
 import {
   createProduct,
@@ -530,8 +530,8 @@ const CreateProduct = (props: any) => {
               }}
             >
               {/* Название */}
-              <Row>
-                <Col>
+              <div className="df df-row">
+                <div className="df df-col">
                   <Form.Control
                     name="name"
                     value={product.name}
@@ -543,11 +543,11 @@ const CreateProduct = (props: any) => {
                     placeholder="Название товара..."
                     className="mb-3"
                   />
-                </Col>
-              </Row>
+                </div>
+              </div>
               {/* Категория/Бренд */}
-              <Row className="mb-3">
-                <Col>
+              <div className="df df-row mb-3">
+                <div className="df df-col">
                   <Form.Select
                     name="category"
                     value={product.category}
@@ -566,8 +566,8 @@ const CreateProduct = (props: any) => {
                         </option>
                       ))}
                   </Form.Select>
-                </Col>
-                <Col>
+                </div>
+                <div className="df df-col">
                   <Form.Select
                     name="brand"
                     value={product.brand}
@@ -585,11 +585,11 @@ const CreateProduct = (props: any) => {
                         </option>
                       ))}
                   </Form.Select>
-                </Col>
-              </Row>
+                </div>
+              </div>
               {/* Цена/Изо */}
-              <Row className="mb-3">
-                <Col>
+              <div className="df df-row mb-3">
+                <div className="df df-col">
                   <Form.Control
                     name="price"
                     value={product.price}
@@ -600,8 +600,8 @@ const CreateProduct = (props: any) => {
                     isInvalid={valid.price === false}
                     placeholder="Цена товара..."
                   />
-                </Col>
-                <Col>
+                </div>
+                <div className="df df-col">
                   <Form.Control
                     name="image"
                     type="file"
@@ -610,8 +610,8 @@ const CreateProduct = (props: any) => {
                     }}
                     placeholder="Фото товара..."
                   />
-                </Col>
-              </Row>
+                </div>
+              </div>
               {/* // ^ ХАРАКТЕРИСТИКИ */}
               <CreateProperties
                 index={index}
@@ -622,89 +622,59 @@ const CreateProduct = (props: any) => {
               {(valueBulkArr.length > 1 ||
                 product.category ||
                 product.brand) && (
-                <Row
-                  className="mt-3"
+                <div
+                  className="df df-row mt-3"
                   style={{ marginBottom: "0rem !important" }}
                 >
                   {/* е/и Товаров больше 1го */}
                   {valueBulkArr.length > 1 && (
-                    <Col>
-                      <Button
-                        // type="submit"
-                        size="sm"
-                        variant="danger"
-                        className="btn-danger--eg"
-                        style={{ width: "100%" }}
+                    <div className="df df-col">
+                      <button
+                        type="submit"
+                        className="btn--eg btn-danger--eg w1"
                         onClick={(e) => {
                           handlerDeleteBulkValue(e);
-                          // setValueBulkArr((existingItems: any) => {
-                          //   return [
-                          //     ...existingItems.slice(0, index),
-                          //     ...existingItems.slice(index + 1),
-                          //   ];
-                          // });
                         }}
                       >
                         Убрать Товар
-                      </Button>
-                    </Col>
+                      </button>
+                    </div>
                   )}
                   {
                     // е/и в Товаре есть значения то можно копир блок
                     (product.category || product.brand) && (
                       /* || propertiesArr[index][0]["name"] || propertiesArr[index][0]["value"] // ! не раб. чёт не отрабатывает  */
                       //
-                      <Col>
-                        <Button
-                          // type="submit"
-                          size="sm"
-                          variant="primary"
-                          className="btn-primary--eg"
-                          style={{ width: "100%" }}
+                      <div className="df df-col">
+                        <button
+                          type="submit"
+                          className="btn--eg btn-primary--eg w1"
                           onClick={(e) => {
                             handlerCloneBulkValue(e);
                           }}
                         >
                           Копировать Товар
-                        </Button>
-                      </Col>
+                        </button>
+                      </div>
                     )
                   }
-                </Row>
+                </div>
               )}
             </div>
           ))}
           <div className="mt-2" style={{ display: "block" }}>
             {/* кнп.Добавить/Убрать Товар */}
-            <Col
-              className="mb-3"
-              style={{ display: "flex", margin: "0px !important" }}
-            >
-              <Button
-                // type="submit"
-                size="sm"
-                variant="primary"
-                className="btn-primary--eg"
-                style={{ width: "100%" }}
+            <div className="df df-col mb-3 m0">
+              <button
+                type="submit"
+                className="btn--eg btn-primary--eg w1"
                 onClick={() => {
                   handlerAddBulkValue();
-                  // setValueBulkArr([...valueBulkArr, templateValueArr]);
                 }}
               >
                 Добавить Товар
-              </Button>
-              {/* // ! перезд в ФормДату для удал.кажд.эл.по отдельности */}
-              {/* <Button
-                // type="submit"
-                size="sm"
-                variant="danger"
-                className="btn-danger--eg"
-                style={{ width: "100%", marginLeft: "10px" }}
-                onClick={() => setShowBulkFormData(showBulkFormData - 1)}
-              >
-                Убрать Товар
-              </Button> */}
-            </Col>
+              </button>
+            </div>
             <hr
               style={{
                 margin: "1rem 0",
@@ -715,17 +685,11 @@ const CreateProduct = (props: any) => {
               }}
             />
             {/* кнп.Сохранить */}
-            <Col>
-              <Button
-                type="submit"
-                size="sm"
-                variant="success"
-                className="btn-success--eg"
-                style={{ width: "100%" }}
-              >
+            <div className="df df-col">
+              <button type="submit" className="btn--eg btn-success--eg w1">
                 Сохранить
-              </Button>
-            </Col>
+              </button>
+            </div>
           </div>
         </Form>
       </Modal.Body>

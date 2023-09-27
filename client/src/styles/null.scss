@@ -64,6 +64,10 @@ a {
   color: inherit;
   text-decoration: inherit !important;
 }
+.a0 {
+  color: var(--DeepYellow) !important;
+  text-decoration: none !important;
+}
 a,
 a:visited {
   // text-decoration: none;
@@ -209,6 +213,9 @@ span.bd {
 .h1 {
   height: 100%;
 }
+.m0 {
+  margin: 0;
+}
 // margin расстояния
 .mt-1 {
   margin-top: var(--sz5);
@@ -242,19 +249,19 @@ span.bd {
 }
 .mlr {
   &-1 {
-    padding: 0 var(--sz5) 0;
+    margin: 0 var(--sz5) 0;
   }
   &-2 {
-    padding: 0 var(--sz10) 0;
+    margin: 0 var(--sz10) 0;
   }
   &-3 {
-    padding: 0 var(--sz15) 0;
+    margin: 0 var(--sz15) 0;
   }
   &-4 {
-    padding: 0 var(--sz20) 0;
+    margin: 0 var(--sz20) 0;
   }
   &-5 {
-    padding: 0 var(--sz25) 0;
+    margin: 0 var(--sz25) 0;
   }
 }
 // padding расстояния
@@ -416,12 +423,13 @@ code {
   &-jcc {
     justify-content: center;
   }
+  &-jcb {
+    justify-content: space-between;
+  }
   &-row {
-    display: flex;
     flex-direction: row;
   }
   &-col {
-    display: flex;
     flex-direction: column;
   }
   &-110 {
@@ -679,7 +687,35 @@ div:has(> .inpt--eg) {
 
 // ТАБЛИЦЫ ----------------------------------------------------------------------------------
 .table--eg {
+  width: 100%;
   border: 2px solid var(--bord-hr);
+  caption-side: bottom;
+  border-collapse: collapse;
+  tbody,
+  td,
+  tfoot,
+  th,
+  thead,
+  tr {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    border-width: 0 1px;
+  }
+  // строки
+  tr {
+    border-width: 1px 0;
+    padding: 0.3rem 0.3rem;
+  }
+  // яч.заголовка
+  th {
+    padding: 0.3rem 0.3rem;
+  }
+  // яч.тела
+  td {
+    padding: 0.25rem 0.25rem;
+    border-width: 0 1px;
+  }
   thead {
     tr {
       th {

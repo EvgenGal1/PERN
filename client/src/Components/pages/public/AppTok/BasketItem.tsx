@@ -1,41 +1,34 @@
-import { Button } from "react-bootstrap";
-
 const BasketItem = (props: any) => {
   return (
     <tr>
       <td className="txt">{props.name}</td>
       {/* количество/изменить */}
       <td className="df df-jcc df-aic">
-        <Button
-          variant="outline-dark"
-          size="sm"
+        <button
           onClick={() => props.decrement(props.id)}
-          className="btn-success--eg"
+          className="btn--eg btn-success--eg"
         >
           -
-        </Button>{" "}
+        </button>{" "}
         <strong className="plr-2">{props.quantity}</strong>{" "}
-        <Button
-          variant="danger"
-          size="sm"
+        <button
           onClick={() => props.increment(props.id)}
-          className="btn-danger--eg"
+          className="btn--eg btn-danger--eg"
         >
           +
-        </Button>
+        </button>
       </td>
       {/* цена */}
       <td className="txt">{props.price}</td>
       {/* сумма */}
       <td className="txt">{props.price * props.quantity}</td>
       <td className="df df-jcc">
-        <Button
-          variant="danger"
+        <button
           onClick={() => props.remove(props.id)}
-          className="btn-danger--eg"
+          className="btn--eg btn-danger--eg"
         >
           Удалить
-        </Button>
+        </button>
       </td>
     </tr>
   );
