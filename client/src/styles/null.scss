@@ -240,6 +240,23 @@ span.bd {
 .mb-5 {
   margin-bottom: var(--sz25);
 }
+.mlr {
+  &-1 {
+    padding: 0 var(--sz5) 0;
+  }
+  &-2 {
+    padding: 0 var(--sz10) 0;
+  }
+  &-3 {
+    padding: 0 var(--sz15) 0;
+  }
+  &-4 {
+    padding: 0 var(--sz20) 0;
+  }
+  &-5 {
+    padding: 0 var(--sz25) 0;
+  }
+}
 // padding расстояния
 .pt-1 {
   padding-top: var(--sz5);
@@ -270,6 +287,23 @@ span.bd {
 }
 .pb-5 {
   padding-bottom: var(--sz25);
+}
+.plr {
+  &-1 {
+    padding: 0 var(--sz5) 0;
+  }
+  &-2 {
+    padding: 0 var(--sz10) 0;
+  }
+  &-3 {
+    padding: 0 var(--sz15) 0;
+  }
+  &-4 {
+    padding: 0 var(--sz20) 0;
+  }
+  &-5 {
+    padding: 0 var(--sz25) 0;
+  }
 }
 
 // hr ----------------------------------------------------------------------------------
@@ -376,17 +410,23 @@ code {
 // flex ----------------------------------------------------------------------------------
 .df {
   display: flex;
-}
-.df-jcc {
-  justify-content: center;
-}
-.flrow {
-  display: flex;
-  flex-direction: row;
-}
-.flcol {
-  display: flex;
-  flex-direction: column;
+  &-aic {
+    align-items: center;
+  }
+  &-jcc {
+    justify-content: center;
+  }
+  &-row {
+    display: flex;
+    flex-direction: row;
+  }
+  &-col {
+    display: flex;
+    flex-direction: column;
+  }
+  &-110 {
+    flex: 1 1 0;
+  }
 }
 
 // КНП ----------------------------------------------------------------------------------

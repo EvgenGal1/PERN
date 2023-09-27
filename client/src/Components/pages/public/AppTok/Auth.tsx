@@ -243,7 +243,7 @@ const Auth = observer(() => {
         {formErrors.sms && (
           <span className="m-auto txt err err-msg">{formErrors.sms}</span>
         )}
-        <form className="form flcol" onSubmit={handleSubmit}>
+        <form className="form df-col" onSubmit={handleSubmit}>
           <div>
             {/* Name */}
             {/* <div>
@@ -258,7 +258,7 @@ const Auth = observer(() => {
               {formErrors.name && <span>{formErrors.name}</span>}
             </div> */}
             {/* Email */}
-            <div className="flcol mt-3">
+            <div className="df-col mt-3">
               {/* <label htmlFor="email">Email:</label> */}
               <input
                 // id="email"
@@ -282,7 +282,7 @@ const Auth = observer(() => {
               )}
             </div>
             {/* Password */}
-            <div className="flcol mt-3">
+            <div className="df-col mt-3">
               {/* <label htmlFor="password">Пароль:</label> */}
               <input
                 // id="password"
@@ -322,7 +322,7 @@ const Auth = observer(() => {
               )}
             </div> */}
           </div>
-          <div className="flcol mt-3">
+          <div className="df-col mt-3">
             <button
               type="submit"
               className="btn--eg btn-success--eg"

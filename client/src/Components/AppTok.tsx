@@ -32,7 +32,10 @@ const AppTok = observer(() => {
     // ! исправить. созд. корзину(2 на dev ?) при перв.загр. даже без польз
     Promise.all([
       checkAuth(),
-      // fetchBasket() // ^ убрал созд.Basket при загр.стр.
+      // ^ убрал созд.Basket при загр.стр.
+      // ! есть - мигание пустой корзины, т.к. загр.данн. идём в комп. Корзины.
+      // ^ решил - использ.доп.условн.рендер (fetching)
+      // fetchBasket()
     ])
       .then(
         axios.spread((userData /* , basketData */) => {

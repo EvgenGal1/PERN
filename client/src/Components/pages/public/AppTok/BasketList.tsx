@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import {
+  fetchBasket,
   incrementBasket,
   decrementBasket,
   removeBasket,
@@ -19,33 +20,52 @@ const BasketList = observer(() => {
 
   const navigate = useNavigate();
 
+  // ! заглушка/загрузка данн.корзины. Магиет пустая корзина
+  // ^ решил - использ.доп.условн.рендер (fetching)
+  useEffect(() => {
+    fetchBasket()
+      .then((data) => (basket.products = data.products))
+      .finally(() => setFetching(false));
+  }, []);
+
+  if (fetching) {
+    return <Spinner animation="border" />;
+  }
+
   const handleIncrement = (id: number) => {
     setFetching(true);
     incrementBasket(id)
-      .then((data) => (basket.products = data.products))
+      .then((data) => {
+        console.log("BL incrementBasket data ", data);
+        basket.products = data.products;
+      })
       .finally(() => setFetching(false));
   };
 
   const handleDecrement = (id: number) => {
     setFetching(true);
     decrementBasket(id)
-      .then((data) => (basket.products = data.products))
+      .then((data) => {
+        console.log("BL decrementBasket data ", data);
+        basket.products = data.products;
+      })
       .finally(() => setFetching(false));
   };
 
   const handleRemove = (id: number) => {
     setFetching(true);
     removeBasket(id)
-      .then((data) => (basket.products = data.products))
+      .then((data) => {
+        console.log("BL removeBasket data ", data);
+        basket.products = data.products;
+      })
       .finally(() => setFetching(false));
   };
 
-  // if (fetching) {
-  //   return <Spinner animation="border" />;
-  // }
-
   return (
     <>
+      {/* // ! не раб. при перезагр. basket.count сброс на 0, вывод - Ваша корзина пуста. От того что basket|product|count при перезаг в сброс. Решение - 1. Есть заглушка usEf выше (загр.перед.рендер. но есть - мигание); 2. Загр.basket вернуть в App 3. использ.доп.условн.рендер (fetching) */}
+      {/* // ^ решил - использ.доп.условн.рендер (fetching) */}
       {basket.count ? (
         <>
           <Table bordered hover size="sm" className="mt-3 table--eg">
@@ -84,7 +104,7 @@ const BasketList = observer(() => {
           </Button>
         </>
       ) : (
-        <p>Ваша корзина пуста</p>
+        fetching && <p>Ваша корзина пуста</p>
       )}
     </>
   );

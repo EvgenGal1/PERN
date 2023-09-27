@@ -85,8 +85,9 @@ const Product = (/* props: any */) => {
   const handleClick = (productId: any) => {
     console.log("Prod productId ", productId);
     appendBasket(productId).then((data: any) => {
-      console.log("Product basket append data ", data);
+      console.log("Product appendBasket data ", data);
       basket.products = data.products;
+      console.log("Product basket.products ", basket.products);
     });
   };
 

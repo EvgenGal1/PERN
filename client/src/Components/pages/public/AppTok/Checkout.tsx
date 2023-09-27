@@ -156,11 +156,13 @@ const Checkout = () => {
       const body = { ...value, comment };
       const create = user.isAuth ? userCreate : guestCreate;
       create(body).then((data) => {
+        console.log("Checkout data ", data);
         setOrder(data);
         basket.products = [];
       });
     }
   };
+
   return (
     <Container>
       {/* Авториз.Корзин. Если корзина пуста — пользователь будет направлен на страницу корзины, где увидит сообщение «Ваша корзина пуста». После того, как заказ был создан, переменная order изменяет свое значение — и пользователь увидит сообщение, что заказ успешно оформлен. */}
