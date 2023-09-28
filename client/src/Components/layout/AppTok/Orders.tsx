@@ -42,11 +42,11 @@ const Orders = (props: any) => {
               <td>
                 {props.admin ? (
                   <Link to={ADMINORDER_ROUTE + `/${item.id}`}>
-                    Подробнее для admin
+                    Подробнее о Заказе для ADMIN
                   </Link>
                 ) : (
                   <Link to={USERORDER_ROUTE + `/${item.id}`}>
-                    Подробнее для user
+                    Подробнее о Заказе {/* для USER */}
                   </Link>
                 )}
               </td>

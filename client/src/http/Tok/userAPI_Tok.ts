@@ -11,7 +11,7 @@ export const signupUser = async (email: string, password: string | any) => {
     });
     const token = response.data.token;
     const user = jwt_decode(token);
-    localStorage.setItem("token", token);
+    localStorage.setItem("tokenAccess", token);
     return user;
   } catch (e: any) {
     const data = e?.response; // ?.data;
@@ -27,7 +27,7 @@ export const loginUser = async (email: string, password: string | any) => {
     });
     const token = response.data.token;
     const user = jwt_decode(token);
-    localStorage.setItem("token", token);
+    localStorage.setItem("tokenAccess", token);
     return user;
   } catch (e: any) {
     const data = e?.response; // ?.data;
@@ -36,13 +36,13 @@ export const loginUser = async (email: string, password: string | any) => {
 };
 
 export const logoutUser = () => {
-  localStorage.removeItem("token");
+  localStorage.removeItem("tokenAccess");
 };
 
 export const checkUser = async () => {
   let userToken, userData;
   try {
-    userToken = localStorage.getItem("token");
+    userToken = localStorage.getItem("tokenAccess");
     // если в хранилище нет действительного токена
     if (!userToken) {
       return false;
@@ -51,10 +51,10 @@ export const checkUser = async () => {
     const response /* { data } */ = await authInstance.get("user/check");
     userToken = response.data.token;
     userData = jwt_decode(userToken);
-    localStorage.setItem("token", userToken /* data.token */);
+    localStorage.setItem("tokenAccess", userToken /* data.token */);
     return userData /* jwt_decode(data.token) */;
   } catch (e: any) {
-    localStorage.removeItem("token");
+    localStorage.removeItem("tokenAccess");
     return false;
   }
 };

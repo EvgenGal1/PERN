@@ -116,7 +116,7 @@ const Auth = observer(() => {
         errors.email = `Email должен содержать буквы литиницы - ${value}`;
       } else if (/(?=.*\s)/.test(value)) {
         errors.email = `Email не должен содержать пробелов - ${value}`;
-      } else if (!/^[\w-@]+@[a-z]{2,8}\.[a-z]{2,4}$/i.test(value)) {
+      } else if (!/^[\w-.@]+@[a-z]{2,8}\.[a-z]{2,4}$/i.test(value)) {
         errors.email = `Email не соответствует формату имя@сервис.домен - ${value}`; // Например - test@mail.ru
       } else {
         errors.email = "";
