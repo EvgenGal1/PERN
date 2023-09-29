@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, Link } from "react-router-dom";
+
+import { AppContext } from "../../layout/AppTok/AppContext";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
 import { useAllKeysPress } from "../../../scripts/hooks/useAllKeysPress";
@@ -23,6 +25,9 @@ import { Switcher4btn } from "../../ui/switcher/Switcher4btn";
 import { TitleEl } from "../../ui/hintTemplates/TitleEl";
 
 export function Header() {
+  const { user }: any = useContext(AppContext);
+  // console.log("user ", user);
+
   // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
   // стат. показа Доп.Меню из LS
   // const [pressCombine, setPressCombine] = useState(() => {
@@ -33,29 +38,47 @@ export function Header() {
   // ^ нов.версия
   const saved = localStorage.getItem("--dopMenu");
   const [pressCombine, setPressCombine] = useState(
-    saved ? JSON.parse(saved) : ""
+    saved ? JSON.parse(saved) : false
   );
   // массив букв после хука (возвращ true е/и переданные и нажатые равны)
   const combinePress = useAllKeysPress({
     userKeys: ["d", "o", "p", "m", "n"],
     order: true,
   });
+  //  ----------------------------------------------------------------------------------
+  const combinePress_2 = useAllKeysPress({
+    userKeys: ["d", "m", "n"],
+    order: true,
+  });
+  //  ----------------------------------------------------------------------------------
   // отслеж. измен.с записью в LS
   useEffect(() => {
-    if ((combinePress || pressCombine) === true) {
-      setPressCombine(true);
+    if (combinePress === true) {
+      // setPressCombine(true);
+      setPressCombine((prevState: any) => !prevState);
       localStorage.setItem("--dopMenu", JSON.stringify(true));
-    } else if ((combinePress || pressCombine) === false) {
+      if (pressCombine)
+        // localStorage.setItem("--dopMenu", JSON.stringify(false));
+        localStorage.removeItem("--dopMenu");
+    }
+    /* else if (combinePress || pressCombine === false) { 
       setPressCombine(false);
       localStorage.setItem("--dopMenu", JSON.stringify(false));
+    } */
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [combinePress /* , pressCombine */]);
+
+  useEffect(() => {
+    if (combinePress_2 === true && user?.isAuth) {
+      setPressCombine(false);
+      localStorage.removeItem("--dopMenu");
     }
-  }, [combinePress, pressCombine]);
+  }, [combinePress_2, user?.isAuth]);
 
   // сост. подсказки по наведению мыши
   const [isHovering, setIsHovering] = useState("");
-  useEffect(() => {
-    // console.log("isHovering ", isHovering);
-  }, [isHovering]);
+  useEffect(() => {}, [isHovering]);
 
   // подкл. логики переключателя Цветовых Тем (dark/light/natural)
   useTheme();
@@ -136,7 +159,10 @@ export function Header() {
                     setIsHovering("");
                   }}
                 >
-                  <Switcher1btn setPressCombine={setPressCombine} />
+                  <Switcher1btn
+                    setPressCombine={setPressCombine}
+                    setIsHovering={setIsHovering}
+                  />
                   {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
                 </span>
                 <span
@@ -187,6 +213,7 @@ export function Header() {
                 onClick={() => {
                   setPressCombine(!pressCombine);
                   setIsHovering("");
+                  localStorage.setItem("--dopMenu", JSON.stringify(true));
                 }}
                 onMouseEnter={() => {
                   setIsHovering("sw1bnt");
@@ -196,7 +223,14 @@ export function Header() {
                 }}
               >
                 &lt;
-                {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
+                {isHovering === "sw1bnt" && (
+                  <TitleEl
+                    // onClick={() => {
+                    //   localStorage.setItem("--dopMenu", JSON.stringify(true));
+                    // }}
+                    text={"Доп.Меню"}
+                  />
+                )}
               </div>
             </>
           )}

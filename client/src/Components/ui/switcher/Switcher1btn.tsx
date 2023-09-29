@@ -3,12 +3,14 @@ import React from "react";
 import { SvgPath } from "../SvgPath";
 import "./Switcher1btn.scss";
 
-export const Switcher1btn = ({ setPressCombine }: any) => {
+export const Switcher1btn = ({ setPressCombine, setIsHovering }: any) => {
   return (
     <div className="sw1btn">
       <input
         onClick={() => {
           setPressCombine(false);
+          setIsHovering("");
+          localStorage.removeItem("--dopMenu");
         }}
         id="show"
         className="sw1btn-radio"
