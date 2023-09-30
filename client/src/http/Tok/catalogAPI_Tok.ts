@@ -9,16 +9,6 @@ export const createCategory = async (category: string | any) => {
   return data;
 };
 
-export const updateCategory = async (id: number, category: string | any) => {
-  const { data } = await authInstance.put(`category/update/${id}`, category);
-  return data;
-};
-
-export const deleteCategory = async (id: number) => {
-  const { data } = await authInstance.delete(`category/delete/${id}`);
-  return data;
-};
-
 export const fetchCategory = async (id: number) => {
   const { data } = await guestInstance.get(`category/getone/${id}`);
   return data;
@@ -29,21 +19,21 @@ export const fetchCategories = async () => {
   return data;
 };
 
+export const updateCategory = async (id: number, category: string | any) => {
+  const { data } = await authInstance.put(`category/update/${id}`, category);
+  return data;
+};
+
+export const deleteCategory = async (id: number) => {
+  const { data } = await authInstance.delete(`category/delete/${id}`);
+  return data;
+};
+
 /*
  * Создание, обновление и удаление бренда, получение списка всех Брендов
  */
 export const createBrand = async (brand: string | any) => {
   const { data } = await authInstance.post("brand/create", brand);
-  return data;
-};
-
-export const updateBrand = async (id: number, brand: string | any) => {
-  const { data } = await authInstance.put(`brand/update/${id}`, brand);
-  return data;
-};
-
-export const deleteBrand = async (id: number) => {
-  const { data } = await authInstance.delete(`brand/delete/${id}`);
   return data;
 };
 
@@ -57,6 +47,16 @@ export const fetchBrands = async () => {
   return data;
 };
 
+export const updateBrand = async (id: number, brand: string | any) => {
+  const { data } = await authInstance.put(`brand/update/${id}`, brand);
+  return data;
+};
+
+export const deleteBrand = async (id: number) => {
+  const { data } = await authInstance.delete(`brand/delete/${id}`);
+  return data;
+};
+
 /*
  * Создание, обновление и удаление товара, получение списка всех Товаров
  */
@@ -65,13 +65,8 @@ export const createProduct = async (product: string | any) => {
   return data;
 };
 
-export const updateProduct = async (id: number, product: string | any) => {
-  const { data } = await authInstance.put(`product/update/${id}`, product);
-  return data;
-};
-
-export const deleteProduct = async (id: number) => {
-  const { data } = await authInstance.delete(`product/delete/${id}`);
+export const fetchOneProduct = async (id: number) => {
+  const { data } = await guestInstance.get(`product/getone/${id}`);
   return data;
 };
 
@@ -109,8 +104,13 @@ export const fetchAllProducts = async (
   return data;
 };
 
-export const fetchOneProduct = async (id: number) => {
-  const { data } = await guestInstance.get(`product/getone/${id}`);
+export const updateProduct = async (id: number, product: string | any) => {
+  const { data } = await authInstance.put(`product/update/${id}`, product);
+  return data;
+};
+
+export const deleteProduct = async (id: number) => {
+  const { data } = await authInstance.delete(`product/delete/${id}`);
   return data;
 };
 

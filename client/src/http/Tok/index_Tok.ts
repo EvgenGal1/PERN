@@ -43,7 +43,7 @@ const authInterceptor = (config: any) => {
 };
 authInstance.interceptors.request.use(authInterceptor);
 
-// перехватчики.res`ответ` на 401. 200норм. 401ошб.(нет access)>req на обнов.с refresh>е/и валид.>2 token>aces сохр.в LS>нов.res
+// перехватчики.res`ответ` на 401. 200норм. 401ошб.(нет access)>req`запрос` на обнов.с refresh>е/и валид.>2 token>aces сохр.в LS>нов.res
 // use приним.2парам. 1ый calback е/и всё ОК (возвращ.config), 2ой е/и ошб.
 authInstance.interceptors.response.use(
   (config) => {

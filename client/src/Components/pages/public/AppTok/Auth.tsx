@@ -168,6 +168,7 @@ const Auth = observer(() => {
     return Object.keys(errors).length === 0;
   };
 
+  // отслеживание/валидация ввода
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = event.target;
     validateForm(name, value);

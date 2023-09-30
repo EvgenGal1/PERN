@@ -26,7 +26,7 @@ import { TitleEl } from "../../ui/hintTemplates/TitleEl";
 
 export function Header() {
   const { user }: any = useContext(AppContext);
-  // console.log("user ", user);
+  // console.log("HDR user ", user);
 
   // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
   // стат. показа Доп.Меню из LS
@@ -35,6 +35,7 @@ export function Header() {
   // return initialValue || "";
   // saved ? JSON.parse(saved) : []
   // })
+  // console.log("HDR 123 ", 123);
   // ^ нов.версия
   const saved = localStorage.getItem("--dopMenu");
   const [pressCombine, setPressCombine] = useState(
@@ -51,15 +52,16 @@ export function Header() {
     order: true,
   });
   //  ----------------------------------------------------------------------------------
+  // console.log("HDR combinePress ", combinePress);
+  // console.log("HDR pressCombine ", pressCombine);
   // отслеж. измен.с записью в LS
   useEffect(() => {
     if (combinePress === true) {
+      // console.log("HDR usEf combinePress ", combinePress);
       // setPressCombine(true);
       setPressCombine((prevState: any) => !prevState);
       localStorage.setItem("--dopMenu", JSON.stringify(true));
-      if (pressCombine)
-        // localStorage.setItem("--dopMenu", JSON.stringify(false));
-        localStorage.removeItem("--dopMenu");
+      if (pressCombine) localStorage.removeItem("--dopMenu");
     }
     /* else if (combinePress || pressCombine === false) { 
       setPressCombine(false);
@@ -99,7 +101,7 @@ export function Header() {
                 src={require("../../../img/logo/PERN.png")}
                 alt=""
               />
-              <h3>.E.R.N.</h3>
+              <h3>P.E.R.N.</h3>
             </Link>
           </div>
           {/* ОБЩ. МЕНЮ */}
