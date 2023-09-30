@@ -47,7 +47,9 @@ router.post(
       .isLength({ max: 32 })
       .withMessage("Максимальная длина пароля 32 символа")
       .matches(/\d/)
-      .withMessage("Пароль должен содержать число"),
+      .withMessage("Пароль должен содержать число")
+      .matches(/(?=(.*\W){2})/)
+      .withMessage("Где 2 специальных символа"),
   ],
   UserController.signupUser
 );
@@ -69,11 +71,11 @@ router.post(
 router.get("/check", authMiddleware, UserController.checkUser);
 
 // ADMIN
-router.get(
-  "/getall",
+router.post(
+  "/create",
   authMiddleware,
   adminMiddleware,
-  UserController.getAllUser
+  UserController.createUser
 );
 router.get(
   "/getone/:id([0-9]+)",
@@ -81,11 +83,11 @@ router.get(
   adminMiddleware,
   UserController.getOneUser
 );
-router.post(
-  "/create",
+router.get(
+  "/getall",
   authMiddleware,
   adminMiddleware,
-  UserController.createUser
+  UserController.getAllUser
 );
 router.put(
   "/update/:id([0-9]+)",

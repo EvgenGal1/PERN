@@ -10,6 +10,20 @@ import OrderItemsController from "../controllers/orderItems.controller";
  * ЗАКАЗЫ для ADNIN магазина
  */
 
+// создать новый заказ
+router.post(
+  "/admin/create",
+  authMiddleware,
+  adminMiddleware,
+  OrderController.adminCreateOrder
+);
+// получить заказ по id
+router.get(
+  "/admin/getone/:id([0-9]+)",
+  authMiddleware,
+  adminMiddleware,
+  OrderController.adminGetOneOrder
+);
 // получить список всех заказов магазина
 router.get(
   "/admin/getall",
@@ -23,20 +37,6 @@ router.get(
   authMiddleware,
   adminMiddleware,
   OrderController.adminGetOrder
-);
-// получить заказ по id
-router.get(
-  "/admin/getone/:id([0-9]+)",
-  authMiddleware,
-  adminMiddleware,
-  OrderController.adminGetOneOrder
-);
-// создать новый заказ
-router.post(
-  "/admin/create",
-  authMiddleware,
-  adminMiddleware,
-  OrderController.adminCreateOrder
 );
 // обновить заказ
 router.put(
@@ -56,22 +56,23 @@ router.delete(
 /*
  * ПОЗИЦИИ Заказа
  */
-// список позицый заказа
-router.get(
-  "/:orderId([0-9]+)/item/getall",
-  OrderItemsController.getAllOrderItems
-);
-// одна позиция заказа
-router.get(
-  "/:orderId([0-9]+)/item/getone/:id([0-9]+)",
-  OrderItemsController.getOneOrderItems
-);
+
 // создать позицию заказа
 router.post(
   "/:orderId([0-9]+)/item/create",
   authMiddleware,
   adminMiddleware,
   OrderItemsController.createOrderItems
+);
+// одна позиция заказа
+router.get(
+  "/:orderId([0-9]+)/item/getone/:id([0-9]+)",
+  OrderItemsController.getOneOrderItems
+);
+// список позицый заказа
+router.get(
+  "/:orderId([0-9]+)/item/getall",
+  OrderItemsController.getAllOrderItems
 );
 // обновить позицию заказа
 router.put(
@@ -92,16 +93,16 @@ router.delete(
  * для авторизованного пользователя
  */
 
-// получить все заказы пользователя
-router.get("/user/getall", authMiddleware, OrderController.userGetAllOrder);
+// создать новый заказ
+router.post("/user/create", authMiddleware, OrderController.userCreateOrder);
 // получить один заказ пользователя
 router.get(
   "/user/getone/:id([0-9]+)",
   authMiddleware,
   OrderController.userGetOneOrder
 );
-// создать новый заказ
-router.post("/user/create", authMiddleware, OrderController.userCreateOrder);
+// получить все заказы пользователя
+router.get("/user/getall", authMiddleware, OrderController.userGetAllOrder);
 
 /*
  * для неавторизованного пользователя

@@ -107,7 +107,8 @@ class MailService {
   }
 }
 
-module.exports = new MailService();
+// module.exports = new TokenService();
+export default new MailService();
 
 // ^ проверка на ошб. с логоах ?
 // const SENDMAIL = async (mailDetails, callback) => {

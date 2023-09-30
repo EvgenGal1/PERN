@@ -10,14 +10,14 @@ import CategoryController from "../controllers/сategory.controller";
 // const checkRole = require("../middleware/checkRoleMiddleware");
 // const brandController = require("../controllers/brand.controller");
 
-router.get("/getall", CategoryController.getAllCategory);
-router.get("/getone/:id([0-9]+)", CategoryController.getOneCategory);
 router.post(
   "/create",
   authMiddleware,
   adminMiddleware,
   CategoryController.createCategory
 );
+router.get("/getone/:id([0-9]+)", CategoryController.getOneCategory);
+router.get("/getall", CategoryController.getAllCategory);
 router.put(
   "/update/:id([0-9]+)",
   authMiddleware,

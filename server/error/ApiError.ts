@@ -22,7 +22,7 @@ class ApiError extends Error {
   // СОЗД.СТАТИЧ.fn (можно вызыв.без созд.объ.обращ.на прямую к кл.)
 
   // `Несанкционированная ошибка`
-  static UnauthorizedError(message: string) {
+  static unauthorizedError(message: string) {
     // возвращ.экземпл.текущ.кл.
     return new ApiError(401, message);
   }
