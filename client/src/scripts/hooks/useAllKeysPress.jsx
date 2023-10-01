@@ -105,11 +105,18 @@ function useAllKeysPress(options) {
     keys = [], // массив клвш или 0 ?
     Pressed = [] // сост ? anyKeyPressed `любая нажатая клавиша`. в консоле - нажимаемые клвш
   ) => {
+    // console.log("usKeyPress areKeysPressed keys ", keys);
+    // console.log(keys);
+    // console.log("usKeyPress areKeysPressed Pressed ", Pressed);
+    // console.log(Pressed);
     // Создать новый массив
     const required = [...keys];
+    // console.log("usKeyPress areKeysPressed required ", required);
 
     // `любой порядок'. Вернуть массив, который не имеет соответствующих предметов
     const anyOrder = required.filter((itemA) => {
+      // console.log("usKeyPress areKeysPressed  itemA ", itemA);
+      // console.log(itemA);
       return !Pressed.some((itemB) => itemB === itemA);
     });
 
@@ -134,6 +141,10 @@ function useAllKeysPress(options) {
       // к указанному элементу, в этом случае «элемент» должен ссылаться на это.
       // В противном случае продолжайте состояние по умолчанию (объект окна).
       const element = ref.current ? ref.current : ref;
+
+      // console.log("usKeyPress element ", element);
+      // console.log("usKeyPress ref ", ref);
+      // console.log("usKeyPress ref.current ", ref.current);
 
       // Добавить слушателей событий
       element.addEventListener("keydown", settings.downHandler);

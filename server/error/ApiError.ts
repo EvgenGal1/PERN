@@ -8,7 +8,7 @@ class ApiError extends Error {
   errors?: any;
 
   // в парам.приним. стат.код, смс, ошб.(по умолч.масс.пуст)
-  constructor(status: number, message: string, errors = []) {
+  constructor(status: number, message: string, errors = [] || "") {
     // вызов.род.констр. с передачей смс
     super();
     // super(message); // ! не раб. формат или присвойка без указания
@@ -28,7 +28,7 @@ class ApiError extends Error {
   }
 
   // `плохой запрос`
-  static badRequest(message: string, errors = []) {
+  static badRequest(message: string, errors = [] || "") {
     // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
     return new ApiError(400, message, errors);
   }
