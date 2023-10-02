@@ -8,7 +8,6 @@ import { logoutUser } from "../../../http/Tok/userAPI_Tok";
 const User = () => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
-  console.log("User 000 user ", user);
 
   const handleLogout = (event: any) => {
     logoutUser();
@@ -35,10 +34,11 @@ const User = () => {
             {" "}
             Редактировать Пользователя
           </button>
-          <button className="btn--eg btn-success--eg mt-3">
-            <Link className="a0" to={USERORDER_ROUTE} replace={true}>
-              История заказов
-            </Link>
+          <button
+            onClick={() => navigate(USERORDER_ROUTE)}
+            className="btn--eg btn-success--eg mt-3"
+          >
+            История заказов
           </button>
           <button
             onClick={handleLogout}

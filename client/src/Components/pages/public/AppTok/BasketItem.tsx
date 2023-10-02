@@ -3,17 +3,17 @@ const BasketItem = (props: any) => {
     <tr>
       <td className="txt">{props.name}</td>
       {/* количество/изменить */}
-      <td className="df df-jcc df-aic">
+      <td className="txt">
         <button
           onClick={() => props.decrement(props.id)}
-          className="btn--eg btn-success--eg"
+          className="btn--eg btn-success--eg tb-cl"
         >
           -
         </button>{" "}
         <strong className="plr-2">{props.quantity}</strong>{" "}
         <button
           onClick={() => props.increment(props.id)}
-          className="btn--eg btn-danger--eg"
+          className="btn--eg btn-danger--eg tb-cl"
         >
           +
         </button>
@@ -22,10 +22,10 @@ const BasketItem = (props: any) => {
       <td className="txt">{props.price}</td>
       {/* сумма */}
       <td className="txt">{props.price * props.quantity}</td>
-      <td className="df df-jcc">
+      <td className="txt">
         <button
           onClick={() => props.remove(props.id)}
-          className="btn--eg btn-danger--eg"
+          className="btn--eg btn-danger--eg tb-cl"
         >
           Удалить
         </button>

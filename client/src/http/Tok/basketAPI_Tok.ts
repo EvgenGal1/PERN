@@ -7,9 +7,19 @@ export const fetchBasket = async () => {
 };
 
 export const appendBasket = async (prodId: number) => {
-  console.log("BSK_API id : " + prodId);
-  const { data } = await guestInstance.put(`basket/product/${prodId}/append/1`);
-  return data;
+  try {
+    const { data } = await guestInstance.put(
+      `basket/product/${prodId}/append/1`
+    );
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const incrementBasket = async (id: number) => {

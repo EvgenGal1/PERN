@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
 
 const Orders = (props: any) => {
-  if (props.items?.length === 0) {
+  if (props.items?.length === 0 || !props.items) {
     return <p>Список заказов пустой</p>;
   }
 

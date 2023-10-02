@@ -5,8 +5,17 @@ import { guestInstance, authInstance } from "./index_Tok";
  * Создание, обновление и удаление категории, получение списка всех Категорий
  */
 export const createCategory = async (category: string | any) => {
-  const { data } = await authInstance.post("category/create", category);
-  return data;
+  try {
+    const { data } = await authInstance.post("category/create", category);
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const fetchCategory = async (id: number) => {
@@ -33,8 +42,17 @@ export const deleteCategory = async (id: number) => {
  * Создание, обновление и удаление бренда, получение списка всех Брендов
  */
 export const createBrand = async (brand: string | any) => {
-  const { data } = await authInstance.post("brand/create", brand);
-  return data;
+  try {
+    const { data } = await authInstance.post("brand/create", brand);
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const fetchBrand = async (id: number) => {
@@ -61,8 +79,17 @@ export const deleteBrand = async (id: number) => {
  * Создание, обновление и удаление товара, получение списка всех Товаров
  */
 export const createProduct = async (product: string | any) => {
-  const { data } = await authInstance.post("product/create", product);
-  return data;
+  try {
+    const { data } = await authInstance.post("product/create", product);
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const fetchOneProduct = async (id: number) => {
@@ -127,21 +154,39 @@ export const createProdRating = async (
   productId: number,
   rate: number
 ) => {
-  const { data } = await authInstance.post(
-    `rating/product/${productId}/rate/${rate}`
-  );
-  return data;
+  try {
+    const { data } = await authInstance.post(
+      `rating/product/${productId}/rate/${rate}`
+    );
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 /*
  * Создание, обновление и удаление Характеристик товара
  */
 export const createProperty = async (productId: number, property: any) => {
-  const { data } = await authInstance.post(
-    `product/${productId}/property/create`,
-    property
-  );
-  return data;
+  try {
+    const { data } = await authInstance.post(
+      `product/${productId}/property/create`,
+      property
+    );
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const updateProperty = async (

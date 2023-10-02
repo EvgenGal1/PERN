@@ -33,7 +33,6 @@ const authInstance = axios.create({
 
 // добавляем в запрос данные для авторизации с помощью перехватчика (interceptor)
 const authInterceptor = (config: any) => {
-  // ! е/и тип - : { headers: { authorization: string; }; } - то ошб. - Типы свойства "headers" несовместимы. в authInstance.interceptors.request.use(authInterceptor)
   const token = localStorage.getItem("tokenAccess");
   if (token) {
     config.headers.authorization =

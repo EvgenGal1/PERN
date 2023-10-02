@@ -7,8 +7,17 @@ import { guestInstance, authInstance } from "./index_Tok";
 
 // создать новый заказ
 export const adminCreate = async (body: any) => {
-  const { data } = await authInstance.post("order/admin/create", body);
-  return data;
+  try {
+    const { data } = await authInstance.post("order/admin/create", body);
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 // получить список всех заказов магазина
 export const adminGetAll = async () => {
@@ -40,11 +49,20 @@ export const adminDelete = async (id: number) => {
  * ПОЗИЦИИ Заказа для cоздание, обновление и удаление
  */
 export const createItem = async (orderId: number, item: any) => {
-  const { data } = await authInstance.post(
-    `order/${orderId}/item/create`,
-    item
-  );
-  return data;
+  try {
+    const { data } = await authInstance.post(
+      `order/${orderId}/item/create`,
+      item
+    );
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const updateItem = async (orderId: number, id: number, item: any) => {
@@ -68,8 +86,17 @@ export const deleteItem = async (orderId: number, id: number) => {
 
 // создать новый заказ
 export const userCreate = async (body: any) => {
-  const { data } = await authInstance.post("order/user/create", body);
-  return data;
+  try {
+    const { data } = await authInstance.post("order/user/create", body);
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 // получить список всех заказов пользователя
 export const userGetAll = async () => {
@@ -88,6 +115,15 @@ export const userGetOne = async (id: number | string | undefined) => {
 
 // создать новый заказ
 export const guestCreate = async (body: any) => {
-  const { data } = await guestInstance.post("order/guest/create", body);
-  return data;
+  try {
+    const { data } = await guestInstance.post("order/guest/create", body);
+    return data;
+  } catch (e: any) {
+    const status = e.response.status;
+    const errors = e?.response.data.errors;
+    const message = e?.response.data.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };

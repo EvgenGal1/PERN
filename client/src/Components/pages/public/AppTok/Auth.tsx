@@ -180,7 +180,7 @@ const Auth = observer(() => {
     );
   };
 
-  // обработка данных (запрос к БД/маршрут в ЛК/ошибки с БД)
+  // обработка данных (запрос к БД, маршрут в ЛК, ошибки с БД)
   const handleSubmit = async (
     event: FormEvent<HTMLFormElement>
   ) /* : void */ => {
@@ -191,40 +191,64 @@ const Auth = observer(() => {
     if (isLogin)
       dataRes = await loginUser(formValues.email, formValues.password);
     else dataRes = await signupUser(formValues.email, formValues.password);
-    // console.log("DATA 00000 ", dataRes);
+    console.log("DATA 00000 ", dataRes);
 
     // пров./ввывод errors
-    if (dataRes?.data?.errors) {
-      dataRes.data.errors.forEach((error: any) => {
-        if (error.param === "email") {
-          setFormErrors((prevState) => ({
-            ...prevState,
-            email: prevState.email
-              ? prevState.email + "\n" + error.msg + " - " + error.value
-              : error.msg + " - " + error.value,
-          }));
-        } else if (error.param === "password") {
-          setFormErrors((prevState) => ({
-            ...prevState,
-            password: prevState.password
-              ? prevState.password + `\n` + error.msg + " - " + error.value
-              : error.msg + " - " + error.value,
-          }));
-        }
-      });
-
-      if (dataRes?.data?.message) {
+    if (dataRes?.errors) {
+      // для err массива
+      if (Array.isArray(dataRes?.errors)) {
+        dataRes.errors?.forEach((error: any) => {
+          if (error.param === "email") {
+            setFormErrors((prevState) => ({
+              ...prevState,
+              email: prevState.email
+                ? prevState.email + "\n" + error.msg + " - " + error.value
+                : error.msg + " - " + error.value,
+            }));
+          } else if (error.param === "password") {
+            setFormErrors((prevState) => ({
+              ...prevState,
+              password: prevState.password
+                ? prevState.password + `\n` + error.msg + " - " + error.value
+                : error.msg + " - " + error.value,
+            }));
+          }
+        });
+      }
+      // для err string
+      if (typeof dataRes?.errors === "string") {
+        // ^ проверка содержимого строки на email/password
         setFormErrors((prevState) => ({
           ...prevState,
-          sms: dataRes.data.message,
+          email: dataRes.errors,
+        }));
+      }
+      // для смс
+      if (dataRes?.message) {
+        setFormErrors((prevState) => ({
+          ...prevState,
+          sms: dataRes.message,
+        }));
+      }
+    }
+    // для смс
+    if (dataRes?.status > 400) {
+      if (dataRes?.message) {
+        setFormErrors((prevState) => ({
+          ...prevState,
+          sms: dataRes.message,
         }));
       }
     }
 
     // перенаправление в ЛК е/и нет ошб., прошёл Польз.
-    if (!dataRes?.data?.errors && dataRes.email && dataRes.role) {
+    if (
+      !dataRes?.errors &&
+      dataRes.userTokenAcs.email &&
+      dataRes.userTokenAcs.role
+    ) {
       setFormErrors({ sms: "", email: "", password: "" });
-      user.login(dataRes);
+      user.login(dataRes.userTokenAcs);
       if (user.isAdmin) navigate(ADMIN_ROUTE);
       if (user.isAuth) navigate(USER_ROUTE);
     }
@@ -267,7 +291,7 @@ const Auth = observer(() => {
                 name="email"
                 value={formValues.email}
                 onChange={(e) => handleChange(e)}
-                // е/и есть value и errors то cl.err-inpt, е/и есть value и нет errors то cl.err-inpt-suces
+                // выделен.кнп. е/и есть value и errors то cl.err-inpt, е/и есть value и нет errors то cl.err-inpt-suces
                 className={`inpt--eg ${
                   formValues.email !== "" && formErrors.email
                     ? "err-inpt"
