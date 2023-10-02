@@ -3,8 +3,8 @@ export {};
 
 // подкл.конфиг.БД для записи получ.данн.в БД
 const { pool } = require("../db");
-const ApiErrorJS = require("../error/ApiErrorJS");
-const { Token } = require("../models/modelsTS.ts");
+const AppError = require("../error/ApiError");
+const { Token } = require("../models/mapping");
 
 // подкл.ф.контролера для генерац.web токена
 const jwt = require("jsonwebtoken");
@@ -42,8 +42,8 @@ class TokenService {
   }
   validateRefreshToken(token) {
     try {
+      // const userData = jwt.verify(token, process.env.SECRET_KEY);
       const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
-      console.log("SRV.t.serv 9 : " + 9);
       return userData;
     } catch (error) {
       return null;
@@ -52,8 +52,7 @@ class TokenService {
 
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
   /* async */ generateToken(payload: any) {
-    // передаём данн.польз в fn генер.токена.
-    // const accessToken = generateJwt(payload);
+    // const accessToken = generateJwt(payload); // ч/з fn генер.токена
     const accessToken = /* await */ jwt.sign(
       payload,
       process.env.JWT_ACCESS_SECRET_KEY,
@@ -61,7 +60,7 @@ class TokenService {
         expiresIn: "12h",
       }
     );
-    // const refreshToken = generateJwt(payload);
+    // const refreshToken = generateJwt(payload); // ч/з fn генер.токена
     const refreshToken = /* await */ jwt.sign(
       payload,
       process.env.JWT_REFRESH_SECRET_KEY,
@@ -69,61 +68,59 @@ class TokenService {
         expiresIn: "30d",
       }
     );
-    console.log("SRV.t.serv acTk 10 : " + accessToken);
-    console.log("SRV.t.serv rfTk 11 : " + refreshToken);
+
     return { accessToken, refreshToken };
   }
 
   // сохр.REFRESH токен в БД для польз.
-  async saveToken(userId: number, refreshToken: string) {
-    console.log("===========================2 : " + refreshToken);
-    // проверка существ.токена перед сохр.в БД // ^ только для одного устр. Заход с др.устр. выбьет первое. Можно сохр по неск.токенов для польз.устр.(обнов.,удал.стар.токенов)
+  async saveToken(userId: number, basketId: number, refreshToken: string) {
+    // проверка существ.токена перед сохр.в БД
+    // ^ только для одного устр. Заход с др.устр. выбьет первое. Можно сохр по неск.токенов для польз.устр.(обнов.,удал.стар.токенов)
     const tokenData = await Token.findOne({
       where: { userId: userId /* , refreshToken: refreshToken */ },
     });
-    console.log("SRV.t.serv 3 : " + 3);
+
     // е/и нашлось перезапис refresh
     if (tokenData) {
-      console.log("SRV.t.serv 4 : " + 4);
-      /* const tokenUpd = */ await Token.update(
-        { /* userId, */ refreshToken },
-        { where: { userId: userId } }
+      await Token.update(
+        { refreshToken },
+        { where: { userId: userId, basketId: basketId } }
       );
-      // return;
       tokenData.userId = userId;
       tokenData.refreshToken = refreshToken;
+
       // сохр. для обнов.в БД
       return tokenData.save();
     }
-    console.log("SRV.t.serv 5 : " + 5);
+
     // СОЗД.НОВ.ТОКЕН
     const token = await Token.create({
       userId: userId,
+      basketId: basketId,
       refreshToken: refreshToken,
     });
-    console.log("SRV.t.serv 6 : " + 6);
+
     // возвращ.нов.токен
     return token;
   }
 
   // Удален.REFRESH из БД
   async removeToken(refreshToken: string) {
-    console.log("SRV.t.serv 7 : " + 7);
     const tokenData = await Token.destroy({
       where: { refreshToken: refreshToken },
     });
+
     return tokenData;
   }
 
   // Поиск REFRESH токена в БД
   async findToken(refreshToken: string) {
-    console.log("SRV.t.serv 8 : " + 8);
     const tokenData = await Token.findOne({
       where: { refreshToken: refreshToken },
     });
-    console.log("tokenData : " + tokenData);
+
     return tokenData;
   }
 }
 
-module.exports = new TokenService();
+export default new TokenService();

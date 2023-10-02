@@ -49,7 +49,7 @@ router.post(
       .matches(/\d/)
       .withMessage("Пароль должен содержать число")
       .matches(/(?=(.*\W){2})/)
-      .withMessage("Где 2 специальных символа"),
+      .withMessage("Где два специальных символа"),
   ],
   UserController.signupUser
 );
@@ -60,7 +60,7 @@ router.post(
   UserController.loginUser
 );
 
-// USER
+// USER Пользователь
 // ВЫХОД. Удален.Token.refreshToken
 // router.post("/logout", UserController.logout);
 // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
@@ -70,7 +70,7 @@ router.post(
 // ПРОВЕРКА | auth
 router.get("/check", authMiddleware, UserController.checkUser);
 
-// ADMIN
+// ADMIN Пользователь
 router.post(
   "/create",
   authMiddleware,

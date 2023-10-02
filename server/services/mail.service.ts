@@ -91,36 +91,13 @@ class MailService {
         from: process.env.SMTP_USER,
         to: to,
         subject: "Активация акуанта на " + process.env.API_URL,
-        // text: "",
-        // html: `
-        //   <div>
-        //     <h1>Для активации перейдите по ссылке</h1>
-        //     <a href="${Link}">${Link}</a>
-        //   </div>
-        //   `,
         text: message,
         html: HTML_TEMPLATE(message),
       });
     } catch (error) {
-      return console.log(error);
+      throw new Error("Письмо не отправилось");
     }
   }
 }
 
-// module.exports = new TokenService();
 export default new MailService();
-
-// ^ проверка на ошб. с логоах ?
-// const SENDMAIL = async (mailDetails, callback) => {
-//   try {
-//     const info = await transporter.sendMail(mailDetails);
-//     callback(info);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// SENDMAIL(options, (info) => {
-//   console.log("Почта отправлена успешно");
-//   console.log("Идентификатор сообщения: ", info.messageId);
-// });

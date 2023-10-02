@@ -1,16 +1,26 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import AppError from "../error/ApiError";
-import UserService from "../services/user.service";
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 
-const makeJwt = (id, email, role) => {
-  return jwt.sign({ id, email, role }, process.env.SECRET_KEY, {
-    expiresIn: "24h",
-  });
+import AppError from "../error/ApiError";
+import UserService from "../services/user.service";
+
+// расшафр.пароля
+const makeJwt = (id, username, email, role) => {
+  return jwt.sign(
+    { id, username, email, role },
+    process.env.JWT_ACCESS_SECRET_KEY,
+    { expiresIn: "24h" }
+  );
 };
+
+// перем.cookie. // ^ domain - управ.поддомен.использования, path - маршр.действ., maxAge - вр.жизни, secure - только по HTTPS, httpOnly - измен.ток.ч/з SRV, signed - подписан
+const maxAge1 = 60 * 60 * 1000 * 24 * 30;
+const maxAge2 = 60 * 60 * 1000 * 24 * 365; // вр.жизни один год
+const signed = true;
+const httpOnly = true;
 
 class User {
   // РЕГИСТРАЦИЯ
@@ -18,72 +28,122 @@ class User {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       const errorsValid = validationResult(req);
-      // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors.масс.
+      // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors
       if (!errorsValid.isEmpty()) {
-        // throw new Error( // ! ошб.
-        // throw next(AppError.badRequest(
-        // return AppError.badRequest( // ? нет вывода на Front
         return next(
           AppError.badRequest(
-            // {message: "смс",errors: errorsValid.array()} // ! при передаче объ.не подтягивается errors
             "Некорректые данные при Регистрации",
             errorsValid.array()
           )
         );
       }
 
+      // Получ.данн.из тела запроса
       const { email, password, role = "USER" } = req.body;
 
-      if (!email || !password) {
-        throw new Error("Пустой email или пароль");
+      // проверка отсутств.user/password
+      if (!email) throw next(AppError.badRequest("Пустой email"));
+      if (!password) throw next(AppError.badRequest("Пустой пароль"));
+
+      // передача данн.в fn для Service (возвращ.data - ссыл.актив, 2 токена, данн.польз., смс)
+      const userData = await UserService.signupUser(email, password);
+      // обраб.ошб.
+      if ("errors" in userData) {
+        return next(AppError.badRequest(userData.message, userData.errors));
       }
-      // if (role !== "USER") {
-      //   throw new Error("Возможна только роль USER");
-      // }
-      const hash = await bcrypt.hash(password, 5);
-      const user = await UserService.createUser({
-        email,
-        password: hash,
-        role,
-      });
-      const token = makeJwt(user.id, user.email, user.role);
-      // // созд.Корзину по User.id
-      // if (user.id) {
-      //   await BasketService.createBasket(user.id);
-      // }
-      return res.json({ token });
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+
+      // сохр.refreshToken в cookie
+      if ("tokens" in userData) {
+        const usTokRef = userData.tokens.refreshToken;
+        res
+          .cookie("refreshToken", usTokRef, { maxAge1, httpOnly })
+          .cookie("basketId", userData.basketId, { maxAge2, signed });
+      }
+
+      return res.json(userData);
+    } catch (error) {
+      return next(AppError.badRequest(error.message));
     }
   }
 
   // АВТОРИЗАЦИЯ
   async loginUser(req, res, next) {
     try {
+      // проверка вход.полей на валидацию. шаблоны в route
+      const errorsValid = validationResult(req);
+      if (!errorsValid.isEmpty()) {
+        return next(
+          AppError.badRequest("Некорректый Вход", errorsValid.array())
+        );
+      }
+
       const { email, password } = req.body;
 
-      const user = await UserService.getByEmailUser(email);
-      // `сравнение` паролей
-      let compare = bcrypt.compareSync(password, user.password);
-      if (!compare) {
-        throw new Error("Указан неверный пароль");
+      const userData = await UserService.loginUser(email, password);
+      if ("errors" in userData) {
+        return next(AppError.badRequest(userData.message, userData.errors));
       }
-      const token = makeJwt(user.id, user.email, user.role);
-      return res.json({ token });
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+
+      if ("tokens" in userData) {
+        const usTokRef = userData.tokens.refreshToken;
+        res
+          .cookie("refreshToken", usTokRef, { maxAge1, httpOnly })
+          .cookie("basketId", userData.basketId, { maxAge2, signed });
+      }
+
+      return res.json(userData);
+    } catch (error) {
+      next(AppError.badRequest(error.message));
     }
   }
 
+  // ВЫХОД. Удал.Cookie.refreshToken
+  async logout(req, res, next) {
+    try {
+      // получ refresh из cookie, передача в service, удал.обоих, возвращ.смс об удален.
+      const { refreshToken } = req.cookies;
+      const { username, email } = req.body;
+
+      const token = await UserService.logoutUser(refreshToken, username, email);
+
+      res.clearCookie("refreshToken");
+
+      return res.json(token);
+    } catch (error) {
+      next(AppError.badRequest(error.message));
+    }
+  }
+
+  // проверка Польз.
   async checkUser(req, res, next) {
-    const token = makeJwt(req.auth.id, req.auth.email, req.auth.role);
+    const token = makeJwt(
+      req.auth.id,
+      req.auth.username,
+      req.auth.email,
+      req.auth.role
+    );
     return res.json({ token });
   }
 
-  async getAllUser(req, res, next) {
+  // пока отд.нет
+  async createUser(req, res, next) {
+    const { email, password, role = "USER" } = req.body;
     try {
-      const users = await UserService.getAllUser();
-      res.json(users);
+      if (!email || !password) {
+        throw new Error("Пустой email или пароль");
+      }
+      if (!["USER", "ADMIN"].includes(role)) {
+        throw new Error("Недопустимое значение роли");
+      }
+
+      const hash = await bcrypt.hash(password, 5);
+      const user = await UserService.createUser({
+        email,
+        password: hash,
+        role,
+      });
+
+      return res.json(user);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }
@@ -100,28 +160,10 @@ class User {
       next(AppError.badRequest(e.message));
     }
   }
-
-  // пока отд.нет
-  async createUser(req, res, next) {
-    const { email, password, role = "USER" } = req.body;
+  async getAllUser(req, res, next) {
     try {
-      if (!email || !password) {
-        throw new Error("Пустой email или пароль");
-      }
-      if (!["USER", "ADMIN"].includes(role)) {
-        throw new Error("Недопустимое значение роли");
-      }
-      const hash = await bcrypt.hash(password, 5);
-      const user = await UserService.createUser({
-        email,
-        password: hash,
-        role,
-      });
-      // // созд.Корзину по User.id
-      // if (user.id) {
-      //   await BasketService.createBasket(user.id);
-      // }
-      return res.json(user);
+      const users = await UserService.getAllUser();
+      res.json(users);
     } catch (e) {
       next(AppError.badRequest(e.message));
     }

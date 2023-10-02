@@ -26,7 +26,6 @@ class Order {
     next: NextFunction,
     type
   ) {
-    console.log("Order 111 : " + 111);
     try {
       const { name, email, phone, address, comment = null } = req.body;
       // данные для создания заказа
@@ -81,29 +80,8 @@ class Order {
       next(AppError.badRequest(e.message));
     }
   }
+
   // ADMIN ord
-  async adminGetAllOrder(req, res, next) {
-    try {
-      Order;
-      const orders = await OrderService.getAllOrder();
-      res.json(orders);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
-    }
-  }
-
-  async adminGetOrder(req, res, next) {
-    try {
-      if (!req.params.id) {
-        throw new Error("Не указан id пользователя");
-      }
-      const order = await OrderService.getAllOrder(req.params.id);
-      res.json(order);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
-    }
-  }
-
   async adminGetOneOrder(req, res, next) {
     try {
       if (!req.params.id) {
@@ -115,7 +93,26 @@ class Order {
       next(AppError.badRequest(e.message));
     }
   }
-
+  async adminGetOrder(req, res, next) {
+    try {
+      if (!req.params.id) {
+        throw new Error("Не указан id пользователя");
+      }
+      const order = await OrderService.getAllOrder(req.params.id);
+      res.json(order);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
+    }
+  }
+  async adminGetAllOrder(req, res, next) {
+    try {
+      Order;
+      const orders = await OrderService.getAllOrder();
+      res.json(orders);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
+    }
+  }
   async adminUpdateOrder(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
@@ -133,7 +130,6 @@ class Order {
       next(AppError.badRequest(e.message));
     }
   }
-
   async adminDeleteOrder(req, res, next) {
     try {
       if (!req.params.id) {
@@ -145,6 +141,7 @@ class Order {
       next(AppError.badRequest(e.message));
     }
   }
+
   // USER ord
   async userGetAllOrder(req, res, next) {
     try {
@@ -154,7 +151,6 @@ class Order {
       next(AppError.badRequest(e.message));
     }
   }
-
   async userGetOneOrder(req, res, next) {
     try {
       if (!req.params.id) {

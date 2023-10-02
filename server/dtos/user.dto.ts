@@ -18,6 +18,4 @@
   }
 }
 
-// export default new UserDto();
-// module.exports = new UserDto();
 export default UserDto;
