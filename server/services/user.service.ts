@@ -1,43 +1,199 @@
+// подкл. библ. для шифрование пароля нов.польз.
+const bcrypt = require("bcryptjs");
+// подкл.генир.уник.рандом.id
+const uuid = require("uuid");
+
 import AppError from "../error/ApiError";
+// выборка полей
+import UserDto from "../dtos/user.dto";
 import { User as UserMapping } from "../models/mapping";
 
+import BasketService from "../services/basket.service";
+import TokenService from "../services/token.service";
+import MailService from "../services/mail.service";
+
 class User {
-  async getAllUser() {
-    const users = await UserMapping.findAll();
-    return users;
+  // РЕГИСТРАЦИЯ
+  async signupUser(email: string, password: string) {
+    try {
+      const eml = await UserMapping.findOne({ where: { email } });
+      if (eml) {
+        return AppError.badRequest(
+          "НЕ удалось зарегистрироваться",
+          `Пользователь с Email <${email}> уже существует`
+        );
+      }
+
+      // hashирование(не шифрование) пароля ч/з bcryptjs. 1ый пароль, 2ой степень шифр.
+      const hashPassword = await bcrypt.hash(password, 5); // hashSync
+
+      // генер.уник.ссылку активации ч/з fn v4(подтверждение акаунта)
+      let activationLink = uuid.v4();
+      let activationLinkPath = `${process.env.API_URL}/PERN/auth/activate/${activationLink}`;
+
+      // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
+      const user = await UserMapping.create({
+        email,
+        password: hashPassword,
+        activationLink,
+      });
+
+      // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
+      await MailService.sendActionMail(email, activationLinkPath);
+
+      // выборка полей(~3шт.) для FRONT (new - созд.экземпляр класса)
+      const userDto = new UserDto(user);
+
+      // созд./получ. 2 токена. Разворач.нов.объ.
+      const tokens = TokenService.generateToken({ ...userDto });
+
+      // созд.Корзину по User.id
+      const basket = await BasketService.createBasket(user.id);
+
+      // сохр.refresh в БД
+      await TokenService.saveToken(userDto.id, basket.id, tokens.refreshToken);
+
+      // возвращ.data - ссыл.актив, 2 токена(с данн.польз.), смс, id basket
+      const dataServ = {
+        activationLinkPath,
+        message: `Пользователь c <${email}> создан и зарегистрирован. ID_${user.id}_${user.role}`,
+        tokens: tokens,
+        basketId: basket.id,
+      };
+      return dataServ;
+    } catch (error) {
+      return AppError.badRequest(
+        `НЕ SRV ERR удалось зарегистрироваться`,
+        error.message
+      );
+    }
   }
 
-  async getOneUser(id) {
-    const user = await UserMapping.findByPk(id);
-    if (!user) {
-      throw new Error("Пользователь не найден в БД");
+  // АВТОРИЗАЦИЯ
+  async loginUser(email: string, password: string) {
+    try {
+      // проверка сущест. eml (позже username)
+      const user = await UserMapping.findOne({ where: { email } });
+      if (!user) {
+        return AppError.badRequest(`Пользователь с Email <${email}> не найден`);
+      }
+
+      // проверка `сравнивания` пароля с шифрованым
+      let comparePassword = bcrypt.compareSync(password, user.password);
+      if (!comparePassword) {
+        return AppError.badRequest("Указан неверный пароль");
+      }
+
+      const userDto = new UserDto(user);
+
+      const tokens = TokenService.generateToken({ ...userDto });
+
+      // ! костыль 1.1. получ./созд. basket по userId
+      const userId = userDto.id;
+      const basket = await BasketService.getOneBasket(null, userId);
+
+      await TokenService.saveToken(userDto.id, basket.id, tokens.refreshToken);
+
+      return {
+        message: `Зашёл ${user.username} <${email}>. ID_${user.id}_${user.role}`,
+        tokens: tokens,
+        basketId: basket.id,
+      };
+    } catch (error) {
+      return AppError.badRequest(`НЕ удалось войти - ${error}.`);
     }
-    return user;
   }
 
-  async getByEmailUser(email) {
-    const user = await UserMapping.findOne({ where: { email } });
-    if (!user) {
-      throw new Error("Пользователь не найден в БД");
+  // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
+  async logoutUser(refreshToken: string, username: string, email: string) {
+    // пров.переданого токена
+    if (!refreshToken) {
+      // return "Токен не передан";
+      return AppError.badRequest(`Токен от ${username} <${email}> не передан`);
     }
-    return user;
+    const token = await TokenService.removeToken(refreshToken);
+    return `Токен ${refreshToken} пользователя ${username} <${email}> удалён. Стат ${token}`;
+  }
+
+  // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
+  async activate(activationLink: string) {
+    const user = await UserMapping.findOne({
+      where: { activationLink: activationLink },
+    });
+    if (!user) {
+      return AppError.badRequest(
+        `Некорр ссы.актив. Пользователя НЕ существует`
+      );
+    }
+    // флаг в true и сохр.
+    user.isActivated = true;
+    user.save();
+  }
+
+  // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
+  async refresh(refreshToken: string) {
+    // е/и нет то ошб.не авториз
+    if (!refreshToken) {
+      return AppError.unauthorizedError("Требуется авторизация");
+    }
+
+    // валид.токен.refresh
+    const userData = TokenService.validateRefreshToken(refreshToken);
+    // поиск токена
+    const tokenFromDB = await TokenService.findToken(refreshToken);
+
+    // проверка валид и поиск
+    if (!userData || !tokenFromDB) {
+      return AppError.unauthorizedError("Токен  отсутствует");
+    }
+
+    // вытаск.польз.с БД по ID
+    const user = await UserMapping.findByPk(userData.id);
+
+    const userDto = new UserDto(user);
+
+    const tokens = TokenService.generateToken({ ...userDto });
+
+    const basket = await BasketService.getOneBasket(userDto.id);
+
+    await TokenService.saveToken(userDto.id, basket.id, tokens.refreshToken);
+
+    return {
+      message: `ПЕРЕЗАПИСЬ ${userDto.username} <${userDto.email}>. ID_${user.id}_${user.role}`,
+      tokens: tokens,
+    };
   }
 
   async createUser(data) {
     const { email, password, role } = data;
     const check = await UserMapping.findOne({ where: { email } });
-    if (check) {
-      throw new Error("Пользователь уже существует");
-    }
+    if (check) throw new Error("Пользователь уже существует");
     const user = await UserMapping.create({ email, password, role });
+    // созд.Корзину по User.id
+    if (user.id) await BasketService.createBasket(user.id);
     return user;
   }
 
-  async updateUser(id, data) {
+  async getOneUser(id: number) {
     const user = await UserMapping.findByPk(id);
-    if (!user) {
-      throw new Error("Пользователь не найден в БД");
-    }
+    if (!user) throw new Error(`Пользователь по id ${id} не найден в БД`);
+    return user;
+  }
+
+  async getAllUser() {
+    const users = await UserMapping.findAll();
+    return users;
+  }
+
+  async getByEmailUser(email: string) {
+    const user = await UserMapping.findOne({ where: { email } });
+    if (!user) throw new Error(`Пользователь с email ${email} не найден в БД`);
+    return user;
+  }
+
+  async updateUser(id: number, data) {
+    const user = await UserMapping.findByPk(id);
+    if (!user) throw new Error("Пользователь не найден в БД");
     const {
       email = user.email,
       password = user.password,
@@ -47,11 +203,10 @@ class User {
     return user;
   }
 
-  async deleteUser(id) {
+  async deleteUser(id: number) {
     const user = await UserMapping.findByPk(id);
-    if (!user) {
-      throw new Error("Пользователь не найден в БД");
-    }
+    if (!user) throw new Error("Пользователь не найден в БД");
+    if (user.id) BasketService.deleteBasket(user.id);
     await user.destroy();
     return user;
   }
