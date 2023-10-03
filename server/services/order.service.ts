@@ -70,32 +70,6 @@ interface OrderItem {
 
 class Order {
   async getAllOrder(userId = null) {
-    // let orders;
-    // if (userId) {
-    //   orders = await OrderMapping.findAll({ where: { userId } });
-    // } else {
-    //   orders = await OrderMapping.findAll();
-    // }
-    // ^ Формат даты заказа. 1ый способ
-    // const options = {
-    //   attributes: {
-    //     include: [
-    //       [
-    //         sequelize.fn(
-    //           // "to_char",
-    //           // sequelize.col("created_at"),
-    //           // "DD.MM.YYYY HH24:MI"
-    //           // ^ при раб.с MySQL замен.to_char > DATE_FORMAT
-    //           "DATE_FORMAT",
-    //           sequelize.col("created_at"),
-    //           "%d-%m-%Y %H:%i"
-    //         ),
-    //         "prettyCreated",
-    //       ],
-    //     ],
-    //   },
-    // };
-    // ^ Формат даты заказа. 2ый способ
     const options: any = {};
     if (userId) {
       options.where = { userId };
@@ -105,31 +79,6 @@ class Order {
   }
 
   async getOneOrder(id: any, userId /* : any */ = null) {
-    // ^ стар.код
-    // let order;
-    // if (userId) {
-    //   order = await OrderMapping.findOne({
-    //     where: { id, userId },
-    //     include: [
-    //       {
-    //         model: OrderItemMapping,
-    //         as: "items",
-    //         attributes: ["name", "price", "quantity"],
-    //       },
-    //     ],
-    //   });
-    // } else {
-    //   order = await OrderMapping.findByPk(id, {
-    //     include: [
-    //       {
-    //         model: OrderItemMapping,
-    //         as: "items",
-    //         attributes: ["name", "price", "quantity"],
-    //       },
-    //     ],
-    //   });
-    // }
-    // ^ нов.код из github
     const options: any = {
       where: { id },
       include: [
@@ -154,106 +103,35 @@ class Order {
   }
 
   async createOrder(data: any /* CreateData */) /* : Promise<Orders> */ {
-    // общая стоимость заказа
-    const items = data.items;
-    const amount: any = items.reduce(
-      (sum: number, item: { price: number; quantity: number }) =>
-        sum + item.price * item.quantity,
-      0
-    );
-    // данные для создания заказа
-    const { name, email, phone, address, comment = null, userId = null } = data;
-    const order = await OrderMapping.create({
-      name,
-      email,
-      phone,
-      address,
-      comment,
-      amount,
-      userId,
-    });
-    // товары, входящие в заказ
-    for (let item of items) {
-      await OrderItemMapping.create({
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        orderId: order.id,
+    try {
+      // общая стоимость заказа
+      const items = data.items;
+      const amount: any = items.reduce(
+        (sum: number, item: { price: number; quantity: number }) =>
+          sum + item.price * item.quantity,
+        0
+      );
+
+      // данные для создания заказа
+      const {
+        name,
+        email,
+        phone,
+        address,
+        comment = null,
+        userId = null,
+      } = data;
+
+      const order = await OrderMapping.create({
+        name,
+        email,
+        phone,
+        address,
+        comment,
+        amount,
+        userId,
       });
-    }
-    // возвращать будем заказ с составом
-    const created = await OrderMapping.findByPk(order.id, {
-      include: [
-        {
-          model: OrderItemMapping,
-          as: "items",
-          attributes: ["name", "price", "quantity"],
-        },
-      ],
-    });
-    return created;
-  }
 
-  async updateOrder(id: string | number, data: /* any */ UpdateData) {
-    // const order = await OrderMapping.findByPk(id);
-    const order = await OrderMapping.findByPk(id, {
-      include: [{ model: OrderItemMapping, as: "items" }],
-    });
-    if (!order) {
-      throw new Error("Заказ не найден в БД");
-    }
-
-    // общая стоимость заказа
-    // const items = data.items;
-    const items = order.items;
-    const amount: any = items.reduce(
-      (sum: number, item: { price: number; quantity: number }) =>
-        sum + item.price * item.quantity,
-      0
-    );
-
-    // статус
-    let status: number = order.status;
-    if (
-      data.name !== order.name ||
-      data.email !== order.email ||
-      data.phone !== order.phone ||
-      data.address !== order.address ||
-      data.comment !== order.comment
-    ) {
-      if (status === 2002 || status === 2003) {
-        status = 2003;
-      } else {
-        status = 2001;
-      }
-    }
-
-    // данные для создания заказа
-    // const { name, email, phone, address, comment = null, userId = null } = data;
-    const {
-      name = order.name,
-      email = order.email,
-      phone = order.phone,
-      address = order.address,
-      comment = order.comment,
-      userId = order.userId,
-    } = data;
-    await order.update({
-      name,
-      email,
-      phone,
-      address,
-      comment,
-      amount,
-      userId,
-      status,
-    });
-    //
-    if (data.items) {
-      // свойства товара
-      // удаляем старые и добавляем новые
-      await OrderItemMapping.destroy({ where: { orderId: id } });
-      // const items: any = JSON.parse(data.items);
       // товары, входящие в заказ
       for (let item of items) {
         await OrderItemMapping.create({
@@ -263,22 +141,117 @@ class Order {
           orderId: order.id,
         });
       }
+
+      // возвращать будем заказ с составом
+      const created = await OrderMapping.findByPk(order.id, {
+        include: [
+          {
+            model: OrderItemMapping,
+            as: "items",
+            attributes: ["name", "price", "quantity"],
+          },
+        ],
+      });
+
+      return created;
+    } catch (error) {
+      return AppError.badRequest(`Заказ не создан`, error.message);
     }
-    // // возвращать будем заказ с составом
-    // const ordered = await OrderMapping.findByPk(order.id, {
-    //   include: [
-    //     {
-    //       model: OrderItemMapping,
-    //       as: "items",
-    //       attributes: ["name", "price", "quantity"],
-    //     },
-    //   ],
-    // });
-    //     // return ordered;
-    // обновим объект товара, чтобы вернуть свежие данные
-    await order.reload();
-    return order;
-    // return pretty(order);
+  }
+
+  async updateOrder(id: string | number, data: /* any */ UpdateData) {
+    try {
+      // const order = await OrderMapping.findByPk(id);
+      const order = await OrderMapping.findByPk(id, {
+        include: [{ model: OrderItemMapping, as: "items" }],
+      });
+      if (!order) {
+        throw new Error("Заказ не найден в БД");
+      }
+
+      // общая стоимость заказа
+      // const items = data.items;
+      const items = order.items;
+      const amount: any = items.reduce(
+        (sum: number, item: { price: number; quantity: number }) =>
+          sum + item.price * item.quantity,
+        0
+      );
+
+      // статус
+      let status: number = order.status;
+      if (
+        data.name !== order.name ||
+        data.email !== order.email ||
+        data.phone !== order.phone ||
+        data.address !== order.address ||
+        data.comment !== order.comment
+      ) {
+        if (status === 2002 || status === 2003) {
+          status = 2003;
+        } else {
+          status = 2001;
+        }
+      }
+
+      // данные для создания заказа
+      // const { name, email, phone, address, comment = null, userId = null } = data;
+      const {
+        name = order.name,
+        email = order.email,
+        phone = order.phone,
+        address = order.address,
+        comment = order.comment,
+        userId = order.userId,
+      } = data;
+      await order.update({
+        name,
+        email,
+        phone,
+        address,
+        comment,
+        amount,
+        userId,
+        status,
+      });
+      //
+      if (data.items) {
+        // свойства товара
+        // удаляем старые и добавляем новые
+        await OrderItemMapping.destroy({ where: { orderId: id } });
+        // const items: any = JSON.parse(data.items);
+        // товары, входящие в заказ
+        for (let item of items) {
+          await OrderItemMapping.create({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            orderId: order.id,
+          });
+        }
+      }
+
+      // возвращать будем заказ с составом
+      // const ordered = await OrderMapping.findByPk(order.id, {
+      //   include: [
+      //     {
+      //       model: OrderItemMapping,
+      //       as: "items",
+      //       attributes: ["name", "price", "quantity"],
+      //     },
+      //   ],
+      // });
+
+      // return ordered;
+
+      // обновим объект товара, чтобы вернуть свежие данные
+      await order.reload();
+
+      return order;
+      // return pretty(order);
+    } catch (error) {
+      return AppError.badRequest(`Заказ не обновлён`, error.message);
+    }
   }
 
   async deleteOrder(id) {
@@ -286,11 +259,9 @@ class Order {
       include: [
         {
           model: OrderItemMapping,
-          as: "items",
-          // attributes: ["name", "price", "quantity"],
+          as: "items" /* , attributes: ["name", "price", "quantity"], */,
         },
       ],
-      // include: [{ model: OrderItemMapping, as: "items" }],
     });
     if (!order) {
       throw new Error("Заказ не найден в БД");

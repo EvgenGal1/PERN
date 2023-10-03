@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // подкл. валидацию
@@ -23,6 +22,7 @@ const signed = true;
 const httpOnly = true;
 
 class User {
+  // любой Пользователь
   // РЕГИСТРАЦИЯ
   async signupUser(req, res, next) {
     try {
@@ -52,20 +52,24 @@ class User {
         return next(AppError.badRequest(userData.message, userData.errors));
       }
 
-      // сохр.refreshToken в cookie
+      // сохр.refreshToken/basketId в cookie и возвращ. access
+      let tokens: string = "";
       if ("tokens" in userData) {
         const usTokRef = userData.tokens.refreshToken;
         res
           .cookie("refreshToken", usTokRef, { maxAge1, httpOnly })
           .cookie("basketId", userData.basketId, { maxAge2, signed });
+        tokens = userData.tokens.accessToken;
       }
 
-      return res.json(userData);
+      // return res.json(userData);
+      // возвращ. accessToken
+      const data = { tokens };
+      return res.json(data);
     } catch (error) {
       return next(AppError.badRequest(error.message));
     }
   }
-
   // АВТОРИЗАЦИЯ
   async loginUser(req, res, next) {
     try {
@@ -84,32 +88,40 @@ class User {
         return next(AppError.badRequest(userData.message, userData.errors));
       }
 
+      // сохр.refreshToken/basketId в cookie и возвращ. access и сост.активации
+      let tokens: string = "";
+      let activated: boolean = null;
       if ("tokens" in userData) {
         const usTokRef = userData.tokens.refreshToken;
         res
           .cookie("refreshToken", usTokRef, { maxAge1, httpOnly })
           .cookie("basketId", userData.basketId, { maxAge2, signed });
+        tokens = userData.tokens.accessToken;
+        activated = userData.activated;
       }
 
-      return res.json(userData);
+      // return res.json(userData);
+      // возвращ. accessToken и activated(сост.активации)
+      const data = { tokens, activated };
+      return res.json(data);
     } catch (error) {
       next(AppError.badRequest(error.message));
     }
   }
 
+  // USER Пользователь
   // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
   async activateUser(req, res, next) {
     try {
       // из стр.получ.ссы.актив.
       const activationLink = req.params.link;
       await UserService.activateUser(activationLink);
-      // перенаправить на FRONT после перехода по ссылки (изза разных hostов BACK)
-      return res.redirect(process.env.CLIENT_URL_CLN);
+      // перенаправить на FRONT после перехода по ссылки
+      return res.redirect(`${process.env.CLIENT_URL_CLN}/user`);
     } catch (error) {
       return next(AppError.badRequest(`НЕ удалось АКТИВАВИРАВАТЬ - ${error}.`));
     }
   }
-
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
   async refreshUser(req, res, next) {
     try {
@@ -128,7 +140,18 @@ class User {
       return next(AppError.badRequest(`НЕ удалось ПЕРЕЗАПИСАТЬ - ${error}.`));
     }
   }
-
+  // ПРОВЕРКА. Польз.
+  async checkUser(req, res, next) {
+    const user = await UserService.getOneUser(req.auth.id);
+    const activated = user.isActivated;
+    const token = makeJwt(
+      req.auth.id,
+      req.auth.username,
+      req.auth.email,
+      req.auth.role
+    );
+    return res.json({ token, activated });
+  }
   // ВЫХОД. Удал.Cookie.refreshToken
   async logoutUser(req, res, next) {
     try {
@@ -146,19 +169,7 @@ class User {
     }
   }
 
-  // проверка Польз.
-  async checkUser(req, res, next) {
-    const user = await UserService.getOneUser(req.auth.id);
-    const activationLink = user.isActivated;
-    const token = makeJwt(
-      req.auth.id,
-      req.auth.username,
-      req.auth.email,
-      req.auth.role
-    );
-    return res.json({ token, activationLink });
-  }
-
+  // ADMIN Пользователь
   // пока отд.нет
   async createUser(req, res, next) {
     const { email, password, role = "USER" } = req.body;
@@ -170,10 +181,11 @@ class User {
         throw new Error("Недопустимое значение роли");
       }
 
-      const hash = await bcrypt.hash(password, 5);
+      // const hash = await bcrypt.hash(password, 5);
       const user = await UserService.createUser({
         email,
-        password: hash,
+        // password: hash,
+        password,
         role,
       });
 
@@ -182,7 +194,6 @@ class User {
       next(AppError.badRequest(e.message));
     }
   }
-
   async getOneUser(req, res, next) {
     try {
       if (!req.params.id) {
@@ -202,7 +213,6 @@ class User {
       next(AppError.badRequest(e.message));
     }
   }
-
   async updateUser(req, res, next) {
     try {
       if (!req.params.id) {
@@ -215,9 +225,9 @@ class User {
       if (role && !["USER", "ADMIN"].includes(role)) {
         throw new Error("Недопустимое значение роли");
       }
-      if (password) {
-        password = await bcrypt.hash(password, 5);
-      }
+      // if (password) {
+      //   password = await bcrypt.hash(password, 5);
+      // }
       const user = await UserService.updateUser(req.params.id, {
         email,
         password,
@@ -228,7 +238,6 @@ class User {
       next(AppError.badRequest(e.message));
     }
   }
-
   async deleteUser(req, res, next) {
     try {
       if (!req.params.id) {

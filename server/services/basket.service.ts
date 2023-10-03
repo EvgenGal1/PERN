@@ -176,13 +176,12 @@ class Basket {
       });
       if (!basket) throw new Error("Корзина не найдена в БД");
 
-      console.log("BSK srv DEL 1 basket : " + basket);
       if (basketId == basket.userId) {
         BasketMapping.destroy({ where: { userId: basketId } });
       } else {
         await basket.destroy();
       }
-      console.log("BSK srv DEL 2 basket : " + basket);
+
       return pretty(basket);
     } catch (error) {
       return AppError.badRequest(`Коризина не удалена`, error.message);
