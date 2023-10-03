@@ -25,7 +25,7 @@ const User = () => {
             Личный Кабинет {user?.username && <b>Клиента {user?.username}</b>}
           </h1>
           <p className="df df-jcc">
-            {user.activLink
+            {user.activated
               ? "Аккаунт подтверждён по почте"
               : "ПОДТВЕРДИТЕ АККАУНТ В ПОЧТЕ"}
           </p>

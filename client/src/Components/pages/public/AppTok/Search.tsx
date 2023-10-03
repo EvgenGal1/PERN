@@ -120,7 +120,7 @@ const Search = observer(() => {
       <div className="search--eg">
         {/* INP.ПОИСКА */}
         <input
-          className="search--eg__inp"
+          className="search--eg__inp bbb-1"
           placeholder="Поиск (название, цена)"
           onChange={(e) => {
             searchItems(e.target.value);

@@ -2,8 +2,17 @@
 import { guestInstance } from "./indexAPI_Tok";
 
 export const fetchBasket = async () => {
-  const { data } = await guestInstance.get("basket/getone");
-  return data;
+  try {
+    const { data } = await guestInstance.get("basket/getone");
+    return data;
+  } catch (e: any) {
+    const status = e?.response?.status;
+    const errors = e?.response?.data?.errors;
+    const message = e?.response?.data?.message;
+
+    let data = { errors, message, status };
+    return data;
+  }
 };
 
 export const appendBasket = async (prodId: number) => {
@@ -11,11 +20,12 @@ export const appendBasket = async (prodId: number) => {
     const { data } = await guestInstance.put(
       `basket/product/${prodId}/append/1`
     );
+
     return data;
   } catch (e: any) {
-    const status = e.response.status;
-    const errors = e?.response.data.errors;
-    const message = e?.response.data.message;
+    const status = e?.response?.status;
+    const errors = e?.response?.data?.errors;
+    const message = e?.response?.data?.message;
 
     let data = { errors, message, status };
     return data;

@@ -9,11 +9,12 @@ import { guestInstance, authInstance } from "./indexAPI_Tok";
 export const adminCreate = async (body: any) => {
   try {
     const { data } = await authInstance.post("order/admin/create", body);
+
     return data;
   } catch (e: any) {
-    const status = e.response.status;
-    const errors = e?.response.data.errors;
-    const message = e?.response.data.message;
+    const status = e?.response?.status;
+    const errors = e?.response?.data?.errors;
+    const message = e?.response?.data?.message;
 
     let data = { errors, message, status };
     return data;
@@ -54,11 +55,12 @@ export const createItem = async (orderId: number, item: any) => {
       `order/${orderId}/item/create`,
       item
     );
+
     return data;
   } catch (e: any) {
-    const status = e.response.status;
-    const errors = e?.response.data.errors;
-    const message = e?.response.data.message;
+    const status = e?.response?.status;
+    const errors = e?.response?.data?.errors;
+    const message = e?.response?.data?.message;
 
     let data = { errors, message, status };
     return data;
@@ -88,11 +90,12 @@ export const deleteItem = async (orderId: number, id: number) => {
 export const userCreate = async (body: any) => {
   try {
     const { data } = await authInstance.post("order/user/create", body);
+
     return data;
   } catch (e: any) {
-    const status = e.response.status;
-    const errors = e?.response.data.errors;
-    const message = e?.response.data.message;
+    const status = e?.response?.status;
+    const errors = e?.response?.data?.errors;
+    const message = e?.response?.data?.message;
 
     let data = { errors, message, status };
     return data;
@@ -117,11 +120,12 @@ export const userGetOne = async (id: number | string | undefined) => {
 export const guestCreate = async (body: any) => {
   try {
     const { data } = await guestInstance.post("order/guest/create", body);
+
     return data;
   } catch (e: any) {
-    const status = e.response.status;
-    const errors = e?.response.data.errors;
-    const message = e?.response.data.message;
+    const status = e?.response?.status;
+    const errors = e?.response?.data?.errors;
+    const message = e?.response?.data?.message;
 
     let data = { errors, message, status };
     return data;

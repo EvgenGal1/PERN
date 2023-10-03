@@ -259,6 +259,7 @@ const Auth = observer(() => {
     ) {
       setFormErrors({ sms: "", email: "", password: "" });
       user.login(dataRes.userTokenAcs);
+      user.isActivated(dataRes.activated);
       if (user.isAdmin) navigate(ADMIN_ROUTE);
       if (user.isAuth) navigate(USER_ROUTE);
     }

@@ -15,7 +15,7 @@ export const signupUser = async (email: string, password: string | any) => {
 
     let userTokenAcs: any = "";
     if (response.data.tokens) {
-      const tokenAcs = response.data.tokens.accessToken;
+      const tokenAcs = response.data.tokens; /* .accessToken */
       userTokenAcs = jwt_decode(tokenAcs);
       localStorage.setItem("tokenAccess", tokenAcs);
     }
@@ -44,14 +44,15 @@ export const loginUser = async (email: string, password: string | any) => {
     const status = response.status;
 
     let userTokenAcs: any = "";
+    let activated: boolean = false;
     if (response.data.tokens) {
-      const tokenAcs = response.data.tokens.accessToken;
+      const tokenAcs = response.data.tokens; /* .accessToken */
       userTokenAcs = jwt_decode(tokenAcs);
       localStorage.setItem("tokenAccess", tokenAcs);
+      activated = response.data.activated;
     }
 
-    let data = { userTokenAcs, status };
-
+    let data = { userTokenAcs, status, activated };
     return data;
   } catch (e: any) {
     const status = e.response.status;
@@ -79,10 +80,10 @@ export const checkUser = async () => {
     userToken = response.data.token;
     localStorage.setItem("tokenAccess", userToken);
     userData = jwt_decode(userToken);
-    let activLink = response.data.activationLink;
+    let activated = response.data.activated;
 
     // возвращ.расшифр.токен и подтверждение почты
-    return { userData, activLink };
+    return { userData, activated };
   } catch (e: any) {
     localStorage.removeItem("tokenAccess");
     return false;
