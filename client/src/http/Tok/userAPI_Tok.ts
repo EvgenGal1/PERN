@@ -69,17 +69,20 @@ export const checkUser = async () => {
   try {
     userToken = localStorage.getItem("tokenAccess");
 
-    // если в хранилище нет действительного токена
-    if (!userToken) {
-      return false;
-    }
-    // токен есть, надо проверить его подлинность
-    const response = await authInstance.get("user/check");
-    userToken = response.data.token;
-    userData = jwt_decode(userToken);
+    // false е/и tokenAccess нет в LS
+    if (!userToken) return false;
 
+    // проверка tokenAccess на подлинность
+    const response = await authInstance.get("user/check");
+
+    // сохр.токен, расшифр.токен, подтверждение почты
+    userToken = response.data.token;
     localStorage.setItem("tokenAccess", userToken);
-    return userData;
+    userData = jwt_decode(userToken);
+    let activLink = response.data.activationLink;
+
+    // возвращ.расшифр.токен и подтверждение почты
+    return { userData, activLink };
   } catch (e: any) {
     localStorage.removeItem("tokenAccess");
     return false;

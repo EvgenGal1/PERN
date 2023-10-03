@@ -13,9 +13,7 @@ const CheckAuth = (props: any) => {
   useEffect(() => {
     checkUser()
       .then((data: any) => {
-        if (data) {
-          user.login(data);
-        }
+        if (data.userData) user.login(data.userData);
       })
       .finally(() => setChecking(false));
   }, []);

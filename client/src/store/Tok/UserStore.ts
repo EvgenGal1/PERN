@@ -7,6 +7,7 @@ export default class UserStore {
   email = null;
   isAuth = false;
   isAdmin = false;
+  activLink = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -18,6 +19,10 @@ export default class UserStore {
     this.email = email;
     this.isAuth = true;
     this.isAdmin = role === "ADMIN";
+  }
+
+  activationLink(activLink: any) {
+    this.activLink = activLink;
   }
 
   logout() {

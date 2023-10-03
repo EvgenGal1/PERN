@@ -68,11 +68,6 @@ const Auth = observer(() => {
   const validateForm = (name: string, value: string): /* void | */ boolean => {
     const errors: FormErrors = { ...formErrors };
 
-    // Проверка имени
-    // if (!formValues.name.trim()) { errors.name = "Поле обязательно для заполнения"; }
-    // else if (formValues.name.trim().length < 3) { errors.name = "Имя должно содержать не менее 3 символов"; }
-    // else { errors.name = "";}
-
     // Проверка email
     if (name === "email") {
       // Проверка наличия имени перед символом @
@@ -153,6 +148,11 @@ const Auth = observer(() => {
       }
     }
 
+    // Проверка имени
+    // if (!formValues.name.trim()) { errors.name = "Поле обязательно для заполнения"; }
+    // else if (formValues.name.trim().length < 3) { errors.name = "Имя должно содержать не менее 3 символов"; }
+    // else { errors.name = "";}
+
     // Проверка подтверждения пароля
     // if (!formValues.confirmPassword.trim()) { errors.confirmPassword = "Поле обязательно для заполнения"; }
     // else if (formValues.confirmPassword.trim() !== value.trim()) { errors.confirmPassword = "Пароли не совпадают"; }
@@ -162,6 +162,16 @@ const Auth = observer(() => {
     errors.sms = "";
 
     // ^ проверка разности email и password (не должны совпадать или быть похожими)
+    // if (errors.email === errors.password) {
+    //   console.log("errors.email ", errors.email);
+    //   console.log("errors.password ", errors.password);
+    //   const strErr = `Не должны совпадать ${errors.email} и ${errors.password}`;
+    //   errors.email = strErr;
+    //   errors.password = strErr;
+    // } else {
+    //   errors.email = "";
+    //   errors.password = "";
+    // }
     // ^ проверка уникальности. не должно быть простых комбинаций, последовательных знаков/букв
 
     setFormErrors(errors);

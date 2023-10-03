@@ -38,12 +38,10 @@ const AppTok = observer(() => {
       // fetchBasket()
     ])
       .then(
-        axios.spread((userData /* , basketData */) => {
-          console.log("APP userData ", userData);
-          // console.log("APP basketData ", basketData);
-          if (userData) {
-            user.login(userData);
-          }
+        axios.spread((data: /* userData */ /* , basketData */ any) => {
+          // запись user и activLink в Store
+          if (data.userData) user.login(data.userData);
+          if (data.activLink) user.activationLink(data.activLink);
           // basket.products = basketData.products;
         })
       )

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../layout/AppTok/AppContext";
 import { USERORDER_ROUTE } from "../../../utils/consts";
 import { logoutUser } from "../../../http/Tok/userAPI_Tok";
+import { LOGIN_ROUTE } from "../../../utils/consts";
 
 const User = () => {
   const { user }: any = useContext(AppContext);
@@ -12,12 +13,24 @@ const User = () => {
   const handleLogout = (event: any) => {
     logoutUser();
     user.logout();
-    navigate("/login", { replace: true });
+    navigate(LOGIN_ROUTE, { replace: true });
   };
 
   return (
     <div className="container">
       <div className="user us">
+        <div className="form auth-form">
+          {/* <h5>
+            {user.isAuth
+              ? `Пользователь авторизован ${user.username} <${user.email}>`
+              : "АВТОРИЗУЙТЕСЬ"}
+          </h5> */}
+          <h5>
+            {user.activLink
+              ? "Аккаунт подтверждён по почте"
+              : "ПОДТВЕРДИТЕ АККАУНТ в ПОЧТЕ"}
+          </h5>
+        </div>
         <section className="us--hello hello">
           <h1>Личный кабинет {user?.name && <p>Клиента {user?.name}</p>}</h1>
           {/* <p>Это личный кабинет постоянного покупателя магазина</p> */}
