@@ -29,7 +29,7 @@ class User {
 
       // генер.уник.ссылку активации ч/з fn v4(подтверждение акаунта)
       let activationLink = uuid.v4();
-      let activationLinkPath = `${process.env.API_URL}/PERN/auth/activate/${activationLink}`;
+      let activationLinkPath = `${process.env.API_URL_CLN}/api/user/activate/${activationLink}`;
 
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
       const user = await UserMapping.create({
@@ -104,19 +104,8 @@ class User {
     }
   }
 
-  // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
-  async logoutUser(refreshToken: string, username: string, email: string) {
-    // пров.переданого токена
-    if (!refreshToken) {
-      // return "Токен не передан";
-      return AppError.badRequest(`Токен от ${username} <${email}> не передан`);
-    }
-    const token = await TokenService.removeToken(refreshToken);
-    return `Токен ${refreshToken} пользователя ${username} <${email}> удалён. Стат ${token}`;
-  }
-
   // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
-  async activate(activationLink: string) {
+  async activateUser(activationLink: string) {
     const user = await UserMapping.findOne({
       where: { activationLink: activationLink },
     });
@@ -131,7 +120,7 @@ class User {
   }
 
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
-  async refresh(refreshToken: string) {
+  async refreshUser(refreshToken: string) {
     // е/и нет то ошб.не авториз
     if (!refreshToken) {
       return AppError.unauthorizedError("Требуется авторизация");
@@ -162,6 +151,17 @@ class User {
       message: `ПЕРЕЗАПИСЬ ${userDto.username} <${userDto.email}>. ID_${user.id}_${user.role}`,
       tokens: tokens,
     };
+  }
+
+  // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
+  async logoutUser(refreshToken: string, username: string, email: string) {
+    // пров.переданого токена
+    if (!refreshToken) {
+      // return "Токен не передан";
+      return AppError.badRequest(`Токен от ${username} <${email}> не передан`);
+    }
+    const token = await TokenService.removeToken(refreshToken);
+    return `Токен ${refreshToken} пользователя ${username} <${email}> удалён. Стат ${token}`;
   }
 
   async createUser(data) {

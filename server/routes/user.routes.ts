@@ -62,11 +62,11 @@ router.post(
 
 // USER Пользователь
 // ВЫХОД. Удален.Token.refreshToken
-// router.post("/logout", UserController.logout);
+router.post("/logout", UserController.logoutUser);
 // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
-// router.get("/activate/:link", UserController.activate);
+router.get("/activate/:link", UserController.activateUser);
 // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
-// router.get("/refresh", UserController.refresh);
+router.get("/refresh", UserController.refreshUser);
 // ПРОВЕРКА | auth
 router.get("/check", authMiddleware, UserController.checkUser);
 

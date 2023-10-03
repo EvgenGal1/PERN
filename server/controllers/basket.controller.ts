@@ -1,20 +1,42 @@
 import AppError from "../error/ApiError";
 import BasketService from "../services/basket.service";
-import ProductService from "../services/product.service";
 
 const maxAge = 60 * 60 * 1000 * 24 * 365; // один год
 const signed = true;
 
 class Basket {
-  async getOne(req, res, next) {
+  async appendBasket(req, res, next) {
+    try {
+      let basketId: number;
+
+      if (!req.signedCookies.basketId) {
+        let created = await BasketService.createBasket();
+        basketId = created.id;
+      } else {
+        basketId = parseInt(req.signedCookies.basketId);
+      }
+      const { productId, quantity } = req.params;
+      const basket = await BasketService.appendBasket(
+        basketId,
+        productId,
+        quantity
+      );
+      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.json(basket);
+    } catch (e) {
+      next(AppError.badRequest(e.message));
+    }
+  }
+
+  async getOneBasket(req, res, next) {
     try {
       let basket;
       if (req.signedCookies.basketId) {
-        basket = await BasketService.getOne(
+        basket = await BasketService.getOneBasket(
           parseInt(req.signedCookies.basketId)
         );
       } else {
-        basket = await BasketService.create();
+        basket = await BasketService.createBasket();
       }
       res.cookie("basketId", basket.id, { maxAge, signed });
       res.json(basket);
@@ -23,35 +45,17 @@ class Basket {
     }
   }
 
-  async append(req, res, next) {
-    try {
-      let basketId: number;
-      if (!req.signedCookies.basketId) {
-        let created = await BasketService.create();
-        basketId = created.id;
-      } else {
-        basketId = parseInt(req.signedCookies.basketId);
-      }
-      const { productId, quantity } = req.params;
-      const basket = await BasketService.append(basketId, productId, quantity);
-      res.cookie("basketId", basket.id, { maxAge, signed });
-      res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
-    }
-  }
-
-  async increment(req, res, next) {
+  async incrementBasket(req, res, next) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
-        let created = await BasketService.create();
+        let created = await BasketService.createBasket();
         basketId = created.id;
       } else {
         basketId = parseInt(req.signedCookies.basketId);
       }
       const { productId, quantity } = req.params;
-      const basket = await BasketService.increment(
+      const basket = await BasketService.incrementBasket(
         basketId,
         productId,
         quantity
@@ -63,17 +67,17 @@ class Basket {
     }
   }
 
-  async decrement(req, res, next) {
+  async decrementBasket(req, res, next) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
-        let created = await BasketService.create();
+        let created = await BasketService.createBasket();
         basketId = created.id;
       } else {
         basketId = parseInt(req.signedCookies.basketId);
       }
       const { productId, quantity } = req.params;
-      const basket = await BasketService.decrement(
+      const basket = await BasketService.decrementBasket(
         basketId,
         productId,
         quantity
@@ -85,16 +89,16 @@ class Basket {
     }
   }
 
-  async remove(req, res, next) {
+  async clearBasket(req, res, next) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
-        let created = await BasketService.create();
+        let created = await BasketService.createBasket();
         basketId = created.id;
       } else {
         basketId = parseInt(req.signedCookies.basketId);
       }
-      const basket = await BasketService.remove(basketId, req.params.productId);
+      const basket = await BasketService.clearBasket(basketId);
       res.cookie("basketId", basket.id, { maxAge, signed });
       res.json(basket);
     } catch (e) {
@@ -102,16 +106,23 @@ class Basket {
     }
   }
 
-  async clear(req, res, next) {
+  // удаление Корзины
+  async deleteBasket(basketId: number) {}
+
+  // удаление Корзины с Товарами
+  async removeBasket(req, res, next) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
-        let created = await BasketService.create();
+        let created = await BasketService.createBasket();
         basketId = created.id;
       } else {
         basketId = parseInt(req.signedCookies.basketId);
       }
-      const basket = await BasketService.clear(basketId);
+      const basket = await BasketService.removeBasket(
+        basketId,
+        req.params.productId
+      );
       res.cookie("basketId", basket.id, { maxAge, signed });
       res.json(basket);
     } catch (e) {

@@ -10,12 +10,11 @@ class MailService {
 
   // ч/з констр.инициализ.почтовый клиент
   constructor() {
-    // отправка писем на почту ч/з fn с опц.(host,port почт.сервера,`безопасный`,аунтетиф.)
+    // отправка писем на почту ч/з fn с опц.
     this.transporter = nodemailer.createTransport({
-      //     service: "gmail",
+      // ^ host - почт.сервис отправки, port - порт почт.сервис, service - почт.сервис обраб., secure`безопасный` для SSL, аунтетиф. - объ.со св-ми)
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      // secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -88,9 +87,10 @@ class MailService {
 
     try {
       /* await */ this.transporter.sendMail({
+        // ^ from - адр.Отправителя, to - email Получателей, subject - тема смс, text - тескт смс, html - текст в HTML, attachments - файлы
         from: process.env.SMTP_USER,
         to: to,
-        subject: "Активация акуанта на " + process.env.API_URL,
+        subject: "Активация акуанта на " + process.env.API_URL_CLN,
         text: message,
         html: HTML_TEMPLATE(message),
       });

@@ -97,8 +97,40 @@ class User {
     }
   }
 
+  // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
+  async activateUser(req, res, next) {
+    try {
+      // из стр.получ.ссы.актив.
+      const activationLink = req.params.link;
+      await UserService.activateUser(activationLink);
+      // перенаправить на FRONT после перехода по ссылки (изза разных hostов BACK)
+      return res.redirect(process.env.CLIENT_URL_CLN);
+    } catch (error) {
+      return next(AppError.badRequest(`НЕ удалось АКТИВАВИРАВАТЬ - ${error}.`));
+    }
+  }
+
+  // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
+  async refreshUser(req, res, next) {
+    try {
+      const { refreshToken } = req.cookies;
+      // const { username, email } = req.body;
+      const userData = await UserService.refreshUser(
+        refreshToken /* , username, email */
+      );
+      if ("tokens" in userData) {
+        const usTokRef = userData.tokens.refreshToken;
+        res.cookie("refreshToken", usTokRef, { maxAge1, httpOnly });
+      }
+      // return res.json(username, email);
+      return res.json(userData /* , username, email */);
+    } catch (error) {
+      return next(AppError.badRequest(`НЕ удалось ПЕРЕЗАПИСАТЬ - ${error}.`));
+    }
+  }
+
   // ВЫХОД. Удал.Cookie.refreshToken
-  async logout(req, res, next) {
+  async logoutUser(req, res, next) {
     try {
       // получ refresh из cookie, передача в service, удал.обоих, возвращ.смс об удален.
       const { refreshToken } = req.cookies;
@@ -110,19 +142,21 @@ class User {
 
       return res.json(token);
     } catch (error) {
-      next(AppError.badRequest(error.message));
+      return next(AppError.badRequest(error.message));
     }
   }
 
   // проверка Польз.
   async checkUser(req, res, next) {
+    const user = await UserService.getOneUser(req.auth.id);
+    const activationLink = user.isActivated;
     const token = makeJwt(
       req.auth.id,
       req.auth.username,
       req.auth.email,
       req.auth.role
     );
-    return res.json({ token });
+    return res.json({ token, activationLink });
   }
 
   // пока отд.нет

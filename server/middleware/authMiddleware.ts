@@ -3,38 +3,41 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import AppError from "../error/ApiError";
-// ! ошб. - Свойство "authorization" не существует в типе "Headers"
 import { DecodedToken /*, CustomRequest */ } from "../types/DecodedToken";
+import TokenService from "../services/token.service";
 
-// Определите свойства, которые вы ожидаете получить из токена
-// interface DecodedToken {
-//   id?: string;
-//   role?: string;
-// }
-// declare global {
-//   namespace Express {
-//     interface Request {
-//       auth?: DecodedToken;
-//     }
-//   }
-// }
-
-// ^ объедин.interface
-// interface DecodedToken {
-//   id: string;
-// }
 interface CustomRequest extends Request {
   auth?: DecodedToken;
 }
 
 const auth = (req: CustomRequest, res: Response, next: NextFunction): void => {
+  // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)
+  if (req.method === "OPTIONS") {
+    next();
+  }
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // Bearer token
-    if (!token) {
-      throw new Error("Требуется авторизация");
+    // провер header на наличие поля authorization
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader) {
+      return next(AppError.unauthorizedError("Требуется авторизация"));
     }
-    const decoded = jwt.verify(token, process.env.SECRET_KEY) as DecodedToken;
+
+    // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
+    const accessToken = authorizationHeader?.split(" ")[1]; // Bearer token (asfasnfkajsfnjk)
+    if (!accessToken) {
+      return next(AppError.unauthorizedError("Токен  отсутствует"));
+    }
+
+    // раскодир.токен. `проверять` валидации ч/з services (токен)
+    const decoded = TokenService.validateAccessToken(
+      accessToken
+    ) as DecodedToken;
+    if (!decoded) return next(AppError.forbidden("Токен не валиден"));
+
+    // к запросу в поле user добав.раскодированые данн.
     req.auth = decoded;
+
+    // вызов след.middlware
     next();
   } catch (e) {
     next(AppError.forbidden(e.message));
