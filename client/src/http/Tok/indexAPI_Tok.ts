@@ -66,7 +66,7 @@ authInstance.interceptors.response.use(
         // в экземпляр перехватчика передаём вызов исход.запроса (данн.для запроса)
         return authInstance.request(originalRequest);
       } catch (error) {
-        console.log("CLT.ind.res error НЕ АВТОРИЗ. : " + error);
+        console.log("ind API ERR : " + error);
       }
     }
     // если if не отраб., ошб.переброс на верхн.уровень

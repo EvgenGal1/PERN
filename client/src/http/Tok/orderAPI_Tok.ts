@@ -1,5 +1,5 @@
 // ^ HTTP-запросы на сервер для работы с заказами
-import { guestInstance, authInstance } from "./index_Tok";
+import { guestInstance, authInstance } from "./indexAPI_Tok";
 
 /*
  * ЗАКАЗ для ADMIN магазина

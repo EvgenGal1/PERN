@@ -1,7 +1,7 @@
 // ^ HTTP-запросы на сервер для работы с пользователями
 import jwt_decode from "jwt-decode";
 
-import { guestInstance, authInstance } from "./index_Tok";
+import { guestInstance, authInstance } from "./indexAPI_Tok";
 
 // регистр. Пользователя
 export const signupUser = async (email: string, password: string | any) => {

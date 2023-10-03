@@ -1,5 +1,5 @@
 // ^ HTTP-запросы на сервер при работе с корзиной
-import { guestInstance } from "./index_Tok";
+import { guestInstance } from "./indexAPI_Tok";
 
 export const fetchBasket = async () => {
   const { data } = await guestInstance.get("basket/getone");

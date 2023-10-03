@@ -1,5 +1,5 @@
 // ^ HTTP-запросы на сервер для работы с каталогом товаров
-import { guestInstance, authInstance } from "./index_Tok";
+import { guestInstance, authInstance } from "./indexAPI_Tok";
 
 /*
  * Создание, обновление и удаление категории, получение списка всех Категорий

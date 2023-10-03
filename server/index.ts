@@ -18,7 +18,7 @@ const app = express();
 // Совместное использование ресурсов между источниками + разрешить cookie от клиента
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL_CLN,
     credentials: true,
   })
 );
