@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
-import SearchItems from "./SearchItems";
+import SearchItems from "./Search";
 
 export const SearchValue = () => {
   const { catalog }: any = useContext(AppContext);

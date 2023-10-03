@@ -6,7 +6,7 @@ import axios from "axios";
 import { AppContext } from "./layout/AppTok/AppContext";
 import AppRouterTok from "./layout/AppTok/AppRouterTok";
 import NavBar from "./layout/AppTok/NavBar";
-import { checkUser as checkAuth } from "../http/Tok/userAPI_Tok";
+import { checkUser } from "../http/Tok/userAPI_Tok";
 import Loader from "./layout/AppTok/Loader";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -31,7 +31,7 @@ const AppTok = observer(() => {
     // ^ Promise.all() Запускаем несколько промисов(здесь два) параллельно и ждём, выполнения (получ.данн.с сервера)
     // ! исправить. созд. корзину(2 на dev ?) при перв.загр. даже без польз
     Promise.all([
-      checkAuth(),
+      checkUser(),
       // ^ убрал созд.Basket при загр.стр.
       // ! есть - мигание пустой корзины, т.к. загр.данн. идём в комп. Корзины.
       // ^ решил - использ.доп.условн.рендер (fetching)

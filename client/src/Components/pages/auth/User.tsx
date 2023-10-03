@@ -19,21 +19,16 @@ const User = () => {
   return (
     <div className="container">
       <div className="user us">
-        <div className="form auth-form">
-          {/* <h5>
-            {user.isAuth
-              ? `Пользователь авторизован ${user.username} <${user.email}>`
-              : "АВТОРИЗУЙТЕСЬ"}
-          </h5> */}
-          <h5>
+        <div className="form auth-form"></div>
+        <section className="us--hello hello">
+          <h1>
+            Личный Кабинет {user?.username && <b>Клиента {user?.username}</b>}
+          </h1>
+          <p className="df df-jcc">
             {user.activLink
               ? "Аккаунт подтверждён по почте"
-              : "ПОДТВЕРДИТЕ АККАУНТ в ПОЧТЕ"}
-          </h5>
-        </div>
-        <section className="us--hello hello">
-          <h1>Личный кабинет {user?.name && <p>Клиента {user?.name}</p>}</h1>
-          {/* <p>Это личный кабинет постоянного покупателя магазина</p> */}
+              : "ПОДТВЕРДИТЕ АККАУНТ В ПОЧТЕ"}
+          </p>
         </section>
         <section className="us--img img"></section>
         <section className="us--data data">
