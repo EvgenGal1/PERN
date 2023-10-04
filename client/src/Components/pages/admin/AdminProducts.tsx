@@ -117,11 +117,13 @@ const AdminProducts = () => {
       {products.length > 0 ? (
         <>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-          <PaginSortLimit
-            admin={true}
-            setFetching={setFetching}
-            setChange={setChange}
-          />
+          <div className="mt-3">
+            <PaginSortLimit
+              admin={true}
+              setFetching={setFetching}
+              setChange={setChange}
+            />
+          </div>
           <table className="mt-3 table--eg">
             <thead>
               <tr>
@@ -189,11 +191,13 @@ const AdminProducts = () => {
             </tbody>
           </table>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-          <PaginSortLimit
-            admin={true}
-            setFetching={setFetching}
-            setChange={setChange}
-          />
+          <div className="mt-3">
+            <PaginSortLimit
+              admin={true}
+              setFetching={setFetching}
+              setChange={setChange}
+            />
+          </div>
         </>
       ) : (
         <p>Список товаров пустой</p>

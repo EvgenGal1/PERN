@@ -87,8 +87,6 @@ const Shop = observer(() => {
 
   // первая загрузка?
   useEffect(() => {
-    console.log("SHP usEf 000 ", "000");
-
     fetchCategories()
       .then((data: any) => (catalog.categories = data))
       .finally(() => setCategoriesFetching(false));
@@ -135,7 +133,7 @@ const Shop = observer(() => {
 
     // if (category || brand || page || limit) {
     if (category || brand || page || limit) {
-      console.log("SHP usEf 1 IF  ", 11);
+      // console.log("SHP usEf 1 IF  ", 11);
       if (category !== catalog.category) catalog.category = category;
       if (brand !== catalog.brand) catalog.brand = brand;
       if (page !== catalog.page) catalog.page = page ?? 1;
@@ -144,7 +142,7 @@ const Shop = observer(() => {
       if (sortField !== catalog.sortField)
         catalog.sortField = sortField ?? "name";
     } else {
-      console.log("SHP usEf 1 ELSE  ", 22);
+      // console.log("SHP usEf 1 ELSE  ", 22);
       catalog.category = null;
       catalog.brand = null;
       catalog.page = 1;

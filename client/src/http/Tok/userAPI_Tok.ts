@@ -3,6 +3,7 @@ import jwt_decode from "jwt-decode";
 
 import { guestInstance, authInstance } from "./indexAPI_Tok";
 
+// любой Пользователь
 // регистр. Пользователя
 export const signupUser = async (email: string, password: string | any) => {
   try {
@@ -32,7 +33,6 @@ export const signupUser = async (email: string, password: string | any) => {
     return data;
   }
 };
-
 // вход Пользователя
 export const loginUser = async (email: string, password: string | any) => {
   try {
@@ -64,6 +64,9 @@ export const loginUser = async (email: string, password: string | any) => {
   }
 };
 
+// USER Пользователь
+// activateUser ч/з ссылку в почте (отправка из БД в signupUser)
+// refreshUser ч/з плохой ответ с БД (authInstance.interceptors.response в indexAPI)
 // `проверить Пользователя`
 export const checkUser = async () => {
   let userToken, userData;
@@ -89,8 +92,14 @@ export const checkUser = async () => {
     return false;
   }
 };
-
 // `выход Пользователя`
 export const logoutUser = () => {
   localStorage.removeItem("tokenAccess");
 };
+
+// ADMIN Пользователь
+// createUser
+// getOneUser
+// getAllUser
+// updateUser
+// deleteUser

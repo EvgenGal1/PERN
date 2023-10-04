@@ -19,7 +19,6 @@ import { AppContext } from "./AppContext";
 const NavBar = observer(() => {
   const { user, basket }: any = useContext(AppContext);
 
-  console.log("NavBar basket.count ", basket.count);
   return (
     <Navbar bg="dark" variant="dark">
       <div className="container">

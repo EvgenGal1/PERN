@@ -49,6 +49,7 @@ authInstance.interceptors.response.use(
     return config;
   },
   async (error) => {
+    console.log("ind API RES async ERR 000 : " + error);
     // повтор исходного запроса после перезапис ACCESS (данн.для запроса) (е/и 401)
     const originalRequest = error.config;
     // е/и.статус код 401 приход 2 токен, перезапис ACCESS в LS. Доп.проверки config сущ., поле `повтора` не true
@@ -56,6 +57,7 @@ authInstance.interceptors.response.use(
       // `повтор` запроса. От повторных нов.вызовов.исход.запроса
       originalRequest._isRetry = true;
       try {
+        console.log("ind API RES IF 123 : " + 123);
         const response = await axios.get<AuthResponse>(
           `${process.env.REACT_APP_API_URL_PERN}/user/refresh`,
           {
@@ -66,7 +68,7 @@ authInstance.interceptors.response.use(
         // в экземпляр перехватчика передаём вызов исход.запроса (данн.для запроса)
         return authInstance.request(originalRequest);
       } catch (error) {
-        console.log("ind API ERR : " + error);
+        console.log("ind API RES catch ERR : " + error);
       }
     }
     // если if не отраб., ошб.переброс на верхн.уровень
