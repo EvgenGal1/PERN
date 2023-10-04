@@ -1,19 +1,13 @@
-import jwt from "jsonwebtoken";
-
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 
+// обраб.ошб.
 import AppError from "../error/ApiError";
+// выборка полей
+import UserDto from "../dtos/user.dto";
+// services
 import UserService from "../services/user.service";
-
-// расшафр.пароля
-const makeJwt = (id, username, email, role) => {
-  return jwt.sign(
-    { id, username, email, role },
-    process.env.JWT_ACCESS_SECRET_KEY,
-    { expiresIn: "24h" }
-  );
-};
+import TokenService from "../services/token.service";
 
 // перем.cookie. // ^ domain - управ.поддомен.использования, path - маршр.действ., maxAge - вр.жизни, secure - только по HTTPS, httpOnly - измен.ток.ч/з SRV, signed - подписан
 const maxAge1 = 60 * 60 * 1000 * 24 * 30;
@@ -144,12 +138,11 @@ class User {
   async checkUser(req, res, next) {
     const user = await UserService.getOneUser(req.auth.id);
     const activated = user.isActivated;
-    const token = makeJwt(
-      req.auth.id,
-      req.auth.username,
-      req.auth.email,
-      req.auth.role
-    );
+
+    const userDto = new UserDto(user);
+    const tokens = TokenService.generateToken({ ...userDto });
+    const token = tokens.accessToken;
+
     return res.json({ token, activated });
   }
   // ВЫХОД. Удал.Cookie.refreshToken

@@ -191,11 +191,6 @@ class User {
       return AppError.badRequest(`ADMIN createUser не прошёл`, error.message);
     }
   }
-  async getByEmailUser(email: string) {
-    const user = await UserMapping.findOne({ where: { email } });
-    if (!user) throw new Error(`Пользователь с email ${email} не найден в БД`);
-    return user;
-  }
   async getOneUser(id: number) {
     const user = await UserMapping.findByPk(id);
     if (!user) throw new Error(`Пользователь по id ${id} не найден в БД`);
@@ -221,6 +216,12 @@ class User {
     if (!user) throw new Error("Пользователь не найден в БД");
     if (user.id) BasketService.deleteBasket(user.id);
     await user.destroy();
+    return user;
+  }
+  // поиск по email
+  async getByEmailUser(email: string) {
+    const user = await UserMapping.findOne({ where: { email } });
+    if (!user) throw new Error(`Пользователь с email ${email} не найден в БД`);
     return user;
   }
 }
