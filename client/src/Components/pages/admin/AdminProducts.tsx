@@ -25,7 +25,7 @@ const AdminProducts = () => {
   // обнов.списка/сост.после добав., редактир., удал.
   const [change, setChange] = useState(false);
   // id радактир-го товара, для UpdateProduct id
-  const [product, setProduct] = useState(null);
+  const [product, setProduct]: any = useState(null);
 
   // скрытие/показ от ширины экрана
   const [matches, setMatches] = useState(
@@ -39,27 +39,35 @@ const AdminProducts = () => {
   }, []);
 
   // обнов.эл.ч/з Комп.Modal
-  const handleUpdateClick = (id: any) => {
-    setProduct(id);
-    setUpdateShow(true);
+  const handleUpdateClick = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Обновить Товар - «${name}»`);
+    if (confirmDel) {
+      setProduct(id);
+      setUpdateShow(true);
+    }
   };
   // удал.эл.
-  const handleDeleteClick = (id: any) => {
-    deleteProduct(id)
-      .then((data) => {
-        // если это последняя страница и мы удаляем на ней единственный оставшийся товар — то надо перейти к предыдущей странице
-        if (
-          catalog.count > 1 &&
-          products?.length === 1 &&
-          catalog.page === catalog.count
-        ) {
-          catalog.page = catalog.count - 1;
-        } else {
-          setChange(!change);
-        }
-        alert(`Товар «${data.name}» удален`);
-      })
-      .catch((error) => alert(error.response.data.message));
+  const handleDeleteClick = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Удалить Товар - «${name}»`);
+    if (confirmDel) {
+      deleteProduct(id)
+        .then((data) => {
+          // если это последняя страница и мы удаляем на ней единственный оставшийся товар — то надо перейти к предыдущей странице
+          if (
+            catalog.count > 1 &&
+            products?.length === 1 &&
+            catalog.page === catalog.count
+          ) {
+            catalog.page = catalog.count - 1;
+          } else {
+            setChange(!change);
+          }
+          alert(`Товар «${name}» удален`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   useEffect(() => {
@@ -171,7 +179,7 @@ const AdminProducts = () => {
                     <td>{item.rating}</td>
                     <td style={{ textAlign: "center" }}>
                       <button
-                        onClick={() => handleUpdateClick(item.id)}
+                        onClick={() => handleUpdateClick(item.id, item.name)}
                         className="btn--eg btn-success--eg"
                       >
                         {matches ? "Редактировать" : "✎"}
@@ -179,7 +187,7 @@ const AdminProducts = () => {
                     </td>
                     <td style={{ textAlign: "center" }}>
                       <button
-                        onClick={() => handleDeleteClick(item.id)}
+                        onClick={() => handleDeleteClick(item.id, item.name)}
                         className="btn--eg btn-danger--eg"
                       >
                         {matches ? "Удалить" : "✕"}

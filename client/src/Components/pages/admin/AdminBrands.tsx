@@ -22,18 +22,26 @@ const AdminBrands = () => {
     setShow(true);
   };
 
-  const handleUpdateClick = (id: any) => {
-    setBrandId(id);
-    setShow(true);
+  const handleUpdateClick = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Обновить Бренд - «${name}»`);
+    if (confirmDel) {
+      setBrandId(id);
+      setShow(true);
+    }
   };
 
-  const handleDeleteClick = (id: any) => {
-    deleteBrand(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Бренд «${data.name}» удален`);
-      })
-      .catch((error) => alert(error.response.data.message));
+  const handleDeleteClick = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Удалить Бренд - «${name}»`);
+    if (confirmDel) {
+      deleteBrand(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Бренд «${data.name}» удален`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   useEffect(() => {
@@ -78,7 +86,7 @@ const AdminBrands = () => {
                 <td>{item.name}</td>
                 <td>
                   <button
-                    onClick={() => handleUpdateClick(item.id)}
+                    onClick={() => handleUpdateClick(item.id, item.name)}
                     className="btn--eg btn-success--eg"
                   >
                     Редактировать
@@ -86,7 +94,7 @@ const AdminBrands = () => {
                 </td>
                 <td>
                   <button
-                    onClick={() => handleDeleteClick(item.id)}
+                    onClick={() => handleDeleteClick(item.id, item.name)}
                     className="btn--eg btn-danger--eg"
                   >
                     Удалить

@@ -30,19 +30,27 @@ const Order = (props: any) => {
   // признак удалённого Заказа
   const [delOrd, setDelOrd]: any = useState(false);
 
-  const handleUpdateClick = (id: any) => {
-    setOrderId(id);
-    setShow(true);
+  const handleUpdateClick = (id: number) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Обновить Заказ - «${id}»`);
+    if (confirmDel) {
+      setOrderId(id);
+      setShow(true);
+    }
   };
 
-  const handleDeleteClick = (id: any) => {
-    adminDelete(id)
-      .then((data: any) => {
-        setChange(!change);
-        setDelOrd(!delOrd);
-        alert(`Заказ «${data.id}» удален`);
-      })
-      .catch((error: any) => alert(error.response.data.message));
+  const handleDeleteClick = (id: number) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Удалить Заказ - «${id}»`);
+    if (confirmDel) {
+      adminDelete(id)
+        .then((data: any) => {
+          setChange(!change);
+          setDelOrd(!delOrd);
+          alert(`Заказ «${data.id}» удален`);
+        })
+        .catch((error: any) => alert(error.response.data.message));
+    }
   };
 
   // usEf Удаления Заказа и перенос на пред.стр.

@@ -52,14 +52,18 @@ const BasketList = observer(() => {
       .finally(() => setFetching(false));
   };
 
-  const handleRemove = (id: number) => {
-    setFetching(true);
-    removeBasket(id)
-      .then((data) => {
-        console.log("BL removeBasket data ", data);
-        basket.products = data.products;
-      })
-      .finally(() => setFetching(false));
+  const handleRemove = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Удалить Позицию - «${name}»`);
+    if (confirmDel) {
+      setFetching(true);
+      removeBasket(id)
+        .then((data) => {
+          console.log("BL removeBasket data ", data);
+          basket.products = data.products;
+        })
+        .finally(() => setFetching(false));
+    }
   };
 
   return (

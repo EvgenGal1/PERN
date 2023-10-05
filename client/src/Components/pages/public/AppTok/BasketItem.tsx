@@ -24,7 +24,7 @@ const BasketItem = (props: any) => {
       <td className="txt">{props.price * props.quantity}</td>
       <td className="txt">
         <button
-          onClick={() => props.remove(props.id)}
+          onClick={() => props.remove(props.id, props.name)}
           className="btn--eg btn-danger--eg tb-cl"
         >
           Удалить

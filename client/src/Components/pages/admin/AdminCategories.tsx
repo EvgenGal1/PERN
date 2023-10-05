@@ -25,18 +25,26 @@ const AdminCategories = () => {
     setShow(true);
   };
 
-  const handleUpdateClick = (id: any) => {
-    setCategoryId(id);
-    setShow(true);
+  const handleUpdateClick = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Обновить Категорию - «${name}»`);
+    if (confirmDel) {
+      setCategoryId(id);
+      setShow(true);
+    }
   };
 
-  const handleDeleteClick = (id: any) => {
-    deleteCategory(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Категория «${data.name}» удалена`);
-      })
-      .catch((error) => alert(error.response.data.message));
+  const handleDeleteClick = (id: number, name?: string) => {
+    // eslint-disable-next-line no-restricted-globals
+    let confirmDel = confirm(`Удалить Категорию - «${name}»`);
+    if (confirmDel) {
+      deleteCategory(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Категория «${data.name}» удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   useEffect(() => {
@@ -81,7 +89,7 @@ const AdminCategories = () => {
                 <td>{item.name}</td>
                 <td>
                   <button
-                    onClick={() => handleUpdateClick(item.id)}
+                    onClick={() => handleUpdateClick(item.id, item.name)}
                     className="btn--eg btn-success--eg"
                   >
                     Редактировать
@@ -89,7 +97,7 @@ const AdminCategories = () => {
                 </td>
                 <td>
                   <button
-                    onClick={() => handleDeleteClick(item.id)}
+                    onClick={() => handleDeleteClick(item.id, item.name)}
                     className="btn--eg btn-danger--eg"
                   >
                     Удалить
