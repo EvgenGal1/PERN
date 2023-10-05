@@ -12,10 +12,8 @@ import Loader from "./layout/AppTok/Loader";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const AppTok = observer(() => {
-  const { user, basket, order }: any = useContext(AppContext);
+  const { user /* , basket */ }: any = useContext(AppContext);
   const [loading, setLoading] = useState(true);
-  // const [userAuthLoading, setUserAuthLoading] = useState(true);
-  // const [basketLoading, setBasketLoading] = useState(true);
 
   useEffect(() => {
     // checkAuth()
@@ -29,12 +27,9 @@ const AppTok = observer(() => {
     //   .then((data) => (basket.products = data.products))
     //   .finally(() => setBasketLoading(false));
     // ^ Promise.all() Запускаем несколько промисов(здесь два) параллельно и ждём, выполнения (получ.данн.с сервера)
-    // ! исправить. созд. корзину(2 на dev ?) при перв.загр. даже без польз
     Promise.all([
       checkUser(),
-      // ^ убрал созд.Basket при загр.стр.
-      // ! есть - мигание пустой корзины, т.к. загр.данн. идём в комп. Корзины.
-      // ^ решил - использ.доп.условн.рендер (fetching)
+      // убрал созд.Basket при загр.Глав.стр.
       // fetchBasket()
     ])
       .then(
@@ -47,10 +42,10 @@ const AppTok = observer(() => {
         })
       )
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
-  // показываем loader, пока получаем с сервера данн. пользователя и корзины
-  if (loading /* userAuthLoading || basketLoading */) {
+  // показываем loader, пока получаем с сервера данн. пользователя
+  if (loading) {
     return <Loader />;
   }
 

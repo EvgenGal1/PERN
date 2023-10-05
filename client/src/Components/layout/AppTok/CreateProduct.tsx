@@ -10,13 +10,13 @@ import {
 import CreateProperties from "./CreateProperties";
 
 // перем.Валидации/Значений по умолч.
-const defaultValue: any = {
-  name: "",
-  price: "",
-  category: "",
-  brand: "",
-  image: [],
-};
+// const defaultValue: any = {
+//   name: "",
+//   price: "",
+//   category: "",
+//   brand: "",
+//   image: [],
+// };
 const defaultValid = {
   name: null,
   price: null,
@@ -37,13 +37,22 @@ let defaultValueBulk: { [key: string | number]: any } = {
 
 // перем. Характеристик для доп.ФормДат по умолч.
 // ^ для render|state|загрузки на ОБЪЕКТЕ
-let defaultValueBulkProps: { [key: string | number]: any } = {
-  0: [],
+// let defaultValueBulkProps: { [key: string | number]: any } = {
+//   0: [],
+// };
+
+let templateValueArr: { [key: string | number]: string | number } = {
+  brand: "",
+  category: "",
+  image: "",
+  name: "",
+  price: "",
 };
 
 const isValid = (value: any) => {
   // const result: any = {};
   const pattern = /^[1-9][0-9]*$/;
+
   // for (let key in value) {
   //   if (key === "name") result.name = value.name.trim() !== "";
   //   if (key === "price") result.price = pattern.test(value.price.trim());
@@ -90,19 +99,12 @@ const CreateProduct = (props: any) => {
 
   // ^ для render|state|загрузки на МАССИВЕ
   // шаблон и state Товаров
-  let templateValueArr = {
-    brand: "",
-    category: "",
-    image: "",
-    name: "",
-    price: "",
-  };
   const [valueBulkArr, setValueBulkArr]: any = useState([templateValueArr]);
   // console.log("valueBulkArr ", valueBulkArr);
 
   // список характеристик товара
   // ^ для render|state|загрузки на ОБЪЕКТЕ
-  const [properties, setProperties] = useState(defaultValueBulkProps);
+  // const [properties, setProperties] = useState(defaultValueBulkProps);
   // console.log("CrePRD properties ", properties);
 
   // ^ для render|state|загрузки на МАССИВЕ
@@ -118,7 +120,6 @@ const CreateProduct = (props: any) => {
   const resetValueAndValidAndVBulk = () => {
     console.log("reset ", 0);
     // приводим форму в изначальное состояние
-    // setValue(defaultValue);
     setValid(defaultValid);
 
     // сброс доп.ФормДат

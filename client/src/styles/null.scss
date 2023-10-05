@@ -152,22 +152,22 @@ span.bd {
   transform: translate(-50%, -50%);
   padding: 40px 30px;
   text-align: center;
-  border-radius: var(--sz10);
+  border-radius: var(--sz2);
   background-color: #fff;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 01);
   transition: all 0.5s ease-in-out;
 
   img {
-    border-radius: var(--sz5);
+    border-radius: var(--sz1);
     // width: 100%;
   }
 
   svg {
     position: absolute;
-    right: var(--sz10);
-    top: var(--sz10);
-    right: var(--sz5);
-    top: var(--sz5);
+    right: var(--sz2);
+    top: var(--sz2);
+    right: var(--sz1);
+    top: var(--sz1);
     height: 24px;
     width: 24px;
     opacity: 0.3;
@@ -251,13 +251,13 @@ span.bd {
 
 // Заполнители Рамки/Заливки ----------------------------------------------------------------------------------
 .bbb-1 {
-  border-radius: var(--sz5);
-  border: 1px solid var(--bord-hr); // --DeepRedBrown: #490005;
+  border-radius: var(--sz1);
+  border: 1px solid var(--bord-hr); // --DeepRedBrown: var(--DeepRedBrown);
   background-color: var(--ui-bg); // --DeerBrown: #59351f;
 }
 .bbb-2 {
-  border-radius: var(--sz5);
-  border: 1px solid var(--bord-hr); // --DeepRedBrown: #490005;
+  border-radius: var(--sz1);
+  border: 1px solid var(--bord-hr); // --DeepRedBrown: var(--DeepRedBrown);
   background-color: var(--act-bg); // --WetAsphalt: #505050;
 }
 .br-0 {
@@ -284,140 +284,164 @@ span.bd {
 .h1 {
   height: 100%;
 }
-// margin расстояния
+// MARGIN расстояния
 .m {
   &-0 {
     margin: var(--sz0);
   }
+  &-1 {
+    margin: var(--sz1);
+  }
+  &-2 {
+    margin: var(--sz2);
+  }
+  &-3 {
+    margin: var(--sz3);
+  }
+  &-4 {
+    margin: var(--sz4);
+  }
   &-5 {
     margin: var(--sz5);
   }
-  &-10 {
-    margin: var(--sz10);
+  // TOP
+  &t {
+    &-0 {
+      margin-top: var(--sz0);
+    }
+    &-1 {
+      margin-top: var(--sz1);
+    }
+    &-2 {
+      margin-top: var(--sz2);
+    }
+    &-3 {
+      margin-top: var(--sz3);
+    }
+    &-4 {
+      margin-top: var(--sz4);
+    }
+    &-5 {
+      margin-top: var(--sz5);
+    }
   }
-  &-15 {
-    margin: var(--sz15);
+  // BOTTOM
+  &b {
+    &-0 {
+      margin-bottom: var(--sz0);
+    }
+    &-1 {
+      margin-bottom: var(--sz1);
+    }
+    &-2 {
+      margin-bottom: var(--sz2);
+    }
+    &-3 {
+      margin-bottom: var(--sz3);
+    }
+    &-4 {
+      margin-bottom: var(--sz4);
+    }
+    &-5 {
+      margin-bottom: var(--sz5);
+    }
   }
-  &-20 {
-    margin: var(--sz20);
-  }
-}
-.mt-1 {
-  margin-top: var(--sz5);
-}
-.mt-2 {
-  margin-top: var(--sz10);
-}
-.mt-3 {
-  margin-top: var(--sz15);
-}
-.mt-4 {
-  margin-top: var(--sz20);
-}
-.mt-5 {
-  margin-top: var(--sz25);
-}
-.mb-1 {
-  margin-bottom: var(--sz5);
-}
-.mb-2 {
-  margin-bottom: var(--sz10);
-}
-.mb-3 {
-  margin-bottom: var(--sz15);
-}
-.mb-4 {
-  margin-bottom: var(--sz20);
-}
-.mb-5 {
-  margin-bottom: var(--sz25);
 }
 .mlr {
   &-1 {
-    margin: 0 var(--sz5) 0;
+    margin: 0 var(--sz1) 0;
   }
   &-2 {
-    margin: 0 var(--sz10) 0;
+    margin: 0 var(--sz2) 0;
   }
   &-3 {
-    margin: 0 var(--sz15) 0;
+    margin: 0 var(--sz3) 0;
   }
   &-4 {
-    margin: 0 var(--sz20) 0;
+    margin: 0 var(--sz4) 0;
   }
   &-5 {
-    margin: 0 var(--sz25) 0;
+    margin: 0 var(--sz5) 0;
   }
 }
-// padding расстояния
+// PADDING расстояния
 .p {
   &-0 {
     padding: var(--sz0);
   }
+  &-1 {
+    padding: var(--sz1);
+  }
+  &-2 {
+    padding: var(--sz2);
+  }
+  &-3 {
+    padding: var(--sz3);
+  }
+  &-4 {
+    padding: var(--sz4);
+  }
   &-5 {
     padding: var(--sz5);
   }
-  &-10 {
-    padding: var(--sz10);
-  }
-  &-15 {
-    padding: var(--sz15);
-  }
-  &-20 {
-    padding: var(--sz20);
-  }
-}
-.p {
+  // TOP
   &t {
+    &-0 {
+      padding-top: var(--sz0);
+    }
     &-1 {
-      padding-top: var(--sz5);
+      padding-top: var(--sz1);
     }
     &-2 {
-      padding-top: var(--sz10);
+      padding-top: var(--sz2);
+    }
+    &-3 {
+      padding-top: var(--sz3);
+    }
+    &-4 {
+      padding-top: var(--sz4);
+    }
+    &-5 {
+      padding-top: var(--sz5);
     }
   }
-  &-3 {
-    margin-top: var(--sz15);
-  }
-  &-4 {
-    padding-top: var(--sz20);
-  }
-  &-5 {
-    padding-top: var(--sz25);
-  }
-}
-.pb {
-  &-1 {
-    padding-bottom: var(--sz5);
-  }
-  &-2 {
-    padding-bottom: var(--sz10);
-  }
-  &-3 {
-    padding-bottom: var(--sz15);
-  }
-  &-4 {
-    padding-bottom: var(--sz20);
-  }
-  &-5 {
-    padding-bottom: var(--sz25);
+  // BOTTOM
+  &b {
+    &-0 {
+      padding-bottom: var(--sz0);
+    }
+    &-1 {
+      padding-bottom: var(--sz1);
+    }
+    &-2 {
+      padding-bottom: var(--sz2);
+    }
+    &-3 {
+      padding-bottom: var(--sz3);
+    }
+    &-4 {
+      padding-bottom: var(--sz4);
+    }
+    &-5 {
+      padding-bottom: var(--sz5);
+    }
   }
 }
 .plr {
   &-1 {
-    padding: 0 var(--sz5) 0;
+    padding: 0 var(--sz1) 0;
   }
   &-2 {
-    padding: 0 var(--sz10) 0;
+    padding: 0 var(--sz2) 0;
   }
   &-3 {
-    padding: 0 var(--sz15) 0;
+    padding: 0 var(--sz3) 0;
   }
   &-4 {
-    padding: 0 var(--sz20) 0;
+    padding: 0 var(--sz4) 0;
   }
   &-5 {
-    padding: 0 var(--sz25) 0;
+    padding: 0 var(--sz5) 0;
   }
 }
 // общ. margin | padding
@@ -441,7 +465,7 @@ hr.hr {
   border-style: groove;
   border-style: ridge;
   border-color: #8b0000;
-  border-width: var(--sz5);
+  border-width: var(--sz1);
   opacity: 1;
   clear: both;
   // margin: 0 -62px;
@@ -509,7 +533,7 @@ code {
     cursor: pointer;
 
     &__title {
-      font-size: var(--sz15);
+      font-size: var(--sz3);
       font-weight: 700;
     }
   }
@@ -522,13 +546,13 @@ code {
     .item {
       // width: 100%;
       // height: 100%;
-      padding: var(--sz10);
+      padding: var(--sz2);
       margin: 5px 0px;
       text-align: center;
       transition: 0.2s;
       cursor: pointer;
       // background: #ff0;
-      border-radius: var(--sz5);
+      border-radius: var(--sz1);
       border: 2px solid darkred;
       box-shadow: 3px 3px 7px 0px #555;
       box-shadow: 3px 3px 7px 0px #000;
@@ -601,13 +625,13 @@ input.search--eg {
 button,
 input {
   // margin: 5px 0px;
-  padding: var(--sz5);
+  padding: var(--sz1);
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
   // border: 1px solid #bd0000;
-  // border-radius: var(--sz5);
+  // border-radius: var(--sz1);
   cursor: pointer;
   // transition: background-color 200ms, transform 100ms linear;
   &:disabled {
@@ -618,9 +642,9 @@ input.inpt--eg,
 button.btn--eg,
 select.select--eg {
   cursor: pointer;
-  padding: var(--sz5) var(--sz10);
+  padding: var(--sz1) var(--sz2);
   border: 1px solid #bd0000;
-  border-radius: var(--sz5);
+  border-radius: var(--sz1);
   line-height: 1.5;
   transition: background-color 200ms, transform 100ms linear;
   user-select: none;
@@ -643,7 +667,7 @@ button.btn-danger--eg {
   // padding: 10px 15px;
   font-size: 16px;
   // font-weight: 900;
-  // letter-spacing: var(--sz10);
+  // letter-spacing: var(--sz2);
   border: 1px solid #bd0000;
   // box-shadow: 0 3px 5px black;
   // text-transform: uppercase;
@@ -730,16 +754,15 @@ button::-moz-focus-inner {
   // margin: 0 auto;
   // padding: 0;
   &--eg {
-    border-radius: var(--sz10);
-    border: 1px solid darkred;
-    border: 1px solid #490005;
+    border-radius: var(--sz2);
+    border: 1px solid var(--DeepRedBrown);
   }
   ::placeholder {
-    color: var(--DeepYellow);
+    color: #5f5f5f;
     font-family: monospace;
     text-transform: uppercase;
-    letter-spacing: 15px;
-    text-shadow: 1px 1px red;
+    letter-spacing: 10px;
+    text-shadow: -1px -1px 0px #222;
   }
 }
 
@@ -748,16 +771,16 @@ button::-moz-focus-inner {
   /* Чтобы подстраивался под контент */
   display: block;
   // margin: 20px;
-  border: 1px solid #490005;
-  border-radius: var(--sz10);
+  border: 1px solid var(--DeepRedBrown);
+  border-radius: var(--sz2);
   font-size: inherit;
   .legend--eg {
     width: auto;
     float: none;
     margin: 0;
-    padding: 0 var(--sz20);
+    padding: 0 var(--sz4);
     font-size: inherit;
-    color: #490005;
+    color: var(--DeepRedBrown);
     line-height: inherit;
   }
 }
@@ -765,18 +788,18 @@ button::-moz-focus-inner {
 // ОШИБКИ .err, err-msg ----------------------------------------------------------------------------------
 .err {
   // color: darkred;
-  // margin-top: var(--sz10);
-  // padding: var(--sz10);
+  // margin-top: var(--sz2);
+  // padding: var(--sz2);
   // смс
   &-msg {
-    // color: #490005;
-    padding: var(--sz5);
+    // color: var(--DeepRedBrown);
+    padding: var(--sz1);
     // больше стилей
     &_b {
       border: 3px solid;
       &::before,
       &::after {
-        color: #490005;
+        color: var(--DeepRedBrown);
         display: inline;
         content: "⚠ ";
       }
@@ -798,7 +821,7 @@ button::-moz-focus-inner {
     }
     // padding-right: calc(1.5em + 0.75rem);
     // &::after {
-    //   color: #490005;
+    //   color: var(--DeepRedBrown);
     //   display: inline;
     //   content: "⚠";
     // }

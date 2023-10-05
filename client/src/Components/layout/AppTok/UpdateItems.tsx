@@ -48,11 +48,11 @@ const UpdateItems = (props: any) => {
 
   return (
     <>
-      <h5>Позиции</h5>
+      {/* <h5>Позиции</h5> */}
       {items.map((item: any) => (
         <div
           key={item.unique}
-          className="df df-row mb-2"
+          className="df df-row df-jcsb"
           style={{ display: item.remove ? "none" : "flex" }}
         >
           <div className="df df-col">
@@ -61,7 +61,6 @@ const UpdateItems = (props: any) => {
               value={item.name}
               onChange={(e) => change("name", e.target.value, item.unique)}
               placeholder="Имя..."
-              size="sm"
             />
           </div>
           <div className="df df-col">
@@ -74,7 +73,6 @@ const UpdateItems = (props: any) => {
                 change("price", Number(e.target.value), item.unique)
               }
               placeholder="Цена..."
-              size="sm"
             />
           </div>
           <div className="df df-col">
@@ -85,7 +83,6 @@ const UpdateItems = (props: any) => {
                 change("quantity", Number(e.target.value), item.unique)
               }
               placeholder="Количество..."
-              size="sm"
             />
           </div>
           <div className="df df-col">

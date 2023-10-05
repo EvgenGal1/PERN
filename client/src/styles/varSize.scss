@@ -1,6 +1,7 @@
 :root {
-  --sz0: 0px;
-  --sz5: 5px;
+  // PX размеры
+  --szp0: 0px;
+  --szp5: 5px;
   --sz10: 10px;
   --sz15: 15px;
   --sz20: 20px;
@@ -10,4 +11,11 @@
   --sz50: 50px;
   --sz75: 75px;
   --sz100: 100px;
+  // REM размеры
+  --sz0: 0rem;
+  --sz1: 0.25rem;
+  --sz2: 0.5rem;
+  --sz3: 1rem;
+  --sz4: 1.5rem;
+  --sz5: 3rem;
 }
