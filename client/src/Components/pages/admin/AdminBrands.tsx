@@ -22,13 +22,9 @@ const AdminBrands = () => {
     setShow(true);
   };
 
-  const handleUpdateClick = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Обновить Бренд - «${name}»`);
-    if (confirmDel) {
-      setBrandId(id);
-      setShow(true);
-    }
+  const handleUpdateClick = (id: number) => {
+    setBrandId(id);
+    setShow(true);
   };
 
   const handleDeleteClick = (id: number, name?: string) => {
@@ -86,7 +82,7 @@ const AdminBrands = () => {
                 <td>{item.name}</td>
                 <td>
                   <button
-                    onClick={() => handleUpdateClick(item.id, item.name)}
+                    onClick={() => handleUpdateClick(item.id)}
                     className="btn--eg btn-success--eg"
                   >
                     Редактировать

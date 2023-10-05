@@ -25,13 +25,9 @@ const AdminCategories = () => {
     setShow(true);
   };
 
-  const handleUpdateClick = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Обновить Категорию - «${name}»`);
-    if (confirmDel) {
-      setCategoryId(id);
-      setShow(true);
-    }
+  const handleUpdateClick = (id: number) => {
+    setCategoryId(id);
+    setShow(true);
   };
 
   const handleDeleteClick = (id: number, name?: string) => {
@@ -89,7 +85,7 @@ const AdminCategories = () => {
                 <td>{item.name}</td>
                 <td>
                   <button
-                    onClick={() => handleUpdateClick(item.id, item.name)}
+                    onClick={() => handleUpdateClick(item.id)}
                     className="btn--eg btn-success--eg"
                   >
                     Редактировать

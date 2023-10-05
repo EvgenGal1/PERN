@@ -39,13 +39,9 @@ const AdminProducts = () => {
   }, []);
 
   // обнов.эл.ч/з Комп.Modal
-  const handleUpdateClick = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Обновить Товар - «${name}»`);
-    if (confirmDel) {
-      setProduct(id);
-      setUpdateShow(true);
-    }
+  const handleUpdateClick = (id: number) => {
+    setProduct(id);
+    setUpdateShow(true);
   };
   // удал.эл.
   const handleDeleteClick = (id: number, name?: string) => {
@@ -179,7 +175,7 @@ const AdminProducts = () => {
                     <td>{item.rating}</td>
                     <td style={{ textAlign: "center" }}>
                       <button
-                        onClick={() => handleUpdateClick(item.id, item.name)}
+                        onClick={() => handleUpdateClick(item.id)}
                         className="btn--eg btn-success--eg"
                       >
                         {matches ? "Редактировать" : "✎"}

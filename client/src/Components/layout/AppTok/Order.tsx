@@ -31,12 +31,8 @@ const Order = (props: any) => {
   const [delOrd, setDelOrd]: any = useState(false);
 
   const handleUpdateClick = (id: number) => {
-    // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Обновить Заказ - «${id}»`);
-    if (confirmDel) {
-      setOrderId(id);
-      setShow(true);
-    }
+    setOrderId(id);
+    setShow(true);
   };
 
   const handleDeleteClick = (id: number) => {
