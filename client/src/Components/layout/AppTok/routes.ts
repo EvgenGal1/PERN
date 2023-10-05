@@ -11,12 +11,12 @@ import {
   PRODUCT_ROUTE,
   BASKET_ROUTE,
   USER_ROUTE,
-  USERORDER_ROUTE,
   USERORDERS_ROUTE,
+  USERORDER_ROUTE,
   CHECKOUT_ROUTE,
   ADMIN_ROUTE,
-  ADMINORDER_ROUTE,
   ADMINORDERS_ROUTE,
+  ADMINORDER_ROUTE,
   ADMINCATEGORIES_ROUTE,
   ADMINBRANDS_ROUTE,
   ADMINPRODUCTS_ROUTE,
@@ -36,12 +36,12 @@ import Auth from "../../pages/public/AppTok/Auth";
 import Product from "../../pages/public/AppTok/Product";
 import Basket from "../../pages/public/AppTok/Basket";
 import User from "../../pages/auth/User";
-import UserOrder from "../../pages/auth/UserOrder";
 import UserOrders from "../../pages/auth/UserOrders";
+import UserOrder from "../../pages/auth/UserOrder";
 import Checkout from "../../pages/public/AppTok/Checkout";
 import Admin from "../../pages/admin/Admin";
-import AdminOrder from "../../pages/admin/AdminOrder";
 import AdminOrders from "../../pages/admin/AdminOrders";
+import AdminOrder from "../../pages/admin/AdminOrder";
 import AdminCategories from "../../pages/admin/AdminCategories";
 import AdminBrands from "../../pages/admin/AdminBrands";
 import AdminProducts from "../../pages/admin/AdminProducts";
@@ -71,15 +71,15 @@ export const publicRoutes = [
 // Доступ для Авториз.польз.(Польз.)
 export const authRoutes = [
   { path: USER_ROUTE, Component: User },
-  { path: USERORDER_ROUTE, Component: UserOrders },
-  { path: USERORDERS_ROUTE, Component: UserOrder },
+  { path: USERORDERS_ROUTE, Component: UserOrders },
+  { path: USERORDER_ROUTE, Component: UserOrder },
 ];
 
 // Доступ для Админа (Админ панель)
 export const adminRoutes = [
   { path: ADMIN_ROUTE, Component: Admin },
-  { path: ADMINORDER_ROUTE, Component: AdminOrders },
-  { path: ADMINORDERS_ROUTE, Component: AdminOrder },
+  { path: ADMINORDERS_ROUTE, Component: AdminOrders },
+  { path: ADMINORDER_ROUTE, Component: AdminOrder },
   { path: ADMINCATEGORIES_ROUTE, Component: AdminCategories },
   { path: ADMINBRANDS_ROUTE, Component: AdminBrands },
   { path: ADMINPRODUCTS_ROUTE, Component: AdminProducts },

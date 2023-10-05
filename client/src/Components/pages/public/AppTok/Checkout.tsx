@@ -7,11 +7,7 @@ import { AppContext } from "../../../layout/AppTok/AppContext";
 import { fetchBasket } from "../../../../http/Tok/basketAPI_Tok";
 import { checkUser as checkAuth } from "../../../../http/Tok/userAPI_Tok";
 import { userCreate, guestCreate } from "../../../../http/Tok/orderAPI_Tok";
-import {
-  BASKET_ROUTE,
-  USERORDER_ROUTE,
-  USERORDERS_ROUTE,
-} from "../../../../utils/consts";
+import { BASKET_ROUTE, USERORDERS_ROUTE } from "../../../../utils/consts";
 
 interface CheckoutFormValues {
   name: string;
@@ -99,7 +95,7 @@ const Checkout = () => {
         <h1 className="mb-4 mt-4">Заказ оформлен</h1>
         <p>Наш менеджер скоро позвонит для уточнения деталей.</p>
         <button className="btn--eg btn-primary--eg">
-          <Link className="a0" to={USERORDER_ROUTE} replace={true}>
+          <Link className="a0" to={USERORDERS_ROUTE} replace={true}>
             Ваши заказы
           </Link>
         </button>

@@ -1,6 +1,6 @@
 // ^ Многраз.Комп.Заказов
 import { Link } from "react-router-dom";
-import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
+import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
 
 const Orders = (props: any) => {
   if (props.items?.length === 0 || !props.items) {
@@ -41,11 +41,11 @@ const Orders = (props: any) => {
               <td>{item.amount}</td>
               <td>
                 {props.admin ? (
-                  <Link to={ADMINORDER_ROUTE + `/${item.id}`}>
+                  <Link to={ADMINORDERS_ROUTE + `/${item.id}`}>
                     Подробнее о Заказе для ADMIN
                   </Link>
                 ) : (
-                  <Link to={USERORDER_ROUTE + `/${item.id}`}>
+                  <Link to={USERORDERS_ROUTE + `/${item.id}`}>
                     Подробнее о Заказе {/* для USER */}
                   </Link>
                 )}

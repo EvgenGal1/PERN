@@ -20,11 +20,11 @@ export const UTV_REGISTRATION_ROUTE = "/registration_utv";
 // АВТОРИЗ. и АДМИН
 // ^ tokmakov
 export const USER_ROUTE = "/user";
-export const USERORDER_ROUTE = "/user/orders";
-export const USERORDERS_ROUTE = "/user/orders/:id";
+export const USERORDERS_ROUTE = "/user/orders";
+export const USERORDER_ROUTE = "/user/orders/:id";
 export const ADMIN_ROUTE = "/admin";
-export const ADMINORDER_ROUTE = "/admin/orders";
-export const ADMINORDERS_ROUTE = "/admin/orders/:id";
+export const ADMINORDERS_ROUTE = "/admin/orders";
+export const ADMINORDER_ROUTE = "/admin/orders/:id";
 export const ADMINCATEGORIES_ROUTE = "/admin/categories";
 export const ADMINBRANDS_ROUTE = "/admin/brands";
 export const ADMINPRODUCTS_ROUTE = "/admin/products";

@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
-import { USERORDER_ROUTE } from "../../../utils/consts";
+import { USERORDERS_ROUTE } from "../../../utils/consts";
 import { logoutUser } from "../../../http/Tok/userAPI_Tok";
 import { LOGIN_ROUTE } from "../../../utils/consts";
 
@@ -43,7 +43,7 @@ const User = () => {
             Редактировать Пользователя
           </button>
           <button
-            onClick={() => navigate(USERORDER_ROUTE)}
+            onClick={() => navigate(USERORDERS_ROUTE)}
             className="btn--eg btn-success--eg mt-3"
           >
             История заказов

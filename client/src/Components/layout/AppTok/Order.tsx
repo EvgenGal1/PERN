@@ -9,7 +9,7 @@ import {
   userGetOne,
 } from "../../../http/Tok/orderAPI_Tok";
 import UpdateOrder from "../../layout/AppTok/UpdateOrder";
-import { ADMINORDER_ROUTE, USERORDER_ROUTE } from "../../../utils/consts";
+import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
 
 const Order = (props: any) => {
   const navigate = useNavigate();
@@ -52,8 +52,8 @@ const Order = (props: any) => {
   // usEf Удаления Заказа и перенос на пред.стр.
   useEffect(() => {
     // if (delOrd) navigate(-1); // ^ кратко но менее понятно
-    if (auth && delOrd) navigate(ADMINORDER_ROUTE, { replace: true });
-    if (!auth && delOrd) navigate(USERORDER_ROUTE, { replace: true });
+    if (auth && delOrd) navigate(ADMINORDERS_ROUTE, { replace: true });
+    if (!auth && delOrd) navigate(USERORDERS_ROUTE, { replace: true });
   }, [navigate, auth, delOrd]);
 
   // usEf Получения Заказ (ADMIN/USER)

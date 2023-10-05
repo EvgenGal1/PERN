@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../layout/AppTok/AppContext";
 import {
   LOGIN_ROUTE,
-  ADMINORDER_ROUTE,
+  ADMINORDERS_ROUTE,
   ADMINCATEGORIES_ROUTE,
   ADMINBRANDS_ROUTE,
   ADMINPRODUCTS_ROUTE,
@@ -27,7 +27,7 @@ const Admin = () => {
       <p>Это панель управления магазином для администратора</p>
       <ul>
         <li>
-          <Link to={ADMINORDER_ROUTE}>Заказы в магазине</Link>
+          <Link to={ADMINORDERS_ROUTE}>Заказы в магазине</Link>
         </li>
         <li>
           <Link to={ADMINCATEGORIES_ROUTE}>Категории каталога</Link>
