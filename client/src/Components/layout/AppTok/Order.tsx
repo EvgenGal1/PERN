@@ -78,7 +78,8 @@ const Order = (props: any) => {
       </span>
       <ul className="list-param--eg">
         <li>
-          <p>Дата заказа:</p> {orders.prettyCreatedAt}
+          <p>Дата заказа:</p>{" "}
+          <span className="ff-mn">{orders.prettyCreatedAt}</span>
           {orders.prettyCreatedAt !== orders.prettyUpdatedAt
             ? ` | Обновлён: ` + orders.prettyUpdatedAt
             : ""}
@@ -140,16 +141,18 @@ const Order = (props: any) => {
           {orders.items.map((item: any) => (
             <tr key={item.id}>
               <td>{item.name}</td>
-              <td>{item.price}</td>
-              <td>{item.quantity}</td>
-              <td>{item.price * item.quantity}</td>
+              <td className=" ff-mn">{item.price.toLocaleString()}</td>
+              <td className=" ff-mn">{item.quantity}</td>
+              <td className=" ff-mn">
+                {(item.price * item.quantity).toLocaleString()}
+              </td>
             </tr>
           ))}
           <tr id="th--eg">
             <td colSpan={3} style={{ fontWeight: "bold" }}>
               Итого
             </td>
-            <td style={{ fontWeight: "bold" }}>{orders.amount}</td>
+            <td className="col-bl ff-mn">{orders.amount.toLocaleString()}</td>
           </tr>
         </tbody>
       </table>

@@ -268,7 +268,7 @@ const Auth = observer(() => {
   return (
     <div className="container df df-jcc">
       <div
-        className="new__my-chat p-2 card--eg"
+        className="new__my-chat p-20 card--eg"
         style={{
           width: "50%",
         }}
@@ -279,7 +279,7 @@ const Auth = observer(() => {
         {formErrors.sms && (
           <span className="m-auto txt err err-msg">{formErrors.sms}</span>
         )}
-        <form className="form df df-col" onSubmit={handleSubmit}>
+        <form className="form form--eg df df-col p-20" onSubmit={handleSubmit}>
           <div>
             {/* Name */}
             {/* <div>

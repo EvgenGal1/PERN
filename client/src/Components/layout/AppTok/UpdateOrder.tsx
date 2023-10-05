@@ -1,13 +1,10 @@
 // ^ модальн.окно редактирование Заказа
 import { useState, useEffect } from "react";
-import { Modal, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
 import {
   adminGetOne,
   adminUpdate,
-  // fetchCategories,
-  // fetchBrands,
   createItem,
   updateItem,
   deleteItem,
@@ -107,7 +104,16 @@ const updateItems = async (items: any, orderId: any) => {
 };
 
 const UpdateOrder = (props: any) => {
-  const { id, show, setShow, setChange, auth } = props;
+  const {
+    id,
+    show,
+    setShow,
+    setChange,
+    auth,
+    header = true,
+    body = true,
+    disableScroll = true,
+  } = props;
 
   const [value, setValue] = useState(defaultValue);
   const [valid, setValid] = useState(defaultValid);
@@ -176,13 +182,7 @@ const UpdateOrder = (props: any) => {
     setValid(correct);
 
     // если введенные данные прошли проверку — можно отправлять их на сервер
-    if (
-      correct.name &&
-      correct.email &&
-      correct.phone &&
-      correct.address /* &&
-      correct?.comment */
-    ) {
+    if (correct.name && correct.email && correct.phone && correct.address) {
       const data = new FormData();
       data.append("name", value.name.trim());
       data.append("email", value.email.trim());
@@ -227,85 +227,200 @@ const UpdateOrder = (props: any) => {
     }
   };
 
-  return (
-    <Modal
-      show={show}
-      onHide={() => setShow(false)}
-      size="lg"
-      className="modal--eg-bootstr"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>
-          <h1>Редактирование Заказа №_{id}</h1>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
-          <Form.Control
-            name="name"
-            value={value.name}
-            onChange={(e) => handleInputChange(e)}
-            isValid={valid.name === true}
-            isInvalid={valid.name === false}
-            placeholder="Название заказа..."
-            className="mb-3"
-          />
-          <Form.Control
-            name="address"
-            value={value.address}
-            onChange={(e) => handleInputChange(e)}
-            isValid={valid.address === true}
-            isInvalid={valid.address === false}
-            placeholder="Адрес"
-            className="mb-3"
-          />
-          <div className="df df-row mb-3">
-            <div className="df df-col">
-              <Form.Control
-                name="email"
-                value={value.email}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.email === true}
-                isInvalid={valid.email === false}
-                placeholder="Email"
-              />
-            </div>
-            <div className="df df-col">
-              <Form.Control
-                name="phone"
-                value={value.phone}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.phone === true}
-                isInvalid={valid.phone === false}
-                placeholder="Телефон"
-              />
-            </div>
-          </div>
-          <Form.Control
-            name="comment"
-            value={value.comment}
-            onChange={(e) => handleInputChange(e)}
-            // isValid={valid?.comment === true}
-            // isInvalid={valid?.comment === false}
-            placeholder="Комментарий"
-          />
-          <UpdateItems items={items} setItems={setItems} />
-          <div className="df df-row">
-            <div className="df df-col">
-              <button type="submit" className="btn--eg btn-success--eg">
-                Сохранить
+  //  ----------------------------------------------------------------------------------
+  useEffect(() => {
+    //     if (disableScroll) {
+    //       document.body.style.overflow = show ? "hidden" : "auto";
+    //     }
+    if (show) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [show /* ,disableScroll */]);
+
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  return show ? (
+    /* // ^  рендр.эл. вне корн.эл.React */ /* ReactDOM.createPortal( */
+    <div className="modal-overlay--eg" onClick={() => setShow(false)}>
+      <div className="modal-dialog--eg">
+        <div className="modal-content--eg" onClick={handleModalClick}>
+          {header && (
+            <div className="modal-header--eg">
+              <div className="modal-title--eg">
+                {header}
+                <h1>Редактирование Заказа №_{id}</h1>
+              </div>
+              <button
+                onClick={() => setShow(false)}
+                type="button"
+                className="btn-cloce--eg"
+                aria-label="Close"
+              >
+                ✖
               </button>
             </div>
-            <div className="df df-col">
-              <button type="submit" className="btn--eg btn-primary--eg">
-                {amount}
-              </button>
+          )}
+          {body && (
+            <div className="modal-body--eg m-20" style={{ overflowY: "auto" }}>
+              <>
+                {body}
+                <form noValidate onSubmit={handleSubmit} className="form">
+                  <fieldset
+                    className="df df-col fieldset--eg p-20"
+                    // name
+                    // disabled
+                  >
+                    <legend className="legend--eg">2 уровень </legend>
+                    {/* ФИО (Ф.И.О.) */}
+                    <input
+                      name="name"
+                      value={value.name}
+                      onChange={handleInputChange}
+                      // станд.кл.input +
+                      className={`inpt--eg mb-3 ${
+                        valid.name === true
+                          ? "is-valid"
+                          : valid.name === false
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      placeholder="Ф.И.О."
+                    />
+                    {/* Eml / Тел. */}
+                    <div className="df df-jcsb df-row mb-3">
+                      <input
+                        name="email"
+                        value={value.email}
+                        onChange={handleInputChange}
+                        className={`inpt--eg ${
+                          valid.email === true
+                            ? "is-valid"
+                            : valid.email === false
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        placeholder="Email"
+                      />
+                      <input
+                        name="phone"
+                        value={value.phone}
+                        onChange={handleInputChange}
+                        className={`inpt--eg ${
+                          valid.phone === true
+                            ? "is-valid"
+                            : valid.phone === false
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        placeholder="Телефон"
+                      />
+                    </div>
+                    {/* Адрес */}
+                    <input
+                      name="address"
+                      value={value.address}
+                      onChange={handleInputChange}
+                      className={`inpt--eg mb-3 ${
+                        valid.address === true
+                          ? "is-valid"
+                          : valid.address === false
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      placeholder="Адрес"
+                    />
+                    {/* Коммент */}
+                    <input
+                      name="comment"
+                      value={value.comment}
+                      onChange={handleInputChange}
+                      className="inpt--eg"
+                      placeholder="Комментарий"
+                    />
+                  </fieldset>
+                </form>
+                <form noValidate onSubmit={handleSubmit} className="form mt-3">
+                  <fieldset className="df df-col fieldset--eg p-20">
+                    <legend className="legend--eg">2 уровень </legend>
+                    <div className="df df-jcsb df-row">
+                      <input
+                        name="email"
+                        value={value.email}
+                        onChange={handleInputChange}
+                        className={`inpt--eg ${
+                          valid.email === true
+                            ? "is-valid"
+                            : valid.email === false
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        placeholder="Email"
+                      />
+                      <input
+                        name="phone"
+                        value={value.phone}
+                        onChange={handleInputChange}
+                        className={`inpt--eg ${
+                          valid.phone === true
+                            ? "is-valid"
+                            : valid.phone === false
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        placeholder="Телефон"
+                      />
+                    </div>
+                  </fieldset>
+                </form>
+                <form noValidate onSubmit={handleSubmit} className="form mt-3">
+                  <fieldset className="df df-col fieldset--eg p-20">
+                    <legend className="legend--eg">2 уровень </legend>
+                    <input
+                      name="name"
+                      value={value.name}
+                      onChange={handleInputChange}
+                      // станд.кл.input +
+                      className={`inpt--eg mb-3 ${
+                        valid.name === true
+                          ? "is-valid"
+                          : valid.name === false
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      placeholder="Ф.И.О."
+                    />
+                    <input
+                      name="comment"
+                      value={amount.toLocaleString()}
+                      onChange={handleInputChange}
+                      className="inpt--eg ff-mn"
+                      placeholder="Сумма"
+                    />
+                  </fieldset>
+                </form>
+                {/* Позиции */}
+                <UpdateItems items={items} setItems={setItems} />
+                <div className="df df-row df-jcsb mt-3">
+                  <button type="submit" className="btn--eg btn-success--eg">
+                    Сохранить
+                  </button>
+                </div>
+              </>
             </div>
-          </div>
-        </Form>
-      </Modal.Body>
-    </Modal>
-  );
+          )}
+        </div>
+      </div>
+    </div> /* // ^  рендр.эл. вне корн.эл.React */ /* ,
+        document.body
+      ) */
+  ) : null;
 };
 
 export default UpdateOrder;
