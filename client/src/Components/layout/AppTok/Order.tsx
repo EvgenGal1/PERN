@@ -15,7 +15,7 @@ const Order = (props: any) => {
   const navigate = useNavigate();
 
   const id = props.data;
-  const auth = props.admin;
+  const admin = props.admin;
 
   // список загруженных заказов
   const [orders, setOrders]: any = useState([]);
@@ -52,24 +52,25 @@ const Order = (props: any) => {
   // usEf Удаления Заказа и перенос на пред.стр.
   useEffect(() => {
     // if (delOrd) navigate(-1); // ^ кратко но менее понятно
-    if (auth && delOrd) navigate(ADMINORDERS_ROUTE, { replace: true });
-    if (!auth && delOrd) navigate(USERORDERS_ROUTE, { replace: true });
-  }, [navigate, auth, delOrd]);
+    if (admin && delOrd) navigate(ADMINORDERS_ROUTE, { replace: true });
+    if (!admin && delOrd) navigate(USERORDERS_ROUTE, { replace: true });
+  }, [navigate, admin, delOrd]);
 
   // usEf Получения Заказ (ADMIN/USER)
   useEffect(() => {
     let authPers: any;
-    if (auth) {
+    if (admin) {
       authPers = adminGetOne(id);
     } else {
       authPers = userGetOne(id);
     }
     authPers
       .then((data: any) => {
+        console.log("Order data ", data);
         setOrders(data);
       })
       .finally(() => setFetching(false));
-  }, [change, id, auth]);
+  }, [change, id, admin]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -126,7 +127,7 @@ const Order = (props: any) => {
         show={show}
         setShow={setShow}
         setChange={setChange}
-        auth={auth}
+        admin={admin}
       />
       {/* ПОЗИЦИИ Заказа */}
       <span style={{ marginBottom: "3px", display: "inline-block" }}>
