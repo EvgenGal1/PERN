@@ -632,7 +632,7 @@ const CreateProduct = (props: any) => {
                     <div className="df df-col">
                       <button
                         type="submit"
-                        className="btn--eg btn-danger--eg w1"
+                        className="btn--eg btn-danger--eg w100"
                         onClick={(e) => {
                           handlerDeleteBulkValue(e);
                         }}
@@ -649,7 +649,7 @@ const CreateProduct = (props: any) => {
                       <div className="df df-col">
                         <button
                           type="submit"
-                          className="btn--eg btn-primary--eg w1"
+                          className="btn--eg btn-primary--eg w100"
                           onClick={(e) => {
                             handlerCloneBulkValue(e);
                           }}
@@ -668,7 +668,7 @@ const CreateProduct = (props: any) => {
             <div className="df df-col mb-3 m0">
               <button
                 type="submit"
-                className="btn--eg btn-primary--eg w1"
+                className="btn--eg btn-primary--eg w100"
                 onClick={() => {
                   handlerAddBulkValue();
                 }}
@@ -687,7 +687,7 @@ const CreateProduct = (props: any) => {
             />
             {/* кнп.Сохранить */}
             <div className="df df-col">
-              <button type="submit" className="btn--eg btn-success--eg w1">
+              <button type="submit" className="btn--eg btn-success--eg w100">
                 Сохранить
               </button>
             </div>

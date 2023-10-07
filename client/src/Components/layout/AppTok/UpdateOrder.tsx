@@ -257,11 +257,10 @@ const UpdateOrder = (props: any) => {
               email: value.email,
             }}
             valid={valid}
+            label={true}
             union={["phone", "email"]}
-            amount={amount}
+            // nonField={true}
             legend={"Пользователь"}
-            // nonField={true}
-            // cl={"mt-2"}
           />
           {/*  eslint-disable-next-line react/jsx-pascal-case */}
           <FormField__eg
@@ -273,43 +272,8 @@ const UpdateOrder = (props: any) => {
             }}
             valid={valid}
             union={["phone", "email"]}
-            amount={amount}
-            // legend={"Котакты"}
-            cl={"mt-4"}
-            // nonField={true}
-          />
-          {/*  eslint-disable-next-line react/jsx-pascal-case */}
-          <FormField__eg
-            handleSubmit={handleSubmit}
-            handleChange={handleInputChange}
-            value={{
-              name: value.name,
-              address: value.address,
-              comment: value.comment,
-              phone: value.phone,
-              email: value.email,
-            }}
-            valid={valid}
-            union={["phone", "email"]}
-            amount={amount}
-            // legend={"Пользователь2"}
-            cl={"mt-4"}
-            nonField={true}
-          />
-          {/*  eslint-disable-next-line react/jsx-pascal-case */}
-          <FormField__eg
-            handleChange={handleInputChange}
-            value={{
-              phone: value.phone,
-              email: value.email,
-              comment: value.comment,
-            }}
-            valid={valid}
-            union={["phone", "email"]}
-            amount={amount}
-            legend={"Котакты2"}
-            cl={"mt-2"}
-            nonField={true}
+            legend={"Котакты"}
+            clT={"mt-4"}
           />
           {/* Позиции  */}
           {/*  eslint-disable-next-line react/jsx-pascal-case */}
@@ -320,8 +284,7 @@ const UpdateOrder = (props: any) => {
               </>
             }
             legend={"Позиции"}
-            cl={"mt-3"}
-            // nonField={true}
+            clT={"mt-3"}
           />
           <div className="df df-row df-jcsb mt-4">
             <button type="submit" className="btn--eg btn-success--eg">

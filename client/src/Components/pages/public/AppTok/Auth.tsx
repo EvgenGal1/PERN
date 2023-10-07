@@ -273,11 +273,11 @@ const Auth = observer(() => {
           width: "50%",
         }}
       >
-        <h3 className="m-auto txt">
+        <h3 className="m-auto tac">
           {isLogin ? "Авторизация" : "Регистрация"}
         </h3>
         {formErrors.sms && (
-          <span className="m-auto txt err err-msg">{formErrors.sms}</span>
+          <span className="m-auto tac err err-msg">{formErrors.sms}</span>
         )}
         <form className="form form--eg df df-col p-4" onSubmit={handleSubmit}>
           <div>
@@ -372,11 +372,11 @@ const Auth = observer(() => {
               {isLogin ? "Войти" : "Регистрация"}
             </button>
             {isLogin ? (
-              <p className="txt mt-2 mb-0">
+              <p className="tac mt-2 mb-0">
                 Нет аккаунта? <Link to={SIGNUP_ROUTE}>Зарегистрирутесь!</Link>
               </p>
             ) : (
-              <p className="txt mt-2 mb-0">
+              <p className="tac mt-2 mb-0">
                 Уже есть аккаунт? <Link to={LOGIN_ROUTE}>Войдите!</Link>
               </p>
             )}

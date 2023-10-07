@@ -278,7 +278,7 @@ const Shop = observer(() => {
               <button
                 type="button"
                 onClick={() => redirectToFilter()}
-                className="btn--eg btn-primary--eg w1"
+                className="btn--eg btn-primary--eg w100"
               >
                 [расширенный поиск]
               </button>

@@ -1,9 +1,9 @@
 const BasketItem = (props: any) => {
   return (
     <tr>
-      <td className="txt">{props.name}</td>
+      <td className="tac">{props.name}</td>
       {/* количество/изменить */}
-      <td className="txt">
+      <td className="tac">
         <button
           onClick={() => props.decrement(props.id)}
           className="btn--eg btn-success--eg tb-cl"
@@ -19,10 +19,10 @@ const BasketItem = (props: any) => {
         </button>
       </td>
       {/* цена */}
-      <td className="txt">{props.price}</td>
+      <td className="tac">{props.price}</td>
       {/* сумма */}
-      <td className="txt">{props.price * props.quantity}</td>
-      <td className="txt">
+      <td className="tac">{props.price * props.quantity}</td>
+      <td className="tac">
         <button
           onClick={() => props.remove(props.id, props.name)}
           className="btn--eg btn-danger--eg tb-cl"
