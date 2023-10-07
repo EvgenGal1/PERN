@@ -250,6 +250,9 @@ span.bd {
 }
 
 // Заполнители Рамки/Заливки ----------------------------------------------------------------------------------
+.bbb-0 {
+  border: 0px !important;
+}
 .bbb-1 {
   border-radius: var(--sz1);
   border: 1px solid var(--bord-hr); // --DeepRedBrown: var(--DeepRedBrown);
@@ -783,7 +786,11 @@ button::-moz-focus-inner {
     color: var(--DeepRedBrown);
     line-height: inherit;
   }
-  input:nth-child(2) {
+  input:nth-child(1) {
+    margin-top: var(--sz0) !important;
+  }
+  // для input после legend
+  legend + input:nth-child(2) {
     margin-top: var(--sz0) !important;
   }
 }
