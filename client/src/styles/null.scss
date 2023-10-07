@@ -813,11 +813,7 @@ button::-moz-focus-inner {
     color: var(--DeepRedBrown);
     line-height: inherit;
   }
-  input:nth-child(1) {
-    margin-top: var(--sz0) !important;
-  }
-  // отступ с верху для input после legend (убирает встр.стиль)
-  legend + input:nth-child(2) {
+  legend + div {
     margin-top: var(--sz0) !important;
   }
   // отступ для всех label кроме первого в объед.блоке

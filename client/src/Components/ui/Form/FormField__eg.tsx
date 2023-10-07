@@ -71,10 +71,11 @@ const FormField__eg: React.FC<FormFieldProps> = ({
           {/* // ^ раб код, но 2 отдельных списка. Без признака объединения из масс.union сверху, объединённые снизу */}
           {value &&
             !body &&
+            arrayOfAllUnUnited.length !== 0 &&
             arrayOfAllUnUnited.map((keyU: string) => (
               <div
                 key={keyU[0]}
-                className={`mt-3 ${label ? "df df-jcsb df-aic" : ""}`}
+                className={`UnUnited mt-3 ${label ? "df df-jcsb df-aic" : ""}`}
               >
                 {label && (
                   <label
@@ -102,8 +103,8 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                 />
               </div>
             ))}
-          {value && !body && arrayOfAllUnited && (
-            <div className="df df-row df-jcsb mt-3">
+          {value && !body && arrayOfAllUnited.length !== 0 && (
+            <div className="United df df-row df-jcsb mt-3">
               {arrayOfAllUnited.map((keyU: string) => (
                 <div
                   key={keyU[0]}

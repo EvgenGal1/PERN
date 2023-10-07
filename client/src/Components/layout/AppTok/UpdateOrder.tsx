@@ -262,34 +262,50 @@ const UpdateOrder = (props: any) => {
             // nonField={true}
             legend={"Пользователь"}
           />
-          {/*  eslint-disable-next-line react/jsx-pascal-case */}
-          <FormField__eg
-            handleChange={handleInputChange}
-            value={{
-              phone: value.phone,
-              email: value.email,
-              comment: value.comment,
-            }}
-            valid={valid}
-            union={["phone", "email"]}
-            legend={"Котакты"}
-            clT={"mt-4"}
-          />
+          <div className="df df-row">
+            {/*  eslint-disable-next-line react/jsx-pascal-case */}
+            <FormField__eg
+              handleChange={handleInputChange}
+              value={{
+                phone: value.phone,
+                email: value.email,
+                comment: value.comment,
+              }}
+              valid={valid}
+              union={["phone", "email"]}
+              legend={"Котакты"}
+              clT={"mt-3"}
+              label={true}
+            />
+            {/*  eslint-disable-next-line react/jsx-pascal-case */}
+            <FormField__eg
+              handleChange={handleInputChange}
+              value={{
+                // phone: value.phone,
+                // email: value.email,
+                comment: value.comment,
+              }}
+              valid={valid}
+              label={true}
+              union={[]}
+              legend={"Комментрарии"}
+              clT={"mt-3 ml-4"}
+            />
+          </div>
           {/* Позиции  */}
           {/*  eslint-disable-next-line react/jsx-pascal-case */}
           <FormField__eg
-            body={
-              <>
-                <UpdateItems items={items} setItems={setItems} />
-              </>
-            }
+            body={<UpdateItems items={items} setItems={setItems} />}
             legend={"Позиции"}
             clT={"mt-3"}
           />
-          <div className="df df-row df-jcsb mt-4">
+          <div className="df df-row df-jcsb df-aic mt-4">
             <button type="submit" className="btn--eg btn-success--eg">
               Сохранить
             </button>
+            <div>
+              Сумма : <span className="ff-mn">{amount.toLocaleString()}</span>
+            </div>
           </div>
         </>
       }
