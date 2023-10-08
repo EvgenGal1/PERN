@@ -80,7 +80,7 @@ const CreateProperties = (props: any) => {
         onClick={(e) => {
           appendArr(e);
         }}
-        className="btn--eg btn-primary--eg mb-3 df df-jcc w100"
+        className="btn--eg btn-primary--eg mb-3 df df-jcc w-100"
       >
         Добавить Характеристики Товара
       </button>
@@ -114,7 +114,7 @@ const CreateProperties = (props: any) => {
                 onClick={(e) => {
                   remove(e);
                 }}
-                className="btn--eg btn-danger--eg w100"
+                className="btn--eg btn-danger--eg w-100"
               >
                 Удалить Хар-ку
               </button>

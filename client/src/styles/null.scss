@@ -257,12 +257,12 @@ span.bd {
   border: 0px !important;
 }
 .bbb-1 {
-  border-radius: var(--sz1);
+  border-radius: var(--szp5);
   border: 1px solid var(--bord-hr); // --DeepRedBrown: var(--DeepRedBrown);
   background-color: var(--ui-bg); // --DeerBrown: #59351f;
 }
 .bbb-2 {
-  border-radius: var(--sz1);
+  border-radius: var(--szp5);
   border: 1px solid var(--bord-hr); // --DeepRedBrown: var(--DeepRedBrown);
   background-color: var(--act-bg); // --WetAsphalt: #505050;
 }
@@ -284,10 +284,13 @@ span.bd {
 
 // растояния/размеры  ----------------------------------------------------------------------------------
 // длина/ширина
-.w10 {
+.w-5 {
+  width: 5%;
+}
+.w-10 {
   width: 10%;
 }
-.w100 {
+.w-100 {
   width: 100%;
 }
 .h1 {
@@ -813,16 +816,23 @@ button::-moz-focus-inner {
     color: var(--DeepRedBrown);
     line-height: inherit;
   }
+  // убрать отступ сверху у первого div после legend
   legend + div {
     margin-top: var(--sz0) !important;
   }
-  // отступ для всех label кроме первого в объед.блоке
-  div {
-    div:not(:first-child) {
-      label {
-        margin-left: var(--sz5);
-      }
-    }
+  // в cl.объедин(united) уровнять отступ у первого label
+  .united div:first-child label {
+    width: calc(10% + var(--sz1));
+  }
+}
+// для внешне объединёных form (из Modal, )
+.uniteddiv .fieldset--eg {
+  // уровнивание отступа у первого label
+  .ununited /* div:first-child */ label {
+    width: calc(11%);
+  }
+  .united div/* div:first-child */ label {
+    width: calc(26%);
   }
 }
 
