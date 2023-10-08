@@ -27,6 +27,13 @@ const defaultValid = {
   address: null,
   comment: null,
 };
+const defaultItems = {
+  id: "",
+  name: "",
+  price: "",
+  quantity: "",
+  unique: "",
+};
 
 const isValid = (value: any) => {
   const result: any = {};
@@ -106,63 +113,57 @@ const updateItems = async (items: any, orderId: any) => {
 };
 
 const UpdateOrder = (props: any) => {
-  const { id, show, setShow, setChange, auth } = props;
+  const { id, show, setShow, setChange, orders } = props;
 
   const [value, setValue] = useState(defaultValue);
   const [valid, setValid] = useState(defaultValid);
 
-  // список характеристик товара
   const [items, setItems] = useState([]);
+  //   { id: "", name: "", price: "", quantity: "", unique: "" },
+  // ]);
+
+  useEffect(() => {
+    // if (id) {  adminGetOne(id).then((data) => {получ.данн.Товара с БД}) } // ^ упразднено
+    //     // получ.данн.Товара с БД
+    const order = {
+      name: orders.name.toString(),
+      email: orders.email.toString(),
+      phone: orders.phone.toString(),
+      address: orders.address.toString(),
+      comment: orders?.comment == null ? "" : orders?.comment.toString(),
+    };
+    setValue(order);
+    setValid(isValid(order));
+    setValid(order);
+    // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
+    setItems(
+      orders.items.map((item: any) => {
+        // при добавлении новой хар-ки свойство append принимает значение true
+        // при изменении старой хар-ки свойство change принимает значение true
+        // при удалении старой хар-ки свойство remove принимает значение true
+        return {
+          ...item,
+          unique: uuid(),
+          append: false,
+          remove: false,
+          change: false,
+        };
+      })
+    );
+  }, [
+    orders.name,
+    orders.email,
+    orders.phone,
+    orders.address,
+    orders.comment,
+    orders.items,
+  ]);
 
   const itemsId = items;
   const amount: any = itemsId.reduce(
     (sum: number, item: { price: number; quantity: number }) =>
       sum + item.price * item.quantity,
     0
-  );
-
-  useEffect(
-    () => {
-      if (id) {
-        // получ.данн.Товара с БД
-        adminGetOne(id)
-          .then((data) => {
-            console.log("UpdOrd usEf data ", data);
-            const order = {
-              name: data.name.toString(),
-              email: data.email.toString(),
-              phone: data.phone.toString(),
-              address: data.address.toString(),
-              comment: data?.comment == null ? "" : data?.comment.toString(),
-            };
-            setValue(order);
-            setValid(isValid(order));
-            setValid(order);
-            // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
-            setItems(
-              data.items.map((item: any) => {
-                // при добавлении новой хар-ки свойство append принимает значение true
-                // при изменении старой хар-ки свойство change принимает значение true
-                // при удалении старой хар-ки свойство remove принимает значение true
-                return {
-                  ...item,
-                  unique: uuid(),
-                  append: false,
-                  remove: false,
-                  change: false,
-                };
-              })
-            );
-          })
-          .catch((error) => alert(error.response.data.message));
-        // нужно получить с сервера список категорий и список брендов
-        // fetchCategories().then((data) => setCategories(data));
-        // fetchBrands().then((data) => setBrands(data));
-      }
-    },
-    // ! не раб. - загрузка аж 4 раза !!!
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [id]
   );
 
   const handleInputChange = (event: any) => {
@@ -196,8 +197,6 @@ const UpdateOrder = (props: any) => {
       if (items.length) {
         await updateItems(items, id);
       }
-
-      console.log("UpdateOrder handleSubmit items ", items);
 
       // adminUpdate(id, data)
       //   .then((data) => {
@@ -247,26 +246,46 @@ const UpdateOrder = (props: any) => {
         <>
           {/*  eslint-disable-next-line react/jsx-pascal-case */}
           <FormField__eg
-            handleSubmit={handleSubmit}
+            // handleSubmit={handleSubmit}
             handleChange={handleInputChange}
-            value={{
+            valueArr={[
+              ["name", value.name],
+              ["address", value.address],
+              [
+                ["phone", value.phone],
+                ["email", value.email],
+              ],
+              ["comment", value.comment],
+            ]}
+            valid={valid}
+            label={true}
+            union={["phone", "email"]}
+            // nonField={true}
+            legend={"на массиве -  Пользователь"}
+          />
+          {/*  eslint-disable-next-line react/jsx-pascal-case */}
+          {/* <FormField__eg
+            // handleSubmit={handleSubmit}
+            handleChange={handleInputChange}
+            valueObj={{
               name: value.name,
-              address: value.address,
-              comment: value.comment,
               phone: value.phone,
               email: value.email,
+              address: value.address,
+              comment: value.comment,
             }}
             valid={valid}
             label={true}
             union={["phone", "email"]}
             // nonField={true}
-            legend={"Пользователь"}
-          />
-          <div className="df df-row">
+            legend={"на объекте - Пользователь"}
+            clT={"mt-3"}
+          /> */}
+          <div className="uniteddiv df df-row">
             {/*  eslint-disable-next-line react/jsx-pascal-case */}
-            <FormField__eg
+            {/* <FormField__eg
               handleChange={handleInputChange}
-              value={{
+              valueObj={{
                 phone: value.phone,
                 email: value.email,
                 comment: value.comment,
@@ -276,11 +295,12 @@ const UpdateOrder = (props: any) => {
               legend={"Котакты"}
               clT={"mt-3"}
               label={true}
-            />
+              // nonField={true}
+            /> */}
             {/*  eslint-disable-next-line react/jsx-pascal-case */}
-            <FormField__eg
+            {/* <FormField__eg
               handleChange={handleInputChange}
-              value={{
+              valueObj={{
                 // phone: value.phone,
                 // email: value.email,
                 comment: value.comment,
@@ -290,15 +310,13 @@ const UpdateOrder = (props: any) => {
               union={[]}
               legend={"Комментрарии"}
               clT={"mt-3 ml-4"}
-            />
+              // nonField={true}
+            /> */}
           </div>
           {/* Позиции  */}
-          {/*  eslint-disable-next-line react/jsx-pascal-case */}
-          <FormField__eg
-            body={<UpdateItems items={items} setItems={setItems} />}
-            legend={"Позиции"}
-            clT={"mt-3"}
-          />
+          <div className="mt-5">
+            <UpdateItems items={items} setItems={setItems} />
+          </div>
           <div className="df df-row df-jcsb df-aic mt-4">
             <button type="submit" className="btn--eg btn-success--eg">
               Сохранить

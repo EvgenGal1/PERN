@@ -820,9 +820,16 @@ button::-moz-focus-inner {
   legend + div {
     margin-top: var(--sz0) !important;
   }
-  // в cl.объедин(united) уровнять отступ у первого label
-  .united div:first-child label {
-    width: calc(10% + var(--sz1));
+  // cl.объедин.блоков(united)
+  .united {
+    // уровнять отступ у первого label с не объедин.
+    div:first-child label {
+      width: calc(10% + var(--sz1));
+    }
+    // отступ для след.label
+    div:not(:first-child) label {
+      margin-left: var(--sz5);
+    }
   }
 }
 // для внешне объединёных form (из Modal, )

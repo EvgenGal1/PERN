@@ -15,7 +15,7 @@ const Order = (props: any) => {
   const navigate = useNavigate();
 
   const id = props.data;
-  const admin = props.admin;
+  const { admin = false } = props;
 
   // список загруженных заказов
   const [orders, setOrders]: any = useState([]);
@@ -26,15 +26,19 @@ const Order = (props: any) => {
   // для обновления списка после добавления, редактирования, удаления — изменяем состояние
   const [change, setChange] = useState(false);
   // id заказа, которую будем редактировать — для передачи в <UpdateOrder id={…} />
-  const [orderId, setOrderId]: any = useState(null);
+  // const [orderId, setOrderId]: any = useState(null);
   // признак удалённого Заказа
   const [delOrd, setDelOrd]: any = useState(false);
+  // ошибка
+  const [error, setError] = useState(null);
 
+  // Редактирование Заказа
   const handleUpdateClick = (id: number) => {
-    setOrderId(id);
+    // setOrderId(id);
     setShow(true);
   };
 
+  // Удаления Заказа
   const handleDeleteClick = (id: number) => {
     // eslint-disable-next-line no-restricted-globals
     let confirmDel = confirm(`Удалить Заказ - «${id}»`);
@@ -49,14 +53,14 @@ const Order = (props: any) => {
     }
   };
 
-  // usEf Удаления Заказа и перенос на пред.стр.
+  // перенос на пред.стр. при удал.Заказа
   useEffect(() => {
     // if (delOrd) navigate(-1); // ^ кратко но менее понятно
     if (admin && delOrd) navigate(ADMINORDERS_ROUTE, { replace: true });
     if (!admin && delOrd) navigate(USERORDERS_ROUTE, { replace: true });
   }, [navigate, admin, delOrd]);
 
-  // usEf Получения Заказ (ADMIN/USER)
+  // Получения Заказ (ADMIN/USER)
   useEffect(() => {
     let authPers: any;
     if (admin) {
@@ -69,113 +73,131 @@ const Order = (props: any) => {
         console.log("Order data ", data);
         setOrders(data);
       })
+      .catch((error: any) => setError(error.response.data.message)) // alert(error.response.data.message))
       .finally(() => setFetching(false));
   }, [change, id, admin]);
 
+  // заглушки для Загрузки/Ошибки
   if (fetching) {
     return <Spinner animation="border" />;
+  }
+  if (error) {
+    return <p>{error}</p>;
   }
 
   return (
     <>
-      <span style={{ marginBottom: "3px", display: "inline-block" }}>
-        Дата|Статус
-      </span>
-      <ul className="list-param--eg">
-        <li>
-          <p>Дата заказа:</p>{" "}
-          <span className="ff-mn">{orders.prettyCreatedAt}</span>
-          {orders.prettyCreatedAt !== orders.prettyUpdatedAt
-            ? ` | Обновлён: ` + orders.prettyUpdatedAt
-            : ""}
-        </li>
-        <li>
-          <p>Статус заказа:</p>
-          {orders.status === 0 && <> Новый</>}
-          {orders.status === 1 && <> В работе</>}
-          {orders.status === 2001 && <> Изменения в Данных</>}
-          {orders.status === 2002 && <> Изменения в Позициях</>}
-          {orders.status === 2003 && <> Изменения в Данных, Позициях</>}
-          {orders.status === 9 && <> Завершен</>}
-        </li>
-      </ul>
-      <span>Данные Заказа № {orders.id}</span>
-      <ul className="list-param--eg">
-        <li>
-          <p>Имя, Фамилия:</p> {orders.name}
-        </li>
-        <li>
-          <p>Адрес почты:</p> {orders.email}
-        </li>
-        <li>
-          <p>Номер телефона:</p> {orders.phone}
-        </li>
-        <li>
-          <p>Адрес доставки:</p> {orders.address}
-        </li>
-        {orders.comment ? (
+      {/* Дата/Статус */}
+      <div>
+        <span style={{ marginBottom: "3px", display: "inline-block" }}>
+          Дата|Статус
+        </span>
+        <ul className="list-param--eg">
           <li>
-            <p>Комментарий:</p> {orders.comment}
+            <p>Дата заказа:</p>{" "}
+            <span className="ff-mn">{orders.prettyCreatedAt}</span>
+            {orders.prettyCreatedAt !== orders.prettyUpdatedAt
+              ? ` | Обновлён: ` + orders.prettyUpdatedAt
+              : ""}
           </li>
-        ) : (
-          ""
-        )}
-      </ul>
-      {/* Модалка ред.Заказа */}
-      <UpdateOrder
-        id={orderId}
-        show={show}
-        setShow={setShow}
-        setChange={setChange}
-        admin={admin}
-      />
-      {/* ПОЗИЦИИ Заказа */}
-      <span style={{ marginBottom: "3px", display: "inline-block" }}>
-        Позиции Заказа № {orders.id}
-      </span>
-      <table className="table--eg">
-        <thead>
-          <tr>
-            <th>Название позиции</th>
-            <th>Цена</th>
-            <th>Кол-во</th>
-            <th>Сумма</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.items.map((item: any) => (
-            <tr key={item.id}>
-              <td>{item.name}</td>
-              <td className=" ff-mn">{item.price.toLocaleString()}</td>
-              <td className=" ff-mn">{item.quantity}</td>
-              <td className=" ff-mn">
-                {(item.price * item.quantity).toLocaleString()}
-              </td>
+          <li>
+            <p>Статус заказа:</p>
+            {orders.status === 0 && <> Новый</>}
+            {orders.status === 1 && <> В работе</>}
+            {orders.status === 2001 && <> Изменения в Данных</>}
+            {orders.status === 2002 && <> Изменения в Позициях</>}
+            {orders.status === 2003 && <> Изменения в Данных, Позициях</>}
+            {orders.status === 9 && <> Завершен</>}
+          </li>
+        </ul>
+      </div>
+      {/* Получатель */}
+      <div>
+        <span>Данные Получателя</span>
+        <ul className="list-param--eg">
+          <li>
+            <p>Имя, Фамилия:</p> {orders.name}
+          </li>
+          <li>
+            <p>Адрес почты:</p> {orders.email}
+          </li>
+          <li>
+            <p>Номер телефона:</p> {orders.phone}
+          </li>
+          <li>
+            <p>Адрес доставки:</p> {orders.address}
+          </li>
+          {orders.comment ? (
+            <li>
+              <p>Комментарий:</p> {orders.comment}
+            </li>
+          ) : (
+            ""
+          )}
+        </ul>
+      </div>
+      {/* Заказ */}
+      <div>
+        {/* Шапка Табл.Заказов */}
+        <span style={{ marginBottom: "3px", display: "inline-block" }}>
+          Позиции Заказа № {orders.id}
+        </span>
+        {/* ПОЗИЦИИ Заказа */}
+        <table className="table--eg">
+          <thead>
+            <tr>
+              <th>Название позиции</th>
+              <th>Цена</th>
+              <th>Кол-во</th>
+              <th>Сумма</th>
             </tr>
-          ))}
-          <tr id="th--eg">
-            <td colSpan={3} style={{ fontWeight: "bold" }}>
-              Итого
-            </td>
-            <td className="col-bl ff-mn">{orders.amount.toLocaleString()}</td>
-          </tr>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.items.map((item: any) => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+                <td className=" ff-mn">{item.price.toLocaleString()}</td>
+                <td className=" ff-mn">{item.quantity}</td>
+                <td className=" ff-mn">
+                  {(item.price * item.quantity).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+            <tr id="th--eg">
+              <td colSpan={3} style={{ fontWeight: "bold" }}>
+                Итого
+              </td>
+              <td className="col-bl ff-mn">{orders.amount.toLocaleString()}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       {/* КНП Редакт./Удалить */}
       <div className="df df-row mb-3">
         <button
-          onClick={() => handleUpdateClick(orders.id)}
+          onClick={() => handleUpdateClick(/* orders. */ id)}
           className="btn--eg btn-success--eg mt-3"
         >
           Редактировать
         </button>
         <button
-          onClick={() => handleDeleteClick(orders.id)}
+          onClick={() => handleDeleteClick(/* orders. */ id)}
           className="btn--eg btn-danger--eg mt-3 mlr-3"
         >
           Удалить
         </button>
       </div>
+      {/* Модалка ред.Заказа */}
+      {show && (
+        <UpdateOrder
+          id={/* orderI */ id}
+          show={show}
+          setShow={setShow}
+          setChange={setChange}
+          orders={orders}
+          // admin={admin}
+        />
+      )}
     </>
   );
 };
