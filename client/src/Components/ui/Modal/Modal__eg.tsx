@@ -24,9 +24,9 @@ const Modal__eg: React.FC<ModalProps> = ({
     if (isOpen) {
       document.body.style.overflow = isOpen ? "hidden" : "auto";
     }
-    // return () => {
-    //   document.body.style.overflow = "unset";
-    // };
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [isOpen]);
 
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -44,7 +44,9 @@ const Modal__eg: React.FC<ModalProps> = ({
           className="modal-overlay--eg"
           onClick={() => {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            closureBoundary ? "" : onClose();
+            closureBoundary
+              ? ""
+              : onClose(/* false // ? не понятно почему 0 аргум.приним.usSt */);
           }}
         >
           <div className="modal-dialog--eg">
