@@ -23,8 +23,8 @@ type FormFieldProps = {
 const FormField__eg: React.FC<FormFieldProps> = ({
   handleSubmit, // кнп.обраб.ВНЕ формы
   MsgBtn, // СМС кнп.обраб.ВНЕ форме
-  handleSubmitBtnField, // кнп.обраб.В форме
-  MsgBtnField, // СМС кнп.обраб.В форме
+  handleSubmitBtnField, // кнп.обраб.ВНУТРИ формы
+  MsgBtnField, // СМС кнп.обраб.ВНУТРИ формы
   handleChange, // обраб.изменений
   valueObj, // объект значений
   valueArr, // массив значений
@@ -82,10 +82,10 @@ const FormField__eg: React.FC<FormFieldProps> = ({
           {/* // ^ раб.код на массиве(valueArr) */}
           {valueArr &&
             !body &&
-            valueArr.map((keyU: any) => {
-              // ^ объединённые (united)
-              if (Array.isArray(keyU[0])) {
-                return (
+            valueArr.map((keyU: any) => (
+              <>
+                {/* // ^ объединённые (united) */}
+                {Array.isArray(keyU[0]) ? (
                   <div key={keyU} className="united df df-row df-jcsb mt-3">
                     {keyU.map((keyUm: any) => {
                       return (
@@ -98,7 +98,7 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                           {label && (
                             <label
                               htmlFor={keyUm[0]}
-                              className={`${label ? "w-5 ml- mr-3" : ""}`}
+                              className={`${label ? "w-5 tal ml- mr-3" : ""}`}
                             >
                               {keyUm[0]}
                             </label>
@@ -122,11 +122,8 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                       );
                     })}
                   </div>
-                );
-              }
-              // ^ не объединённые (ununited)
-              if (!Array.isArray(keyU[0])) {
-                return (
+                ) : (
+                  // ^ не объединённые (ununited)
                   <div
                     key={keyU[0]}
                     className={`ununited w-100 ${clField ? clField : ""} ${
@@ -136,7 +133,7 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                     {label && (
                       <label
                         htmlFor={keyU[0]}
-                        className={`${label ? "w-5 mr-3" : ""} ${
+                        className={`${label ? "w-5 tal mr-3" : ""} ${
                           clField ? clField : ""
                         } `}
                       >
@@ -149,8 +146,7 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                       type="text"
                       name={keyU[0]}
                       onChange={handleChange}
-                      className={`inpt--eg
-                      ${
+                      className={`inpt--eg ${
                         axis === "row"
                           ? label
                             ? "w-75 ml-3 mr-3"
@@ -162,10 +158,9 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                       placeholder={`Отсутствуете ${keyU[0]}`}
                     />
                   </div>
-                );
-              }
-              return null;
-            })}
+                )}
+              </>
+            ))}
           {/* // ^ раб.код на объекте(valueObj). но 2 отдельных списка. Из масс.объедин.unionObj - без признака объединения(нет в unionObj)  отрис.сверху, с признаком снизу */}
           {/* {valueObj &&
             !body &&
@@ -232,6 +227,9 @@ const FormField__eg: React.FC<FormFieldProps> = ({
               ))}
             </div>
           )} */}
+          {/* // ^ е/и  есть body (переданый компонент) */}
+          {!valueObj && !valueArr && body ? body : ""}
+          {/* // ^ ВНТР.КНП. */}
           {handleSubmitBtnField !== false &&
             handleSubmitBtnField !== undefined && (
               <button
@@ -243,8 +241,8 @@ const FormField__eg: React.FC<FormFieldProps> = ({
                 {MsgBtnField}
               </button>
             )}
-          {!valueObj && body ? body : ""}
         </fieldset>
+        {/* // ^ ВНЕШН.КНП. */}
         {handleSubmit !== false && handleSubmit !== undefined && (
           <button
             type="submit"

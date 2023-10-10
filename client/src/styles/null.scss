@@ -885,10 +885,10 @@ button::-moz-focus-inner {
 .uniteddiv .fieldset--eg {
   // уровнивание отступа у первого label
   .ununited /* div:first-child */ label {
-    // width: calc(11%);
+    width: calc(11%);
   }
   .united div/* div:first-child */ label {
-    // width: calc(26%);
+    width: calc(26%);
   }
 }
 
