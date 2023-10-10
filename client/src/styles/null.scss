@@ -284,14 +284,28 @@ span.bd {
 
 // растояния/размеры  ----------------------------------------------------------------------------------
 // длина/ширина
-.w-5 {
-  width: 5%;
-}
-.w-10 {
-  width: 10%;
-}
-.w-100 {
-  width: 100%;
+.w {
+  &-a {
+    width: auto !important;
+  }
+  &-5 {
+    width: 5%;
+  }
+  &-10 {
+    width: 10%;
+  }
+  &-25 {
+    width: 25%;
+  }
+  &-50 {
+    width: 50%;
+  }
+  &-75 {
+    width: 75%;
+  }
+  &-100 {
+    width: 100%;
+  }
 }
 .h1 {
   height: 100%;
@@ -377,6 +391,27 @@ span.bd {
     }
     &-5 {
       margin-left: var(--sz5);
+    }
+  }
+  // RIGHT
+  &r {
+    &-0 {
+      margin-right: var(--sz0);
+    }
+    &-1 {
+      margin-right: var(--sz1);
+    }
+    &-2 {
+      margin-right: var(--sz2);
+    }
+    &-3 {
+      margin-right: var(--sz3);
+    }
+    &-4 {
+      margin-right: var(--sz4);
+    }
+    &-5 {
+      margin-right: var(--sz5);
     }
   }
 }
@@ -616,8 +651,14 @@ code {
   &-jcc {
     justify-content: center;
   }
+  &-jcsa {
+    justify-content: space-around;
+  }
   &-jcsb {
     justify-content: space-between;
+  }
+  &-jcse {
+    justify-content: space-evenly;
   }
   &-row {
     flex-direction: row !important;
@@ -817,29 +858,37 @@ button::-moz-focus-inner {
     line-height: inherit;
   }
   // убрать отступ сверху у первого div после legend
-  legend + div {
+  legend + div,
+  div:first-child {
     margin-top: var(--sz0) !important;
   }
   // cl.объедин.блоков(united)
   .united {
-    // уровнять отступ у первого label с не объедин.
+    // уровнять отступ у первого label с объедин.
     div:first-child label {
       width: calc(10% + var(--sz1));
     }
+    // div:first-child label.w-a {
+    //   width: calc(10% + var(--sz1));
+    // }
     // отступ для след.label
     div:not(:first-child) label {
       margin-left: var(--sz5);
     }
+  }
+  // ! не раб - отступ для след.label при горизон.виде
+  div:not(:first-child):has(> .w-a) /* label.w-5.tal */ >  .w-a {
+    // margin-left: var(--sz5);
   }
 }
 // для внешне объединёных form (из Modal, )
 .uniteddiv .fieldset--eg {
   // уровнивание отступа у первого label
   .ununited /* div:first-child */ label {
-    width: calc(11%);
+    // width: calc(11%);
   }
   .united div/* div:first-child */ label {
-    width: calc(26%);
+    // width: calc(26%);
   }
 }
 
