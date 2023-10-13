@@ -71,10 +71,8 @@ const UpdateItems = (props: any) => {
                   ["price", newArray[1][1]],
                   ["quantity", newArray[2][1]],
                 ]}
-                // valid={valid}
                 label={true}
                 axis={"row"}
-                // clForm={"mt-0"}
               />
               <hr /* className="mt-2" */ />
             </>

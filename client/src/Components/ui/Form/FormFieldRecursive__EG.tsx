@@ -6,7 +6,7 @@ type Value = string | LeafValue | NestedValue;
 
 interface Props {
   valueArr: any; // массив значений
-  validationArr?: any; // валидация input
+  // validationArr?: any; // валидация input
   handleChange: any; // обраб.измененийhandle
   handleSubmit?: any; // кнп.обраб. формы
   MsgBtn?: any; // СМС кнп.обраб. форме
@@ -165,13 +165,22 @@ const validateForm = (
     }
   }
 
+  // Проверка имени
+  if (name === "name") {
+    if (!value.trim()) {
+      errors.name = "Поле обязательно для заполнения";
+    } else {
+      errors.name = "";
+    }
+  }
+
   setFormErrors(errors);
   return Object.keys(errors).length === 0;
 };
 
 const renderValue = (
   value: any,
-  validationArr?: any,
+  // validationArr?: any,
   formErrors?: any,
   setFormErrors?: any,
   handleChange?: any,
@@ -251,9 +260,9 @@ const renderValue = (
                     : "w-100"
                 } 
                 ${
-                  formErrors[value[0]]
+                  /* value[1] !== "" && */ formErrors[value[0]]
                     ? "err-inpt"
-                    : !formErrors[value[0]]
+                    : value[1] !== "" && !formErrors[value[0]]
                     ? "err-inpt-suces"
                     : ""
                 } 
@@ -284,7 +293,7 @@ const renderValue = (
               <React.Fragment key={index}>
                 {renderValue(
                   subValue,
-                  validationArr,
+                  // validationArr,
                   formErrors,
                   setFormErrors,
                   handleChange,
@@ -319,7 +328,7 @@ const isNestedValue = (value: Value): value is NestedValue => {
 
 const FormFieldRecursive__EG: React.FC<Props> = ({
   valueArr, // массив значений
-  validationArr, // валидация input
+  // validationArr, // валидация input
   handleChange, // обраб.измененийhandle
   handleSubmit, // кнп.обраб. формы
   MsgBtn, // СМС кнп.обраб. форме
@@ -330,6 +339,7 @@ const FormFieldRecursive__EG: React.FC<Props> = ({
   body, // альтернатива valueObj (Компонент/текст)
   axis = "col", // направление оси расположения эл.(по умолч.вертикально)
 }) => {
+  // state валидации/ошб.
   const [formErrors, setFormErrors] = useState<FormErrors>({
     name: "",
     email: "",
@@ -339,6 +349,37 @@ const FormFieldRecursive__EG: React.FC<Props> = ({
     sms: "",
     password: "",
   });
+  // проверка валидности всей формы (е/и нет ошибок)
+  const isFormValid = Object.values(formErrors).every((error) => error === "");
+
+  // рекурс.fn для проверки пустого значения в одном массиве с подмассивами // ? пока не однозначн.вывод
+  // const valueArr = [
+  //   ["name", "Рома"],
+  //   ["adress", ""],
+  //   [
+  //     ["phone", ""],
+  //     ["email", "roma@.eml"],
+  //   ],
+  //   ["comment", ""],
+  // ];
+  // for (const subarray of valueArr) {
+  //   if (subarray.length >= 2 && subarray[1] === "") {
+  //     console.log(
+  //       `Второе значение в подмассиве ${JSON.stringify(subarray)} равно "".`
+  //     );
+  //   }
+  // }
+  function checkValues(arr: any) {
+    for (const item of arr) {
+      if (Array.isArray(item)) {
+        // Рекурсия для вложенных подмассивов
+        checkValues(item);
+      } else if (typeof item === "string" && item === "") {
+        console.log(`Значение ${item} равно "". Индекс: ${arr.indexOf(item)}`);
+      }
+    }
+  }
+  checkValues(valueArr);
 
   return (
     <form
@@ -351,32 +392,38 @@ const FormFieldRecursive__EG: React.FC<Props> = ({
         } ${!legend ? "bbb-0" : "p-4 pt-3"}`}
       >
         {legend && <legend className="legend--eg">{legend}</legend>}
-        {valueArr.map((value: any, index: any) => (
-          <React.Fragment key={index}>
-            {renderValue(
-              value,
-              validationArr,
-              formErrors, // state валидации/ошб.
-              setFormErrors, // измен.валидации/ошб.
-              handleChange,
-              handleSubmit,
-              MsgBtn,
-              label,
-              legend,
-              formClass,
-              fieldClass,
-              body,
-              axis
-            )}
-            {/* {validationArr[index] && <span className="error">Ошибка!</span>} */}
-          </React.Fragment>
-        ))}
+        {valueArr.map((value: any, index: any) => {
+          return (
+            <React.Fragment key={index}>
+              {renderValue(
+                value,
+                // validationArr,
+                formErrors, // state валидации/ошб.
+                setFormErrors, // измен.валидации/ошб.
+                handleChange,
+                handleSubmit,
+                MsgBtn,
+                label,
+                legend,
+                formClass,
+                fieldClass,
+                body,
+                axis
+              )}
+              {/* {validationArr[index] && <span className="error">Ошибка!</span>} */}
+            </React.Fragment>
+          );
+        })}
         {handleSubmit !== false && handleSubmit !== undefined && (
           <button
             type="submit"
             className={`btn--eg btn-${
               MsgBtn === "Удалить" ? "danger" : "primary"
             }--eg  ${!axis || axis === "col" ? "mt-3" : "ml-3"}`}
+            // блок.кнп. е/и пусты name/address или есть ошб.
+            disabled={
+              valueArr[0][1] === "" || valueArr[1][1] === "" || !isFormValid
+            }
           >
             {MsgBtn}
           </button>
