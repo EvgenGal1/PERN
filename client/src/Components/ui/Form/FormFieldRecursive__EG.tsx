@@ -36,6 +36,7 @@ const validateForm = (
   setFormErrors: any
 ): /* void | */ boolean => {
   const errors: FormErrors = { ...formErrors };
+  console.log("FF_R errors ", errors);
 
   // Проверка email
   if (name === "email") {
@@ -132,8 +133,8 @@ const validateForm = (
 
   // ^ проверка разности email и password (не должны совпадать или быть похожими)
   // if (errors.email === errors.password) {
-  //   console.log("errors.email ", errors.email);
-  //   console.log("errors.password ", errors.password);
+  //   console.log("FF_R errors.email ", errors.email);
+  //   console.log("FF_R errors.password ", errors.password);
   //   const strErr = `Не должны совпадать ${errors.email} и ${errors.password}`;
   //   errors.email = strErr;
   //   errors.password = strErr;
@@ -167,6 +168,7 @@ const validateForm = (
 
   // Проверка имени
   if (name === "name") {
+    console.log("FF_R name ", name);
     if (!value.trim()) {
       errors.name = "Поле обязательно для заполнения";
     } else {
@@ -200,8 +202,9 @@ const renderValue = (
     const { name, value } = event.target;
     validateForm(name, value, formErrors, setFormErrors);
     handleChange(event);
+    console.log("FF_R name, value ", name, value);
   };
-
+  console.log("FF_R  value | value[0] ", value, "|", value[0]);
   if (typeof value === "string") {
     return (
       <input
@@ -213,32 +216,59 @@ const renderValue = (
     );
   }
 
+  console.log('typeof value[0] === "string" ', typeof value[0] === "string");
+  console.log(
+    'typeof value[1] === ("string" || "number") ',
+    typeof value[1] === ("string" || "number")
+  );
+  console.log("FF_R typeof value[1] ", typeof value[1]);
+  console.log("FF_R value.length === 2 ", value.length === 2);
+
   // е/и есть влож.масс.
   if (Array.isArray(value)) {
     // ^ не объединённые (ununited)
     if (
       value.length === 2 &&
       typeof value[0] === "string" &&
-      typeof value[1] === "string"
+      (typeof value[1] === "string" || typeof value[1] === "number")
     ) {
+      console.log("FF_R value[0] | [1] ", value[0], "|", value[1]);
       return (
         <>
           <div
-            className={`${
+            className={`12 ${
               axis === "row"
                 ? label
-                  ? "axis++lb w-100 ml-5"
-                  : "axis--lb w-100 ml-5"
+                  ? "df-row axis++lb w-100 ml-5 df df-jcsb"
+                  : "df-row axis--lb w-100 ml-5"
                 : label
                 ? "ununited w-100 mt-3"
                 : "ununited w-100 mt-3"
             } ${fieldClass ? fieldClass : ""}`}
           >
-            <div className="df df-aic">
+            <div
+              className={`23  
+            ${
+              axis === "row"
+                ? label
+                  ? "df df-row df-jcsb 7+lab w-100 "
+                  : "df df-row 7-lab w-100"
+                : "df df-aic"
+            }
+            `}
+            >
               {label && (
                 <label
                   htmlFor={value[0]}
-                  className={`${label ? "w-5 tal mr-3" : ""}`}
+                  className={`${
+                    axis === "row"
+                      ? label
+                        ? "row--eg 9+lab m-0 "
+                        : "row--eg 9-lab "
+                      : label
+                      ? "col--eg 9+lab w-5 tal mr-3"
+                      : "col--eg 9-lab "
+                  }`}
                 >
                   {value[0]}
                 </label>
@@ -253,8 +283,8 @@ const renderValue = (
                 className={`inpt--eg ${
                   axis === "row"
                     ? label
-                      ? "axis w-100 ml-3"
-                      : "axis w-100"
+                      ? "row--eg 9+lab w-75 m-0 ml-3"
+                      : "row--eg 9+lab w-100"
                     : label
                     ? "w-100 ml-3"
                     : "w-100"
@@ -286,6 +316,7 @@ const renderValue = (
 
     // ^ объединённые (united)
     if (isNestedValue(value)) {
+      console.log("FF_R united value  ", value);
       return (
         <>
           <div className="united df df-row df-jcsb mt-3">
@@ -351,6 +382,7 @@ const FormFieldRecursive__EG: React.FC<Props> = ({
   });
   // проверка валидности всей формы (е/и нет ошибок)
   const isFormValid = Object.values(formErrors).every((error) => error === "");
+  console.log("FF_R Recurs FF valueArr ", valueArr);
 
   // рекурс.fn для проверки пустого значения в одном массиве с подмассивами // ? пока не однозначн.вывод
   // const valueArr = [
@@ -369,17 +401,21 @@ const FormFieldRecursive__EG: React.FC<Props> = ({
   //     );
   //   }
   // }
-  function checkValues(arr: any) {
-    for (const item of arr) {
-      if (Array.isArray(item)) {
-        // Рекурсия для вложенных подмассивов
-        checkValues(item);
-      } else if (typeof item === "string" && item === "") {
-        console.log(`Значение ${item} равно "". Индекс: ${arr.indexOf(item)}`);
-      }
-    }
-  }
-  checkValues(valueArr);
+  // function checkValues(arr: any) {
+  //   for (const item of arr) {
+  //     console.log("FF_R item 0 ", item);
+  //     console.log("FF_R item[0] 0 ", item[0]);
+  //     console.log("FF_R item[1] 0 ", item[1]);
+  //     if (Array.isArray(item)) {
+  //       // Рекурсия для вложенных подмассивов
+  //       checkValues(item);
+  //     } else if (typeof item === "string" && item === "") {
+  //       console.log("FF_R item 123 ", item);
+  //       console.log(`Значение ${item} равно "". Индекс: ${arr.indexOf(item)}`);
+  //     }
+  //   }
+  // }
+  // checkValues(valueArr);
 
   return (
     <form
@@ -393,6 +429,14 @@ const FormFieldRecursive__EG: React.FC<Props> = ({
       >
         {legend && <legend className="legend--eg">{legend}</legend>}
         {valueArr.map((value: any, index: any) => {
+          // console.log("FF_R valueArr[0] ", valueArr[0]);
+          // console.log("FF_R valueArr[0][0] ", valueArr[0][0]);
+          // console.log("FF_R valueArr[0][1] ", valueArr[0][1]);
+          // console.log("FF_R valueArr[0][name] ", valueArr[0].name);
+          // console.log('valueArr[0][0]==="" ', valueArr[0][1] === "");
+          // console.log("FF_R value ", value);
+          // console.log("FF_R valueArr[1][1] ", valueArr[1][1]);
+
           return (
             <React.Fragment key={index}>
               {renderValue(
