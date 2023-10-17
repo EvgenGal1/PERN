@@ -20,7 +20,7 @@ const ProductList = observer(() => {
       ) : (
         ""
       )}
-      <div className="row--eg mb-3">
+      <div className="row-mlr--eg mb-3">
         {/* СПИСОК ПРОДУКТОВ */}
         {/* {searchInput.length > 0 ? (
           // ПО ПОИСКУ

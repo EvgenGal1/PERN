@@ -861,19 +861,28 @@ button::-moz-focus-inner {
   legend + div,
   div:first-child {
     margin-top: var(--sz0) !important;
+    margin-left: var(--sz0) !important;
   }
   // cl.объедин.блоков(united)
   .united {
-    // уровнять отступ у первого label с объедин.
-    div:first-child label {
-      width: calc(10% + var(--sz1));
+    div {
+      // уровнять отступ у первого label с объедин.
+      margin-top: var(--sz0) !important;
+      // уровнять отступ у первого label с объедин.
+      &:first-child {
+        margin-left: 0;
+        // уровнять отступ у первого label с объедин.
+        label {
+          width: calc(10% + var(--sz1));
+        }
+      }
     }
     // div:first-child label.w-a {
     //   width: calc(10% + var(--sz1));
     // }
     // отступ для след.label
     div:not(:first-child) label {
-      margin-left: var(--sz5);
+      // margin-left: var(--sz5);
     }
   }
   // ! не раб - отступ для след.label при горизон.виде
@@ -893,7 +902,7 @@ button::-moz-focus-inner {
 }
 
 // ОШИБКИ .err, err-msg ----------------------------------------------------------------------------------
-.err {
+input.err {
   // color: darkred;
   // margin-top: var(--sz2);
   // padding: var(--sz2);
@@ -969,27 +978,37 @@ div:has(> .inpt--eg) {
   position: relative;
   display: flex;
   // flex-direction: column;
+
+  &:has(.err-inpt-suces),
+  &:has(.err-inpt) {
+    &::after {
+      position: absolute;
+      right: 4px;
+      width: 20px;
+      font-weight: 900;
+    }
+  }
   &:has(.err-inpt) {
     &::after {
       // display: inline;
-      position: absolute;
+      // position: absolute;
       content: "⚠";
       color: red;
-      top: 4px;
-      right: 4px;
-      font-size: 22px;
-      font-weight: 900;
+      // top: 4px;
+      // right: 4px;
+      // font-size: 22px;
+      // font-weight: 900;
     }
   }
   &:has(.err-inpt-suces) {
     &::after {
-      position: absolute;
+      // position: absolute;
       content: "✓";
       color: green;
-      top: 2px;
-      right: 6px;
-      font-size: 28px;
-      font-weight: 900;
+      // top: 2px;
+      // right: 6px;
+      // font-size: 28px;
+      // font-weight: 900;
     }
   }
 }

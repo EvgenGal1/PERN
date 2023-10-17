@@ -1,6 +1,7 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
 import uuid from "react-uuid";
-import FormField__eg from "../../ui/Form/FormField__eg";
+// import FormField__eg from "../../ui/Form/FormField__eg";
+import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
 
 const UpdateItems = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.
@@ -19,6 +20,7 @@ const UpdateItems = (props: any) => {
       },
     ]);
   };
+
   // новую хар-ку надо просто удалить из массива items, а старую — оставить, но изменить remove на true, чтобы потом выполнить http-запрос на сервер для удаления
   const remove = (unique: any) => {
     const item = items.find((elem: any) => elem.unique === unique);
@@ -36,21 +38,42 @@ const UpdateItems = (props: any) => {
       setItems(items.filter((elem: any) => elem.unique === unique));
     }
   };
-  const change = (key: any, value: any, unique: any) => {
+
+  const change = (event: any, unique: any) => {
+    // * ранее на объ.
+    // setItems(
+    //   items.map((item: any) =>
+    //     item.unique === unique
+    //       ? { ...item, [key]: value, change: !item.append }
+    //       : item
+    //   )
+    // );
+
+    // на масс.с масс.
     setItems(
-      items.map((item: any) =>
-        item.unique === unique
-          ? { ...item, [key]: value, change: !item.append }
-          : item
-      )
+      items.map((item: any) => {
+        if (item[4][1] === unique) {
+          return item.map((subItem: any) => {
+            if (subItem[0] === event.target.name) {
+              return [subItem[0], event.target.value];
+            } else if (subItem[0] === "append") {
+              return [subItem[0], !subItem[1]];
+            } else {
+              return subItem;
+            }
+          });
+        } else {
+          return item;
+        }
+      })
     );
   };
 
   return (
     <>
-      <fieldset className="fieldset--eg df df-col mt-3 p-4 pt-0">
-        <legend className="legend--eg">Позиции</legend>
-        {items.map((item: any) => {
+      <fieldset className="000 fieldset--eg df df-col mt-3 p-3 pt-">
+        <legend className="legend--eg">Позиции Recurs</legend>
+        {items.map((item: any, index: any) => {
           const newArray = item.filter(
             (element: any) =>
               element[0] === "name" ||
@@ -61,11 +84,11 @@ const UpdateItems = (props: any) => {
           return (
             <>
               {/* eslint-disable-next-line react/jsx-pascal-case */}
-              <FormField__eg
-                key={item}
-                handleSubmitBtnField={change}
-                MsgBtnField={"Удалить"}
-                handleChange={change}
+              <FormFieldRecursive__EG
+                key={item[0][1]}
+                handleSubmit={change}
+                MsgBtn={"Удалить"}
+                handleChange={(event: any) => change(event, item[4][1])}
                 valueArr={[
                   [newArray[0][0], newArray[0][1]],
                   ["price", newArray[1][1]],
@@ -74,57 +97,10 @@ const UpdateItems = (props: any) => {
                 label={true}
                 axis={"row"}
               />
-              <hr /* className="mt-2" */ />
+              {index !== items.length - 1 && <hr className="mt-2" />}
             </>
           );
         })}
-        {/* {items2.map((item: any) => (
-        <div
-          key={item.unique} 
-          className="df df-row df-jcsb"
-          style={{ display: item.remove ? "none" : "flex" }}
-        >
-          <div className="df df-col">
-            <Form.Control
-              name={"name_" + item.unique}
-              value={item.name}
-              onChange={(e) => change("name", e.target.value, item.unique)}
-              placeholder="Имя..."
-            />
-          </div>
-          <div className="df df-col">
-            <Form.Control
-              name={"price_" + item.unique}
-              value={item.price}
-              // ! попытка перевести в номер. не раб
-              // value={Number(item.price)}
-              onChange={(e) =>
-                change("price", Number(e.target.value), item.unique)
-              }
-              placeholder="Цена..."
-            />
-          </div>
-          <div className="df df-col">
-            <Form.Control
-              name={"quantity_" + item.unique}
-              value={item.quantity}
-              onChange={(e) =>
-                change("quantity", Number(e.target.value), item.unique)
-              }
-              placeholder="Количество..."
-            />
-          </div>
-          <div className="df df-col">
-            <button
-              onClick={() => remove(item.unique)}
-              className="btn--eg btn-danger--eg"
-            >
-              Удалить
-            </button>
-            {item.change && " *"}
-          </div>
-        </div>
-      ))} */}
       </fieldset>
     </>
   );

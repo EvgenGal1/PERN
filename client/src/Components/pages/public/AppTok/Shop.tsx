@@ -257,7 +257,7 @@ const Shop = observer(() => {
       <div className="search mt-3">
         <Search />
       </div>
-      <div className="row--eg mt-3">
+      <div className="row-mlr--eg mt-3">
         <div className="col-md-3">
           {categoriesFetching ? (
             <Spinner animation="border" />
