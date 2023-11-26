@@ -187,7 +187,6 @@ const ProductItem = ({ data }: any) => {
             <span
               style={{
                 fontSize: "30px",
-                opacity: "0.5",
               }}
             >
               {/* е/и цена < 100 лимонов то разбиваем по 3 числа */}
@@ -273,7 +272,6 @@ const ProductItem = ({ data }: any) => {
             <span
               style={{
                 fontSize: "25px",
-                opacity: "0.5",
               }}
             >
               {numberStar} {votes ? <> / {votes}</> : ""}
