@@ -1,6 +1,6 @@
 // ^ Базов.конфиг TS для приёма запросов
 import express from "express";
-import config from "dotenv/config";
+// import config from "dotenv/config";
 // ^ от ошб.для TS - [nodemon] clean exit - code: '28P01',length: 117,severity: '�����'
 require("dotenv").config({ path: "./.env" });
 import cors from "cors";
