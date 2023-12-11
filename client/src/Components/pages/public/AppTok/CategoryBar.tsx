@@ -1,14 +1,61 @@
-import React, { useContext } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import React, { useContext, useEffect /* , useState */ } from "react";
+import {
+  useNavigate,
+  createSearchParams,
+  useSearchParams,
+} from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
+import { fetchCategories } from "../../../../http/Tok/catalogAPI_Tok";
+import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
+// import { generateParams } from "../../../allFn/ganerateURLParams";
+// import { Spinner } from "react-bootstrap";
 
 const CategoryBar = observer(() => {
+  console.log("CATbar 0 ", 0);
   const { catalog }: any = useContext(AppContext);
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const { category } = getSearchParams(searchParams);
+
+  // признак загрузки данных. // ! врем.откл.
+  // const [categoriesFetching, setCategoriesFetching] = useState(false);
+
+  // ^^ пробы в отд.fn
+  // const params = async function generateParams(catalog: any);
+
+  if (category || category === null) {
+    // console.log("CATbar category ~~ ", category);
+    useEffect(() => {
+      console.log("CATbar usEf 000 ", 0);
+      // setCategoriesFetching(true);
+
+      // fetchCategories().then((data: any) => {
+      //   console.log("CATbar usEf CAT data ", data);
+      //   catalog.categories = data;
+      // });
+      // .finally(() => setCategoriesFetching(false));
+      // console.log("CATbar location.search ", location.search);
+
+      const fetchData = async () => {
+        try {
+          const data = await fetchCategories();
+          console.log("CATbar usEf CAT data ", data);
+          catalog.categories = data;
+        } catch (error) {
+          console.error("Ошибка загрузки Категорий:", error);
+        } finally {
+          // setCategoriesFetching(false);
+        }
+      };
+
+      fetchData();
+    }, []);
+  }
 
   // при клике перенаправление на URL маршрут по параметрам поиска
   const redirectToSearchParams = (id: number) => {
@@ -81,7 +128,7 @@ const CategoryBar = observer(() => {
       params.sortField = catalog.sortField;
 
     // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
-    if (catalog.brand || catalog.category) {
+    if (/* catalog.brand || */ catalog.category) {
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
@@ -101,12 +148,16 @@ const CategoryBar = observer(() => {
 
   return (
     <>
-      {/* Категории */}
       <div className="choice-param bbb-2" /* ef-bs */>
         <button className="choice-param__btn" onClick={handleClickChoiceParam}>
           Категория
         </button>
         <div className="choice-param__item">
+          {/* <>
+            {categoriesFetching ? (
+              <Spinner animation="border" />
+            ) : (
+              <> */}
           {catalog.categories.map((item: any) => (
             <label key={item.id}>
               <input
@@ -119,6 +170,9 @@ const CategoryBar = observer(() => {
               <span>{item.name}</span>
             </label>
           ))}
+          {/* </>
+            )}
+          </> */}
         </div>
       </div>
     </>
