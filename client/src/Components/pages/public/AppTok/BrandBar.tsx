@@ -1,14 +1,49 @@
-import React, { useContext } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import React, { useContext, useEffect /* , useState */ } from "react";
+import {
+  useNavigate,
+  createSearchParams,
+  useSearchParams,
+} from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
+import { fetchBrands } from "../../../../http/Tok/catalogAPI_Tok";
+import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
 
 const BrandBar = observer(() => {
+  console.log("BrandBar 0 ", 0);
   const { catalog } = useContext(AppContext);
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // признак загрузки данных. // ! врем.откл.
+  // const [brandsFetching, setBrandsFetching] = useState(true);
+
+  const { brand } = getSearchParams(searchParams);
+
+  if (brand || brand === null) {
+    // console.log("BRANDbar brand ~~ ", brand);
+    useEffect(() => {
+      console.log("BRANDbar usEf 000 ", 0);
+      // setBrandsFetching(true);
+
+      const fetchData = async () => {
+        try {
+          const data = await fetchBrands();
+          console.log("BRANDbar usEf BRD data ", data);
+          catalog.brands = data;
+        } catch (error) {
+          console.error("Ошибка загрузки Брендов>:", error);
+        } finally {
+          // setBrandsFetching(false);
+        }
+      };
+
+      fetchData();
+    }, []);
+  }
 
   // при клике перенаправление на URL маршрут по параметрам поиска
   const redirectToSearchParams = (id: number) => {
@@ -35,7 +70,7 @@ const BrandBar = observer(() => {
       params.sortField = catalog.sortField;
 
     // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
-    if (catalog.brand || catalog.category) {
+    if (catalog.brand /* || catalog.category */) {
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
