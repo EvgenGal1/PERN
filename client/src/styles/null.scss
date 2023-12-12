@@ -983,32 +983,27 @@ div:has(> .inpt--eg) {
   &:has(.err-inpt) {
     &::after {
       position: absolute;
-      right: 4px;
-      width: 20px;
+      width: 0px;
       font-weight: 900;
     }
   }
   &:has(.err-inpt) {
     &::after {
-      // display: inline;
-      // position: absolute;
       content: "⚠";
+      top: calc(50% - 25px);
+      right: 25px;
       color: red;
       // top: 4px;
-      // right: 4px;
       // font-size: 22px;
       // font-weight: 900;
     }
   }
   &:has(.err-inpt-suces) {
     &::after {
-      // position: absolute;
       content: "✓";
+      top: calc(50% - 10px);
+      right: 20px;
       color: green;
-      // top: 2px;
-      // right: 6px;
-      // font-size: 28px;
-      // font-weight: 900;
     }
   }
 }

@@ -1,11 +1,5 @@
 // ^ ORM (Object-relational mapping `Объектно-реляционное отображение`).
 // ^ СЛН. модели данных табл. (подобие modelsTS/JS)
-// Стар.код
-// от ошб.повтор.объяв.перем в блоке
-// export {};
-// const { sequelize } = require("../sequelize");
-// const { DataTypes } = require("sequelize");
-// Нов.код
 import sequelize from "../sequelize";
 import database from "sequelize";
 const { DataTypes } = database;

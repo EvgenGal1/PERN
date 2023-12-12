@@ -22,7 +22,7 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction): void => {
       return next(AppError.unauthorizedError("Требуется авторизация"));
     }
 
-    // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
+    // достаём токен из header (отделяя от типа `Носитель` передающегося по ind 0) из шапки(обычн.там токен)
     const accessToken = authorizationHeader?.split(" ")[1]; // Bearer token (asfasnfkajsfnjk)
     if (!accessToken) {
       return next(AppError.unauthorizedError("Токен  отсутствует"));

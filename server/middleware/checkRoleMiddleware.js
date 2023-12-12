@@ -4,7 +4,7 @@
 // export {};
 
 // подкл.обраб.ошиб.
-const ApiErrorJS = require("../error/ApiErrorJS");
+const ApiErrorJS = require("../error/vr/ApiErrorJS");
 const TokenService = require("../services/token.service");
 
 // interface T {
@@ -49,6 +49,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       if (!userRoles) {
         return next(ApiErrorJS.UnauthorizedError("НЕТ РОЛИ" /* , `${e}` */));
       }
+
       // проверка масс.польз.Ролей с масс.разреш.Ролей для этой fn
       // перем.для определения
       let hasRoles = false;
@@ -69,6 +70,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
           )
         );
       }
+
       req.user = decoded;
       next();
     } catch (e) {
