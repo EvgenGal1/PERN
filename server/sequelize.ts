@@ -22,7 +22,7 @@ export default new Sequelize(
       // updatedAt: 'updateTimestamp',
     },
     // ^ Формат даты заказа. 1ый способ. ? Нужно для 2го ?
-    logging: false, // ! не раб - не ?перезаписывает? Таблицы (нет лога созд.Табл.)
+    logging: false, // ? не перезаписывает ? Таблицы (нет лога созд.Табл.)
     timezone: "Europe/Moscow",
   }
 );

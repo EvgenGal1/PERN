@@ -4,7 +4,7 @@ import BasketService from "../services/basket.service";
 const maxAge = 60 * 60 * 1000 * 24 * 365; // один год
 const signed = true;
 
-class Basket {
+class BasketController {
   async appendBasket(req, res, next) {
     try {
       let basketId: number;
@@ -131,4 +131,4 @@ class Basket {
   }
 }
 
-export default new Basket();
+export default new BasketController();

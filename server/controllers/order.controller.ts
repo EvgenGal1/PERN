@@ -5,7 +5,7 @@ import OrderService from "../services/order.service";
 import BasketService from "../services/basket.service";
 import UserService from "../services/user.service";
 
-class Order {
+class OrderController {
   // созд.admin`администратор`
   adminCreateOrder = async (req, res, next) => {
     await this.createOrder(req, res, next, "admin");
@@ -106,7 +106,7 @@ class Order {
   }
   async adminGetAllOrder(req, res, next) {
     try {
-      Order;
+      OrderController;
       const orders = await OrderService.getAllOrder();
       res.json(orders);
     } catch (e) {
@@ -167,4 +167,4 @@ class Order {
   }
 }
 
-export default new Order();
+export default new OrderController();

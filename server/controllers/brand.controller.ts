@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import AppError from "../error/ApiError";
 import BrandService from "../services/brand.service";
 
-class Brand {
+class BrandController {
   async getAllBrand(req: Request, res: Response, next: NextFunction) {
     try {
       const brands = await BrandService.getAllBrand();
@@ -59,4 +59,4 @@ class Brand {
   }
 }
 
-export default new Brand();
+export default new BrandController();

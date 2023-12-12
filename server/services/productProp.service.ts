@@ -1,26 +1,26 @@
 // ^ servis для свойств товара
 import AppError from "../error/ApiError";
-import { Product as ProductMapping } from "../models/mapping";
-import { ProductProp as ProductPropMapping } from "../models/mapping";
+import { Product as ProductModel } from "../models/model";
+import { ProductProp as ProductPropModel } from "../models/model";
 
-class ProductProp {
+class ProductPropService {
   async getAllProdProp(productId) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
-    const properties = await ProductPropMapping.findAll({
+    const properties = await ProductPropModel.findAll({
       where: { productId },
     });
     return properties;
   }
 
   async getOneProdProp(productId, id) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
-    const property = await ProductPropMapping.findOne({
+    const property = await ProductPropModel.findOne({
       where: { productId, id },
     });
     if (!property) {
@@ -30,12 +30,12 @@ class ProductProp {
   }
 
   async createProdProp(productId, data) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
     const { name, value } = data;
-    const property = await ProductPropMapping.create({
+    const property = await ProductPropModel.create({
       name,
       value,
       productId,
@@ -44,11 +44,11 @@ class ProductProp {
   }
 
   async updateProdProp(productId, id, data) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
-    const property = await ProductPropMapping.findOne({
+    const property = await ProductPropModel.findOne({
       where: { productId, id },
     });
     if (!property) {
@@ -60,11 +60,11 @@ class ProductProp {
   }
 
   async deleteProdProp(productId, id: number | string) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
-    const property = await ProductPropMapping.findOne({
+    const property = await ProductPropModel.findOne({
       where: { productId, id },
     });
     if (!property) {
@@ -75,4 +75,4 @@ class ProductProp {
   }
 }
 
-export default new ProductProp();
+export default new ProductPropService();

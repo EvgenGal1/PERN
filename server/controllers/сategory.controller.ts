@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import AppError from "../error/ApiError";
 import CategoryService from "../services/category.service";
 
-class Category {
+class CategoryController {
   async getAllCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const categories = await CategoryService.getAllCategory();
@@ -68,4 +68,4 @@ class Category {
   }
 }
 
-export default new Category();
+export default new CategoryController();

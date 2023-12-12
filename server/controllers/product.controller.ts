@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import AppError from "../error/ApiError";
 import ProductService from "../services/product.service";
 
-class Product {
+class ProductController {
   async getAllProduct(
     req /* : Request */ /* // ! от ошб.number не может назнач... для string */,
     res: Response,
@@ -120,4 +120,4 @@ class Product {
   }
 }
 
-export default new Product();
+export default new ProductController();

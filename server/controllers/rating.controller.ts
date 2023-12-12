@@ -1,7 +1,7 @@
 import AppError from "../error/ApiError";
 import RatingService from "../services/rating.service";
 
-class Rating {
+class RatingController {
   async getOneRating(req, res, next) {
     try {
       const rating = await RatingService.getOneRating(req.params.productId);
@@ -26,4 +26,4 @@ class Rating {
   }
 }
 
-export default new Rating();
+export default new RatingController();

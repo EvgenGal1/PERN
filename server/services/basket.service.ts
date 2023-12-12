@@ -1,7 +1,7 @@
 import AppError from "../error/ApiError";
-import { Basket as BasketMapping } from "../models/mapping";
-import { Product as ProductMapping } from "../models/mapping";
-import { BasketProduct as BasketProductMapping } from "../models/mapping";
+import { Basket as BasketModel } from "../models/model";
+import { Product as ProductModel } from "../models/model";
+import { BasketProduct as BasketProductModel } from "../models/model";
 
 const pretty = (basket) => {
   const data: any = {};
@@ -20,24 +20,24 @@ const pretty = (basket) => {
   return data;
 };
 
-class Basket {
+class BasketService {
   async getOneBasket(basketId: number | null, userId?: number) {
     try {
       // ! костыль 1.1. получ./созд. basket по userId, либо получ.по basketId с Товарами
       let returned: any = {};
       if (userId) {
-        returned = await BasketMapping.findByPk(basketId, {
+        returned = await BasketModel.findByPk(basketId, {
           where: { userId: userId },
         });
 
-        if (!returned) returned = await BasketMapping.create();
+        if (!returned) returned = await BasketModel.create();
 
         return returned;
       } else if (basketId) {
-        returned = await BasketMapping.findByPk(basketId, {
+        returned = await BasketModel.findByPk(basketId, {
           attributes: ["id"],
           include: [
-            { model: ProductMapping, attributes: ["id", "name", "price"] },
+            { model: ProductModel, attributes: ["id", "name", "price"] },
           ],
         });
       }
@@ -52,8 +52,8 @@ class Basket {
     try {
       let returned: any = {};
       // при передаче userId созд. Корзину с привязкой к User (Регистр User)
-      if (userId) returned = await BasketMapping.create({ userId: userId });
-      else returned = await BasketMapping.create();
+      if (userId) returned = await BasketModel.create({ userId: userId });
+      else returned = await BasketModel.create();
 
       return pretty(returned);
     } catch (error) {
@@ -63,17 +63,15 @@ class Basket {
 
   async appendBasket(basketId: number, productId: number, quantity: number) {
     try {
-      let basket = await BasketMapping.findByPk(basketId, {
+      let basket = await BasketModel.findByPk(basketId, {
         attributes: ["id"],
-        include: [
-          { model: ProductMapping, attributes: ["id", "name", "price"] },
-        ],
+        include: [{ model: ProductModel, attributes: ["id", "name", "price"] }],
       });
 
-      if (!basket) basket = await BasketMapping.create();
+      if (!basket) basket = await BasketModel.create();
 
       // проверяем, есть ли уже этот товар в корзине
-      const basket_product = await BasketProductMapping.findOne({
+      const basket_product = await BasketProductModel.findOne({
         where: { basketId, productId },
       });
 
@@ -81,7 +79,7 @@ class Basket {
       if (basket_product)
         await basket_product.increment("quantity", { by: quantity });
       // нет в корзине
-      else await BasketProductMapping.create({ basketId, productId, quantity });
+      else await BasketProductModel.create({ basketId, productId, quantity });
 
       // обновим объект корзины, чтобы вернуть свежие данные
       await basket.reload();
@@ -94,14 +92,14 @@ class Basket {
 
   async incrementBasket(basketId: number, productId: number, quantity: number) {
     try {
-      let basket = await BasketMapping.findByPk(basketId, {
-        include: [{ model: ProductMapping, as: "products" }],
+      let basket = await BasketModel.findByPk(basketId, {
+        include: [{ model: ProductModel, as: "products" }],
       });
 
-      if (!basket) basket = await BasketMapping.create();
+      if (!basket) basket = await BasketModel.create();
 
       // проверяем, есть ли этот товар в корзине
-      const basket_product = await BasketProductMapping.findOne({
+      const basket_product = await BasketProductModel.findOne({
         where: { basketId, productId },
       });
 
@@ -119,16 +117,16 @@ class Basket {
 
   async decrementBasket(basketId: number, productId: number, quantity: number) {
     try {
-      let basket = await BasketMapping.findByPk(basketId, {
-        include: [{ model: ProductMapping, as: "products" }],
+      let basket = await BasketModel.findByPk(basketId, {
+        include: [{ model: ProductModel, as: "products" }],
       });
 
       if (!basket) {
-        basket = await BasketMapping.create();
+        basket = await BasketModel.create();
       }
 
       // проверяем, есть ли этот товар в корзине
-      const basket_product = await BasketProductMapping.findOne({
+      const basket_product = await BasketProductModel.findOne({
         where: { basketId, productId },
       });
 
@@ -151,15 +149,15 @@ class Basket {
 
   async clearBasket(basketId: number) {
     try {
-      let basket = await BasketMapping.findByPk(basketId, {
-        include: [{ model: ProductMapping, as: "products" }],
+      let basket = await BasketModel.findByPk(basketId, {
+        include: [{ model: ProductModel, as: "products" }],
       });
 
       if (basket) {
-        await BasketProductMapping.destroy({ where: { basketId } });
+        await BasketProductModel.destroy({ where: { basketId } });
         await basket.reload();
       } else {
-        basket = await BasketMapping.create();
+        basket = await BasketModel.create();
       }
 
       return pretty(basket);
@@ -171,13 +169,13 @@ class Basket {
   // удаление Корзины
   async deleteBasket(basketId: number) {
     try {
-      const basket = await BasketMapping.findByPk(basketId, {
-        include: [{ model: ProductMapping, as: "products" }],
+      const basket = await BasketModel.findByPk(basketId, {
+        include: [{ model: ProductModel, as: "products" }],
       });
       if (!basket) throw new Error("Корзина не найдена в БД");
 
       if (basketId == basket.userId) {
-        BasketMapping.destroy({ where: { userId: basketId } });
+        BasketModel.destroy({ where: { userId: basketId } });
       } else {
         await basket.destroy();
       }
@@ -191,15 +189,15 @@ class Basket {
   // удаление Корзины с Товарами
   async removeBasket(basketId: number, productId: number) {
     try {
-      let basket = await BasketMapping.findByPk(basketId, {
-        include: [{ model: ProductMapping, as: "products" }],
+      let basket = await BasketModel.findByPk(basketId, {
+        include: [{ model: ProductModel, as: "products" }],
       });
       if (!basket) throw new Error("Корзина не найдена в БД");
 
-      if (!basket) basket = await BasketMapping.create();
+      if (!basket) basket = await BasketModel.create();
 
       // проверяем, есть ли этот товар в корзине
-      const basket_product = await BasketProductMapping.findOne({
+      const basket_product = await BasketProductModel.findOne({
         where: { basketId, productId },
       });
 
@@ -218,4 +216,4 @@ class Basket {
   }
 }
 
-export default new Basket();
+export default new BasketService();

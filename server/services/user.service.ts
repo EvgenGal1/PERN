@@ -7,7 +7,7 @@ const uuid = require("uuid");
 import AppError from "../error/ApiError";
 // выборка полей
 import UserDto from "../dtos/user.dto";
-import { User as UserMapping } from "../models/mapping";
+import { User as UserModel } from "../models/model";
 // serv разные
 import BasketService from "../services/basket.service";
 import TokenService from "../services/token.service";
@@ -16,12 +16,12 @@ import MailService from "../services/mail.service";
 // перем.степень шифр.
 const hashSync = 5;
 
-class User {
+class UserService {
   // любой Пользователь
   // РЕГИСТРАЦИЯ
   async signupUser(email: string, password: string) {
     try {
-      const eml = await UserMapping.findOne({ where: { email } });
+      const eml = await UserModel.findOne({ where: { email } });
       if (eml) {
         return AppError.badRequest(
           "НЕ удалось зарегистрироваться",
@@ -37,7 +37,7 @@ class User {
       let activationLinkPath = `${process.env.API_URL_CLN}/api/user/activate/${activationLink}`;
 
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
-      const user = await UserMapping.create({
+      const user = await UserModel.create({
         email,
         password: hashPassword,
         activationLink,
@@ -78,7 +78,7 @@ class User {
   async loginUser(email: string, password: string) {
     try {
       // проверка сущест. eml (позже username)
-      const user = await UserMapping.findOne({ where: { email } });
+      const user = await UserModel.findOne({ where: { email } });
       if (!user) {
         return AppError.badRequest(`Пользователь с Email <${email}> не найден`);
       }
@@ -113,7 +113,7 @@ class User {
   // USER Пользователь
   // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
   async activateUser(activationLink: string) {
-    const user = await UserMapping.findOne({
+    const user = await UserModel.findOne({
       where: { activationLink: activationLink },
     });
     if (!user) {
@@ -142,7 +142,7 @@ class User {
       }
 
       // вытаск.польз.с БД по ID
-      const user = await UserMapping.findByPk(userData.id);
+      const user = await UserModel.findByPk(userData.id);
 
       const userDto = new UserDto(user);
 
@@ -181,9 +181,9 @@ class User {
   async createUser(data) {
     try {
       const { email, password, role } = data;
-      const check = await UserMapping.findOne({ where: { email } });
+      const check = await UserModel.findOne({ where: { email } });
       if (check) throw new Error("Пользователь уже существует");
-      const user = await UserMapping.create({ email, password, role });
+      const user = await UserModel.create({ email, password, role });
       // созд.Корзину по User.id
       if (user.id) await BasketService.createBasket(user.id);
       return user;
@@ -192,16 +192,16 @@ class User {
     }
   }
   async getOneUser(id: number) {
-    const user = await UserMapping.findByPk(id);
+    const user = await UserModel.findByPk(id);
     if (!user) throw new Error(`Пользователь по id ${id} не найден в БД`);
     return user;
   }
   async getAllUser() {
-    const users = await UserMapping.findAll();
+    const users = await UserModel.findAll();
     return users;
   }
   async updateUser(id: number, data) {
-    const user = await UserMapping.findByPk(id);
+    const user = await UserModel.findByPk(id);
     if (!user) throw new Error("Пользователь не найден в БД");
     const {
       email = user.email,
@@ -212,7 +212,7 @@ class User {
     return user;
   }
   async deleteUser(id: number) {
-    const user = await UserMapping.findByPk(id);
+    const user = await UserModel.findByPk(id);
     if (!user) throw new Error("Пользователь не найден в БД");
     if (user.id) BasketService.deleteBasket(user.id);
     await user.destroy();
@@ -220,10 +220,10 @@ class User {
   }
   // поиск по email
   async getByEmailUser(email: string) {
-    const user = await UserMapping.findOne({ where: { email } });
+    const user = await UserModel.findOne({ where: { email } });
     if (!user) throw new Error(`Пользователь с email ${email} не найден в БД`);
     return user;
   }
 }
 
-export default new User();
+export default new UserService();

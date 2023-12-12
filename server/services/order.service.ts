@@ -1,7 +1,7 @@
 // import sequelize from "../sequelize.js"; // ^ Формат даты заказа. 1ый способ
 import AppError from "../error/ApiError";
-import { Order as OrderMapping } from "../models/mapping";
-import { OrderItem as OrderItemMapping } from "../models/mapping";
+import { Order as OrderModel } from "../models/model";
+import { OrderItem as OrderItemModel } from "../models/model";
 
 // const pretty = (basket) => {
 //   const data: any = {};
@@ -68,13 +68,13 @@ interface OrderItem {
   // updatedAt: Date;
 }
 
-class Order {
+class OrderService {
   async getAllOrder(userId = null) {
     const options: any = {};
     if (userId) {
       options.where = { userId };
     }
-    const orders = await OrderMapping.findAll(options);
+    const orders = await OrderModel.findAll(options);
     return orders;
   }
 
@@ -83,17 +83,17 @@ class Order {
       where: { id },
       include: [
         {
-          model: OrderItemMapping,
+          model: OrderItemModel,
           as: "items",
           attributes: ["id", "name", "price", "quantity"],
         },
       ],
     };
     if (userId) options.where.userId = userId;
-    const order = await OrderMapping.findOne(options);
+    const order = await OrderModel.findOne(options);
     // ^ подобие prod.serv
-    // const order = await OrderMapping.findByPk(id, {
-    //   include: [{ model: OrderItemMapping, as: "items" }],
+    // const order = await OrderModel.findByPk(id, {
+    //   include: [{ model: OrderItemModel, as: "items" }],
     // });
     //
     if (!order) {
@@ -122,7 +122,7 @@ class Order {
         userId = null,
       } = data;
 
-      const order = await OrderMapping.create({
+      const order = await OrderModel.create({
         name,
         email,
         phone,
@@ -134,7 +134,7 @@ class Order {
 
       // товары, входящие в заказ
       for (let item of items) {
-        await OrderItemMapping.create({
+        await OrderItemModel.create({
           name: item.name,
           price: item.price,
           quantity: item.quantity,
@@ -143,10 +143,10 @@ class Order {
       }
 
       // возвращать будем заказ с составом
-      const created = await OrderMapping.findByPk(order.id, {
+      const created = await OrderModel.findByPk(order.id, {
         include: [
           {
-            model: OrderItemMapping,
+            model: OrderItemModel,
             as: "items",
             attributes: ["name", "price", "quantity"],
           },
@@ -161,9 +161,9 @@ class Order {
 
   async updateOrder(id: string | number, data: /* any */ UpdateData) {
     try {
-      // const order = await OrderMapping.findByPk(id);
-      const order = await OrderMapping.findByPk(id, {
-        include: [{ model: OrderItemMapping, as: "items" }],
+      // const order = await OrderModel.findByPk(id);
+      const order = await OrderModel.findByPk(id, {
+        include: [{ model: OrderItemModel, as: "items" }],
       });
       if (!order) {
         throw new Error("Заказ не найден в БД");
@@ -218,11 +218,11 @@ class Order {
       if (data.items) {
         // свойства товара
         // удаляем старые и добавляем новые
-        await OrderItemMapping.destroy({ where: { orderId: id } });
+        await OrderItemModel.destroy({ where: { orderId: id } });
         // const items: any = JSON.parse(data.items);
         // товары, входящие в заказ
         for (let item of items) {
-          await OrderItemMapping.create({
+          await OrderItemModel.create({
             name: item.name,
             price: item.price,
             quantity: item.quantity,
@@ -232,10 +232,10 @@ class Order {
       }
 
       // возвращать будем заказ с составом
-      // const ordered = await OrderMapping.findByPk(order.id, {
+      // const ordered = await OrderModel.findByPk(order.id, {
       //   include: [
       //     {
-      //       model: OrderItemMapping,
+      //       model: OrderItemModel,
       //       as: "items",
       //       attributes: ["name", "price", "quantity"],
       //     },
@@ -255,10 +255,10 @@ class Order {
   }
 
   async deleteOrder(id) {
-    let order = await OrderMapping.findByPk(id, {
+    let order = await OrderModel.findByPk(id, {
       include: [
         {
-          model: OrderItemMapping,
+          model: OrderItemModel,
           as: "items" /* , attributes: ["name", "price", "quantity"], */,
         },
       ],
@@ -271,4 +271,4 @@ class Order {
   }
 }
 
-export default new Order();
+export default new OrderService();

@@ -1,14 +1,14 @@
 import AppError from "../error/ApiError";
-import { Category as CategoryMapping } from "../models/mapping";
+import { Category as CategoryModel } from "../models/model";
 
-class Category {
+class CategoryService {
   async getAllCategory() {
-    const categories = await CategoryMapping.findAll();
+    const categories = await CategoryModel.findAll();
     return categories;
   }
 
   async getOneCategory(id) {
-    const category = await CategoryMapping.findByPk(id);
+    const category = await CategoryModel.findByPk(id);
     if (!category) {
       throw new Error("Категория не найдена в БД");
     }
@@ -17,16 +17,16 @@ class Category {
 
   async createCategory(data) {
     const { name } = data;
-    const exist = await CategoryMapping.findOne({ where: { name } });
+    const exist = await CategoryModel.findOne({ where: { name } });
     if (exist) {
       throw new Error("Такая категория уже есть");
     }
-    const category = await CategoryMapping.create({ name });
+    const category = await CategoryModel.create({ name });
     return category;
   }
 
   async updateCategory(id, data) {
-    const category = await CategoryMapping.findByPk(id);
+    const category = await CategoryModel.findByPk(id);
     if (!category) {
       throw new Error("Категория не найдена в БД");
     }
@@ -36,7 +36,7 @@ class Category {
   }
 
   async deleteCategory(id) {
-    const category = await CategoryMapping.findByPk(id);
+    const category = await CategoryModel.findByPk(id);
     if (!category) {
       throw new Error("Категория не найдена в БД");
     }
@@ -45,4 +45,4 @@ class Category {
   }
 }
 
-export default new Category();
+export default new CategoryService();

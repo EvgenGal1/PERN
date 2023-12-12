@@ -1,19 +1,19 @@
 import AppError from "../error/ApiError";
-import { Rating as RatingMapping } from "../models/mapping";
-import { Product as ProductMapping } from "../models/mapping";
-import { User as UserMapping } from "../models/mapping";
+import { Rating as RatingModel } from "../models/model";
+import { Product as ProductModel } from "../models/model";
+import { User as UserModel } from "../models/model";
 
-class Rating {
+class RatingService {
   async getOneRating(productId: number) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
     // `голосов`
-    const votes = await RatingMapping.count({ where: { productId } });
+    const votes = await RatingModel.count({ where: { productId } });
     if (votes) {
       // `ставки`
-      const rates = await RatingMapping.sum("rate", { where: { productId } });
+      const rates = await RatingModel.sum("rate", { where: { productId } });
       return { rates, votes, rating: rates / votes };
     }
     // `ставки голоса рейтинг`
@@ -21,17 +21,17 @@ class Rating {
   }
 
   async createRating(rate: number, productId: number, userId: number) {
-    const product = await ProductMapping.findByPk(productId);
+    const product = await ProductModel.findByPk(productId);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
-    const user = await UserMapping.findByPk(userId);
+    const user = await UserModel.findByPk(userId);
     if (!user) {
       throw new Error("Пользователь не найден в БД");
     }
 
     // находим/удаляем данн.Рейтинга/Пользователя е/и он уже голосовал
-    const ratingUserId = await RatingMapping.findOne({
+    const ratingUserId = await RatingModel.findOne({
       where: { userId: userId, productId: productId },
     });
 
@@ -39,21 +39,21 @@ class Rating {
       ratingUserId?.userId == userId &&
       ratingUserId?.productId == productId
     ) {
-      await RatingMapping.destroy({
+      await RatingModel.destroy({
         where: { userId: userId, productId: productId },
       });
     }
 
     // созд.нов.Рейтинг
-    const rating = await RatingMapping.create({
+    const rating = await RatingModel.create({
       rate: rate,
       productId: productId,
       userId: userId,
     });
 
     // запросы для вычисления средн.Рейтинга (ставки, голоса)
-    const votes = await RatingMapping.count({ where: { productId } });
-    const rates = await RatingMapping.sum("rate", { where: { productId } });
+    const votes = await RatingModel.count({ where: { productId } });
+    const rates = await RatingModel.sum("rate", { where: { productId } });
     const ratingAll = rates / votes;
 
     // перем./запрос для обнов.Товара
@@ -79,4 +79,4 @@ class Rating {
   }
 }
 
-export default new Rating();
+export default new RatingService();

@@ -1,26 +1,26 @@
 // ^ servis для свойств товара
 import AppError from "../error/ApiError";
-import { Order as OrderMapping } from "../models/mapping";
-import { OrderItem as OrderItemMapping } from "../models/mapping";
+import { Order as OrderModel } from "../models/model";
+import { OrderItem as OrderItemModel } from "../models/model";
 
-class OrderItem {
+class OrderItemService {
   async getAllOrderItems(orderId) {
-    const order = await OrderMapping.findByPk(orderId);
+    const order = await OrderModel.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
     }
-    const items = await OrderItemMapping.findAll({
+    const items = await OrderItemModel.findAll({
       where: { orderId },
     });
     return items;
   }
 
   async getOneOrderItems(orderId, id) {
-    const order = await OrderMapping.findByPk(orderId);
+    const order = await OrderModel.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
     }
-    const item = await OrderItemMapping.findOne({
+    const item = await OrderItemModel.findOne({
       where: { orderId, id },
     });
     if (!item) {
@@ -30,12 +30,12 @@ class OrderItem {
   }
 
   async createOrderItems(orderId, data) {
-    const order = await OrderMapping.findByPk(orderId);
+    const order = await OrderModel.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
     }
     const { name, price, quantity } = data;
-    const item = await OrderItemMapping.create({
+    const item = await OrderItemModel.create({
       name,
       price,
       quantity,
@@ -45,11 +45,11 @@ class OrderItem {
   }
 
   async updateOrderItems(orderId, id, data) {
-    const order = await OrderMapping.findByPk(orderId);
+    const order = await OrderModel.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
     }
-    const item = await OrderItemMapping.findOne({
+    const item = await OrderItemModel.findOne({
       where: { orderId, id },
     });
     console.log("ITM data : " + data);
@@ -87,11 +87,11 @@ class OrderItem {
   }
 
   async deleteOrderItems(orderId, id: number | string) {
-    const order = await OrderMapping.findByPk(orderId);
+    const order = await OrderModel.findByPk(orderId);
     if (!order) {
       throw new Error("Товар не найден в БД");
     }
-    const item = await OrderItemMapping.findOne({
+    const item = await OrderItemModel.findOne({
       where: { orderId, id },
     });
     if (!item) {
@@ -102,4 +102,4 @@ class OrderItem {
   }
 }
 
-export default new OrderItem();
+export default new OrderItemService();

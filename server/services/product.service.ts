@@ -1,12 +1,12 @@
 import Op from "sequelize";
 import AppError from "../error/ApiError";
 import {
-  Product as ProductMapping,
-  ProductProp as ProductPropMapping,
-  Brand as BrandMapping,
-  Category as CategoryMapping,
-  Rating as RatingMapping,
-} from "../models/mapping";
+  Product as ProductModel,
+  ProductProp as ProductPropModel,
+  Brand as BrandModel,
+  Category as CategoryModel,
+  Rating as RatingModel,
+} from "../models/model";
 import FileService from "./file.service";
 
 // Типы данных
@@ -65,7 +65,7 @@ interface Brand {
   // updatedAt: Date;
 }
 
-class Product {
+class ProductService {
   async getAllProduct(options: any) {
     const {
       categoryId,
@@ -91,12 +91,12 @@ class Product {
     else if (brandId && !brandId?.includes("_")) where.brandId = brandId;
 
     // Кол-во эл. `Найдите и посчитайте все`
-    let countAll = await ProductMapping.findAndCountAll({
+    let countAll = await ProductModel.findAndCountAll({
       where,
       // для каждого товара получаем Бренд и Категорию
       include: [
-        { model: BrandMapping, as: "brand" },
-        { model: CategoryMapping, as: "category" },
+        { model: BrandModel, as: "brand" },
+        { model: CategoryModel, as: "category" },
       ],
     });
 
@@ -105,15 +105,15 @@ class Product {
     // console.log("sortFieldVotes 0 : " + sortFieldVotes);
     // console.log(sortFieldVotes);
     if (sortField === "votes") {
-      sortFieldVotes = `{ model: RatingMapping, as: "ratings" }`;
+      sortFieldVotes = `{ model: RatingModel, as: "ratings" }`;
       // console.log("sortFieldVotes : " + sortFieldVotes);
       // console.log(sortFieldVotes);
     }
     let sortFieldParam = sortField;
     if (sortField === "votes") {
       // ! не раб.сортировка по votes, userId, rate|s, rating|s
-      // sortFieldParam = `RatingMapping, "votes"`;
-      sortFieldParam = `{ model: RatingMapping, as: "ratings" }, "rates"`;
+      // sortFieldParam = `RatingModel, "votes"`;
+      sortFieldParam = `{ model: RatingModel, as: "ratings" }, "rates"`;
     }
 
     // Пропускаем n первых эл.в БД (для 1 стр.)
@@ -127,7 +127,7 @@ class Product {
     // защита от минусового результата
     if (offset < 0) offset = 0;
 
-    const products = await ProductMapping.findAndCountAll({
+    const products = await ProductModel.findAndCountAll({
       where,
       limit,
       offset,
@@ -135,11 +135,11 @@ class Product {
       include: [
         // получаем все модели, вместе со связанными с ними моделями
         // { all: true, nested: true },
-        { model: BrandMapping, as: "brand" },
-        { model: CategoryMapping, as: "category" },
-        // { model: ProductPropMapping, as: "props" },
+        { model: BrandModel, as: "brand" },
+        { model: CategoryModel, as: "category" },
+        // { model: ProductPropModel, as: "props" },
         // sortFieldVotes
-        // { model: RatingMapping, as: "ratings" },
+        // { model: RatingModel, as: "ratings" },
       ],
       order: [[sortFieldParam || "name", sortOrd || "ASC"]],
     });
@@ -148,13 +148,13 @@ class Product {
   }
 
   async getOneProduct(id: number) {
-    const product = await ProductMapping.findByPk(id, {
+    const product = await ProductModel.findByPk(id, {
       include: [
-        { model: ProductPropMapping, as: "props" },
+        { model: ProductPropModel, as: "props" },
         // получать категорию и бренд
-        { model: BrandMapping, as: "brand" },
-        { model: CategoryMapping, as: "category" },
-        // { model: RatingMapping, as: "ratings" },
+        { model: BrandModel, as: "brand" },
+        { model: CategoryModel, as: "category" },
+        // { model: RatingModel, as: "ratings" },
       ],
     });
     if (!product) {
@@ -179,7 +179,7 @@ class Product {
     // ^ для записи 1го знач.
     if ((categoryId.length || brandId.length) < 2) {
       // созд.1го Товара
-      const product = await ProductMapping.create({
+      const product = await ProductModel.create({
         name,
         price,
         image,
@@ -194,7 +194,7 @@ class Product {
         // перебор масс. по эл.
         for (let prop of props) {
           // данн.из кажд.эл.сохр.по отдельности
-          await ProductPropMapping.create({
+          await ProductPropModel.create({
             name: prop.name,
             value: prop.value,
             productId: product.id,
@@ -203,8 +203,8 @@ class Product {
       }
 
       // возврат 1го Товар со свойствами
-      returned = await ProductMapping.findByPk(product.id, {
-        include: [{ model: ProductPropMapping, as: "props" }],
+      returned = await ProductModel.findByPk(product.id, {
+        include: [{ model: ProductPropModel, as: "props" }],
       });
     }
 
@@ -250,7 +250,7 @@ class Product {
       }
 
       // массовое созд.
-      const productBulk = await ProductMapping.bulkCreate(resultAll);
+      const productBulk = await ProductModel.bulkCreate(resultAll);
 
       // е/и есть Хар-ки Товара
       if (data.props) {
@@ -277,7 +277,7 @@ class Product {
           for (let prop of value) {
             // prop - { name: '1212', value: 'qw' } затем { name: '121212', value: 'qwqw' }
             // запись данн.каждого объ.по отдельности
-            await ProductPropMapping.create({
+            await ProductPropModel.create({
               name: prop.name,
               value: prop.value,
               productId: productBulkId,
@@ -287,9 +287,9 @@ class Product {
       }
 
       // возврат неск. Товаров со свойствами и кол-ом
-      returned = await ProductMapping.findAndCountAll({
+      returned = await ProductModel.findAndCountAll({
         // where, // ? не нужно
-        include: [{ model: ProductPropMapping, as: "props" }],
+        include: [{ model: ProductPropModel, as: "props" }],
       });
     }
 
@@ -302,8 +302,8 @@ class Product {
     data: UpdateData,
     img: any /* : Express.Multer.File */
   ) {
-    const product = await ProductMapping.findByPk(id, {
-      include: [{ model: ProductPropMapping, as: "props" }],
+    const product = await ProductModel.findByPk(id, {
+      include: [{ model: ProductPropModel, as: "props" }],
     });
     if (!product) {
       throw new Error("Товар не найден в БД");
@@ -329,10 +329,10 @@ class Product {
     // свойства товара
     if (data.props) {
       // удаляем старые и добавляем новые
-      await ProductPropMapping.destroy({ where: { productId: id } });
+      await ProductPropModel.destroy({ where: { productId: id } });
       const props = JSON.parse(data.props);
       for (let prop of props) {
-        await ProductPropMapping.create({
+        await ProductPropModel.create({
           name: prop.name,
           value: prop.value,
           productId: product.id,
@@ -346,7 +346,7 @@ class Product {
   }
 
   async deleteProduct(id: number | string) {
-    const product = await ProductMapping.findByPk(id);
+    const product = await ProductModel.findByPk(id);
     if (!product) {
       throw new Error("Товар не найден в БД");
     }
@@ -356,7 +356,7 @@ class Product {
     }
     // удаляем Хар-ки Товара
     if (product.prop) {
-      ProductPropMapping.destroy({ where: { productId: id } });
+      ProductPropModel.destroy({ where: { productId: id } });
     }
     await product.destroy();
     return product;
@@ -364,9 +364,9 @@ class Product {
 
   // TODO: это вообще используется?
   async isExistProduct(id: number) {
-    const basket = await ProductMapping.findByPk(id);
+    const basket = await ProductModel.findByPk(id);
     return basket;
   }
 }
 
-export default new Product();
+export default new ProductService();

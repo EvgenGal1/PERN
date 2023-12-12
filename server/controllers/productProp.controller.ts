@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import AppError from "../error/ApiError";
 import ProductPropService from "../services/productProp.service";
 
-class ProductProp {
+class ProductPropController {
   async getAllProdProp(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.productId) {
@@ -96,4 +96,4 @@ class ProductProp {
   }
 }
 
-export default new ProductProp();
+export default new ProductPropController();

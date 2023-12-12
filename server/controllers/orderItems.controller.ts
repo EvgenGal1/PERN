@@ -7,7 +7,7 @@ import AppError from "../error/ApiError";
 // import UserService from "../services/user.service";
 import OrderItemsService from "../services/orderItems.service";
 
-class orderItems {
+class orderItemsController {
   async getAllOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.orderId) {
@@ -99,4 +99,4 @@ class orderItems {
   }
 }
 
-export default new orderItems();
+export default new orderItemsController();

@@ -15,7 +15,7 @@ const maxAge2 = 60 * 60 * 1000 * 24 * 365; // вр.жизни один год
 const signed = true;
 const httpOnly = true;
 
-class User {
+class UserController {
   // любой Пользователь
   // РЕГИСТРАЦИЯ
   async signupUser(req, res, next) {
@@ -244,4 +244,4 @@ class User {
   }
 }
 
-export default new User();
+export default new UserController();

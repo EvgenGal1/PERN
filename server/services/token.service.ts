@@ -1,32 +1,8 @@
-// от ошб.повтор.объяв.перем в блоке
-export {};
-
-// подкл.конфиг.БД для записи получ.данн.в БД
-const { pool } = require("../db");
-const AppError = require("../error/ApiError");
-const { Token } = require("../models/mapping");
+import { Token as TokenModel } from "../models/model";
+import AppError from "../error/ApiError";
 
 // подкл.ф.контролера для генерац.web токена
 const jwt = require("jsonwebtoken");
-
-// fn генер.токена + Роль(по умолч.присвойка из User). по. Порядок - формат с fronta, back генер.,возвращ.токен, сохр на front(coocki,LS), front вход.на auth(в header добав.токен), back валид.по секрет.key
-// const generateJwt = (payload) => {
-//   // подписываем передан.парам.
-//   return jwt.sign(
-//     // payload(центр.часть токена) данн.польз.
-//     // { id, username, email, role },
-//     payload,
-//     // проверка валид.ч/з секрет.ключ(в перем.окруж.)
-//     process.env.JWT_ACCESS_SECRET_KEY,
-//     // process.env.JWT_REFRESH_SECRET_KEY,
-//     // опции
-//     {
-//       // вр.раб.токена
-//       expiresIn: "30m",
-//       // expiresIn: "30d",
-//     }
-//   );
-// };
 
 // сохр.токенов по id при регистр/логин
 class TokenService {
@@ -42,7 +18,6 @@ class TokenService {
   }
   validateRefreshToken(token) {
     try {
-      // const userData = jwt.verify(token, process.env.SECRET_KEY);
       const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
       return userData;
     } catch (error) {
@@ -52,7 +27,6 @@ class TokenService {
 
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
   /* async */ generateToken(payload: any) {
-    // const accessToken = generateJwt(payload); // ч/з fn генер.токена
     const accessToken = /* await */ jwt.sign(
       payload,
       process.env.JWT_ACCESS_SECRET_KEY,
@@ -61,7 +35,6 @@ class TokenService {
       }
     );
 
-    // const refreshToken = generateJwt(payload); // ч/з fn генер.токена
     const refreshToken = /* await */ jwt.sign(
       payload,
       process.env.JWT_REFRESH_SECRET_KEY,
@@ -77,13 +50,13 @@ class TokenService {
   async saveToken(userId: number, basketId: number, refreshToken: string) {
     // проверка существ.токена перед сохр.в БД
     // ^ только для одного устр. Заход с др.устр. выбьет первое. Можно сохр по неск.токенов для польз.устр.(обнов.,удал.стар.токенов)
-    const tokenData = await Token.findOne({
+    const tokenData = await TokenModel.findOne({
       where: { userId: userId /* , refreshToken: refreshToken */ },
     });
 
     // е/и нашлось перезапис refresh
     if (tokenData) {
-      await Token.update(
+      await TokenModel.update(
         { refreshToken },
         { where: { userId: userId, basketId: basketId } }
       );
@@ -95,7 +68,7 @@ class TokenService {
     }
 
     // СОЗД.НОВ.ТОКЕН
-    const token = await Token.create({
+    const token = await TokenModel.create({
       userId: userId,
       basketId: basketId,
       refreshToken: refreshToken,
@@ -107,7 +80,7 @@ class TokenService {
 
   // Удален.REFRESH из БД
   async removeToken(refreshToken: string) {
-    const tokenData = await Token.destroy({
+    const tokenData = await TokenModel.destroy({
       where: { refreshToken: refreshToken },
     });
 
@@ -116,7 +89,7 @@ class TokenService {
 
   // Поиск REFRESH токена в БД
   async findToken(refreshToken: string) {
-    const tokenData = await Token.findOne({
+    const tokenData = await TokenModel.findOne({
       where: { refreshToken: refreshToken },
     });
 

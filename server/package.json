@@ -13,11 +13,7 @@
   ],
   "scripts": {
     "start": "node index.ts",
-    "server": "nodemon index.ts",
-    "start_UTV": "node PERN.ts",
-    "server_UTV": "nodemon PERN.ts",
-    "start_Tok": "node index.js",
-    "server_Tok": "nodemon index.js"
+    "server": "nodemon index.ts"
   },
   "dependencies": {
     "@types/express": "^4.17.17",
