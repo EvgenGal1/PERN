@@ -36,7 +36,7 @@ const User = sequelize.define(
           return User.max("id").then((maxId) => {
             user.id = maxId ? maxId + 1 : 1;
             user.username =
-              "БезИмённый__" + user.id + "--" + user.email.split("@")[0] + "";
+              "БезИмённый_" + user.id + "--" + user.email.split("@")[0] + "";
           });
         }
       },

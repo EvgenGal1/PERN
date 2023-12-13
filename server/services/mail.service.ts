@@ -4,7 +4,9 @@ export {};
 // раб.с почтой
 const nodemailer = require("nodemailer");
 
-// ! UTVJWT
+import AppError from "../error/ApiError";
+
+// ! врем.откл.в UserService > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password
 class MailService {
   transporter: any;
 
@@ -15,6 +17,8 @@ class MailService {
       // ^ host - почт.сервис отправки, port - порт почт.сервис, service - почт.сервис обраб., secure`безопасный` для SSL, аунтетиф. - объ.со св-ми)
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
+      service: process.env.SMTP_SERVICE,
+      secure: process.env.SMTP_SECURE,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -86,16 +90,20 @@ class MailService {
     };
 
     try {
-      /* await */ this.transporter.sendMail({
+      await this.transporter.sendMail({
         // ^ from - адр.Отправителя, to - email Получателей, subject - тема смс, text - тескт смс, html - текст в HTML, attachments - файлы
-        from: process.env.SMTP_USER,
+        from: `"EvGen Gal " ${process.env.SMTP_USER}`,
         to: to,
         subject: "Активация акуанта на " + process.env.API_URL_CLN,
         text: message,
         html: HTML_TEMPLATE(message),
       });
-    } catch (error) {
-      throw new Error("Письмо не отправилось");
+    } catch (error: any) {
+      const errorMessage = error.message.split("\n")[0];
+      return AppError.badRequest(
+        `Письмо не отправилось на ${to}`,
+        errorMessage
+      );
     }
   }
 }

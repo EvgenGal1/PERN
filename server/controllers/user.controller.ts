@@ -8,9 +8,11 @@ import UserDto from "../dtos/user.dto";
 // services
 import UserService from "../services/user.service";
 import TokenService from "../services/token.service";
+// модели данных табл.
+import { User as UserModel } from "../models/model";
 
 // перем.cookie. // ^ domain - управ.поддомен.использования, path - маршр.действ., maxAge - вр.жизни, secure - только по HTTPS, httpOnly - измен.ток.ч/з SRV, signed - подписан
-const maxAge1 = 60 * 60 * 1000 * 24 * 30;
+const maxAge1 = 60 * 60 * 1000 * 24 * 30; // вр.жизни 1 месяц
 const maxAge2 = 60 * 60 * 1000 * 24 * 365; // вр.жизни один год
 const signed = true;
 const httpOnly = true;
@@ -36,13 +38,17 @@ class UserController {
       const { email, password, role = "USER" } = req.body;
 
       // проверка отсутств.user/password
-      if (!email) throw next(AppError.badRequest("Пустой email"));
-      if (!password) throw next(AppError.badRequest("Пустой пароль"));
+      if (!email) return next(AppError.badRequest("Пустой email"));
+      if (!password) return next(AppError.badRequest("Пустой пароль"));
 
       // передача данн.в fn для Service (возвращ.data - ссыл.актив, 2 токена, данн.польз., смс)
       const userData = await UserService.signupUser(email, password);
       // обраб.ошб.
       if ("errors" in userData) {
+        const user = await UserModel.findOne({ where: { email } });
+        if (user) {
+          await UserService.deleteUser(user.id);
+        }
         return next(AppError.badRequest(userData.message, userData.errors));
       }
 
@@ -61,7 +67,17 @@ class UserController {
       const data = { tokens };
       return res.json(data);
     } catch (error) {
-      return next(AppError.badRequest(error.message));
+      const { email } = req.body;
+      const user = await UserModel.findOne({ where: { email } });
+      if (user) {
+        await UserService.deleteUser(user.id);
+      }
+      return next(
+        AppError.badRequest(
+          `Не CNTRL удалось зарегистрироваться`,
+          error.message
+        )
+      );
     }
   }
   // АВТОРИЗАЦИЯ

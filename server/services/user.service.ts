@@ -7,6 +7,7 @@ const uuid = require("uuid");
 import AppError from "../error/ApiError";
 // выборка полей
 import UserDto from "../dtos/user.dto";
+// модели данных табл.
 import { User as UserModel } from "../models/model";
 // serv разные
 import BasketService from "../services/basket.service";
@@ -36,15 +37,21 @@ class UserService {
       let activationLink = uuid.v4();
       let activationLinkPath = `${process.env.API_URL_CLN}/api/user/activate/${activationLink}`;
 
+      // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
+      // ! врем.откл. > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password
+      // const mail = await MailService.sendActionMail(email, activationLinkPath);
+      // if (!mail || mail.errors) {
+      //   console.log("U.serv mail.errors : ", mail.errors);
+      //   const errorMessage = mail.message.split("\n")[0];
+      //   return AppError.badRequest(errorMessage, mail.errors);
+      // }
+
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
       const user = await UserModel.create({
         email,
         password: hashPassword,
         activationLink,
       });
-
-      // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
-      await MailService.sendActionMail(email, activationLinkPath);
 
       // выборка полей(~3шт.) для FRONT (new - созд.экземпляр класса)
       const userDto = new UserDto(user);
@@ -69,7 +76,7 @@ class UserService {
       return { tokens: tokens, basketId: basket.id };
     } catch (error) {
       return AppError.badRequest(
-        `НЕ SRV ERR удалось зарегистрироваться`,
+        `Не удалось зарегистрироваться`,
         error.message
       );
     }

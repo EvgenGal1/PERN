@@ -27,8 +27,8 @@ const PORT = process.env.PORT_PERN || 5000;
 
 // созд.server
 const app = express();
-// добав.cookieParser
-app.use(cookieParser());
+// добав.cookieParser // ! ошб. - "cookieParser(\"secret\") required for signed cookies"
+// app.use(cookieParser());
 // совмес.использ.ресурсов м/у источниками. cors>взаимодейств.server-браузер + разрешить cookie от клиента
 app.use(
   cors(

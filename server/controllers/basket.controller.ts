@@ -5,6 +5,7 @@ const maxAge = 60 * 60 * 1000 * 24 * 365; // один год
 const signed = true;
 
 class BasketController {
+  // добавить
   async appendBasket(req, res, next) {
     try {
       let basketId: number;
@@ -28,6 +29,7 @@ class BasketController {
     }
   }
 
+  // получить одну
   async getOneBasket(req, res, next) {
     try {
       let basket;
@@ -45,6 +47,7 @@ class BasketController {
     }
   }
 
+  // увеличение
   async incrementBasket(req, res, next) {
     try {
       let basketId;
@@ -67,6 +70,7 @@ class BasketController {
     }
   }
 
+  // уменьшение
   async decrementBasket(req, res, next) {
     try {
       let basketId;
@@ -89,6 +93,7 @@ class BasketController {
     }
   }
 
+  // очистка
   async clearBasket(req, res, next) {
     try {
       let basketId;

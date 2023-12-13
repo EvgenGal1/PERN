@@ -8,7 +8,7 @@ class ApiError extends Error {
   errors?: any;
 
   // в парам.приним. стат.код, смс, ошб.(по умолч.масс.пуст)
-  constructor(status: number, message: string, errors = [] || "") {
+  constructor(status: number, message: string, errors: any = [] || "") {
     // вызов.род.констр. с передачей смс
     super();
     // super(message); // ! не раб. формат или присвойка без указания
