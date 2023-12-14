@@ -1,7 +1,10 @@
-import AppError from "../error/ApiError";
+// табл.
 import { Basket as BasketModel } from "../models/model";
 import { Product as ProductModel } from "../models/model";
 import { BasketProduct as BasketProductModel } from "../models/model";
+// утилиты/helpы/ошб.
+import DatabaseUtils from "../utils/database.utils";
+import AppError from "../error/ApiError";
 
 const pretty = (basket) => {
   const data: any = {};
@@ -50,10 +53,18 @@ class BasketService {
 
   async createBasket(userId?: any) {
     try {
+      // `получить наименьший доступный идентификатор` из табл.БД
+      const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable(
+        "basket"
+      );
       let returned: any = {};
       // при передаче userId созд. Корзину с привязкой к User (Регистр User)
-      if (userId) returned = await BasketModel.create({ userId: userId });
-      else returned = await BasketModel.create();
+      if (userId)
+        returned = await BasketModel.create({
+          id: smallestFreeId,
+          userId: userId,
+        });
+      else returned = await BasketModel.create({ id: smallestFreeId });
 
       return pretty(returned);
     } catch (error) {
