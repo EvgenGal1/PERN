@@ -16,7 +16,7 @@ class BrandController {
   async getOneBrand(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id бренда");
+        throw new Error("Не указан id Бренда");
       }
       const brand = await BrandService.getOneBrand(req.params.id);
       res.json(brand);
@@ -37,7 +37,7 @@ class BrandController {
   async updateBrand(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id бренда");
+        throw new Error("Не указан id Бренда");
       }
       const brand = await BrandService.updateBrand(req.params.id, req.body);
       res.json(brand);
@@ -49,7 +49,7 @@ class BrandController {
   async deleteBrand(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id бренда");
+        throw new Error("Не указан id Бренда");
       }
       const brand = await BrandService.deleteBrand(req.params.id);
       res.json(brand);

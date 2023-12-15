@@ -17,6 +17,10 @@ class BrandService {
 
   async createBrand(data) {
     const { name } = data;
+    const exist = await BrandModel.findOne({ where: { name } });
+    if (exist) {
+      throw new Error("Бренд уже есть");
+    }
     const brand = await BrandModel.create({ name });
     return brand;
   }

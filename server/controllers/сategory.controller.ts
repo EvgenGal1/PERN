@@ -16,7 +16,7 @@ class CategoryController {
   async getOneCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id категории");
+        throw new Error("Не указан id Категории");
       }
       const category = await CategoryService.getOneCategory(req.params.id);
       res.json(category);
@@ -28,7 +28,7 @@ class CategoryController {
   async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.body.name) {
-        throw new Error("Нет названия категории");
+        throw new Error("Нет названия Категории");
       }
       const category = await CategoryService.createCategory(req.body);
       res.json(category);
@@ -40,10 +40,10 @@ class CategoryController {
   async updateCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id категории");
+        throw new Error("Не указан id Категории");
       }
       if (!req.body.name) {
-        throw new Error("Нет названия категории");
+        throw new Error("Нет названия Категории");
       }
       const category = await CategoryService.updateCategory(
         req.params.id,
@@ -58,7 +58,7 @@ class CategoryController {
   async deleteCategory(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id категории");
+        throw new Error("Не указан id Категории");
       }
       const category = await CategoryService.deleteCategory(req.params.id);
       res.json(category);

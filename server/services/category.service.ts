@@ -19,7 +19,7 @@ class CategoryService {
     const { name } = data;
     const exist = await CategoryModel.findOne({ where: { name } });
     if (exist) {
-      throw new Error("Такая категория уже есть");
+      throw new Error("Категория уже есть");
     }
     const category = await CategoryModel.create({ name });
     return category;

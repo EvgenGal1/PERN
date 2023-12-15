@@ -1,4 +1,4 @@
-// ^ DTO - data trensfer object | `объект передачи данных`
+// ^ DTO - data trensfer object | `объект передачи данных` | выборка полей
 
 // разреш.поля для FRONT
 /* module.exports = */ class UserDto {
