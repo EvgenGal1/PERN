@@ -990,7 +990,8 @@ div:has(> .inpt--eg) {
   &:has(.err-inpt) {
     &::after {
       content: "⚠";
-      top: calc(50% - 25px);
+      top: calc(50% - 17px);
+      top: 9px;
       right: 25px;
       color: red;
       // top: 4px;
@@ -1002,6 +1003,7 @@ div:has(> .inpt--eg) {
     &::after {
       content: "✓";
       top: calc(50% - 10px);
+      top: 9px;
       right: 20px;
       color: green;
     }

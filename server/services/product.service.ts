@@ -1,5 +1,3 @@
-import Op from "sequelize";
-import AppError from "../error/ApiError";
 import {
   Product as ProductModel,
   ProductProp as ProductPropModel,
@@ -8,6 +6,7 @@ import {
   Rating as RatingModel,
 } from "../models/model";
 import FileService from "./file.service";
+import AppError from "../error/ApiError";
 
 // Типы данных
 interface Products {
