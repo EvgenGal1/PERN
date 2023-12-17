@@ -3,16 +3,17 @@ const bcrypt = require("bcryptjs");
 // подкл.генир.уник.рандом.id
 const uuid = require("uuid");
 
-// обраб.ошб.
-import AppError from "../error/ApiError";
-// выборка полей
-import UserDto from "../dtos/user.dto";
-// модели данных табл.
+// модель данных табл.User
 import { User as UserModel } from "../models/model";
 // serv разные
 import BasketService from "../services/basket.service";
 import TokenService from "../services/token.service";
 import MailService from "../services/mail.service";
+import RoleService from "../services/role.service";
+// утилиты/helpы/обраб.ошб./dto
+import AppError from "../error/ApiError";
+import UserDto from "../dtos/user.dto";
+import DatabaseUtils from "../utils/database.utils";
 
 // перем.степень шифр.
 const hashSync = 5;
@@ -20,7 +21,7 @@ const hashSync = 5;
 class UserService {
   // любой Пользователь
   // РЕГИСТРАЦИЯ
-  async signupUser(email: string, password: string) {
+  async signupUser(email: string, password: string, role: string = "USER") {
     try {
       const eml = await UserModel.findOne({ where: { email } });
       if (eml) {
@@ -38,7 +39,7 @@ class UserService {
       let activationLinkPath = `${process.env.API_URL_CLN}/api/user/activate/${activationLink}`;
 
       // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
-      // ! врем.откл. > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password
+      // ! врем.откл. > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password ~~ настр.доступ.почт
       // const mail = await MailService.sendActionMail(email, activationLinkPath);
       // if (!mail || mail.errors) {
       //   console.log("U.serv mail.errors : ", mail.errors);
@@ -46,33 +47,41 @@ class UserService {
       //   return AppError.badRequest(errorMessage, mail.errors);
       // }
 
+      // `получить наименьший доступный идентификатор` из табл.БД
+      const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable("user");
+
+      // объ.перед.данн.>id/username/email/role
+      const userDto = new UserDto({
+        id: smallestFreeId,
+        email,
+        role,
+      });
+
       // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
       const user = await UserModel.create({
-        email,
+        ...userDto,
         password: hashPassword,
         activationLink,
       });
 
-      // выборка полей(~3шт.) для FRONT (new - созд.экземпляр класса)
-      const userDto = new UserDto(user);
+      // привязка/провер. существующей роли пользователю
+      const roles = await RoleService.assignUserRole(user.id, role);
+      if (!roles || roles === null || roles.errors) {
+        return AppError.badRequest("НЕ удалось записать Роль");
+      }
 
-      // созд./получ. 2 токена. Разворач.нов.объ.
-      const tokens = TokenService.generateToken({ ...userDto });
+      // перем.Имя Польз.
+      const username = user.username;
+      // созд./получ. 2 токена. email/role
+      const tokens = TokenService.generateToken({ email, username, role });
 
       // созд.Корзину по User.id
       const basket = await BasketService.createBasket(user.id);
 
       // сохр.refresh в БД
-      await TokenService.saveToken(userDto.id, basket.id, tokens.refreshToken);
+      await TokenService.saveToken(user.id, basket.id, tokens.refreshToken);
 
-      // возвращ.data - ссыл.актив, 2 токена(с данн.польз.), смс, id basket
-      // const dataServ = {
-      // activationLinkPath,
-      // message: `Пользователь c <${email}> создан и зарегистрирован. ID_${user.id}_${user.role}`,
-      //   tokens: tokens,
-      //   basketId: basket.id,
-      // };
-      // return dataServ;
+      // возвращ.tokens/basket.id
       return { tokens: tokens, basketId: basket.id };
     } catch (error) {
       return AppError.badRequest(

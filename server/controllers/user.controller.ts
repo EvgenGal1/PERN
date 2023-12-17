@@ -42,7 +42,7 @@ class UserController {
       if (!password) return next(AppError.badRequest("Пустой пароль"));
 
       // передача данн.в fn для Service (возвращ.data - ссыл.актив, 2 токена, данн.польз., смс)
-      const userData = await UserService.signupUser(email, password);
+      const userData = await UserService.signupUser(email, password, role);
       // обраб.ошб.
       if ("errors" in userData) {
         const user = await UserModel.findOne({ where: { email } });

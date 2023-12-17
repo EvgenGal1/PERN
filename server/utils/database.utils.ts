@@ -3,6 +3,7 @@ import {
   User as UserModel,
   Token as TokenModel,
   Role as RoleModel,
+  UserRole as UserRoleModel,
   Basket as BasketModel,
 } from "../models/model";
 
@@ -15,6 +16,7 @@ class DatabaseUtils {
     if (tableName === "user") model = UserModel;
     else if (tableName === "token") model = TokenModel;
     else if (tableName === "role") model = RoleModel;
+    else if (tableName === "userrole") model = UserRoleModel;
     else if (tableName === "basket") model = BasketModel;
     else throw new Error("Неверное название таблицы");
     // req.составной
