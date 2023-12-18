@@ -20,12 +20,13 @@ const BasketList = observer(() => {
 
   const navigate = useNavigate();
 
-  // ! заглушка/загрузка данн.корзины. Магиет пустая корзина
+  // ! заглушка/загрузка данн.корзины. Мигает пустая корзина
   // ^ решил - использ.доп.условн.рендер (fetching)
   useEffect(() => {
     fetchBasket()
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (fetching) {

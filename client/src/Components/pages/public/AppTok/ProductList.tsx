@@ -19,7 +19,9 @@ const ProductList = observer(() => {
   const [productsFetching, setProductsFetching] = useState(true);
 
   // врем.заглушки для PaginSortLimit
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fetching, setFetching] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [change, setChange] = useState(false);
 
   useEffect(() => {

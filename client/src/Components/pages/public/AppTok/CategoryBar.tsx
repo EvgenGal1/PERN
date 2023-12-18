@@ -54,6 +54,7 @@ const CategoryBar = observer(() => {
       };
 
       fetchData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
   }
 

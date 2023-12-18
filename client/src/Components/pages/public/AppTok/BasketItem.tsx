@@ -6,14 +6,14 @@ const BasketItem = (props: any) => {
       <td className="tac">
         <button
           onClick={() => props.decrement(props.id)}
-          className="btn--eg btn-success--eg tb-cl"
+          className="btn--eg btn-danger--eg tb-cl"
         >
           -
         </button>{" "}
         <strong className="plr-2">{props.quantity}</strong>{" "}
         <button
           onClick={() => props.increment(props.id)}
-          className="btn--eg btn-danger--eg tb-cl"
+          className="btn--eg btn-success--eg tb-cl"
         >
           +
         </button>
