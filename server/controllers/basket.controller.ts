@@ -38,6 +38,7 @@ class BasketController {
           parseInt(req.signedCookies.basketId)
         );
       } else {
+        // ! пересмотр.лог.по созд.
         basket = await BasketService.createBasket();
       }
       res.cookie("basketId", basket.id, { maxAge, signed });
@@ -52,6 +53,7 @@ class BasketController {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
+        // ! пересмотр.лог.по созд.
         let created = await BasketService.createBasket();
         basketId = created.id;
       } else {

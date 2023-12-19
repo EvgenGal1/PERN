@@ -15,6 +15,33 @@ class RoleService {
     }
     return role;
   }
+  // получ.привязку UserRole
+  async getOneUserRole(id: number, param?: string) {
+    try {
+      // перем.Привязки
+      let userRole;
+      // определение привязки
+      if (param.includes("user")) {
+        userRole = await UserRoleModel.findOne({ where: { user_id: id } });
+      } else if (param.includes("role")) {
+        userRole = await RoleModel.findOne({ where: { roleId: id } });
+      } else if (param.includes("value")) {
+        userRole = await RoleModel.findOne({ where: { level: id } });
+      } else {
+        userRole = await RoleModel.findOne(id);
+      }
+      if (!userRole) {
+        throw new Error("Роль не найден в БД");
+      }
+      return userRole;
+    } catch (error) {
+      const errorMessage = error.message.split("\n")[0];
+      return AppError.badRequest(
+        `НЕ удалось записать Роли ${error}`,
+        errorMessage
+      );
+    }
+  }
 
   // `назначать` неск.Польз. неск.Ролей
   async assignUserRole(userId, roleParam, level = 1) {

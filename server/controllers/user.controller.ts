@@ -1,15 +1,17 @@
 // подкл. валидацию
 const { validationResult } = require("express-validator");
 
+// модели данных табл.
+import { User as UserModel } from "../models/model";
+// services
+import UserService from "../services/user.service";
+import TokenService from "../services/token.service";
+import RoleService from "../services/role.service";
 // обраб.ошб.
 import AppError from "../error/ApiError";
 // выборка полей
 import UserDto from "../dtos/user.dto";
-// services
-import UserService from "../services/user.service";
-import TokenService from "../services/token.service";
-// модели данных табл.
-import { User as UserModel } from "../models/model";
+import TokenDto from "../dtos/token.dto";
 
 // перем.cookie. // ^ domain - управ.поддомен.использования, path - маршр.действ., maxAge - вр.жизни, secure - только по HTTPS, httpOnly - измен.ток.ч/з SRV, signed - подписан
 const maxAge1 = 60 * 60 * 1000 * 24 * 30; // вр.жизни 1 месяц
@@ -155,8 +157,29 @@ class UserController {
     const user = await UserService.getOneUser(req.auth.id);
     const activated = user.isActivated;
 
-    const userDto = new UserDto(user);
-    const tokens = TokenService.generateToken({ ...userDto });
+    // провер.существ.Роли пользователя
+    const userRoles = await RoleService.getOneUserRole(user.id, "user");
+    // опред.Роли User
+    let roleUs: string;
+    if (userRoles.roleId === 1) {
+      roleUs = "USER";
+    } else if (userRoles.roleId === 2) {
+      roleUs = "ADMIN";
+    } else if (!userRoles || userRoles === null || userRoles.errors) {
+      // привязка.существ.Роли пользователя
+      await RoleService.assignUserRole(user.id, "USER");
+      roleUs = "USER";
+    }
+    // объ.перед.данн.> Роли > email/username/role/level
+    const tokenDto = new TokenDto({
+      email: user.email,
+      username: user.username,
+      role: roleUs,
+      level: userRoles.level,
+    });
+
+    // созд./получ. 2 токена. email/role
+    const tokens = TokenService.generateToken({ ...tokenDto });
     const token = tokens.accessToken;
 
     return res.json({ token, activated });

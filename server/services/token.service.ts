@@ -1,5 +1,6 @@
 import { Token as TokenModel } from "../models/model";
 import AppError from "../error/ApiError";
+import DatabaseUtils from "../utils/database.utils";
 
 // подкл.ф.контролера для генерац.web токена
 const jwt = require("jsonwebtoken");
@@ -67,8 +68,12 @@ class TokenService {
       return tokenData.save();
     }
 
+    // `получить наименьший доступный идентификатор` из табл.БД
+    const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable("user");
+
     // СОЗД.НОВ.ТОКЕН
     const token = await TokenModel.create({
+      id: smallestFreeId,
       userId: userId,
       basketId: basketId,
       refreshToken: refreshToken,

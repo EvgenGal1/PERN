@@ -13,6 +13,7 @@ import RoleService from "../services/role.service";
 // утилиты/helpы/обраб.ошб./dto
 import AppError from "../error/ApiError";
 import UserDto from "../dtos/user.dto";
+import TokenDto from "../dtos/token.dto";
 import DatabaseUtils from "../utils/database.utils";
 
 // перем.степень шифр.
@@ -64,16 +65,28 @@ class UserService {
         activationLink,
       });
 
-      // привязка/провер. существующей роли пользователю
-      const roles = await RoleService.assignUserRole(user.id, role);
-      if (!roles || roles === null || roles.errors) {
+      // привязка.существ.Роли пользователя
+      const userRoles = await RoleService.assignUserRole(user.id, role);
+      if (!userRoles || userRoles === null || userRoles.errors) {
         return AppError.badRequest("НЕ удалось записать Роль");
       }
 
-      // перем.Имя Польз.
-      const username = user.username;
+      // опред.Роли User
+      let roleUs: string;
+      if (userRoles.roleId === 1) {
+        roleUs = "USER";
+      }
+
+      // объ.перед.данн.> Роли > email/username/role/level
+      const tokenDto = new TokenDto({
+        email,
+        username: user.username,
+        role: roleUs,
+        level: userRoles.level,
+      });
+
       // созд./получ. 2 токена. email/role
-      const tokens = TokenService.generateToken({ email, username, role });
+      const tokens = TokenService.generateToken({ ...tokenDto });
 
       // созд.Корзину по User.id
       const basket = await BasketService.createBasket(user.id);
@@ -98,27 +111,50 @@ class UserService {
       if (!user) {
         return AppError.badRequest(`Пользователь с Email <${email}> не найден`);
       }
-
-      // проверка `сравнивания` пароля с шифрованым
+      // `сравнивания` пароля с шифрованым
       let comparePassword = bcrypt.compareSync(password, user.password);
       if (!comparePassword) {
         return AppError.badRequest("Указан неверный пароль");
       }
 
-      const userDto = new UserDto(user);
+      // провер.существ.Роли пользователя
+      const userRoles = await RoleService.getOneUserRole(user.id, "user");
+      if (!userRoles || userRoles === null || userRoles.errors) {
+        return AppError.badRequest("НЕ удалось записать Роль");
+      }
 
-      const tokens = TokenService.generateToken({ ...userDto });
+      // опред.Роли User
+      let roleUs: string;
+      if (userRoles.roleId === 1) {
+        roleUs = "USER";
+      } else if (userRoles.roleId === 2) {
+        roleUs = "ADMIN";
+      } else if (!userRoles || userRoles === null || userRoles.errors) {
+        // привязка.существ.Роли пользователя
+        await RoleService.assignUserRole(user.id, "USER");
+        roleUs = "USER";
+      }
 
-      // ! костыль 1.1. получ./созд. basket по userId
-      const userId = userDto.id;
-      const basket = await BasketService.getOneBasket(null, userId);
+      // объ.перед.данн.> Роли > email/username/role/level
+      const tokenDto = new TokenDto({
+        email,
+        username: user.username,
+        role: roleUs,
+        level: userRoles.level,
+      });
+      // созд./получ. 2 токена. email/role
+      const tokens = TokenService.generateToken({ ...tokenDto });
 
-      await TokenService.saveToken(userDto.id, basket.id, tokens.refreshToken);
+      // получ.basket_id
+      const basketId = await BasketService.getOneBasket(null, user.id);
+
+      // сохр.refreshToken > user_id и basket_id
+      await TokenService.saveToken(user.id, basketId, tokens.refreshToken);
 
       return {
-        // message: `Зашёл ${user.username} <${email}>. ID_${user.id}_${user.role}`,
+        // message: `Зашёл ${user.username} <${email}>. ID_${user.id}_${roleUs}`,
         tokens: tokens,
-        basketId: basket.id,
+        basketId: basketId,
         activated: user.isActivated,
       };
     } catch (error) {
@@ -160,16 +196,32 @@ class UserService {
       // вытаск.польз.с БД по ID
       const user = await UserModel.findByPk(userData.id);
 
-      const userDto = new UserDto(user);
+      // провер.существ.Роли пользователя
+      const userRoles = await RoleService.getOneUserRole(user.id, "user");
 
-      const tokens = TokenService.generateToken({ ...userDto });
+      // опред.Роли User
+      let roleUs: string;
+      if (userRoles.roleId === 1) {
+        roleUs = "USER";
+      }
 
-      const basket = await BasketService.getOneBasket(userDto.id);
+      // объ.перед.данн.> Роли > email/username/role/level
+      const tokenDto = new TokenDto({
+        email: user.email,
+        username: user.username,
+        role: roleUs,
+        level: userRoles.level,
+      });
 
-      await TokenService.saveToken(userDto.id, basket.id, tokens.refreshToken);
+      // созд./получ. 2 токена. email/role
+      const tokens = TokenService.generateToken({ ...tokenDto });
+
+      const basketId = await BasketService.getOneBasket(null, user.id);
+
+      await TokenService.saveToken(user.id, basketId, tokens.refreshToken);
 
       return {
-        message: `ПЕРЕЗАПИСЬ ${userDto.username} <${userDto.email}>. ID_${user.id}_${user.role}`,
+        message: `ПЕРЕЗАПИСЬ ${user.username} <${user.email}>. ID_${user.id}_${roleUs}`,
         tokens: tokens,
       };
     } catch (error) {
@@ -222,6 +274,7 @@ class UserService {
     const {
       email = user.email,
       password = user.password,
+      // ! заменить на роль из UserRoles
       role = user.role,
     } = data;
     await user.update({ email, password, role });

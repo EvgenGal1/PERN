@@ -26,26 +26,21 @@ const pretty = (basket) => {
 class BasketService {
   async getOneBasket(basketId: number | null, userId?: number) {
     try {
-      // ! костыль 1.1. получ./созд. basket по userId, либо получ.по basketId с Товарами
-      let returned: any = {};
-      if (userId) {
-        returned = await BasketModel.findByPk(basketId, {
+      // получ.basket_id
+      if (basketId == null && userId) {
+        const idBasket = await BasketModel.findOne({
           where: { userId: userId },
         });
-
-        if (!returned) returned = await BasketModel.create();
-
-        return returned;
-      } else if (basketId) {
-        returned = await BasketModel.findByPk(basketId, {
-          attributes: ["id"],
-          include: [
-            { model: ProductModel, attributes: ["id", "name", "price"] },
-          ],
-        });
+        return idBasket.id;
       }
 
-      return pretty(returned);
+      // получ. basket с product
+      const basketProd = await BasketModel.findByPk(basketId, {
+        attributes: ["id"],
+        include: [{ model: ProductModel, attributes: ["id", "name", "price"] }],
+      });
+
+      return pretty(basketProd);
     } catch (error) {
       return AppError.badRequest(`Корзина не получена`, error.message);
     }
@@ -59,12 +54,22 @@ class BasketService {
       );
       let returned: any = {};
       // при передаче userId созд. Корзину с привязкой к User (Регистр User)
-      if (userId)
+      if (userId) {
         returned = await BasketModel.create({
           id: smallestFreeId,
           userId: userId,
         });
-      else returned = await BasketModel.create({ id: smallestFreeId });
+      } else {
+        return AppError.badRequest(
+          `для Корзины не передан userId`,
+          "НЕТ userId"
+        );
+        // ! прописать для всех createBasket передачу/подтягивание user_id убрав лишн.код с if/else
+        returned = await BasketModel.create({
+          id: smallestFreeId,
+          userId: userId,
+        });
+      }
 
       return pretty(returned);
     } catch (error) {
