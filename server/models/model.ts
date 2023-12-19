@@ -64,7 +64,7 @@ const Token = sequelize.define("token", {
   },
   // `обновлять` токен созд.в БД
   refreshToken: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(300),
     // required: true
   },
   // ipАдрес входа, `Отпечаток пальца` браузера,..

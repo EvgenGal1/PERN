@@ -77,8 +77,9 @@ class UserService {
         roleUs = "USER";
       }
 
-      // объ.перед.данн.> Роли > email/username/role/level
+      // объ.перед.данн.> Роли > id/email/username/role/level
       const tokenDto = new TokenDto({
+        id: user.id,
         email,
         username: user.username,
         role: roleUs,
@@ -135,8 +136,9 @@ class UserService {
         roleUs = "USER";
       }
 
-      // объ.перед.данн.> Роли > email/username/role/level
+      // объ.перед.данн.> Роли > id/email/username/role/level
       const tokenDto = new TokenDto({
+        id: user.id,
         email,
         username: user.username,
         role: roleUs,
@@ -205,8 +207,9 @@ class UserService {
         roleUs = "USER";
       }
 
-      // объ.перед.данн.> Роли > email/username/role/level
+      // объ.перед.данн.> Роли > id/email/username/role/level
       const tokenDto = new TokenDto({
+        id: user.id,
         email: user.email,
         username: user.username,
         role: roleUs,
@@ -250,7 +253,9 @@ class UserService {
     try {
       const { email, password, role } = data;
       const check = await UserModel.findOne({ where: { email } });
-      if (check) throw new Error("Пользователь уже существует");
+      if (check)
+        /* throw new Error // ! как-то не так отраб.*/
+        return AppError.badRequest("Пользователь уже существует");
       const user = await UserModel.create({ email, password, role });
       // созд.Корзину по User.id
       if (user.id) await BasketService.createBasket(user.id);
@@ -260,38 +265,63 @@ class UserService {
     }
   }
   async getOneUser(id: number) {
-    const user = await UserModel.findByPk(id);
-    if (!user) throw new Error(`Пользователь по id ${id} не найден в БД`);
-    return user;
+    try {
+      const user = await UserModel.findByPk(id);
+      if (!user)
+        /* throw new Error // ! как-то не так отраб.*/
+        return AppError.badRequest(`Пользователь по id ${id} не найден в БД`);
+      return user;
+    } catch (error) {
+      return AppError.badRequest(`ADMIN createUser не прошёл`, error.message);
+    }
   }
   async getAllUser() {
-    const users = await UserModel.findAll();
-    return users;
+    try {
+      const users = await UserModel.findAll();
+      return users;
+    } catch (error) {
+      return AppError.badRequest(`ADMIN createUser не прошёл`, error.message);
+    }
   }
   async updateUser(id: number, data) {
-    const user = await UserModel.findByPk(id);
-    if (!user) throw new Error("Пользователь не найден в БД");
-    const {
-      email = user.email,
-      password = user.password,
-      // ! заменить на роль из UserRoles
-      role = user.role,
-    } = data;
-    await user.update({ email, password, role });
-    return user;
+    try {
+      const user = await UserModel.findByPk(id);
+      if (!user) return AppError.badRequest("Пользователь не найден в БД");
+      const {
+        email = user.email,
+        password = user.password,
+        // ! заменить на роль из UserRoles
+        role = user.role,
+      } = data;
+      await user.update({ email, password, role });
+      return user;
+    } catch (error) {
+      return AppError.badRequest(`ADMIN createUser не прошёл`, error.message);
+    }
   }
   async deleteUser(id: number) {
-    const user = await UserModel.findByPk(id);
-    if (!user) throw new Error("Пользователь не найден в БД");
-    if (user.id) BasketService.deleteBasket(user.id);
-    await user.destroy();
-    return user;
+    try {
+      const user = await UserModel.findByPk(id);
+      if (!user) return AppError.badRequest("Пользователь не найден в БД");
+      if (user.id) BasketService.deleteBasket(user.id);
+      await user.destroy();
+      return user;
+    } catch (error) {
+      return AppError.badRequest(`ADMIN createUser не прошёл`, error.message);
+    }
   }
   // поиск по email
   async getByEmailUser(email: string) {
-    const user = await UserModel.findOne({ where: { email } });
-    if (!user) throw new Error(`Пользователь с email ${email} не найден в БД`);
-    return user;
+    try {
+      const user = await UserModel.findOne({ where: { email } });
+      if (!user)
+        return AppError.badRequest(
+          `Пользователь с email ${email} не найден в БД`
+        );
+      return user;
+    } catch (error) {
+      return AppError.badRequest(`ADMIN createUser не прошёл`, error.message);
+    }
   }
 }
 

@@ -170,8 +170,9 @@ class UserController {
       await RoleService.assignUserRole(user.id, "USER");
       roleUs = "USER";
     }
-    // объ.перед.данн.> Роли > email/username/role/level
+    // объ.перед.данн.> Роли > id/email/username/role/level
     const tokenDto = new TokenDto({
+      id: user.id,
       email: user.email,
       username: user.username,
       role: roleUs,
