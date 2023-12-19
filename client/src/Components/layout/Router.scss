@@ -285,6 +285,8 @@
 // MAIN (ГЛАВНАЯ) =======================================================================================
 .main {
   width: 100%;
+  // для прижат.footer к низу
+  flex: 1 0 auto;
   // height: 100vh;
   // height: calc(100vh - 248.77px);
   // overflow: hidden;
@@ -306,6 +308,8 @@
   right: 0;
   bottom: 0;
   z-index: 2;
+  // для прижат.footer к низу
+  flex: 0 0 auto;
   // max-width: 1750px;
   .footer-container {
     padding: 1% 3%;
