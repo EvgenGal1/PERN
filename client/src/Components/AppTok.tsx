@@ -1,39 +1,34 @@
+// использ.зависимости/пакеты
 import React, { useState, useContext, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import axios from "axios";
-
+// окружение/API
 import { AppContext } from "./layout/AppTok/AppContext";
-import AppRouterTok from "./layout/AppTok/AppRouterTok";
-import NavBar from "./layout/AppTok/NavBar";
 import { checkUser } from "../http/Tok/userAPI_Tok";
+// гл.Компоненты
+import NavBar from "./layout/AppTok/NavBar";
+import AppRouterTok from "./layout/AppTok/AppRouterTok";
+import { Footer } from "./layout/Footer";
+// доп.Комп.
 import Loader from "./layout/AppTok/Loader";
-
+// стили
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/styles.scss";
 
 const AppTok = observer(() => {
   const { user /* , basket */ }: any = useContext(AppContext);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // checkAuth()
-    //   .then((data) => {
-    //     if (data) {
-    //       user.login(data);
-    //     }
-    //   })
-    //   .finally(() => setUserAuthLoading(false));
-    // fetchBasket()
-    //   .then((data) => (basket.products = data.products))
-    //   .finally(() => setBasketLoading(false));
-    // ^ Promise.all() Запускаем несколько промисов(здесь два) параллельно и ждём, выполнения (получ.данн.с сервера)
+    // ^ Promise.all() Запуск.неск.промисов(здесь два) параллельно и ждём выполнения (получ.данн.с сервера)
     Promise.all([
       checkUser(),
-      // убрал созд.Basket при загр.Глав.стр.
+      // ^ убрал созд.Basket при загр.Глав.стр.
       // fetchBasket()
     ])
       .then(
-        axios.spread((data: /* userData */ /* , basketData */ any) => {
+        axios.spread((data: /* userData | basketData */ any) => {
           console.log("AppTok data ", data);
           // запись user и activated в Store
           if (data.userData) user.login(data.userData);
@@ -53,6 +48,7 @@ const AppTok = observer(() => {
     <BrowserRouter>
       <NavBar />
       <AppRouterTok />
+      <Footer />
     </BrowserRouter>
   );
 });

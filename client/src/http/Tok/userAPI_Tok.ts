@@ -11,6 +11,7 @@ export const signupUser = async (email: string, password: string | any) => {
       email,
       password,
     });
+    console.log("user_API sign response : ", response);
 
     const status = response.status;
 
@@ -22,7 +23,7 @@ export const signupUser = async (email: string, password: string | any) => {
     }
 
     let data = { userTokenAcs, status };
-
+    console.log("user_API sign data : ", data);
     return data;
   } catch (e: any) {
     const status = e.response.status;
@@ -40,6 +41,7 @@ export const loginUser = async (email: string, password: string | any) => {
       email,
       password,
     });
+    console.log("user_API login response : ", response);
 
     const status = response.status;
 
@@ -53,6 +55,7 @@ export const loginUser = async (email: string, password: string | any) => {
     }
 
     let data = { userTokenAcs, status, activated };
+    console.log("user_API login data : ", data);
     return data;
   } catch (e: any) {
     const status = e.response.status;
@@ -69,8 +72,8 @@ export const loginUser = async (email: string, password: string | any) => {
 // refreshUser ч/з плохой ответ с БД (authInstance.interceptors.response в indexAPI)
 // `проверить Пользователя`
 export const checkUser = async () => {
-  let userToken, userData;
   try {
+    let userToken, userData;
     userToken = localStorage.getItem("tokenAccess");
 
     // false е/и tokenAccess нет в LS
@@ -86,6 +89,7 @@ export const checkUser = async () => {
     let activated = response.data.activated;
 
     // возвращ.расшифр.токен и подтверждение почты
+    console.log("user_API check userToken, userData : ", userToken, userData);
     return { userData, activated };
   } catch (e: any) {
     localStorage.removeItem("tokenAccess");

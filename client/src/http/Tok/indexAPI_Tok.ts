@@ -73,6 +73,7 @@ authInstance.interceptors.response.use(
     }
     // если if не отраб., ошб.переброс на верхн.уровень
     // return error;
+    console.log("ind_API RES  error : " + error);
     throw error;
   }
 );

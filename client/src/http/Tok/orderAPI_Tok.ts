@@ -31,13 +31,19 @@ export const adminGetUser = async (id: number) => {
   return data;
 };
 // получить заказ по id
-export const adminGetOne = async (id: number | string | undefined) => {
+export const adminGetOne = async (
+  id: number | string | undefined,
+  str: string
+) => {
+  console.log("ordAPI adm_One id : ", id, str);
   const { data } = await authInstance.get(`order/admin/getone/${id}`);
+  console.log("ordAPI adm_One data : ", data);
   return data;
 };
 // обновить заказ по id
 export const adminUpdate = async (id: number, body: any) => {
   const { data } = await authInstance.put(`order/admin/update/${id}`, body);
+  console.log("ordAPI adm_UPD data : ", data);
   return data;
 };
 // удалить заказ по id
