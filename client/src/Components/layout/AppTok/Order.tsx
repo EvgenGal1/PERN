@@ -173,16 +173,16 @@ const Order = (props: any) => {
         </table>
       </div>
       {/* КНП Редакт./Удалить */}
-      <div className="df df-row mb-3">
+      <div className="df df-row mt-3 mb-3">
         <button
           onClick={() => handleUpdateClick(/* orders. */ id)}
-          className="btn--eg btn-success--eg mt-3"
+          className="btn--eg btn-success--eg"
         >
           Редактировать
         </button>
         <button
           onClick={() => handleDeleteClick(/* orders. */ id)}
-          className="btn--eg btn-danger--eg mt-3 mlr-3"
+          className="btn--eg btn-danger--eg mlr-3"
         >
           Удалить
         </button>

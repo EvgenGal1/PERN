@@ -65,13 +65,13 @@
         text-shadow: 0px 0px 10px rgba(255, 255, 255, 1);
       }
       &:after {
-        color: white;
-        transition: color 0.5s;
-        text-shadow: 0px 0px 10px rgba(204, 204, 204, 1);
+        color: #1e1e1e;
+        transition: color 0.5s 0.2s;
+        text-shadow: 2px 1px 2px #888;
       }
       & + label {
         left: 2px;
-        right: 48px;
+        // right: 48px;
         background: #1e1e1e;
         transition: left 0.5s, right 0.4s 0.2s;
       }
@@ -87,11 +87,10 @@
       &:after {
         color: #1e1e1e;
         transition: color 0.5s 0.2s;
-        text-shadow: 1px 1px 0px rgba(204, 204, 204, 1);
         text-shadow: 2px 1px 2px #888;
       }
       & + label {
-        left: 56px;
+        // left: 56px;
         right: 2px;
         background: white;
         transition: left 0.4s 0.2s, right 0.5s, background 0.35s -0.1s;

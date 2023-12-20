@@ -44,7 +44,9 @@ body {
     var(--off, 80px);
   --width-swit: var(--big, 100px) var(--mid, 95px) var(--small, 90px)
     var(--off, 90px);
-  --height: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
+  --width-btn: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
+    var(--off, 25px);
+  --height-btn: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
     var(--off, 25px);
   --head-pad: var(--big, 0.7%) var(--mid, 0.5%) var(--small, 0.3%)
     var(--off, 0%);
@@ -119,7 +121,7 @@ header {
     &-bottom .menu-bottom__items,
     &-top .menu-top__items {
       width: var(--width);
-      height: var(--height);
+      height: var(--height-btn);
       font-size: var(--font-size-big);
       // font-weight: var(--font-weight);
       // border: var(--border);
@@ -151,24 +153,24 @@ header {
 // ПЕРЕКЛЮЧАТЕЛИ
 // 1х кнп. (доп.меню)
 .sw1btn {
-  height: var(--height);
-  width: var(--height);
+  width: var(--width-btn) !important;
+  height: var(--height-btn) !important;
   label {
     & > span {
-      height: var(--height);
-      width: var(--height);
+      width: var(--width-btn);
+      height: var(--height-btn);
       svg {
-        height: var(--height);
-        width: var(--height);
+        width: var(--width-btn);
+        height: var(--height-btn);
       }
     }
   }
 }
 // 2х кнп. (черно белые)
 #sw2blwh {
-  // height: var(--height);
+  // height: var(--height-btn);
   input {
-    // height: var(--height);
+    // height: var(--height-btn);
     &:before {
       left: var(--sw2blwh-lef) !important;
       font-size: var(--sw2blwh-fo-si);
@@ -188,7 +190,7 @@ header {
 // 3х кнп. (data-theme - Цветовые Темы)
 .sw3btn {
   width: var(--width) !important;
-  height: var(--height) !important;
+  height: var(--height-btn) !important;
   .sw3btn-slider:before {
     font-size: var(--sw3btn-befo);
     top: var(--sw3btn-top);
@@ -205,26 +207,26 @@ header {
 }
 // 4х кнп. (data-size - Размеры)
 .sw4btn {
-  height: var(--height);
-  width: var(--height);
+  width: var(--width-btn);
+  height: var(--height-btn);
   // .sw4btn-rotate {
-  //   height: var(--height);
-  //   width: var(--height);
+  //   width: var(--width-btn);
+  //   height: var(--height-btn);
   // }
   // .sw4btn {
   & > input[type="radio"],
   & i {
-    height: var(--height);
-    width: var(--height);
+    width: var(--width-btn) !important;
+    height: var(--height-btn) !important;
   }
   // !
   & i {
     &:before {
-      box-shadow: var(--sw4btn-box-sh);
+      box-shadow: var(--sw4btn-box-sh) !important;
     }
     &:after {
-      top: calc(50% - var(--sw4btn-top));
-      left: var(--sw4btn-left);
+      top: calc(50% - var(--sw4btn-top)) !important;
+      left: var(--sw4btn-left) !important;
     }
   }
 }
