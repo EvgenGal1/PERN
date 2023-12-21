@@ -31,11 +31,7 @@ export const adminGetUser = async (id: number) => {
   return data;
 };
 // получить заказ по id
-export const adminGetOne = async (
-  id: number | string | undefined,
-  str: string
-) => {
-  console.log("ordAPI adm_One id : ", id, str);
+export const adminGetOne = async (id: number | string | undefined) => {
   const { data } = await authInstance.get(`order/admin/getone/${id}`);
   console.log("ordAPI adm_One data : ", data);
   return data;
