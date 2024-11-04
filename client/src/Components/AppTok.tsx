@@ -7,6 +7,7 @@ import axios from "axios";
 import { AppContext } from "./layout/AppTok/AppContext";
 import { checkUser } from "../http/Tok/userAPI_Tok";
 // гл.Компоненты
+import { Header } from "./layout/vr/AppStar/Header";
 import NavBar from "./layout/AppTok/NavBar";
 import AppRouterTok from "./layout/AppTok/AppRouterTok";
 import { Footer } from "./layout/Footer";
@@ -46,6 +47,7 @@ const AppTok = observer(() => {
 
   return (
     <BrowserRouter>
+      <Header />
       <NavBar />
       <AppRouterTok />
       <Footer />
