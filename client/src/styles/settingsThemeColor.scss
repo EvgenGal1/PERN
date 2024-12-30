@@ -184,21 +184,6 @@ body[data-theme="light"] {
         background-color: var(--act-bg-hov);
       }
     }
-    form {
-      background-color: var(--ui-bg);
-      input {
-        &:hover {
-          background-color: var(--act-bg-hov);
-        }
-      }
-      button {
-        color: var(--act-light);
-        background-color: var(--act-dark);
-        &:hover {
-          // background-color: var(--act-bg-hov);
-        }
-      }
-    }
     button.btn-primary--eg,
     button.btn-success--eg,
     button.btn-danger--eg {
@@ -229,6 +214,23 @@ body[data-theme="light"] {
       &:hover,
       &.active {
         background-color: var(--PinkForest);
+      }
+    }
+
+    // ФОРМЫ
+    form {
+      background-color: var(--ui-bg);
+      input {
+        &:hover {
+          background-color: var(--act-bg-hov);
+        }
+      }
+      button {
+        color: var(--act-light);
+        background-color: var(--act-dark);
+        &:hover {
+          // background-color: var(--act-bg-hov);
+        }
       }
     }
 

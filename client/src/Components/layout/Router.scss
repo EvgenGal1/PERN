@@ -167,117 +167,47 @@
 
 // АНИМАЦИЯ ЛОГОТИПА <logotTip(ЕжеСвет)>˅=============================================================˅
 .header__logo {
-  .header__link {
-    justify-content: flex-start !important;
-  }
-  .header__img {
-    transition: 0.3s ease-out;
-  }
-  h3 {
-    // position: absolute;
-    display: flex;
-    align-items: baseline;
-    width: 0;
-    // height: 0;
-    font-size: 94px; // 57px;
-    line-height: 70px;
-    margin: 0;
-    opacity: 0;
-    visibility: hidden;
-    // transform: translateX(10%);
-    transition: 0.3s ease-out;
-  }
+  position: relative;
   &:hover {
-    animation: logoImgColor 3s linear infinite 0s;
+    .header__img {
+      position: absolute;
+      opacity: 0;
+      visibility: hidden;
+    }
     h3 {
-      // transform: scale(1.2) translateX(0);
-      // transition: 0.5s;
-      width: 100%;
-      // height: auto;
+      position: absolute;
       opacity: 1;
       visibility: visible;
       color: #1857a4;
-
-      animation: /* rotate(45deg) */ logoh3Show 0.5s linear;
+      animation: logoh3Show 0.5s linear;
     }
-    @keyframes logoh3Show {
-      0% {
-        transform: /* scale(1) translateX(0px)  */ rotate(0deg);
-      }
-      20% {
-        transform: /* scale(1) translateX(0px)  */ rotate(-25deg);
-      }
-      50% {
-        transform: /* scale(2) translateX(50px) */ rotate(25deg);
-      }
-      100% {
-        transform: /* scale(1) translateX(0px)  */ rotate(0deg);
-      }
+  }
+  .header__link {
+    position: relative;
+    justify-content: flex-start !important;
+  }
+  .header__img {
+    opacity: 1;
+  }
+  h3 {
+    margin: 0;
+    line-height: 1;
+    font-size: 70px;
+    opacity: 0;
+    visibility: hidden;
+  }
+  @keyframes logoh3Show {
+    0% {
+      transform: rotate(0deg);
     }
-    .header__img {
-      position: inherit;
-      top: 0;
-      left: 0;
-      width: auto;
-      transform: scale(1.4);
-      transition: 0.3s;
-
-      // анимация измен.цвета
-      // @keyframes logoImgColor {
-      //   25% {
-      //     background-color: red;
-      //   }
-      //   50% {
-      //     background-color: yellow;
-      //   }
-      //   75% {
-      //     background-color: blue;
-      //   }
-      // }
-
-      // анимация ВРАЩЕНИЕ в 4х смены позиции с увеличением по часовой
-      // animation: logoImgSize 0.5s linear infinite 0s;
-      // @keyframes logoImgSize {
-      // 0% {
-      //   transform: rotate(0deg);
-      // }
-      // 12% {
-      //   transform: rotate(0.72turn) scale(0.5);
-      // }
-      // 20% {
-      //   transform: rotate(1.25turn);
-      // }
-      // 25% {
-      //   transform: rotate(1.25turn);
-      // }
-      // 37% {
-      //   transform: rotate(1.87turn) scale(0.5);
-      // }
-      // 45% {
-      //   transform: rotate(2.5turn);
-      // }
-      // 50% {
-      //   transform: rotate(2.5turn);
-      // }
-      // 62% {
-      //   transform: rotate(3.12turn) scale(0.5);
-      // }
-      // 70% {
-      //   transform: rotate(3.75turn);
-      // }
-      // 75% {
-      //   transform: rotate(3.75turn);
-      // }
-      // 87% {
-      //   transform: rotate(4.37turn) scale(0.5);
-      // }
-      // 95% {
-      //   transform: rotate(5turn);
-      // }
-      // 100% {
-      //   transform: rotate(5turn);
-      // }
-      // }
+    20% {
+      transform: rotate(-25deg);
+    }
+    50% {
+      transform: rotate(25deg);
+    }
+    100% {
+      transform: rotate(0deg);
     }
   }
 }
