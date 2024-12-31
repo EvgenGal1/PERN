@@ -1,4 +1,7 @@
 {
+  "ignorePatterns": [
+    "**/vr/**" // папка игнора
+  ],
   "env": {
     "browser": true,
     "es2021": true,
