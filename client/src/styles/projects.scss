@@ -1,4 +1,7 @@
-// main > div > div > div {
+// ^ отдел.подкл.перем. после подкл.ч/з @use
+@use "./variables" as *;
+@use "./mixins" as *;
+
 main {
   padding: 0px 3%;
 }

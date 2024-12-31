@@ -1,19 +1,37 @@
 // <ПЕРЕМЕННЫЕ>===============================================================================================
 // размеры
-@import "./varSize.scss";
+// ^ правки подкл. scss > нов.вида (с import <> use (> ф.) ... as * (> перем.))
+@use "./varSize";
 
 // <МИКСИНЫ>===============================================================================================
 // миксин - комплект свойств, для быстрого вызова(подробнее mixins.scss)
-@import "./mixins.scss";
+@use "./mixins";
 
 // <ОБНУЛЕНИЕ, ОБЩИЕ ПАРАМЕТРЫ>===============================================================================================
 // обнуляющий стиль для стандартизации по всем свойствам, брайзерам и пр.
-@import "./null.scss";
+@use "./null";
+
+// <ЦВЕТА>-----------------------------------------------------------------------------------------------------
+@use "./varColors";
+
+//<ПОДКЛЮЧЕНИЕ ФАЙЛОВ UI СТИЛЕЙ, ФОРМ, VISUAL, GRID, jQuery И ГОТОВЫХ КЛАССОВ>====================================================================================================
+// изменения стилей Темы (theme) при нажате на переключатели в Доп.Меню (новое)
+@use "./settingsThemeColor";
+// изменения стилей Размера (size) при нажате на переключатели в Доп.Меню (новое)
+@use "./settingsSizeDistance";
+// стили scroll bara (полоса прокрутки)
+@use "./scrollBar";
+
+//<ОСНОВНОЙ БЛОК>====================================================================================================
+// общие стили для проектов
+@use "./projects";
+// общие стили Главных Компонентов (header, main, footer)
+@use "../Components/layout/Router";
 
 // <ШРИФТЫ>===============================================================================================
 // <Подключаем шрифты>------------------------------------------------------------------------------------------------
 // подкл шрифты гугл, гуглфондс, напрямую
-// @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
+// @use url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
 // @font-face {
 //   font-family: "AkzidenzGroteskBQ-BdCnd";
 //   src: url("../../fonts/AkzidenzGroteskBQ-BdCnd.eot");
@@ -50,9 +68,6 @@ $fontfamily1: "PT Sans";
 $fontfamily2: "Bebas";
 $fontfamily3: "AkzidenzGroteskBQ-BdCnd";
 $fontfamilyCurs: "cursive";
-
-// <ЦВЕТА>-----------------------------------------------------------------------------------------------------
-@import "./varColors.scss";
 
 // <Сетка адаптива>----------------------------------------------------------------------------------------
 // минимальная ширина. статична
@@ -146,63 +161,51 @@ $md5NoErr: 576px;
 }
 
 //<ПОДКЛЮЧЕНИЕ ФАЙЛОВ СТИЛЕЙ СТРАНИЦ И ЭЛЛЕМЕНТОВ>====================================================================================================
-//@import "../../js/fancybox/jquery.fancybox.scss";
-// @import "../scss/steles.scss";
-// @import "datepicker.scss";
-// @import "fontawesome.scss";
-// @import "popover.min.scss";
-// @import "baguetteBox.scss";
-// @import "pagging.scss";
-// @import "icons.scss";
-// @import "popup.scss";
-// @import "./htmlProjsBlocks/header.scss";
-// @import "catalog.scss";
-// @import "Game.scss";
-// @import "snake.scss";
-// @import "Minesweeper.scss";
-// @import "contacts.scss";
-// @import "./htmlProjsBlocks/footer.scss";
+//@use "../../js/fancybox/jquery.fancybox";
+// @use "../scss/steles";
+// @use "datepicker";
+// @use "fontawesome";
+// @use "popover.min";
+// @use "baguetteBox";
+// @use "pagging";
+// @use "icons";
+// @use "popup";
+// @use "./htmlProjsBlocks/header";
+// @use "catalog";
+// @use "Game";
+// @use "snake";
+// @use "Minesweeper";
+// @use "contacts";
+// @use "./htmlProjsBlocks/footer";
 // боковое меню .mini-aside(верх-вниз)
-// @import "./htmlProjsBlocks/mini-aside.scss";
-// @import "audio.scss";
-// @import "video.scss";
-// @import "gallery.scss";
-// @import "manual.scss";
-// @import "home.scss";
+// @use "./htmlProjsBlocks/mini-aside";
+// @use "audio";
+// @use "video";
+// @use "gallery";
+// @use "manual";
+// @use "home";
 
 //<ПОДКЛЮЧЕНИЕ ФАЙЛОВ UI СТИЛЕЙ, ФОРМ, VISUAL, GRID, jQuery И ГОТОВЫХ КЛАССОВ>====================================================================================================
 // элем форм, checkbox, select, кнопки
-// @import "forms.scss";
+// @use "forms";
 // сбор готовых и вспомогательных классов (ibg, video, заголовки, зеркало, серый стиль)
-// @import "./ui.scss";
+// @use "./ui";
 // изменения стилей Темы и Размеров (--theme, --size) при нажате на кнопки под меню (старое)
-// @import "./themeModesSettingsBtns.scss";
-// @import "./themeModesSettingsVars.scss";
-// изменения стилей Темы (theme) при нажате на переключатели в Доп.Меню (новое)
-@import "./settingsThemeColor.scss";
-// изменения стилей Размера (size) при нажате на переключатели в Доп.Меню (новое)
-@import "./settingsSizeDistance.scss";
-// стили scroll bara (полоса прокрутки)
-@import "./scrollBar.scss";
+// @use "./themeModesSettingsBtns";
+// @use "./themeModesSettingsVars";
 // стили spoler|accordion на scss для раскрытия блока
-// @import "./Accordion.scss";
+// @use "./Accordion";
 // крупные визуальные эффекты CSS
-// @import "visual.scss";
+// @use "visual";
 // не большие анимации, трансформации, эффекты CSS на всех страницах
-// @import "./effect.scss";
+// @use "./effect";
 // Grid сетки
-// @import "./grid.scss";
+// @use "./grid";
 // <СВОИ СТИЛИ>----------------------------------------------------------------------------------
-// @import ".//uiWindowsAndWarrning.scss"; // врем окно предупреждения/доработки с подсказкой/идеей
+// @use ".//uiWindowsAndWarrning"; // врем окно предупреждения/доработки с подсказкой/идеей
 // стили отображения куска кода в тегаx pre > code
-// @import "./tagPreCode.scss";
+// @use "./tagPreCode";
 // стили мини компонентов взаимодействия (кнопки, аккордион, ...)
-// @import "../scss/uiMiniComp.scss";
+// @use "../scss/uiMiniComp";
 
 //<ОСНОВНОЙ БЛОК>====================================================================================================
-
-// @import "./.scss";
-// общие стили для проектов
-@import "./projects.scss";
-// общие стили Главных Компонентов (header, main, footer)
-@import "../Components/layout/Router.scss";
