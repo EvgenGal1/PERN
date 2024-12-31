@@ -6,18 +6,39 @@ import { guestInstance, authInstance } from "./indexAPI_Tok";
  */
 
 // создать новый заказ
-export const adminCreate = async (body: any) => {
+interface OrderBody {
+  productId: number;
+  quantity: number;
+}
+
+export const adminCreate = async (body: OrderBody) => {
   try {
     const { data } = await authInstance.post("order/admin/create", body);
 
     return data;
-  } catch (e: any) {
+  } catch (e: unknown) {
+    /* catch (e: any) {
     const status = e?.response?.status;
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
     const data = { errors, message, status };
     return data;
+  } */
+    const error = e as {
+      response?: {
+        status: number;
+        data: { errors?: Record<string, unknown>; message?: string };
+      };
+    };
+    if (error.response) {
+      const status = error.response?.status;
+      const errors = error.response?.data.errors;
+      const message = error.response?.data.message;
+
+      const data = { errors, message, status };
+      return data;
+    }
   }
 };
 // получить список всех заказов магазина
@@ -33,13 +54,20 @@ export const adminGetUser = async (id: number) => {
 // получить заказ по id
 export const adminGetOne = async (id: number | string | undefined) => {
   const { data } = await authInstance.get(`order/admin/getone/${id}`);
-  console.log("ordAPI adm_One data : ", data);
+  // console.log("ordAPI adm_One data : ", data);
   return data;
 };
+
 // обновить заказ по id
-export const adminUpdate = async (id: number, body: any) => {
+interface UpdateOrderBody {
+  productId?: number;
+  quantity?: number;
+  status?: string;
+}
+
+export const adminUpdate = async (id: number, body: UpdateOrderBody) => {
   const { data } = await authInstance.put(`order/admin/update/${id}`, body);
-  console.log("ordAPI adm_UPD data : ", data);
+  // console.log("ordAPI adm_UPD data : ", data);
   return data;
 };
 // удалить заказ по id
@@ -51,7 +79,13 @@ export const adminDelete = async (id: number) => {
 /*
  * ПОЗИЦИИ Заказа для cоздание, обновление и удаление
  */
-export const createItem = async (orderId: number, item: any) => {
+interface OrderItem {
+  productId: number;
+  quantity: number;
+  price: number;
+}
+
+export const createItem = async (orderId: number, item: OrderItem) => {
   try {
     const { data } = await authInstance.post(
       `order/${orderId}/item/create`,
@@ -59,17 +93,36 @@ export const createItem = async (orderId: number, item: any) => {
     );
 
     return data;
-  } catch (e: any) {
+  } /* catch (e: any) {
     const status = e?.response?.status;
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
     const data = { errors, message, status };
     return data;
+  } */ catch (e: unknown) {
+    const error = e as {
+      response?: {
+        status: number;
+        data: { errors?: Record<string, unknown>; message?: string };
+      };
+    };
+    if (error.response) {
+      const status = error.response?.status;
+      const errors = error.response?.data.errors;
+      const message = error.response?.data.message;
+
+      const data = { errors, message, status };
+      return data;
+    }
   }
 };
 
-export const updateItem = async (orderId: number, id: number, item: any) => {
+export const updateItem = async (
+  orderId: number,
+  id: number,
+  item: OrderItem
+) => {
   const { data } = await authInstance.put(
     `order/${orderId}/item/update/${id}`,
     item
@@ -89,18 +142,38 @@ export const deleteItem = async (orderId: number, id: number) => {
  */
 
 // создать новый заказ
-export const userCreate = async (body: any) => {
+interface UserOrderBody {
+  productId: number;
+  quantity: number;
+}
+
+export const userCreate = async (body: UserOrderBody) => {
   try {
     const { data } = await authInstance.post("order/user/create", body);
 
     return data;
-  } catch (e: any) {
+  } /* catch (e: any) {
     const status = e?.response?.status;
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
     const data = { errors, message, status };
     return data;
+  } */ catch (e: unknown) {
+    const error = e as {
+      response?: {
+        status: number;
+        data: { errors?: Record<string, unknown>; message?: string };
+      };
+    };
+    if (error.response) {
+      const status = error.response?.status;
+      const errors = error.response?.data.errors;
+      const message = error.response?.data.message;
+
+      const data = { errors, message, status };
+      return data;
+    }
   }
 };
 // получить список всех заказов пользователя
@@ -119,17 +192,32 @@ export const userGetOne = async (id: number | string | undefined) => {
  */
 
 // создать новый заказ
-export const guestCreate = async (body: any) => {
+interface GuestOrderBody {
+  productId: number;
+  quantity: number;
+}
+
+interface ErrorResponse {
+  response?: {
+    status: number;
+    data: { errors?: Record<string, unknown>; message?: string };
+  };
+}
+
+export const guestCreate = async (body: GuestOrderBody) => {
   try {
     const { data } = await guestInstance.post("order/guest/create", body);
 
     return data;
-  } catch (e: any) {
-    const status = e?.response?.status;
-    const errors = e?.response?.data?.errors;
-    const message = e?.response?.data?.message;
+  } catch (e: unknown) {
+    const error = e as ErrorResponse;
+    if (error.response) {
+      const status = error.response?.status;
+      const errors = error.response?.data.errors;
+      const message = error.response?.data.message;
 
-    const data = { errors, message, status };
-    return data;
+      const data = { errors, message, status };
+      return data;
+    }
   }
 };

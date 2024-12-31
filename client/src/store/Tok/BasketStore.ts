@@ -12,6 +12,10 @@ class BasketStore {
     return this._products;
   }
 
+  set products(products) {
+    this._products = products;
+  }
+
   // всего позиций в корзине
   get count() {
     return this._products.length;
@@ -20,13 +24,10 @@ class BasketStore {
   // стоимость всех товаров корзины
   get sum() {
     return this._products.reduce(
-      (sum, item: any) => sum + item.price * item.quantity,
+      (sum, item: { price: number; quantity: number }) =>
+        sum + item.price * item.quantity,
       0
     );
-  }
-
-  set products(products) {
-    this._products = products;
   }
 }
 

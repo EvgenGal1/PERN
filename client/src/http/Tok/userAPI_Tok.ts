@@ -5,17 +5,20 @@ import { guestInstance, authInstance } from "./indexAPI_Tok";
 
 // любой Пользователь
 // регистр. Пользователя
-export const signupUser = async (email: string, password: string | any) => {
+export const signupUser = async (
+  email: string,
+  password: string /* | any */
+) => {
   try {
     const response = await guestInstance.post("user/signup", {
       email,
       password,
     });
-    console.log("user_API sign response : ", response);
+    // console.log("user_API sign response : ", response);
 
     const status = response.status;
 
-    let userTokenAcs: any = "";
+    let userTokenAcs: { [key: string]: string | number | boolean } = {};
     if (response.data.tokens) {
       const tokenAcs = response.data.tokens; /* .accessToken */
       userTokenAcs = jwt_decode(tokenAcs);
@@ -23,30 +26,38 @@ export const signupUser = async (email: string, password: string | any) => {
     }
 
     const data = { userTokenAcs, status };
-    console.log("user_API sign data : ", data);
+    // console.log("user_API sign data : ", data);
     return data;
-  } catch (e: any) {
-    const status = e.response.status;
-    const errors = e?.response.data.errors;
-    const message = e?.response.data.message;
+  } catch (e: unknown) {
+    const error = e as {
+      response?: {
+        status: number;
+        data: { errors?: Record<string, unknown>; message?: string };
+      };
+    };
+    if (error.response) {
+      const status = error.response?.status;
+      const errors = error.response?.data.errors;
+      const message = error.response?.data.message;
 
-    const data = { errors, message, status };
-    return data;
+      const data = { errors, message, status };
+      return data;
+    }
   }
 };
 // вход Пользователя
-export const loginUser = async (email: string, password: string | any) => {
+export const loginUser = async (email: string, password: string) => {
   try {
     const response = await guestInstance.post("user/login", {
       email,
       password,
     });
-    console.log("user_API login response : ", response);
+    // console.log("user_API login response : ", response);
 
     const status = response.status;
 
-    let userTokenAcs: any = "";
-    let activated: boolean = false;
+    let userTokenAcs: { [key: string]: string | number | boolean } = {};
+    let activated = false;
     if (response.data.tokens) {
       const tokenAcs = response.data.tokens; /* .accessToken */
       userTokenAcs = jwt_decode(tokenAcs);
@@ -55,15 +66,31 @@ export const loginUser = async (email: string, password: string | any) => {
     }
 
     const data = { userTokenAcs, status, activated };
-    console.log("user_API login data : ", data);
+    // console.log("user_API login data : ", data);
     return data;
-  } catch (e: any) {
+  } catch (e: unknown) {
+    /* catch (e: any) {
     const status = e.response.status;
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
     const data = { errors, message, status };
     return data;
+  } */
+    const error = e as {
+      response?: {
+        status: number;
+        data: { errors?: Record<string, unknown>; message?: string };
+      };
+    };
+    if (error.response) {
+      const status = error.response?.status;
+      const errors = error.response?.data.errors;
+      const message = error.response?.data.message;
+
+      const data = { errors, message, status };
+      return data;
+    }
   }
 };
 
@@ -89,9 +116,9 @@ export const checkUser = async () => {
     const activated = response.data.activated;
 
     // возвращ.расшифр.токен и подтверждение почты
-    console.log("user_API check userToken, userData : ", userToken, userData);
+    // console.log("user_API check userToken, userData : ", userToken, userData);
     return { userData, activated };
-  } catch (e: any) {
+  } catch (e /* : any */) {
     console.log("checkUser e : ", e);
     localStorage.removeItem("tokenAccess");
     return false;

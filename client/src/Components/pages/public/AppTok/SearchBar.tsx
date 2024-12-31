@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
-import SearchItems from "./Search";
+// import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
+// import SearchItems from "./Search";
 
 export const SearchValue = () => {
-  const { catalog }: any = useContext(AppContext);
-  const navigate = useNavigate();
+  // const { catalog }: any = useContext(AppContext);
+  // const navigate = useNavigate();
 };
 export const SearchExpanded = () => {
-  const { catalog }: any = useContext(AppContext);
-  const navigate = useNavigate();
+  // const { catalog }: any = useContext(AppContext);
+  // const navigate = useNavigate();
 };
 
 const Search = observer(() => {

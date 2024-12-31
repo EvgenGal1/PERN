@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 // ^ посмотреть размер занятого LS (подробнее https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage)
-var _lsTotal = 0,
+let _lsTotal = 0,
   _xLen,
   _x;
 for (_x in localStorage) {
-  if (!localStorage.hasOwnProperty(_x)) {
+  if (!Object.prototype.hasOwnProperty.call(localStorage, _x)) {
     continue;
   }
   _xLen = (localStorage[_x].length + _x.length) * 2;
@@ -15,7 +15,10 @@ for (_x in localStorage) {
 console.log("Total = " + (_lsTotal / 1024).toFixed(2) + " KB");
 
 // Hook с сайта https://usehooks.com/page/3
-export function useLocalStorageUH(key: any, initialValue: any) {
+export function useLocalStorageUH(
+  key: string,
+  initialValue: string | number | boolean | object
+) {
   // Состояние для хранения нашего значения
   // Передайте функцию начального состояния в useState, чтобы логика выполнялась только один раз
   const [storedValue, setStoredValue] = useState(() => {
@@ -34,7 +37,16 @@ export function useLocalStorageUH(key: any, initialValue: any) {
     }
   });
   // Возвратите обернутую версию функции установки useState, которая сохраняет новое значение в localStorage.
-  const setValue = (value: any) => {
+  const setValue = (
+    value:
+      | string
+      | number
+      | boolean
+      | object
+      | ((
+          val: string | number | boolean | object
+        ) => string | number | boolean | object)
+  ) => {
     try {
       // Разрешить значение быть функцией, чтобы у нас был тот же API, что и у useState
       const valueToStore =

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
@@ -16,7 +16,7 @@ import BasketItem from "./BasketItem";
 const BasketList = observer(() => {
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
-  console.log("BasketList basket ", basket);
+  // console.log("BasketList basket ", basket);
 
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const BasketList = observer(() => {
     fetchBasket()
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (fetching) {
@@ -37,7 +37,7 @@ const BasketList = observer(() => {
     setFetching(true);
     incrementBasket(id)
       .then((data) => {
-        console.log("BL incrementBasket data ", data);
+        // console.log("BL incrementBasket data ", data);
         basket.products = data.products;
       })
       .finally(() => setFetching(false));
@@ -47,7 +47,7 @@ const BasketList = observer(() => {
     setFetching(true);
     decrementBasket(id)
       .then((data) => {
-        console.log("BL decrementBasket data ", data);
+        // console.log("BL decrementBasket data ", data);
         basket.products = data.products;
       })
       .finally(() => setFetching(false));
@@ -55,12 +55,12 @@ const BasketList = observer(() => {
 
   const handleRemove = (id: number, name?: string) => {
     // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Удалить Позицию - «${name}»`);
+    const confirmDel = confirm(`Удалить Позицию - «${name}»`);
     if (confirmDel) {
       setFetching(true);
       removeBasket(id)
         .then((data) => {
-          console.log("BL removeBasket data ", data);
+          // console.log("BL removeBasket data ", data);
           basket.products = data.products;
         })
         .finally(() => setFetching(false));

@@ -8,7 +8,12 @@ const /* $ */ authHost = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
   });
 
-const authInterceptor = (config: any) => {
+import { InternalAxiosRequestConfig } from "axios";
+
+const authInterceptor = (config: InternalAxiosRequestConfig) => {
+  if (!config.headers) {
+    config.headers = new axios.AxiosHeaders();
+  }
   config.headers.authorization = `Bearer ${localStorage.getItem(
     "tokenAccess"
   )}`;

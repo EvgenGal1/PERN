@@ -8,12 +8,16 @@ import { fetchBasket } from "../../../../http/Tok/basketAPI_Tok";
 import { checkUser as checkAuth } from "../../../../http/Tok/userAPI_Tok";
 import { userCreate, guestCreate } from "../../../../http/Tok/orderAPI_Tok";
 import { BASKET_ROUTE, USERORDERS_ROUTE } from "../../../../utils/consts";
+import FormField__eg from "../../../ui/Form/FormField__eg";
+import FormFieldRecursive__EG from "../../../ui/Form/FormFieldRecursive__EG";
+import Form__Bootstrap from "../../../ui/Form/Form__Bootstrap";
 
 interface CheckoutFormValues {
   name: string;
   email: string;
   phone: string;
   address: string;
+  comment: string;
 }
 
 interface CheckoutFormValidation {
@@ -21,6 +25,7 @@ interface CheckoutFormValidation {
   email: string | boolean | null | undefined;
   phone: string | boolean | null | undefined;
   address: string | boolean | null | undefined;
+  comment: string | boolean | null | undefined;
 }
 
 const isValid = (input: HTMLInputElement) => {
@@ -33,7 +38,7 @@ const isValid = (input: HTMLInputElement) => {
       pattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+.{1,2}[a-z]+$/i;
       return pattern.test(input.value.trim());
     case "phone":
-      pattern = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
+      pattern = /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d- ]{7,10}$/i;
       return pattern.test(input.value.trim());
     case "address":
       return input.value.trim() !== "";
@@ -43,7 +48,7 @@ const isValid = (input: HTMLInputElement) => {
 const Checkout = () => {
   // Авториз.Корзин. Логика проверки авторизован ли пользователь и есть ли товары в корзине
   // ! врем.получ. и в NavBar и в Checkout. Позже перепишется на получ.в App
-  const { user, basket }: any = useContext(AppContext);
+  const { user, basket } /* : any */ = useContext(AppContext);
   // loader, пока получаем корзину
   const [fetching, setFetching] = useState(true);
 
@@ -55,12 +60,14 @@ const Checkout = () => {
     email: "",
     phone: "",
     address: "",
+    comment: "",
   });
   const [valid, setValid] = useState<CheckoutFormValidation>({
-    name: null,
-    email: null,
-    phone: null,
-    address: null,
+    name: "", // null,
+    email: "", // null,
+    phone: "", // null,
+    address: "", // null,
+    comment: "", // null,
   });
 
   // Авториз.Корзин.
@@ -68,19 +75,19 @@ const Checkout = () => {
     // если корзина пуста, здесь делать нечего
     fetchBasket()
       .then((data) => {
-        console.log("Checkout fetchBasket data ", data);
+        // console.log("Checkout fetchBasket data ", data);
         basket.products = data.products;
       })
       .finally(() => setFetching(false));
     // нужно знать, авторизован ли пользователь
     checkAuth()
       .then((data) => {
-        console.log("Checkout checkAuth data ", data);
+        // console.log("Checkout checkAuth data ", data);
         if (data) {
           user.login(data);
         }
       })
-      .catch((error) => user.logout());
+      .catch((/* error */) => user.logout());
   }, []);
 
   // Авториз.Корзин. loader, пока получаем корзину
@@ -130,6 +137,9 @@ const Checkout = () => {
       address: (
         event.currentTarget.elements.namedItem("address") as HTMLInputElement
       ).value.trim(),
+      comment: (
+        event.currentTarget.elements.namedItem("comment") as HTMLInputElement
+      ).value.trim(),
     });
 
     setValid({
@@ -145,6 +155,9 @@ const Checkout = () => {
       address: isValid(
         event.currentTarget.elements.namedItem("address") as HTMLInputElement
       ),
+      comment: isValid(
+        event.currentTarget.elements.namedItem("comment") as HTMLInputElement
+      ),
     });
 
     // е/и форма заполнена правильно, можно отправлять данные
@@ -153,12 +166,21 @@ const Checkout = () => {
       // Свойство "comment" не существует в типе "EventTarget".
       // let comment: any = event.target.comment.value.trim();
       // правка от ИИ
-      let comment: any = (
+      let comment /* : any */ = (
         event.currentTarget.elements.namedItem("comment") as HTMLInputElement
       ).value.trim();
-      comment = comment ? comment : null;
+      comment = comment ? comment : "";
       // форма заполнена правильно, можно отправлять данные
-      const body = { ...value, comment };
+      const body = {
+        ...value,
+        comment,
+        productId: basket.products.map(
+          (product: { id: number; quantity: number }) => product.id
+        ),
+        quantity: basket.products.map(
+          (product: { id: number; quantity: number }) => product.quantity
+        ),
+      };
       const create = user.isAuth ? userCreate : guestCreate;
       create(body).then((data) => {
         console.log("Checkout data ", data);
@@ -174,7 +196,47 @@ const Checkout = () => {
       {basket.count === 0 && <Navigate to={BASKET_ROUTE} replace={true} />}
       {/*  */}
       <h1 className="mb-4 mt-4">Оформление заказа</h1>
-      <Form noValidate onSubmit={handleSubmit}>
+      <Form__Bootstrap />
+      {/* eslint-disable-next-line react/jsx-pascal-case  */}
+      <FormFieldRecursive__EG
+        handleSubmit={handleSubmit}
+        MsgBtn="Отправить"
+        handleChange={handleChange}
+        formClass={"form--eg p-4"}
+        valueArr={[
+          ["name", value.name],
+          ["address", value.address],
+          [
+            ["phone", value.phone],
+            ["email", value.email],
+          ],
+          ["comment", value.comment],
+        ]}
+        // valid={valid}
+        label={true}
+        legend={"Введите данные __EG"}
+      />
+      {/* eslint-disable-next-line react/jsx-pascal-case  */}
+      <FormField__eg
+        // handleSubmit={handleSubmit}
+        handleSubmitBtnField={handleSubmit}
+        MsgBtnField="Отправить"
+        handleChange={handleChange}
+        label={true}
+        clForm={"form--eg p-4"}
+        valueArr={[
+          ["name", value.name],
+          ["address", value.address],
+          [
+            ["phone", value.phone],
+            ["email", value.email],
+          ],
+          ["comment", value.comment],
+        ]}
+        valid={valid}
+        legend={"Введите данные __eg"}
+      />
+      <Form className="form form--eg p-4" noValidate onSubmit={handleSubmit}>
         <Form.Control
           name="name"
           value={value.name}

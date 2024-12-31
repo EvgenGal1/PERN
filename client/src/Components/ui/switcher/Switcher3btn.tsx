@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
 import { useTheme } from "../../../scripts/hooks/useTheme";
@@ -15,18 +15,18 @@ export const Switcher3btn = () => {
   };
   // опред.начал.Темы из LS и перем.по умолч.
   const LS = localStorage.getItem("--theme");
-  let initilLS = "";
+  const initilLS = useRef("");
   // перед рендером опред.и пропис.сост.переключателя
   useLayoutEffect(() => {
     if (LS === "") {
-      initilLS = "dark";
-      setCheckedBox(initilLS);
+      initilLS.current = "dark";
+      setCheckedBox(initilLS.current);
     }
-  }, [checkedBox]);
+  }, [checkedBox, LS]);
   // в rendere опред.переключатель и слежение измен.
   useEffect(() => {
     if (LS === "") {
-      initilLS = "dark";
+      initilLS.current = "dark";
     }
     if (LS === "dark") {
       setCheckedBox("dark");
@@ -37,7 +37,7 @@ export const Switcher3btn = () => {
     if (LS === "natural") {
       setCheckedBox("natural");
     }
-  }, [checkedBox]);
+  }, [LS, checkedBox]);
 
   // ЛОГИКА переключателя Цветовых Тем (dark/light/natural)
   // стат./fn Цветовых Тем (Тёмная/Сетлая/Средняя)

@@ -38,7 +38,7 @@ const Search = observer(() => {
 
   // `Поиск элементов`. Загр.ВСЕХ Товаров в searchAll
   const searchItems = async (searchValue: any) => {
-    console.log("SEH searchValue : ", searchValue);
+    // console.log("SEH searchValue : ", searchValue);
     if (searchValue !== "") {
       await fetchAllProducts(
         catalog.category,
@@ -49,13 +49,13 @@ const Search = observer(() => {
         catalog.sortOrd,
         catalog.sortField
       ).then((data: any) => {
-        console.log("SEH IF data : ", data);
+        // console.log("SEH IF data : ", data);
         setSearchAll(data.rows);
         // catalog.products = data.rows;
         // catalog.limit = Math.ceil(data.limit);
-        console.log("catalog.limit IF > ", catalog.limit);
+        // console.log("catalog.limit IF > ", catalog.limit);
         catalog.limit = Math.ceil(catalog.limit);
-        console.log("catalog.limit IF = ", catalog.limit);
+        // console.log("catalog.limit IF = ", catalog.limit);
         // catalog.count = Math.ceil(data.count / data.limit);
       });
     } else {
@@ -67,14 +67,14 @@ const Search = observer(() => {
         catalog.sortOrd,
         catalog.sortField
       ).then((data: any) => {
-        console.log("SEH ELSE data : ", data);
+        // console.log("SEH ELSE data : ", data);
         catalog.products = data.rows;
         // catalog.limit = Math.ceil(data.limit);
         // catalog.count = Math.ceil(data.count / data.limit);
         catalog.count = data.count;
       });
     }
-    console.log("catalog.limit === ", catalog.limit);
+    // console.log("catalog.limit === ", catalog.limit);
   };
 
   // ^ РАСШИР.ПОИСК на FRONT (данн.из БД в отд.стат)
@@ -96,9 +96,11 @@ const Search = observer(() => {
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
-    if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField !== ("name" || null))
+    if (catalog.limit !== 20 || catalog.limit !== 0)
+      params.limit = catalog.limit;
+    if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
+      params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField !== "name" || catalog.sortField !== null)
       params.sortField = catalog.sortField;
 
     navigate({

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect /* , useState */ } from "react";
+import { useContext, useEffect /* , useState */ } from "react";
 import {
   useNavigate,
   createSearchParams,
@@ -14,7 +14,7 @@ import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
 // import { Spinner } from "react-bootstrap";
 
 const CategoryBar = observer(() => {
-  console.log("CATbar 0 ", 0);
+  // console.log("CATbar 0 ", 0);
   const { catalog }: any = useContext(AppContext);
 
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const CategoryBar = observer(() => {
   if (category || category === null) {
     // console.log("CATbar category ~~ ", category);
     useEffect(() => {
-      console.log("CATbar usEf 000 ", 0);
+      // console.log("CATbar usEf 000 ", 0);
       // setCategoriesFetching(true);
 
       // fetchCategories().then((data: any) => {
@@ -44,7 +44,7 @@ const CategoryBar = observer(() => {
       const fetchData = async () => {
         try {
           const data = await fetchCategories();
-          console.log("CATbar usEf CAT data ", data);
+          // console.log("CATbar usEf CAT data ", data);
           catalog.categories = data;
         } catch (error) {
           console.error("Ошибка загрузки Категорий:", error);
@@ -123,9 +123,11 @@ const CategoryBar = observer(() => {
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
-    if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField !== ("name" || null))
+    if (catalog.limit !== 20 || catalog.limit !== 0)
+      params.limit = catalog.limit;
+    if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
+      params.sortOrd = catalog.sortOrd;
+    if (catalog.sortField !== "name" || catalog.sortField !== null)
       params.sortField = catalog.sortField;
 
     // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная

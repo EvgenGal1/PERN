@@ -70,10 +70,10 @@ const SearchFilter = () => {
   // изменить и дополнить по параметрам поиска для Filtra
   const changeAndAddBySearchParamsForFilter = (event: any, item: any) => {
     // перем.state
-    let dataValueName = {
+    const dataValueName = {
       ...valueNameStat,
     };
-    let dataItemId = {
+    const dataItemId = {
       ...itemIdStat,
     };
 
@@ -136,7 +136,7 @@ const SearchFilter = () => {
   };
 
   // блок./разблок.прокрутки body при modal Расшир.Поиске
-  let body = document.querySelector("body");
+  const body = document.querySelector("body");
   if (body != null) {
     body.style.overflowY = "hidden";
   }
@@ -181,9 +181,11 @@ const SearchFilter = () => {
       if (catalog.category) params.category = catalog.category;
       if (catalog.brand) params.brand = catalog.brand;
       if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
-      if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
-      if (catalog.sortField !== ("name" || null))
+      if (catalog.limit !== 20 || catalog.limit !== 0)
+        params.limit = catalog.limit;
+      if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
+        params.sortOrd = catalog.sortOrd;
+      if (catalog.sortField !== "name" || catalog.sortField !== null)
         params.sortField = catalog.sortField;
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
@@ -196,9 +198,11 @@ const SearchFilter = () => {
       if (itemIdStat.category) params.category = itemIdStat.category;
       if (itemIdStat.brand) params.brand = itemIdStat.brand;
       if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
-      if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
-      if (catalog.sortField !== ("name" || null))
+      if (catalog.limit !== 20 || catalog.limit !== 0)
+        params.limit = catalog.limit;
+      if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
+        params.sortOrd = catalog.sortOrd;
+      if (catalog.sortField !== "name" || catalog.sortField !== null)
         params.sortField = catalog.sortField;
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
@@ -222,7 +226,7 @@ const SearchFilter = () => {
       catalog.sortField
     )
       .then((data) => {
-        console.log("FLT usEf 000 data ", data);
+        // console.log("FLT usEf 000 data ", data);
         // eslint-disable-next-line react-hooks/exhaustive-deps
         countProduct = data.count;
       })

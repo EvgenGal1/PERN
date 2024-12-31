@@ -1,7 +1,7 @@
 // `получить параметры поиска`
-export const getSearchParams = (searchParams: any) => {
-  console.log("hlp get searchParams ", searchParams);
-  console.log("hlp get searchParams ", typeof searchParams);
+export const getSearchParams = (searchParams: URLSearchParams) => {
+  // console.log("hlp get searchParams ", searchParams);
+  // console.log("hlp get searchParams ", typeof searchParams);
   let category = searchParams.get("category");
   // ^ стар.логика (для 1го значения)
   // if (category && /[1-9][0-9]*/.test(category)) {
@@ -16,13 +16,14 @@ export const getSearchParams = (searchParams: any) => {
   if (brand && /(_?[0-9]+)*/.test(brand)) {
     brand = "" + brand;
   }
-  let page = searchParams.get("page");
+  const page = searchParams.get("page");
+  let pageNumber: number | null = null;
   if (page && /[1-9][0-9]*/.test(page)) {
-    page = parseInt(page);
+    pageNumber = parseInt(page);
   }
   let limit = searchParams.get("limit");
   if (limit && /[1-9][0-9]*/.test(limit)) {
-    limit = parseInt(limit);
+    limit = parseInt(limit) as unknown as string;
   }
   const sortOrd = searchParams.get("sortOrd");
   // if (sortOrd && /[a-z][A-Z]*/.test(sortOrd)) {
@@ -35,7 +36,7 @@ export const getSearchParams = (searchParams: any) => {
   return {
     category,
     brand,
-    page,
+    page: pageNumber,
     limit,
     sortOrd,
     sortField,

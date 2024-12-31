@@ -2,9 +2,9 @@
 import { makeAutoObservable } from "mobx";
 
 export default class UserStore {
-  id = null;
-  username = null;
-  email = null;
+  id: number | null = null;
+  username: string | null = null;
+  email: string | null = null;
   isAuth = false;
   isAdmin = false;
   activated = false;
@@ -13,7 +13,17 @@ export default class UserStore {
     makeAutoObservable(this);
   }
 
-  login({ id, username, email, role }: any) {
+  login({
+    id,
+    username,
+    email,
+    role,
+  }: {
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+  }) {
     this.id = id;
     this.username = username;
     this.email = email;
@@ -21,7 +31,7 @@ export default class UserStore {
     this.isAdmin = role === "ADMIN";
   }
 
-  isActivated(activated: any) {
+  isActivated(activated: boolean) {
     this.activated = activated;
   }
 

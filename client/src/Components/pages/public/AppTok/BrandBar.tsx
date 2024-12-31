@@ -12,7 +12,7 @@ import { fetchBrands } from "../../../../http/Tok/catalogAPI_Tok";
 import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
 
 const BrandBar = observer(() => {
-  console.log("BrandBar 0 ", 0);
+  // console.log("BrandBar 0 ", 0);
   const { catalog } = useContext(AppContext);
 
   const navigate = useNavigate();
@@ -26,13 +26,13 @@ const BrandBar = observer(() => {
   if (brand || brand === null) {
     // console.log("BRANDbar brand ~~ ", brand);
     useEffect(() => {
-      console.log("BRANDbar usEf 000 ", 0);
+      // console.log("BRANDbar usEf 000 ", 0);
       // setBrandsFetching(true);
 
       const fetchData = async () => {
         try {
           const data = await fetchBrands();
-          console.log("BRANDbar usEf BRD data ", data);
+          // console.log("BRANDbar usEf BRD data ", data);
           catalog.brands = data;
         } catch (error) {
           console.error("Ошибка загрузки Брендов>:", error);

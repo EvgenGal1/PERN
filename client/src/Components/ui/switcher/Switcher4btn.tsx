@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
 import { useSize } from "../../../scripts/hooks/useSize";
@@ -15,18 +15,18 @@ export const Switcher4btn = () => {
   };
   // опред.начал.Размер из LS и перем.по умолч.
   const LS = localStorage.getItem("--size");
-  let initilLS = "";
+  const initilLS = useRef("");
   // перед рендером опред.и пропис.сост.переключателя
   useLayoutEffect(() => {
     if (LS === "") {
-      initilLS = "mid";
-      setCheckedBox(initilLS);
+      initilLS.current = "mid";
+      setCheckedBox(initilLS.current);
     }
-  }, [checkedBox]);
+  }, [LS, checkedBox]);
   // в rendere опред.переключатель и слежение измен.
   useEffect(() => {
     if (LS === "") {
-      initilLS = "mid";
+      initilLS.current = "mid";
     }
     if (LS === "big") {
       setCheckedBox("big");
@@ -40,7 +40,7 @@ export const Switcher4btn = () => {
     if (LS === "off") {
       setCheckedBox("off");
     }
-  }, [checkedBox]);
+  }, [LS, checkedBox]);
 
   // ЛОГИКА переключателя Размеров (big/mid/small/off)
   // стат./fn Размеров (Большой/Средний/Маленький/Выключен)
