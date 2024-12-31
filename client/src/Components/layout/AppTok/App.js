@@ -1,6 +1,6 @@
 // ! https://www.digitalocean.com/community/tutorials/how-to-build-custom-pagination-with-react-ru
 
-import React, { Component, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 // import Countries from "countries-api/lib/data/Countries.json";
 // import "./App.css";
 

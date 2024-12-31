@@ -319,6 +319,10 @@ img.card-img-top {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    strong {
+      display: flex;
+      justify-content: space-between;
+    }
   }
 }
 

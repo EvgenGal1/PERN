@@ -296,7 +296,11 @@ const ProductItem = ({ data }: any) => {
           {/* Категор./Бренд/Назв./ */}
           <div className="card--eg__product" style={{ marginTop: "5px" }}>
             <strong>
-              {strCat} {data.brand.name} {strName}
+              <span>
+                {strCat} {data.brand.name}
+                {"  "}
+              </span>
+              <span>{strName}</span>
             </strong>
           </div>
         </Card.Body>
