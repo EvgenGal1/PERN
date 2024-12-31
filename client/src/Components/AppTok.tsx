@@ -7,7 +7,7 @@ import axios from "axios";
 import { AppContext } from "./layout/AppTok/AppContext";
 import { checkUser } from "../http/Tok/userAPI_Tok";
 // гл.Компоненты
-import { Header } from "./layout/vr/AppStar/Header";
+import { Header } from "./layout/Header";
 import NavBar from "./layout/AppTok/NavBar";
 import AppRouterTok from "./layout/AppTok/AppRouterTok";
 import { Footer } from "./layout/Footer";
@@ -17,7 +17,7 @@ import Loader from "./layout/AppTok/Loader";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/styles.scss";
 
-const AppTok = observer(() => {
+const AppTok: React.FC = observer(() => {
   const { user /* , basket */ }: any = useContext(AppContext);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +30,6 @@ const AppTok = observer(() => {
     ])
       .then(
         axios.spread((data: /* userData | basketData */ any) => {
-          console.log("AppTok data ", data);
           // запись user и activated в Store
           if (data.userData) user.login(data.userData);
           if (data.activated) user.isActivated(data.activated);
@@ -40,10 +39,8 @@ const AppTok = observer(() => {
       .finally(() => setLoading(false));
   }, [user]);
 
-  // показываем loader, пока получаем с сервера данн. пользователя
-  if (loading) {
-    return <Loader />;
-  }
+  // показ Loader, при загр.данн.польз.с БД
+  if (loading) return <Loader />;
 
   return (
     <BrowserRouter>
