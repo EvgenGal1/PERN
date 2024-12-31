@@ -32,7 +32,7 @@ const AdminCategories = () => {
 
   const handleDeleteClick = (id: number, name?: string) => {
     // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Удалить Категорию - «${name}»`);
+    const confirmDel = confirm(`Удалить Категорию - «${name}»`);
     if (confirmDel) {
       deleteCategory(id)
         .then((data) => {

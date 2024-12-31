@@ -28,8 +28,7 @@ const AdminBrands = () => {
   };
 
   const handleDeleteClick = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Удалить Бренд - «${name}»`);
+    const confirmDel = confirm(`Удалить Бренд - «${name}»`);
     if (confirmDel) {
       deleteBrand(id)
         .then((data) => {
@@ -66,7 +65,6 @@ const AdminBrands = () => {
         setShow={setShow}
         setChange={setChange}
       />
-      {/*  */}
       {brands.length > 0 ? (
         <table className="mt-3 table--eg">
           <thead>

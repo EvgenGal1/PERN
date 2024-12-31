@@ -46,10 +46,10 @@ const AdminProducts = () => {
   // удал.эл.
   const handleDeleteClick = (id: number, name?: string) => {
     // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Удалить Товар - «${name}»`);
+    const confirmDel = confirm(`Удалить Товар - «${name}»`);
     if (confirmDel) {
       deleteProduct(id)
-        .then((data) => {
+        .then((/* data */) => {
           // если это последняя страница и мы удаляем на ней единственный оставшийся товар — то надо перейти к предыдущей странице
           if (
             catalog.count > 1 &&
@@ -76,7 +76,6 @@ const AdminProducts = () => {
       catalog.sortField
     )
       .then((data) => {
-        // console.log("AdmProd usEf data ", data);
         setProducts(data.rows);
         catalog.limit = Math.ceil(data.limit);
         catalog.count = data.count;
