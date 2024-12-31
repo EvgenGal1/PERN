@@ -138,14 +138,24 @@ const Product = (/* props: any */) => {
                   <span
                     onMouseOver={() => setHoverStar(index + 1)}
                     onMouseLeave={() => setHoverStar(0)}
+                    onFocus={() => setHoverStar(index + 1)}
+                    onBlur={() => setHoverStar(0)}
                     onClick={() => handleSubmit(index + 1)}
                     style={{
                       display: "flex",
                       fontSize: "25px",
                       fontWeight: "100",
                       color: "orange",
+                      cursor: "pointer",
                     }}
                     key={index}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        handleSubmit(index + 1);
+                      }
+                    }}
                   >
                     <StarFill />
                   </span>
@@ -153,14 +163,24 @@ const Product = (/* props: any */) => {
                   <span
                     onMouseOver={() => setHoverStar(index + 1)}
                     onMouseLeave={() => setHoverStar(0)}
+                    onFocus={() => setHoverStar(index + 1)}
+                    onBlur={() => setHoverStar(0)}
                     onClick={() => handleSubmit(index + 1)}
                     style={{
                       display: "flex",
                       fontSize: "25px",
                       fontWeight: "100",
                       color: "orange",
+                      cursor: "pointer",
                     }}
                     key={index}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        handleSubmit(index + 1);
+                      }
+                    }}
                   >
                     <StarOutline />
                   </span>

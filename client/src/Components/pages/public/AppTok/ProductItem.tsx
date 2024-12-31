@@ -84,7 +84,7 @@ const ProductItem = ({ data }: any) => {
     strName.includes("Вторая") ||
     strName.includes("Третья")
   ) {
-    let endStrName = strName.slice(6);
+    const endStrName = strName.slice(6);
     if (strName.includes("Первая")) {
       strName = "1-ая";
     }
@@ -97,7 +97,7 @@ const ProductItem = ({ data }: any) => {
     strName += endStrName;
   }
   if (strName.includes("Четвёртая")) {
-    let endStrName = strName.slice(9);
+    const endStrName = strName.slice(9);
     strName = "4-ая";
     strName += endStrName;
   }
@@ -145,7 +145,7 @@ const ProductItem = ({ data }: any) => {
     }
     // ^ доп.разбиение на 3 цифры
     // var num = 1234567890;
-    // var result11 = num.toLocaleString(); // 1 234 567 890
+    // var result11 = num.toLocaleString(); // 1 234 567 890
     // function numberWithSpaces(x: any) {
     //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     // }
@@ -238,8 +238,17 @@ const ProductItem = ({ data }: any) => {
                   numberStar >= index + 1 || hoverStar >= index + 1 ? (
                     <span
                       onMouseOver={() => setHoverStar(index + 1)}
+                      onFocus={() => setHoverStar(index + 1)}
                       onMouseLeave={() => setHoverStar(0)}
+                      // onBlur={() => setHoverStar(0)}
                       onClick={() => handleSubmit(index + 1)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          handleSubmit(index + 1);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                       style={{
                         display: "flex",
                         fontSize: "25px",
@@ -253,8 +262,15 @@ const ProductItem = ({ data }: any) => {
                   ) : (
                     <span
                       onMouseOver={() => setHoverStar(index + 1)}
+                      onFocus={() => setHoverStar(index + 1)}
                       onMouseLeave={() => setHoverStar(0)}
-                      onClick={() => handleSubmit(index + 1)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          handleSubmit(index + 1);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                       style={{
                         display: "flex",
                         fontSize: "25px",

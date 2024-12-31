@@ -1,4 +1,5 @@
 // ^ HTTP-запросы на сервер при работе с корзиной
+
 import { guestInstance } from "./indexAPI_Tok";
 
 export const fetchBasket = async () => {
@@ -10,7 +11,7 @@ export const fetchBasket = async () => {
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -27,7 +28,7 @@ export const appendBasket = async (prodId: number) => {
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };

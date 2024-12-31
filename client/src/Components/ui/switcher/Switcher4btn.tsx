@@ -44,7 +44,7 @@ export const Switcher4btn = () => {
 
   // ЛОГИКА переключателя Размеров (big/mid/small/off)
   // стат./fn Размеров (Большой/Средний/Маленький/Выключен)
-  const { size, setSize } = useSize();
+  const { /* size, */ setSize } = useSize();
   const handleBigSize = () => {
     setSize("big");
   };

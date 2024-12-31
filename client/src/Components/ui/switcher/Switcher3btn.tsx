@@ -41,7 +41,7 @@ export const Switcher3btn = () => {
 
   // ЛОГИКА переключателя Цветовых Тем (dark/light/natural)
   // стат./fn Цветовых Тем (Тёмная/Сетлая/Средняя)
-  const { theme, setTheme } = useTheme();
+  const { /* theme, */ setTheme } = useTheme();
   const handleDarkTheme = () => {
     setTheme("dark");
   };

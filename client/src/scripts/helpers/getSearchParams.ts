@@ -24,11 +24,11 @@ export const getSearchParams = (searchParams: any) => {
   if (limit && /[1-9][0-9]*/.test(limit)) {
     limit = parseInt(limit);
   }
-  let sortOrd = searchParams.get("sortOrd");
+  const sortOrd = searchParams.get("sortOrd");
   // if (sortOrd && /[a-z][A-Z]*/.test(sortOrd)) {
   //   sortOrd = parseInt(sortOrd);
   // }
-  let sortField = searchParams.get("sortField");
+  const sortField = searchParams.get("sortField");
   // if (sortField && /[a-z][A-Z]*/.test(sortField)) {
   //   sortField = parseInt(sortField);
   // }

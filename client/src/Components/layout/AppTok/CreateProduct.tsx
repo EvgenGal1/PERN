@@ -1,5 +1,5 @@
 // ^ Модальное окно с формой добавления Товара
-import { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 
 import {
@@ -41,7 +41,7 @@ let defaultValueBulk: { [key: string | number]: any } = {
 //   0: [],
 // };
 
-let templateValueArr: { [key: string | number]: string | number } = {
+const templateValueArr: { [key: string | number]: string | number } = {
   brand: "",
   category: "",
   image: "",
@@ -51,7 +51,7 @@ let templateValueArr: { [key: string | number]: string | number } = {
 
 const isValid = (value: any) => {
   // const result: any = {};
-  const pattern = /^[1-9][0-9]*$/;
+  // const pattern = /^[1-9][0-9]*$/;
 
   // for (let key in value) {
   //   if (key === "name") result.name = value.name.trim() !== "";
@@ -225,7 +225,7 @@ const CreateProduct = (props: any) => {
     console.log("ARR DEL event ", event);
 
     // перем. id блока ФормДаты
-    let idParentPropsNum = Number(
+    const idParentPropsNum = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
 
@@ -270,19 +270,19 @@ const CreateProduct = (props: any) => {
   const handlerChangeBulkValue = (event: any) => {
     event.preventDefault();
     // запись доп.ФормДаты из state в перем.
-    let dataProduct = [...valueBulkArr];
+    const dataProduct = [...valueBulkArr];
 
     // перем. Имени и Значения поля формы
-    let nameForm = event.target.name;
-    let valueForm = event.target.value;
+    const nameForm = event.target.name;
+    const valueForm = event.target.value;
 
     // перем.id блока события
-    let idParentPropsNum = Number(
+    const idParentPropsNum = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
 
     // выбор.в масс. объ.по id блока
-    let idDataProduct = dataProduct[idParentPropsNum];
+    const idDataProduct = dataProduct[idParentPropsNum];
     // перебор объ.по key
     for (const key in idDataProduct) {
       // запись е/и key = name, кроме image
@@ -309,17 +309,17 @@ const CreateProduct = (props: any) => {
   const handlerCloneBulkValue = (event: any) => {
     event.preventDefault();
     // запись данн.ФормДат из state в перем.
-    let dataProduct = [...valueBulkArr];
-    let dataProps = [...propertiesArr];
+    const dataProduct = [...valueBulkArr];
+    const dataProps = [...propertiesArr];
 
     // перем.id блока события
-    let idParentPropsNum = Number(
+    const idParentPropsNum = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
 
     // выбор.в statах объ.Товара/масс.Хар-ик по id блока ФормДаты
-    let idDataProduct = dataProduct[idParentPropsNum];
-    let idDataProps = dataProps[idParentPropsNum];
+    const idDataProduct = dataProduct[idParentPropsNum];
+    const idDataProps = dataProps[idParentPropsNum];
 
     // клоны Товара/Хар-ик
     const cloneProduct = Object.assign({}, idDataProduct); // альтерн. { ...idDataProduct } | JSON.parse(JSON.stringify(idDataProduct))
@@ -366,22 +366,20 @@ const CreateProduct = (props: any) => {
     setValid(correct);
 
     // все поля формы прошли проверку, можно отправлять данные на сервер
-    if (
-      /* correct.name && correct.price && correct.category && correct.brand */ true
-    ) {
+    if (correct.name && correct.price && correct.category && correct.brand) {
       console.log("SBM IF 1 ", 1);
 
       // ^ для render|state|загрузки на ОБЪЕКТЕ
-      let formData = new FormData();
-      for (let key in valueBulk) {
+      const formData = new FormData();
+      for (const key in valueBulk) {
         if (key === "name") formData.append("name", valueBulk.name);
         if (key === "price") formData.append("price", valueBulk.price);
         if (key === "category")
           formData.append("categoryId", valueBulk.category);
         if (key === "brand") formData.append("brandId", valueBulk.brand);
         if (key === "image") {
-          let imgLenght = valueBulk.image.length;
-          for (var i = 0; i < imgLenght; i++) {
+          const imgLenght = valueBulk.image.length;
+          for (let i = 0; i < imgLenght; i++) {
             formData.append(
               "image",
               valueBulk.image[i],
@@ -392,11 +390,11 @@ const CreateProduct = (props: any) => {
       }
 
       // ^ для render|state|загрузки на МАССИВЕ
-      let formDataArr = new FormData();
-      correctArr.map((fd: any) => {
+      const formDataArr = new FormData();
+      correctArr.map((fd: { [key: string]: any }) => {
         console.log("SBM ARR fd ", fd);
         // let resultArr = {}
-        for (let key in fd) {
+        for (const key in fd) {
           // console.log("fd.name ", fd.name);
           console.log("SBM ARR key ", key);
           if (key === "name") formDataArr.append("name", fd.name);
@@ -426,7 +424,7 @@ const CreateProduct = (props: any) => {
 
       // ^ для render|state|загрузки на МАССИВЕ
       const pairs_2 = Array.from(formDataArr.entries());
-      for (let /* pair */ [key, value] of pairs_2) {
+      for (const /* pair */ [key, value] of pairs_2) {
         console.log("кажд кл./знач. pair ", `${key}: ${value}` /* pair */);
       }
       // вывод каждого масс.в объ.

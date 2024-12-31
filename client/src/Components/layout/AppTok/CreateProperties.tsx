@@ -1,20 +1,19 @@
 // ^ Модальное окно с формой добавления Характеристик Товара
-import { Fragment } from "react";
 import { Form } from "react-bootstrap";
 
 const CreateProperties = (props: any) => {
   const { index, propertiesArr, setPropertiesArr } = props;
 
   // шаблон Характеристик Товаров
-  let templateProp = { name: "", value: "" };
+  const templateProp = { name: "", value: "" };
 
   // ^ для render|state|загрузки на МАССИВЕ
   const appendArr = (event: any) => {
     event.preventDefault();
 
     // перем. state, id блока Родителя
-    let dataPropsArr = [...propertiesArr];
-    let idParentPropsNum = Number(event.target.parentElement.id);
+    const dataPropsArr = [...propertiesArr];
+    const idParentPropsNum = Number(event.target.parentElement.id);
 
     // в масс.Хар-ик по id Родителя в конец добавл. шаблон
     dataPropsArr[idParentPropsNum].push(templateProp);
@@ -26,18 +25,18 @@ const CreateProperties = (props: any) => {
   // ^ Изменение
   const change = (event: any) => {
     // перем. state, и Хар-ик id, id Родителя, name и value
-    let dataProps = [...propertiesArr];
-    let idProps = Number(
+    const dataProps = [...propertiesArr];
+    const idProps = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
-    let idParentProps = Number(
+    const idParentProps = Number(
       event.target.parentElement.parentElement.parentElement.parentElement.id
     );
-    let nameForm = event.target.name;
-    let valueForm = event.target.value;
+    const nameForm = event.target.name;
+    const valueForm = event.target.value;
 
     // выбор.в общ.масс.Хар-ик масс.одной Хар-ки по id блока Родителя
-    let idDataArr = dataProps[idParentProps];
+    const idDataArr = dataProps[idParentProps];
     // ^ в state Хар-ик > в масс.по id блока Родителя > в масс.Харки по id блока Хар-ки, наход.объ. > в объ.наход.ключ = nameForm и его значен.присваиваем valueForm
     dataProps[idParentProps][idProps][nameForm] = valueForm;
 
@@ -54,17 +53,17 @@ const CreateProperties = (props: any) => {
   // ^ Удаление
   const remove = (event: any) => {
     // перем. state и id Хар-ки id, id Родителя, масс.Хар-ик одного Родителя
-    let dataProps = [...propertiesArr];
-    let idProps = Number(
+    const dataProps = [...propertiesArr];
+    const idProps = Number(
       event.target.parentElement.parentElement.parentElement.id
     );
-    let idParentProps = Number(
+    const idParentProps = Number(
       event.target.parentElement.parentElement.parentElement.parentElement.id
     );
-    let arrParentProps = dataProps[idParentProps];
+    const arrParentProps = dataProps[idParentProps];
 
     // перебор масс.ключей одной Хар-ки
-    for (let key of Object.keys(arrParentProps)) {
+    for (const key of Object.keys(arrParentProps)) {
       // е/и key и id Хар-ки равны - удал.с позиц.id один объ.Хар-ки
       if (Number(key) === idProps) arrParentProps.splice(idProps, 1);
     }

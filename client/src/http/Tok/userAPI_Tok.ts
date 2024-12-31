@@ -22,7 +22,7 @@ export const signupUser = async (email: string, password: string | any) => {
       localStorage.setItem("tokenAccess", tokenAcs);
     }
 
-    let data = { userTokenAcs, status };
+    const data = { userTokenAcs, status };
     console.log("user_API sign data : ", data);
     return data;
   } catch (e: any) {
@@ -30,7 +30,7 @@ export const signupUser = async (email: string, password: string | any) => {
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -54,7 +54,7 @@ export const loginUser = async (email: string, password: string | any) => {
       activated = response.data.activated;
     }
 
-    let data = { userTokenAcs, status, activated };
+    const data = { userTokenAcs, status, activated };
     console.log("user_API login data : ", data);
     return data;
   } catch (e: any) {
@@ -62,7 +62,7 @@ export const loginUser = async (email: string, password: string | any) => {
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -73,7 +73,7 @@ export const loginUser = async (email: string, password: string | any) => {
 // `проверить Пользователя`
 export const checkUser = async () => {
   try {
-    let userToken, userData;
+    let userToken;
     userToken = localStorage.getItem("tokenAccess");
 
     // false е/и tokenAccess нет в LS
@@ -85,13 +85,14 @@ export const checkUser = async () => {
     // сохр.токен, расшифр.токен, подтверждение почты
     userToken = response.data.token;
     localStorage.setItem("tokenAccess", userToken);
-    userData = jwt_decode(userToken);
-    let activated = response.data.activated;
+    const userData = jwt_decode(userToken);
+    const activated = response.data.activated;
 
     // возвращ.расшифр.токен и подтверждение почты
     console.log("user_API check userToken, userData : ", userToken, userData);
     return { userData, activated };
   } catch (e: any) {
+    console.log("checkUser e : ", e);
     localStorage.removeItem("tokenAccess");
     return false;
   }

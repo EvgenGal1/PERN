@@ -16,7 +16,7 @@ export const adminCreate = async (body: any) => {
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -64,7 +64,7 @@ export const createItem = async (orderId: number, item: any) => {
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -99,7 +99,7 @@ export const userCreate = async (body: any) => {
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -129,7 +129,7 @@ export const guestCreate = async (body: any) => {
     const errors = e?.response?.data?.errors;
     const message = e?.response?.data?.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };

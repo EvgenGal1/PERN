@@ -13,7 +13,7 @@ export const createCategory = async (category: string | any) => {
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -50,7 +50,7 @@ export const createBrand = async (brand: string | any) => {
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -87,7 +87,7 @@ export const createProduct = async (product: string | any) => {
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -164,7 +164,7 @@ export const createProdRating = async (
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
@@ -184,7 +184,7 @@ export const createProperty = async (productId: number, property: any) => {
     const errors = e?.response.data.errors;
     const message = e?.response.data.message;
 
-    let data = { errors, message, status };
+    const data = { errors, message, status };
     return data;
   }
 };
