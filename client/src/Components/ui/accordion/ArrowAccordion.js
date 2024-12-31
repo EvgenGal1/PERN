@@ -25,9 +25,17 @@ class ArrowAccordion extends React.Component {
     return (
       <>
         <div
+          role="button"
+          tabIndex={0}
           onClick={() => {
             this.handleClickRef();
             this.toggleArrowAccord(this.openArrowAccord);
+          }}
+          onKeyPress={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              this.handleClickRef();
+              this.toggleArrowAccord(this.openArrowAccord);
+            }
           }}
           className="arrowAccord"
         >

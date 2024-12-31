@@ -9,15 +9,15 @@ export interface FormInp {
   stInp: string;
   setStInp: string;
   styleInp: string;
-  onChanInp: Function;
-  onClikInp: Function;
+  onChanInp: (value: string) => void;
+  onClikInp: () => void;
   plch: string;
   hr: boolean;
   stBtn: string;
   setStBtn: string;
   styleBtn: string;
-  onChanBtn: Function;
-  onClikBtn: Function;
+  onChanBtn: (value: string) => void;
+  onClikBtn: (value: string) => void;
   childBtn: string | number;
   input2: string;
   val2: string;
@@ -51,7 +51,7 @@ export const FormInpBtnJTS = ({
   val3,
   plch3,
 }: FormInp) => {
-  let inp = (
+  const inp = (
     <input
       type={type ? type : "text"}
       name={name ? name : "name"}
