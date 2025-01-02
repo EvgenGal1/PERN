@@ -26,22 +26,23 @@ const Order = (props: any) => {
   // для обновления списка после добавления, редактирования, удаления — изменяем состояние
   const [change, setChange] = useState(false);
   // id заказа, которую будем редактировать — для передачи в <UpdateOrder id={…} />
-  // const [orderId, setOrderId]: any = useState(null);
+  const [orderId, setOrderId] = useState<number | null>(null);
   // признак удалённого Заказа
   const [delOrd, setDelOrd]: any = useState(false);
   // ошибка
   const [error, setError] = useState(null);
+  console.log("orderId ", orderId);
 
   // Редактирование Заказа
   const handleUpdateClick = (id: number) => {
-    // setOrderId(id);
+    setOrderId(id);
     setShow(true);
   };
 
   // Удаления Заказа
   const handleDeleteClick = (id: number) => {
     // eslint-disable-next-line no-restricted-globals
-    let confirmDel = confirm(`Удалить Заказ - «${id}»`);
+    const confirmDel = confirm(`Удалить Заказ - «${id}»`);
     if (confirmDel) {
       adminDelete(id)
         .then((data: any) => {
@@ -193,7 +194,7 @@ const Order = (props: any) => {
           id={/* orderI */ id}
           show={show}
           setShow={setShow}
-          setChange={setChange}
+          setChange={() => setChange(!change)}
           orders={orders}
           // admin={admin}
         />

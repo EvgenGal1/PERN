@@ -95,7 +95,7 @@ const Product = (/* props: any */) => {
             <Image
               width={300}
               height={300}
-              src={process.env.REACT_APP_IMG_URL_PERN + product.image}
+              src={`${process.env.REACT_APP_IMG_URL_PERN}${process.env.REACT_APP_PUB_DIR}/img/shop/product/${product.image}`}
             />
           ) : (
             <Image

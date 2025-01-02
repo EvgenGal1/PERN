@@ -20,7 +20,7 @@ const defaultValid = { name: null, price: null, category: null, brand: null };
 const isValid = (value: any) => {
   const result: any = {};
   const pattern = /^[1-9][0-9]*$/;
-  for (let key in value) {
+  for (const key in value) {
     if (key === "name") result.name = value.name.trim() !== "";
     if (key === "price") result.price = pattern.test(value.price.trim());
     if (key === "category") result.category = pattern.test(value.category);

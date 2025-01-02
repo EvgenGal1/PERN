@@ -6,24 +6,10 @@ import { Navbar, Nav } from "react-bootstrap";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
 import { useAllKeysPress } from "../../../scripts/hooks/useAllKeysPress";
-// переключатель видимости Доп.Меню
-import { Switcher1btn } from "../../ui/switcher/Switcher1btn";
-
-// переключатель черно-белый
-import { Switcher2btn } from "../../ui/switcher/Switcher2btn";
-
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
 import { useTheme } from "../../../scripts/hooks/useTheme";
-// переключатель для Цв.Тем
-import { Switcher3btn } from "../../ui/switcher/Switcher3btn";
-
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
 import { useSize } from "../../../scripts/hooks/useSize";
-// переключатель для размеров
-import { Switcher4btn } from "../../ui/switcher/Switcher4btn";
-
-// подсказка по наведению мыши
-import { TitleEl } from "../../ui/hintTemplates/TitleEl";
 
 import {
   SHOP_ROUTE,
@@ -66,7 +52,7 @@ const NavBar = observer(() => {
       if (pressCombine) localStorage.removeItem("--dopMenu");
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combinePress /* , pressCombine */]);
 
   useEffect(() => {
@@ -77,8 +63,8 @@ const NavBar = observer(() => {
   }, [combinePress_2, user?.isAuth]);
 
   // сост. подсказки по наведению мыши
-  const [isHovering, setIsHovering] = useState("");
-  useEffect(() => {}, [isHovering]);
+  // const [isHovering, setIsHovering] = useState("");
+  // useEffect(() => {}, [isHovering]);
 
   // подкл. логики переключателя Цветовых Тем (dark/light/natural)
   useTheme();

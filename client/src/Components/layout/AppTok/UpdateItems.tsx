@@ -1,54 +1,11 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
-import uuid from "react-uuid";
-// import FormField__eg from "../../ui/Form/FormField__eg";
+
 import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
 
 const UpdateItems = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.
   const { items, setItems } = props;
-
-  const append = () => {
-    setItems([
-      ...items,
-      {
-        id: null,
-        name: null,
-        price: null,
-        quantity: null,
-        unique: uuid(),
-        append: true,
-      },
-    ]);
-  };
-
-  // новую хар-ку надо просто удалить из массива items, а старую — оставить, но изменить remove на true, чтобы потом выполнить http-запрос на сервер для удаления
-  const remove = (unique: any) => {
-    const item = items.find((elem: any) => elem.unique === unique);
-    if (item.id) {
-      // старая хар-ка
-      setItems(
-        items.map((elem: any) =>
-          elem.unique === unique
-            ? { ...elem, change: false, remove: true }
-            : elem
-        )
-      );
-    } else {
-      // новая хар-ка
-      setItems(items.filter((elem: any) => elem.unique === unique));
-    }
-  };
-
   const change = (event: any, unique: any) => {
-    // * ранее на объ.
-    // setItems(
-    //   items.map((item: any) =>
-    //     item.unique === unique
-    //       ? { ...item, [key]: value, change: !item.append }
-    //       : item
-    //   )
-    // );
-
     // на масс.с масс.
     setItems(
       items.map((item: any) => {

@@ -173,7 +173,7 @@ const ProductItem = ({ data }: any) => {
         {data.image ? (
           <Card.Img
             variant="top"
-            src={process.env.REACT_APP_IMG_URL_PERN + data.image}
+            src={`${process.env.REACT_APP_IMG_URL_PERN}${process.env.REACT_APP_PUB_DIR}/img/shop/product/${data.image}`}
             onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
           />
         ) : (

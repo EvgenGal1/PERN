@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
@@ -15,7 +15,7 @@ const Admin = () => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
 
-  const handleLogout = (event: any) => {
+  const handleLogout = () => {
     logoutUser();
     user.logout();
     navigate(LOGIN_ROUTE, { replace: true });

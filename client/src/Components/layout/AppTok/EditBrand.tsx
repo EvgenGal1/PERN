@@ -43,16 +43,18 @@ const EditBrand = (props: any) => {
       const data = {
         name: name.trim(),
       };
-      const success = (data: any) => {
+      const success = () => {
         // закрываем модальное окно создания-редактирования бренда
         setShow(false);
         // изменяем состояние родителя, чтобы обновить список брендов
         setChange((state: any) => !state);
       };
       const error = (error: any) => alert(error.response.data.message);
-      id
-        ? updateBrand(id, data).then(success).catch(error)
-        : createBrand(data).then(success).catch(error);
+      if (id) {
+        updateBrand(id, data).then(success).catch(error);
+      } else {
+        createBrand(data).then(success).catch(error);
+      }
     }
   };
 

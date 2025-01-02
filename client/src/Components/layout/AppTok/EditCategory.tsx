@@ -43,16 +43,18 @@ const EditCategory = (props: any) => {
       const data = {
         name: name.trim(),
       };
-      const success = (data: any) => {
+      const success = () => {
         // закрываем модальное окно создания-редактирования категории
         setShow(false);
         // изменяем состояние родителя, чтобы обновить список категорий
         setChange((state: any) => !state);
       };
       const error = (error: any) => alert(error.response.data.message);
-      id
-        ? updateCategory(id, data).then(success).catch(error)
-        : createCategory(data).then(success).catch(error);
+      if (id) {
+        updateCategory(id, data).then(success).catch(error);
+      } else {
+        createCategory(data).then(success).catch(error);
+      }
     }
   };
 

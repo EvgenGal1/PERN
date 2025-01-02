@@ -1,11 +1,9 @@
 /* eslint-disable react/jsx-pascal-case */
 // ^ модальн.окно редактирование Заказа
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import uuid from "react-uuid";
 
 import {
-  adminGetOne,
-  adminUpdate,
   createItem,
   updateItem,
   deleteItem,
@@ -14,36 +12,14 @@ import UpdateItems from "./UpdateItems";
 import Modal__eg from "../../ui/Modal/Modal__eg";
 import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
 
-const defaultValue = {
-  name: "",
-  email: "",
-  phone: "",
-  address: "",
-  comment: "",
-};
-const defaultValid = {
-  name: null,
-  email: null,
-  phone: null,
-  address: null,
-  comment: null,
-};
-const defaultItems = {
-  id: "",
-  name: "",
-  price: "",
-  quantity: "",
-  unique: "",
-};
-
 // fn валид.
 const isValid = (value: any) => {
   const result: any = {};
-  const pattern = /^[1-9][0-9]*$/;
+  // const pattern = /^[1-9][0-9]*$/;
   // const patternNam = /^[-а-я]{2,}( [-а-я]{2,}){1,2}*$/;
   const patternEML = /^[a-z0-9._%+-]+@[a-z0-9.-]+.{1,2}[a-z]+$/i;
-  const patternPHN = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
-  for (let key in value) {
+  const patternPHN = /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d- ]{7,10}$/i;
+  for (const key in value) {
     if (key === "name")
       result.name =
         // patternNam.test(value.name.trim());
@@ -119,22 +95,13 @@ interface Props {
   id: number | string;
   show: boolean;
   // setShow: (show: boolean) => void;
-  setChange: (change: boolean) => void;
+  setChange: () => void;
   setShow: any; // (e: ChangeEvent<HTMLInputElement>) => void;
   orders: any; // { [key: string]: string | number | string[] };
 }
-interface FormErrors {
-  name: string | null;
-  email?: null | string;
-  phone?: null | string;
-  address?: null | string;
-  comment?: null | string;
-  sms?: string;
-  password?: string;
-}
 
 const UpdateOrder: React.FC<Props> = (props) => {
-  const { id, show, setShow, setChange, orders } = props;
+  const { id, show, setShow, orders } = props;
 
   const order2 = {
     name: orders.name.toString(),
@@ -146,7 +113,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
   // данн.Польз-ля по Заказу
   const [value, setValue] = useState(order2);
 
-  let ordItmsMap = orders.items.map((item: any) => {
+  const ordItmsMap = orders.items.map((item: any) => {
     // при добавлении новой хар-ки свойство append принимает значение true
     // при изменении старой хар-ки свойство change принимает значение true
     // при удалении старой хар-ки свойство remove принимает значение true
@@ -169,16 +136,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
   );
 
   // валидация/ошибки
-  const [valid /* formErrors */, setValid /* setFormErrors */] = useState(
-    /* defaultValid */
-    /* isValid(order2) */
-    /* name: "", // null
-    email: "", // null
-    phone: "", // null
-    address: "", // null
-    comment: "", // null */
-    order2
-  );
+  const [, setValid] = useState(order2);
 
   // ^ пока не нужнй код. пробы обн.данн.ч/з Род.Комп.Order
   // useEffect(() => {
@@ -232,7 +190,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
 
   // ^ врем.откл.req к БД
   const handleSubmit = async (event: any) => {
-    // event.preventDefault();
+    event.preventDefault();
     /*
      * На первый взгляд кажется, что переменная correct не нужна, можно обойтись valid, но это не так. Нельзя использовать значение valid сразу после изменения этого значения — ф-ция setValid не изменяет значение состояния мгновенно. Вызов функции лишь означает — React «принял к сведению» наше сообщение, что состояние нужно изменить.
      */
@@ -283,6 +241,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
       //   .catch((error) => alert(error.response.data.message));
     }
   };
+  console.log("handleSubmit ", handleSubmit);
 
   // ^ рендр.эл. вне корн.эл.React
   // return show ? ReactDOM.createPortal(<div></div>, document.body) : null;
