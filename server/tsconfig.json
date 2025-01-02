@@ -2,7 +2,18 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "noImplicitAny": false,
-    "outDir": "dist",
-    "baseUrl": "."
-  }
+    "rootDir": "./", // Корневая директория вашего TypeScript проекта
+    "outDir": "./dist", // Директория для скомпилированных файлов
+    "baseUrl": "./", // Базовый путь для разрешения модулей
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
