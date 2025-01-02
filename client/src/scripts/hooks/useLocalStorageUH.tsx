@@ -1,65 +1,63 @@
 import { useState } from "react";
 
 // ^ посмотреть размер занятого LS (подробнее https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage)
-let _lsTotal = 0,
-  _xLen,
-  _x;
-for (_x in localStorage) {
-  if (!Object.prototype.hasOwnProperty.call(localStorage, _x)) {
-    continue;
-  }
-  _xLen = (localStorage[_x].length + _x.length) * 2;
-  _lsTotal += _xLen;
-  console.log(_x.substr(0, 50) + " = " + (_xLen / 1024).toFixed(2) + " KB");
-}
-console.log("Total = " + (_lsTotal / 1024).toFixed(2) + " KB");
+// Fn оценки размера LS
+const calculateLocalStorageSize = () => {
+  let totalSize = 0;
 
-// Hook с сайта https://usehooks.com/page/3
+  Object.keys(localStorage).forEach((key) => {
+    const itemSize = (localStorage[key].length + key.length) * 2; // умножение на 2 для байтов
+    totalSize += itemSize;
+    console.log(`${key.substr(0, 50)} = ${(itemSize / 1024).toFixed(2)} KB`);
+  });
+  console.log(`Total = ${(totalSize / 1024).toFixed(2)} KB`);
+};
+
+// оценка размера LS
+calculateLocalStorageSize();
+
+// Hook раб.с LS
 export function useLocalStorageUH(
   key: string,
   initialValue: string | number | boolean | object
 ) {
-  // Состояние для хранения нашего значения
-  // Передайте функцию начального состояния в useState, чтобы логика выполнялась только один раз
+  // сост.LS с fn опред.нач.сост.
   const [storedValue, setStoredValue] = useState(() => {
-    if (typeof window === "undefined") {
-      return initialValue;
-    }
+    if (typeof window === "undefined") return initialValue;
+
     try {
-      // Получить из локального хранилища по ключу
+      // получ.LS по ключу, возвращ.parse или нач.сост.
       const item = window.localStorage.getItem(key);
-      // Разобрать сохраненный json или, если ни один не возвращает initialValue
       return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      // Если ошибка также возвращает initialValue
-      console.log(error);
-      return initialValue;
+    } catch (error: unknown) {
+      throw new Error(
+        `Не удалось проанализировать элемент localStorage: ${
+          // unknown к т.Error > получ.св-в
+          (error as Error).message
+        }`
+      );
     }
   });
-  // Возвратите обернутую версию функции установки useState, которая сохраняет новое значение в localStorage.
-  const setValue = (
-    value:
-      | string
-      | number
-      | boolean
-      | object
-      | ((
-          val: string | number | boolean | object
-        ) => string | number | boolean | object)
-  ) => {
+
+  // Fn  устан.нов.знач. LS
+  const setValue = (value: string | number | boolean | object) => {
     try {
-      // Разрешить значение быть функцией, чтобы у нас был тот же API, что и у useState
+      // при fn получ.нов.знач. или использ.переданное
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
-      // Сохранить состояние
+      // сохр.сост.
       setStoredValue(valueToStore);
-      // Сохранить в локальном хранилище
+      // сохр.в LS
       if (typeof window !== "undefined") {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
-    } catch (error) {
-      // Более продвинутая реализация обработает случай ошибки
-      console.log(error);
+    } catch (error: unknown) {
+      throw new Error(
+        `Не удалось установить элемент localStorage: ${
+          // unknown к т.Error > получ.св-в
+          (error as Error).message
+        }`
+      );
     }
   };
   return [storedValue, setValue];

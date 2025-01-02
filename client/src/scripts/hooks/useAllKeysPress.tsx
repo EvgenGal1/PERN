@@ -1,7 +1,22 @@
 // !!! https://codesandbox.io/s/multiple-keys-in-order-vpovi?file=/src/App.js
 import { useState, useEffect, useRef } from "react";
 
-function useAllKeysPress(options) {
+interface Options {
+  userKeys: string | string[];
+  order?: boolean;
+  ref?: React.RefObject<HTMLElement> | Window;
+}
+
+interface Settings {
+  type: string | null;
+  objRef: React.RefObject<HTMLElement> | Window;
+  downHandler: ((event: KeyboardEvent) => void) | undefined;
+  upHandler: ((event: KeyboardEvent) => void) | undefined;
+  useEffect: (() => void) | null;
+  output: boolean | null;
+}
+
+function useAllKeysPress(options: Options): boolean | null {
   // убедитесь, что «параметры» это объект
   if (!options || Object.keys(options).length === 0) {
     throw new Error(
@@ -16,12 +31,12 @@ function useAllKeysPress(options) {
 
   // Реагировать крючки.
   const [keyPress, setKeyPress] = useState(false);
-  const [anyKeyPressed, setAnyKeyPressed] = useState([]); // новое с массивами
+  const [anyKeyPressed, setAnyKeyPressed] = useState<string[]>([]); // новое с массивами
 
   // Ссылка, чтобы определить, была ли уже нажата клавиша.
-  const prevKey = useRef("");
+  const prevKey = useRef<string>("");
 
-  const settings = {
+  const settings: Settings = {
     type: null,
     objRef: ref,
     downHandler: undefined,
@@ -30,7 +45,7 @@ function useAllKeysPress(options) {
     output: null,
   };
 
-  const setData = (settings) => {
+  const setData = (settings: Settings): Settings => {
     // Убедитесь, что у нас есть свойство «пользователя»
     if (userKeys) {
       // Проверьте, является ли объект строкой, если это так
@@ -65,7 +80,7 @@ function useAllKeysPress(options) {
     return settings;
   };
 
-  const downHandler = ({ key }) => {
+  const downHandler = ({ key }: { key: string }) => {
     // Избежать этой функции, если эти два значения соответствуют
     // (Доказательство, что клавиша уже нажата).
     if (prevKey.current === userKeys) return;
@@ -76,7 +91,7 @@ function useAllKeysPress(options) {
     }
   };
 
-  const upHandler = ({ key }) => {
+  const upHandler = ({ key }: { key: string }) => {
     if (key === userKeys) {
       setKeyPress(false);
       // сбросить ценность предварительного
@@ -84,14 +99,20 @@ function useAllKeysPress(options) {
     }
   };
 
-  const downMultiHandler = ({ key, repeat }) => {
+  const downMultiHandler = ({
+    key,
+    repeat,
+  }: {
+    key: string;
+    repeat: boolean;
+  }) => {
     // Примечание: предотвращает запись двойного ключа в массиве
     if (repeat) return;
 
     setAnyKeyPressed((prevState) => [...prevState, key]);
   };
 
-  const upMultiHandler = ({ key }) => {
+  const upMultiHandler = ({ key }: { key: string }) => {
     // Примечание: необходимо снова позвонить в Set State из-за того, как работает состояние.
     // В противном случае потребуется, чтобы функция спешилась и переоценивает, что в порядке.
     setAnyKeyPressed((prevState) => [...prevState]);
@@ -102,9 +123,9 @@ function useAllKeysPress(options) {
 
   // `нажаты клавиши`
   const areKeysPressed = (
-    keys = [], // массив клвш или 0 ?
-    Pressed = [] // сост ? anyKeyPressed `любая нажатая клавиша`. в консоле - нажимаемые клвш
-  ) => {
+    keys: string[] = [], // массив клвш или 0 ?
+    Pressed: string[] = [] // сост ? anyKeyPressed `любая нажатая клавиша`. в консоле - нажимаемые клвш
+  ): boolean => {
     // console.log("usKeyPress areKeysPressed keys ", keys);
     // console.log(keys);
     // console.log("usKeyPress areKeysPressed Pressed ", Pressed);
@@ -127,11 +148,9 @@ function useAllKeysPress(options) {
         return value === Pressed[index];
       });
 
-    let result;
-
     // Если «Порядок» не был установлен, используйте расчет «А -А -А -ОРУК».
     // В противном случае используйте расчет «inorder».
-    !order ? (result = anyOrder.length === 0) : (result = inOrder);
+    const result = !order ? anyOrder.length === 0 : inOrder;
     return result;
   };
 
@@ -140,19 +159,45 @@ function useAllKeysPress(options) {
       // Если «ref» после инициализации имеет свойство «текущего», то это относится
       // к указанному элементу, в этом случае «элемент» должен ссылаться на это.
       // В противном случае продолжайте состояние по умолчанию (объект окна).
-      const element = ref.current ? ref.current : ref;
+      const element = ref instanceof Window ? ref : ref.current;
 
       // console.log("usKeyPress element ", element);
       // console.log("usKeyPress ref ", ref);
       // console.log("usKeyPress ref.current ", ref.current);
 
       // Добавить слушателей событий
-      element.addEventListener("keydown", settings.downHandler);
-      element.addEventListener("keyup", settings.upHandler);
-      return () => {
-        element.removeEventListener("keydown", settings.downHandler);
-        element.removeEventListener("keyup", settings.upHandler);
-      };
+      if (element) {
+        if (settings.downHandler) {
+          element.addEventListener(
+            "keydown",
+            settings.downHandler as EventListener
+          );
+        }
+        if (settings.upHandler) {
+          if (settings.downHandler) {
+            element.removeEventListener(
+              "keydown",
+              settings.downHandler as EventListener
+            );
+          }
+          if (settings.upHandler) {
+            element.removeEventListener(
+              "keyup",
+              settings.upHandler as EventListener
+            );
+          }
+        }
+        return () => {
+          element.removeEventListener(
+            "keydown",
+            settings.downHandler as EventListener
+          );
+          element.removeEventListener(
+            "keyup",
+            settings.upHandler as EventListener
+          );
+        };
+      }
     }, []); // Пустое массив гарантирует, что эффект работает только на креплении и разоблачении
   }
 
@@ -164,7 +209,9 @@ function useAllKeysPress(options) {
   /**
    * Инициализировать слушателей событий
    */
-  settings.useEffect();
+  if (settings.useEffect) {
+    settings.useEffect();
+  }
 
   /**
    * Возвращает «логическое» значение с входов клавиатуры
