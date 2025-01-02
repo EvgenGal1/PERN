@@ -1,10 +1,10 @@
 // табл.
-import { Basket as BasketModel } from "../models/model";
-import { Product as ProductModel } from "../models/model";
-import { BasketProduct as BasketProductModel } from "../models/model";
+import { Basket as BasketModel } from '../models/model';
+import { Product as ProductModel } from '../models/model';
+import { BasketProduct as BasketProductModel } from '../models/model';
 // утилиты/helpы/ошб.
-import DatabaseUtils from "../utils/database.utils";
-import AppError from "../error/ApiError";
+import DatabaseUtils from '../utils/database.utils';
+import AppError from '../error/ApiError';
 
 const pretty = (basket) => {
   const data: any = {};
@@ -36,22 +36,24 @@ class BasketService {
 
       // получ. basket с product
       const basketProd = await BasketModel.findByPk(basketId, {
-        attributes: ["id"],
-        include: [{ model: ProductModel, attributes: ["id", "name", "price"] }],
+        attributes: ['id'],
+        include: [{ model: ProductModel, attributes: ['id', 'name', 'price'] }],
       });
 
       return pretty(basketProd);
-    } catch (error) {
-      return AppError.badRequest(`Корзина не получена`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Корзина не получена`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
   async createBasket(userId?: any) {
     try {
       // `получить наименьший доступный идентификатор` из табл.БД
-      const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable(
-        "basket"
-      );
+      const smallestFreeId =
+        await DatabaseUtils.getSmallestIDAvailable('basket');
       let returned: any = {};
       // при передаче userId созд. Корзину с привязкой к User (Регистр User)
       if (userId) {
@@ -60,9 +62,9 @@ class BasketService {
           userId: userId,
         });
       } else {
-        return AppError.badRequest(
+        throw AppError.badRequest(
           `для Корзины не передан userId`,
-          "НЕТ userId"
+          'НЕТ userId',
         );
         // ! прописать для всех createBasket передачу/подтягивание user_id убрав лишн.код с if/else
         returned = await BasketModel.create({
@@ -72,16 +74,19 @@ class BasketService {
       }
 
       return pretty(returned);
-    } catch (error) {
-      return AppError.badRequest(`Корзина не создана`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Корзина не создана`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
   async appendBasket(basketId: number, productId: number, quantity: number) {
     try {
       let basket = await BasketModel.findByPk(basketId, {
-        attributes: ["id"],
-        include: [{ model: ProductModel, attributes: ["id", "name", "price"] }],
+        attributes: ['id'],
+        include: [{ model: ProductModel, attributes: ['id', 'name', 'price'] }],
       });
 
       if (!basket) basket = await BasketModel.create();
@@ -93,7 +98,7 @@ class BasketService {
 
       // есть в корзине
       if (basket_product)
-        await basket_product.increment("quantity", { by: quantity });
+        await basket_product.increment('quantity', { by: quantity });
       // нет в корзине
       else await BasketProductModel.create({ basketId, productId, quantity });
 
@@ -101,15 +106,18 @@ class BasketService {
       await basket.reload();
 
       return pretty(basket);
-    } catch (error) {
-      return AppError.badRequest(`В Корзину не добавлено`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `В Корзину не добавлено`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
   async incrementBasket(basketId: number, productId: number, quantity: number) {
     try {
       let basket = await BasketModel.findByPk(basketId, {
-        include: [{ model: ProductModel, as: "products" }],
+        include: [{ model: ProductModel, as: 'products' }],
       });
 
       if (!basket) basket = await BasketModel.create();
@@ -120,21 +128,24 @@ class BasketService {
       });
 
       if (basket_product) {
-        await basket_product.increment("quantity", { by: quantity });
+        await basket_product.increment('quantity', { by: quantity });
         // обновим объект корзины, чтобы вернуть свежие данные
         await basket.reload();
       }
 
       return pretty(basket);
-    } catch (error) {
-      return AppError.badRequest(`В Коризину не прибавлено`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `В Коризину не прибавлено`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
   async decrementBasket(basketId: number, productId: number, quantity: number) {
     try {
       let basket = await BasketModel.findByPk(basketId, {
-        include: [{ model: ProductModel, as: "products" }],
+        include: [{ model: ProductModel, as: 'products' }],
       });
 
       if (!basket) {
@@ -148,7 +159,7 @@ class BasketService {
 
       if (basket_product) {
         if (basket_product.quantity > quantity) {
-          await basket_product.decrement("quantity", { by: quantity });
+          await basket_product.decrement('quantity', { by: quantity });
         } else {
           await basket_product.destroy();
         }
@@ -158,15 +169,18 @@ class BasketService {
       }
 
       return pretty(basket);
-    } catch (error) {
-      return AppError.badRequest(`Из Коризины не убавлено`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Из Коризины не убавлено`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
   async clearBasket(basketId: number) {
     try {
       let basket = await BasketModel.findByPk(basketId, {
-        include: [{ model: ProductModel, as: "products" }],
+        include: [{ model: ProductModel, as: 'products' }],
       });
 
       if (basket) {
@@ -177,8 +191,11 @@ class BasketService {
       }
 
       return pretty(basket);
-    } catch (error) {
-      return AppError.badRequest(`Коризина не jxbotyf`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Коризина не очищена`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
@@ -186,9 +203,9 @@ class BasketService {
   async deleteBasket(basketId: number) {
     try {
       const basket = await BasketModel.findByPk(basketId, {
-        include: [{ model: ProductModel, as: "products" }],
+        include: [{ model: ProductModel, as: 'products' }],
       });
-      if (!basket) throw new Error("Корзина не найдена в БД");
+      if (!basket) throw new Error('Корзина не найдена в БД');
 
       if (basketId == basket.userId) {
         BasketModel.destroy({ where: { userId: basketId } });
@@ -197,8 +214,11 @@ class BasketService {
       }
 
       return pretty(basket);
-    } catch (error) {
-      return AppError.badRequest(`Коризина не удалена`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Коризина не удалена`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
@@ -206,9 +226,9 @@ class BasketService {
   async removeBasket(basketId: number, productId: number) {
     try {
       let basket = await BasketModel.findByPk(basketId, {
-        include: [{ model: ProductModel, as: "products" }],
+        include: [{ model: ProductModel, as: 'products' }],
       });
-      if (!basket) throw new Error("Корзина не найдена в БД");
+      if (!basket) throw new Error('Корзина не найдена в БД');
 
       if (!basket) basket = await BasketModel.create();
 
@@ -223,10 +243,10 @@ class BasketService {
       }
 
       return pretty(basket);
-    } catch (error) {
-      return AppError.badRequest(
+    } catch (error: unknown) {
+      throw AppError.badRequest(
         `Коризина с Товарами не удалена`,
-        error.message
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
     }
   }

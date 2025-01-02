@@ -1,8 +1,10 @@
-import fs from "fs";
+import fs from 'fs';
 // подкл.генир.уник.рандом.id
-const uuid = require("uuid");
+const uuid = require('uuid');
 // подкл.для созд.пути
-const path = require("path");
+const path = require('path');
+
+import AppError from '../error/ApiError';
 
 class FileService {
   saveFile(file: /* : Express.Multer.File */ any): string | null {
@@ -11,11 +13,11 @@ class FileService {
       // ^ заливка 1го ИЗО
       if (!file.length) {
         // достаём формат файла из mimetype ч/з split после слеша(/)
-        const [, ext] = file.mimetype.split("/");
+        const [, ext] = file.mimetype.split('/');
         // генирир.уник.имя(ч/з fn v4(подтвержд.уч.зап.) + раздел.имени/формата(.) + формат)
-        const fileName = uuid.v4() + "." + ext;
+        const fileName = uuid.v4() + '.' + ext;
         // путь для сохр.
-        const filePath = path.resolve("static", fileName);
+        const filePath = path.resolve(`${process.env.PUB_DIR}`, fileName);
         file.mv(filePath);
         return fileName;
       }
@@ -28,26 +30,27 @@ class FileService {
         for (var i = 0; i < file.length; i++) {
           // перем.1го файла
           const oneFile = file[i];
-          const [, ext] = oneFile.mimetype.split("/");
-          const fileName = uuid.v4() + "." + ext;
-          const filePath = path.resolve("static", fileName);
+          const [, ext] = oneFile.mimetype.split('/');
+          const fileName = uuid.v4() + '.' + ext;
+          const filePath = path.resolve(`${process.env.PUB_DIR}`, fileName);
           oneFile.mv(filePath);
           // запись 1го зазв.в общ.масс.
           allNames.push(fileName);
         }
         // превращ.в строку для перебора в prod.serv.
-        allNames = allNames.join(",");
+        allNames = allNames.join(',');
         return allNames;
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error: unknown) {
+      console.log(error);
       return null;
     }
+    return null;
   }
 
   deleteFile(file: string): void {
     if (file) {
-      const filePath = path.resolve("static", file);
+      const filePath = path.resolve(`${process.env.PUB_DIR}`, file);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }

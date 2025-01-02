@@ -2,9 +2,9 @@
 export {};
 
 // раб.с почтой
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
-import AppError from "../error/ApiError";
+import AppError from '../error/ApiError';
 
 // ! врем.откл.в UserService > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password
 class MailService {
@@ -29,7 +29,7 @@ class MailService {
   // `Отправить смс/действие на Почту`(email,ссылка)
   async sendActionMail(to, Link) {
     const message =
-      "Привет, вы были отправлены мне по электронной почте через Nodemailer";
+      'Привет, вы были отправлены мне по электронной почте через Nodemailer';
 
     const HTML_TEMPLATE = (text) => {
       return `
@@ -94,16 +94,13 @@ class MailService {
         // ^ from - адр.Отправителя, to - email Получателей, subject - тема смс, text - тескт смс, html - текст в HTML, attachments - файлы
         from: `"EvGen Gal " ${process.env.SMTP_USER}`,
         to: to,
-        subject: "Активация акуанта на " + process.env.API_URL_CLN,
+        subject: 'Активация акуанта на ' + process.env.SRV_URL,
         text: message,
         html: HTML_TEMPLATE(message),
       });
     } catch (error: any) {
-      const errorMessage = error.message.split("\n")[0];
-      return AppError.badRequest(
-        `Письмо не отправилось на ${to}`,
-        errorMessage
-      );
+      const errorMessage = error.message.split('\n')[0];
+      throw AppError.badRequest(`Письмо не отправилось на ${to}`, errorMessage);
     }
   }
 }

@@ -51,7 +51,14 @@ class UserController {
         if (user) {
           await UserService.deleteUser(user.id);
         }
-        return next(AppError.badRequest(userData.message, userData.errors));
+        if ('message' in userData) {
+          return next(
+            AppError.badRequest(
+              String(userData.message),
+              String(userData.errors),
+            ),
+          );
+        }
       }
 
       // сохр.refreshToken/basketId в cookie и возвращ. access
@@ -95,8 +102,17 @@ class UserController {
       const { email, password } = req.body;
 
       const userData = await UserService.loginUser(email, password);
-      if ('errors' in userData) {
-        return next(AppError.badRequest(userData.message, userData.errors));
+      // return next(AppError.badRequest(userData.message, userData.errors));
+      if ('message' in userData || 'errors' in userData) {
+        if (userData instanceof AppError) {
+          return next(
+            AppError.badRequest(
+              String(userData.message),
+              String(userData.errors),
+            ),
+          );
+        }
+        return next(AppError.badRequest('Unknown error', 'Unknown error'));
       }
 
       // сохр.refreshToken/basketId в cookie и возвращ. access и сост.активации

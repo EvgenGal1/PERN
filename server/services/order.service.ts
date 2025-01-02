@@ -1,24 +1,7 @@
-// import sequelize from "../sequelize.js"; // ^ Формат даты заказа. 1ый способ
-import AppError from "../error/ApiError";
-import { Order as OrderModel } from "../models/model";
-import { OrderItem as OrderItemModel } from "../models/model";
-
-// const pretty = (basket) => {
-//   const data: any = {};
-//   data.id = basket.id;
-//   data.products = [];
-//   if (basket.products) {
-//     data.products = basket.products.map((item) => {
-//       return {
-//         id: item.id,
-//         name: item.name,
-//         price: item.price,
-//         quantity: item.basket_product.quantity,
-//       };
-//     });
-//   }
-//   return data;
-// };
+// ^ сервис для работы с заказами
+import AppError from '../error/ApiError';
+import { Order as OrderModel } from '../models/model';
+import { OrderItem as OrderItemModel } from '../models/model';
 
 // Типы данных
 interface Orders {
@@ -70,36 +53,50 @@ interface OrderItem {
 
 class OrderService {
   async getAllOrder(userId = null) {
-    const options: any = {};
-    if (userId) {
-      options.where = { userId };
+    try {
+      const options: any = {};
+      if (userId) {
+        options.where = { userId };
+      }
+      const orders = await OrderModel.findAll(options);
+      return orders;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Заказы не получены`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    const orders = await OrderModel.findAll(options);
-    return orders;
   }
 
-  async getOneOrder(id: any, userId /* : any */ = null) {
-    const options: any = {
-      where: { id },
-      include: [
-        {
-          model: OrderItemModel,
-          as: "items",
-          attributes: ["id", "name", "price", "quantity"],
-        },
-      ],
-    };
-    if (userId) options.where.userId = userId;
-    const order = await OrderModel.findOne(options);
-    // ^ подобие prod.serv
-    // const order = await OrderModel.findByPk(id, {
-    //   include: [{ model: OrderItemModel, as: "items" }],
-    // });
-    //
-    if (!order) {
-      throw new Error("Заказ не найден в БД");
+  async getOneOrder(id: any, userId: any = null) {
+    try {
+      const options: any = {
+        where: { id },
+        include: [
+          {
+            model: OrderItemModel,
+            as: 'items',
+            attributes: ['id', 'name', 'price', 'quantity'],
+          },
+        ],
+      };
+      if (userId) options.where.userId = userId;
+      const order = await OrderModel.findOne(options);
+      // ^ подобие prod.serv
+      // const order = await OrderModel.findByPk(id, {
+      //   include: [{ model: OrderItemModel, as: "items" }],
+      // });
+      //
+      if (!order) {
+        throw new Error('Заказ не найден в БД');
+      }
+      return order;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Заказ не получен`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    return order;
   }
 
   async createOrder(data: any /* CreateData */) /* : Promise<Orders> */ {
@@ -109,7 +106,7 @@ class OrderService {
       const amount: any = items.reduce(
         (sum: number, item: { price: number; quantity: number }) =>
           sum + item.price * item.quantity,
-        0
+        0,
       );
 
       // данные для создания заказа
@@ -147,15 +144,18 @@ class OrderService {
         include: [
           {
             model: OrderItemModel,
-            as: "items",
-            attributes: ["name", "price", "quantity"],
+            as: 'items',
+            attributes: ['name', 'price', 'quantity'],
           },
         ],
       });
 
       return created;
-    } catch (error) {
-      return AppError.badRequest(`Заказ не создан`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Заказ не создан`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
@@ -163,10 +163,10 @@ class OrderService {
     try {
       // const order = await OrderModel.findByPk(id);
       const order = await OrderModel.findByPk(id, {
-        include: [{ model: OrderItemModel, as: "items" }],
+        include: [{ model: OrderItemModel, as: 'items' }],
       });
       if (!order) {
-        throw new Error("Заказ не найден в БД");
+        throw new Error('Заказ не найден в БД');
       }
 
       // общая стоимость заказа
@@ -175,7 +175,7 @@ class OrderService {
       const amount: any = items.reduce(
         (sum: number, item: { price: number; quantity: number }) =>
           sum + item.price * item.quantity,
-        0
+        0,
       );
 
       // статус
@@ -249,25 +249,35 @@ class OrderService {
 
       return order;
       // return pretty(order);
-    } catch (error) {
-      return AppError.badRequest(`Заказ не обновлён`, error.message);
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Заказ не обновлён`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
   }
 
   async deleteOrder(id) {
-    let order = await OrderModel.findByPk(id, {
-      include: [
-        {
-          model: OrderItemModel,
-          as: "items" /* , attributes: ["name", "price", "quantity"], */,
-        },
-      ],
-    });
-    if (!order) {
-      throw new Error("Заказ не найден в БД");
+    try {
+      let order = await OrderModel.findByPk(id, {
+        include: [
+          {
+            model: OrderItemModel,
+            as: 'items' /* , attributes: ["name", "price", "quantity"], */,
+          },
+        ],
+      });
+      if (!order) {
+        throw new Error('Заказ не найден в БД');
+      }
+      await order.destroy();
+      return order;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Заказ не удалён`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    await order.destroy();
-    return order;
   }
 }
 

@@ -1,19 +1,33 @@
-import { Role as RoleModel, UserRole as UserRoleModel } from "../models/model";
-import AppError from "../error/ApiError";
-import DatabaseUtils from "../utils/database.utils";
+import { Role as RoleModel, UserRole as UserRoleModel } from '../models/model';
+import AppError from '../error/ApiError';
+import DatabaseUtils from '../utils/database.utils';
 
 class RoleService {
   async getAllRole() {
-    const roles = await RoleModel.findAll();
-    return roles;
+    try {
+      const roles = await RoleModel.findAll();
+      return roles;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Роли не получены`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
+    }
   }
 
   async getOneRole(id) {
-    const role = await RoleModel.findByPk(id);
-    if (!role) {
-      throw new Error("Роль не найден в БД");
+    try {
+      const role = await RoleModel.findByPk(id);
+      if (!role) {
+        throw new Error('Роль не найден в БД');
+      }
+      return role;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Роль не получена`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    return role;
   }
   // получ.привязку UserRole
   async getOneUserRole(id: number, param?: string) {
@@ -21,24 +35,23 @@ class RoleService {
       // перем.Привязки
       let userRole;
       // определение привязки
-      if (param.includes("user")) {
+      if (param && param.includes('user')) {
         userRole = await UserRoleModel.findOne({ where: { user_id: id } });
-      } else if (param.includes("role")) {
+      } else if (param && param.includes('role')) {
         userRole = await RoleModel.findOne({ where: { roleId: id } });
-      } else if (param.includes("value")) {
+      } else if (param && param.includes('value')) {
         userRole = await RoleModel.findOne({ where: { level: id } });
       } else {
         userRole = await RoleModel.findOne(id);
       }
       if (!userRole) {
-        throw new Error("Роль не найден в БД");
+        throw new Error('Роль не найден в БД');
       }
       return userRole;
-    } catch (error) {
-      const errorMessage = error.message.split("\n")[0];
-      return AppError.badRequest(
+    } catch (error: unknown) {
+      throw AppError.badRequest(
         `НЕ удалось записать Роли ${error}`,
-        errorMessage
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
     }
   }
@@ -50,13 +63,12 @@ class RoleService {
       let role;
       if (!isNaN(parseInt(roleParam))) {
         role = await roleParam.findOne({ where: { id: roleParam } });
-      } else if (typeof roleParam === "string") {
+      } else if (typeof roleParam === 'string') {
         role = await RoleModel.findOne({ where: { value: roleParam } });
       }
       // `получить наименьший доступный идентификатор` из табл.БД
-      const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable(
-        "userrole"
-      );
+      const smallestFreeId =
+        await DatabaseUtils.getSmallestIDAvailable('userrole');
       // созд.связь user-role
       const createdUserRole = await UserRoleModel.create({
         id: smallestFreeId,
@@ -66,48 +78,68 @@ class RoleService {
       });
       // обраб.ошб.
       if (!createdUserRole || createdUserRole === 0) {
-        return AppError.badRequest(
+        throw AppError.badRequest(
           `НЕ удалось записать Роли до CATCH `,
-          " -нет- "
+          ' -нет- ',
         );
       }
       return createdUserRole;
-    } catch (error) {
-      const errorMessage = error.message.split("\n")[0];
-      return AppError.badRequest(
+    } catch (error: unknown) {
+      throw AppError.badRequest(
         `НЕ удалось записать Роли ${error}`,
-        errorMessage
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
     }
   }
 
   async createRole(data) {
-    const { name } = data;
-    const exist = await RoleModel.findOne({ where: { name } });
-    if (exist) {
-      throw new Error("Роль уже есть");
+    try {
+      const { name } = data;
+      const exist = await RoleModel.findOne({ where: { name } });
+      if (exist) {
+        throw new Error('Роль уже есть');
+      }
+      const role = await RoleModel.create({ name });
+      return role;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Роль не создана`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    const role = await RoleModel.create({ name });
-    return role;
   }
 
   async updateRole(id, data) {
-    const role = await RoleModel.findByPk(id);
-    if (!role) {
-      throw new Error("Роль не найден в БД");
+    try {
+      const role = await RoleModel.findByPk(id);
+      if (!role) {
+        throw new Error('Роль не найден в БД');
+      }
+      const { name = role.name } = data;
+      await role.update({ name });
+      return role;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Роль не обновлена`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    const { name = role.name } = data;
-    await role.update({ name });
-    return role;
   }
 
   async deleteRole(id) {
-    const role = await RoleModel.findByPk(id);
-    if (!role) {
-      throw new Error("Роль не найден в БД");
+    try {
+      const role = await RoleModel.findByPk(id);
+      if (!role) {
+        throw new Error('Роль не найден в БД');
+      }
+      await role.destroy();
+      return role;
+    } catch (error: unknown) {
+      throw AppError.badRequest(
+        `Роль не удалена`,
+        error instanceof Error ? error.message : 'Неизвестная ошибка',
+      );
     }
-    await role.destroy();
-    return role;
   }
 }
 
