@@ -1,5 +1,5 @@
-import AppError from "../error/ApiError";
-import BasketService from "../services/basket.service";
+import AppError from '../error/ApiError';
+import BasketService from '../services/basket.service';
 
 const maxAge = 60 * 60 * 1000 * 24 * 365; // один год
 const signed = true;
@@ -20,12 +20,16 @@ class BasketController {
       const basket = await BasketService.appendBasket(
         basketId,
         productId,
-        quantity
+        quantity,
       );
-      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.cookie('basketId', basket.id, { maxAge, signed });
       res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
@@ -35,16 +39,20 @@ class BasketController {
       let basket;
       if (req.signedCookies.basketId) {
         basket = await BasketService.getOneBasket(
-          parseInt(req.signedCookies.basketId)
+          parseInt(req.signedCookies.basketId),
         );
       } else {
         // ! пересмотр.лог.по созд.
         basket = await BasketService.createBasket();
       }
-      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.cookie('basketId', basket.id, { maxAge, signed });
       res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
@@ -63,12 +71,16 @@ class BasketController {
       const basket = await BasketService.incrementBasket(
         basketId,
         productId,
-        quantity
+        quantity,
       );
-      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.cookie('basketId', basket.id, { maxAge, signed });
       res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
@@ -86,12 +98,16 @@ class BasketController {
       const basket = await BasketService.decrementBasket(
         basketId,
         productId,
-        quantity
+        quantity,
       );
-      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.cookie('basketId', basket.id, { maxAge, signed });
       res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
@@ -106,10 +122,14 @@ class BasketController {
         basketId = parseInt(req.signedCookies.basketId);
       }
       const basket = await BasketService.clearBasket(basketId);
-      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.cookie('basketId', basket.id, { maxAge, signed });
       res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
@@ -128,12 +148,16 @@ class BasketController {
       }
       const basket = await BasketService.removeBasket(
         basketId,
-        req.params.productId
+        req.params.productId,
       );
-      res.cookie("basketId", basket.id, { maxAge, signed });
+      res.cookie('basketId', basket.id, { maxAge, signed });
       res.json(basket);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 }

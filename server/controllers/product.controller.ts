@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
-import AppError from "../error/ApiError";
-import ProductService from "../services/product.service";
+import AppError from '../error/ApiError';
+import ProductService from '../services/product.service';
 
 class ProductController {
   async getAllProduct(
     req /* : Request */ /* // ! от ошб.number не может назнач... для string */,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { categoryId = null, brandId = null } = req.params;
@@ -25,7 +25,7 @@ class ProductController {
           ? parseInt(limit)
           : 20;
       page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      sortOrd = sortOrd === null || sortOrd === "ASC" ? "ASC" : "DESC";
+      sortOrd = sortOrd === null || sortOrd === 'ASC' ? 'ASC' : 'DESC';
 
       const options = {
         categoryId,
@@ -40,82 +40,102 @@ class ProductController {
       const products = await ProductService.getAllProduct(options);
 
       res.json(products);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
   async getOneProduct(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id товара");
+        throw new Error('Не указан id товара');
       }
       const product = await ProductService.getOneProduct(Number(req.params.id));
       res.json(product);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
   async createProduct(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       if (Object.keys(req.body).length === 0) {
-        throw new Error("Нет данных для создания");
+        throw new Error('Нет данных для создания');
       }
       const product = await ProductService.createProduct(
         req.body,
-        req.files?.image
+        req.files?.image,
       );
       res.json(product);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
   async updateProduct(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id товара");
+        throw new Error('Не указан id товара');
       }
       if (Object.keys(req.body).length === 0) {
-        throw new Error("Нет данных для обновления");
+        throw new Error('Нет данных для обновления');
       }
       const product = await ProductService.updateProduct(
         req.params.id,
         req.body,
-        req.files?.image
+        req.files?.image,
       );
       res.json(product);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
   async deleteProduct(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       if (!req.params.id) {
-        throw new Error("Не указан id товара");
+        throw new Error('Не указан id товара');
       }
       const product = await ProductService.deleteProduct(req.params.id);
       res.json(product);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 }

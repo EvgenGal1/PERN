@@ -1,13 +1,17 @@
-import AppError from "../error/ApiError";
-import RatingService from "../services/rating.service";
+import AppError from '../error/ApiError';
+import RatingService from '../services/rating.service';
 
 class RatingController {
   async getOneRating(req, res, next) {
     try {
       const rating = await RatingService.getOneRating(req.params.productId);
       res.json(rating);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 
@@ -17,11 +21,15 @@ class RatingController {
       const rating = await RatingService.createRating(
         rate,
         productId,
-        req.auth.id
+        req.auth.id,
       );
       res.json(rating);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
     }
   }
 }
