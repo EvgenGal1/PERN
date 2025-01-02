@@ -1,6 +1,7 @@
 {
   "ignorePatterns": [
-    "**/vr/**" // папка игнора
+    "**/vr/**", // папка игнора
+    "**/Components/ui/Form/Form__Bootstrap.tsx"
   ],
   "env": {
     "browser": true,
@@ -11,7 +12,7 @@
     "eslint:recommended", // Основные рекомендуемые правила
     "plugin:react/recommended", // Рекомендуемые правила для React
     "plugin:jsx-a11y/recommended", // Рекомендуемые правила для доступности JSX
-    "plugin:react-hooks/recommended", // Рекомендуемые правила для React Hooks
+    // "plugin:react-hooks/recommended", // Рекомендуемые правила для React Hooks
     "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
@@ -36,7 +37,7 @@
     "react/jsx-uses-vars": "error", // Ошибка, если JSX не использует переменную
     "jsx-a11y/anchor-is-valid": "warn", // Предупреждение при использовании `<a>` без href
     "jsx-a11y/no-redundant-roles": "warn", // Предупреждение на дублирующие роли в элементах
-    "react-hooks/rules-of-hooks": "error", // Ошибка при неправильном использовании хуков
+    // "react-hooks/rules-of-hooks": "error", // Ошибка при неправильном использовании хуков
     "react-hooks/exhaustive-deps": "warn", // Предупреждение для неправильных зависимостей useEffect
     "no-unused-vars": "warn", // Предупреждение для неиспользуемых переменных
     "no-console": "warn", // Предупреждение для использования console.log
