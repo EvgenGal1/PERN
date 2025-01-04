@@ -1,19 +1,28 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "noImplicitAny": false,
-    "rootDir": "./", // Корневая директория вашего TypeScript проекта
-    "outDir": "./dist", // Директория для скомпилированных файлов
-    "baseUrl": "./", // Базовый путь для разрешения модулей
-    "target": "ES2020",
-    "module": "commonjs",
-    "strict": true,
-    "skipLibCheck": true
+    "target": "es6", // es6 || ES2020
+    "module": "CommonJS", // CommonJS (> Node.js) / ESNext (> ES-модули / TS ) 
+    "moduleResolution": "node", // разреш.модул.Node.js
+    "strict": true, // строгие проверки типов
+    "skipLibCheck": true, // пропуск проверки типов в ф. .d.ts
+    "esModuleInterop": true, // использ.вместе модули CommonJS и ES
+    "forceConsistentCasingInFileNames": true, // единообразие в именах ф.
+    "noImplicitAny": false, // откл.ошб.неявные типы 
+    "baseUrl": "./src", // базовый путь модулей
+    "rootDir": "./src", // путь TS проекта
+    "outDir": "./dist", // путь скомпилированных ф.
+    "resolveJsonModule": true // импорта JSON-ф
   },
+  // вкл.в компиляцию
   "include": [
-    "./**/*.ts"
+    "src/**/*",
   ],
+  // откл.из компиляции
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts",
+    "**/ZZZ/*",
+    "**/vr*/*",
+    "dist"
   ]
 }
