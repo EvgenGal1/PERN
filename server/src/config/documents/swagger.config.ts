@@ -4,7 +4,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { Express } from 'express';
 
-// Fn подкл. swg UI
+// fn подкл. swg UI
 export const documentSwagger = (app: Express) => {
   // конфиг.swg
   const swaggerOptions = {
@@ -35,7 +35,7 @@ export const documentSwagger = (app: Express) => {
       },
       customSiteTitle: 'PERN (Swagger)',
       // кастом иконки в браузере
-      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/img/ico/icon.ico`,
+      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/${process.env.PUB_IMG}/ico/icon.ico`,
       // кастом ф.CSS
       customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: [

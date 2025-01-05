@@ -19,6 +19,8 @@ import router from './routes/index.routes';
 import ErrorHandler from './middleware/errors/ErrorHandler';
 // логирование LH Winston
 import { LoggingWinston as logger } from './config/logging/log_winston.config';
+// MW логгирование входящих HTTP запросов
+import { loggingMiddleware } from './middleware/logging.middleware';
 // документирование/настр. Swagger
 import { documentSwagger } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
@@ -46,10 +48,7 @@ app.use(`/${process.env.PUB_DIR}`, express.static(`${process.env.PUB_DIR}`));
 app.use(fileUpload());
 
 // логгирование (Winston) входящих HTTP запросов
-app.use((req, res, next) => {
-  logger.info(`Request: ${req.method} ${req.url} - ${req.ip}`);
-  next();
-});
+app.use(loggingMiddleware);
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
 app.use(`/${process.env.SRV_NAME}`, router);
 // тест.маршрут
