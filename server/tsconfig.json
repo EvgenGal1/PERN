@@ -7,7 +7,7 @@
     "skipLibCheck": true, // пропуск проверки типов в ф. .d.ts
     "esModuleInterop": true, // использ.вместе модули CommonJS и ES
     "forceConsistentCasingInFileNames": true, // единообразие в именах ф.
-    "noImplicitAny": false, // откл.ошб.неявные типы 
+    "noImplicitAny": true, // вкл.ошб.неявные типы 
     "baseUrl": "./src", // базовый путь модулей
     "rootDir": "./src", // путь TS проекта
     "outDir": "./dist", // путь скомпилированных ф.
@@ -16,6 +16,7 @@
   // вкл.в компиляцию
   "include": [
     "src/**/*",
+    "ZZZ/error",
   ],
   // откл.из компиляции
   "exclude": [
