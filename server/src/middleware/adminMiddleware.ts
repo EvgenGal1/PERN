@@ -1,7 +1,8 @@
 // ^ проверка Роли ADMIN для доп.прав
+
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
+import AppError from './errors/ApiError';
 import { DecodedToken } from '../types/DecodedToken';
 
 interface CustomRequest extends Request {

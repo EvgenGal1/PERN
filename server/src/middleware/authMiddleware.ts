@@ -1,8 +1,9 @@
 // ^ подтвержд.личности ч/з JWT-токена полученый либо после регистрации, либо после входа в личный кабинет
+
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
-import { DecodedToken /*, CustomRequest */ } from '../types/DecodedToken';
+import AppError from './errors/ApiError';
+import { DecodedToken } from '../types/DecodedToken';
 import TokenService from '../services/token.service';
 
 interface CustomRequest extends Request {
@@ -18,13 +19,13 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction): void => {
     // провер header на наличие поля authorization
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
-      return next(AppError.unauthorizedError('Требуется авторизация'));
+      return next(AppError.unauthorized('Требуется авторизация'));
     }
 
     // достаём токен из header (отделяя от типа `Носитель` передающегося по ind 0) из шапки(обычн.там токен)
     const accessToken = authorizationHeader?.split(' ')[1]; // Bearer token (asfasnfkajsfnjk)
     if (!accessToken) {
-      return next(AppError.unauthorizedError('Токен  отсутствует'));
+      return next(AppError.unauthorized('Токен  отсутствует'));
     }
 
     // раскодир.токен. `проверять` валидации ч/з services (токен)
