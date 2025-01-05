@@ -1,28 +1,47 @@
 // ^ ORM (Object-relational mapping `Объектно-реляционное отображение`).
-// ^ СЛН. модели данных табл. (подобие modelsTS/JS)
-import sequelize from '../sequelize';
-import database from 'sequelize';
-const { DataTypes } = database;
+// ^ модели данных табл. (подобие modelsTS/JS)
+
+import sequelize from '../config/sequelize';
+import { DataTypes, Model } from 'sequelize';
+import {
+  BasketAttributes,
+  BasketProductAttributes,
+  BrandAttributes,
+  CategoryAttributes,
+  OrderAttributes,
+  OrderItemAttributes,
+  ProductAttributes,
+  ProductPropAttributes,
+  RatingAttributes,
+  TokenAttributes,
+  UserAttributes,
+  RoleAttributes,
+  UserRoleAttributes,
+  UserRoleCreationAttributes,
+  RoleCreationAttributes,
+  OrderCreationAttributes,
+  CategoryCreationAttributes,
+  TokenCreationAttributes,
+  UserCreationAttributes,
+  OrderItemCreationAttributes,
+} from './sequelize-types';
 
 /*
  * Описание моделей
  */
 
-const User = sequelize.define(
+const UserModel = sequelize.define<
+  Model<UserAttributes, UserCreationAttributes>
+>(
   'user',
   {
     // тип целое число, перв.ключ, авто.добавка
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     // добавил name, удалить можно через pgAdmin, залить сначала удалив табл.с привязками DROP TABLE IF EXISTS users CASCADE;
-    username: { type: DataTypes.STRING, unique: true, required: true },
+    username: { type: DataTypes.STRING, unique: true, allowNull: false },
     // тип строка, уникальное, обязательно
-    email: { type: DataTypes.STRING, unique: true, required: true },
-    password: { type: DataTypes.STRING, required: true },
-    // ^^ перенос в Role
-    // role: {
-    //   type: DataTypes.STRING,
-    //   defaultValue: "USER" /* , required: true */,
-    // },
+    email: { type: DataTypes.STRING, unique: true, allowNull: false },
+    password: { type: DataTypes.STRING, allowNull: false },
     // `активируется` - подтвержд.почты от польз.
     isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
     // `Ссылка активации` - хран.ссылку для актив.
@@ -31,24 +50,29 @@ const User = sequelize.define(
   // знач.по умолч.для username
   {
     hooks: {
-      beforeCreate: (user) => {
+      beforeCreate: (user: any): any => {
         if (!user.username) {
-          return User.max('id').then((maxId) => {
-            user.id = maxId ? maxId + 1 : 1;
-            user.username =
-              'БезИмённый_' + user.id + '--' + user.email.split('@')[0] + '';
-          });
+          return UserModel.max('id').then(
+            (maxId /* : number | null */ : any) => {
+              user.id = maxId ? maxId + 1 : 1;
+              user.username =
+                'БезИмённый_' + user.id + '--' + user.email.split('@')[0] + '';
+            },
+          );
         }
       },
     },
   },
 );
 
-/* // ? должна быть */ // связь между Польз. и Корзиной через промежуточную таблицу token у этой таблицы будет составной первичный ключ (user_id + basket_id)
-const Token = sequelize.define('token', {
+// связь между Польз. и Корзиной через промежуточную таблицу token у этой таблицы будет составной первичный ключ (user_id + basket_id)
+const TokenModel = sequelize.define<
+  Model<TokenAttributes, TokenCreationAttributes>
+>('token', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
+    primaryKey: true,
   },
   // ссылка на id Польз., не резреш.0
   userId: {
@@ -65,20 +89,21 @@ const Token = sequelize.define('token', {
   // `обновлять` токен созд.в БД
   refreshToken: {
     type: DataTypes.STRING(300),
+    allowNull: true,
     // required: true
   },
-  // ipАдрес входа, `Отпечаток пальца` браузера,..
 });
 
 // ^ добав.табл.расшир.доступов (темы, доп.меню, клвш.команд, доп.стр./Комп. и т.д.)
-const Role = sequelize.define('role', {
+const RoleModel = sequelize.define<
+  Model<RoleAttributes, RoleCreationAttributes>
+>('role', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
   // по умолч. роль USER и уникальна
-  // value: { type: String, unique: true, default: "USER" },
   value: {
     type: DataTypes.STRING,
     unique: true,
@@ -92,8 +117,10 @@ const Role = sequelize.define('role', {
 });
 
 // связующая табл.|модель для User|Role. Внешн.ключи sequelize.`определит`
-const UserRole = sequelize.define('user_role', {
-  id: { type: DataTypes.INTEGER, /* primaryKey: true, */ autoIncrement: true },
+const UserRoleModel = sequelize.define<
+  Model<UserRoleAttributes, UserRoleCreationAttributes>
+>('user_role', {
+  id: { type: DataTypes.INTEGER, autoIncrement: true },
   // ссылка на id Польз., не резреш.0
   userId: {
     type: DataTypes.INTEGER,
@@ -110,17 +137,25 @@ const UserRole = sequelize.define('user_role', {
 });
 
 // модель «Корзина», таблица БД «baskets»
-const Basket = sequelize.define('basket', {
+const BasketModel = sequelize.define<Model<BasketAttributes>>('basket', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
 // связь между корзиной и товаром через промежуточную таблицу «basket_products» у этой таблицы будет составной первичный ключ (basket_id + product_id)
-const BasketProduct = sequelize.define('basket_product', {
-  quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
-});
+const BasketProductModel = sequelize.define<Model<BasketProductAttributes>>(
+  'basket_product',
+  {
+    basketId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
+    productId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false },
+    quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
+  },
+);
 
 // модель «Категория», таблица БД «categories»
-const Category = sequelize.define('category', {
+const CategoryModel = sequelize.define<
+  Model<CategoryAttributes, CategoryCreationAttributes>
+>('category', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -131,7 +166,7 @@ const Category = sequelize.define('category', {
 });
 
 // модель «Бренд», таблица БД «brands»
-const Brand = sequelize.define('brand', {
+const BrandModel = sequelize.define<Model<BrandAttributes>>('brand', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -141,37 +176,47 @@ const Brand = sequelize.define('brand', {
 });
 
 // связь между товаром и пользователем через промежуточную таблицу «rating» у этой таблицы будет составной первичный ключ (product_id + user_id)
-const Rating = sequelize.define('rating', {
-  // id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+const RatingModel = sequelize.define<Model<RatingAttributes>>('rating', {
   rate: { type: DataTypes.STRING, allowNull: false },
+  productId: { type: DataTypes.INTEGER, allowNull: false },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
 });
 
 // модель «Товар», таблица БД «products»
-const Product = sequelize.define('product', {
+const ProductModel = sequelize.define<Model<ProductAttributes>>('product', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   price: { type: DataTypes.FLOAT, allowNull: false },
   rating: { type: DataTypes.FLOAT, defaultValue: 0 },
   image: { type: DataTypes.STRING, allowNull: false },
+  categoryId: { type: DataTypes.INTEGER, allowNull: true },
+  brandId: { type: DataTypes.INTEGER, allowNull: true },
 });
 
 // свойства товара, у одного товара может быть много свойств
-const ProductProp = sequelize.define('product_prop', {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, allowNull: false },
-  value: { type: DataTypes.STRING, allowNull: false },
-});
+const ProductPropModel = sequelize.define<Model<ProductPropAttributes>>(
+  'product_prop',
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING, allowNull: false },
+    value: { type: DataTypes.STRING, allowNull: false },
+    productId: { type: DataTypes.INTEGER, allowNull: false },
+  },
+);
 
 // модель «Заказ», таблица БД «orders»
-const Order = sequelize.define('order', {
+const OrderModel = sequelize.define<
+  Model<OrderAttributes, OrderCreationAttributes>
+>('order', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
   address: { type: DataTypes.STRING, allowNull: false },
-  amount: { type: DataTypes.FLOAT /* INTEGER */, allowNull: false }, // ^ FLOAT чтоб большие суммы проходили
+  amount: { type: DataTypes.FLOAT, allowNull: false }, // ^ FLOAT чтоб большие суммы проходили
   status: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
   comment: { type: DataTypes.STRING },
+  // userId: { type: DataTypes.INTEGER, allowNull: true },
   // ^ Формат даты заказа. Виртуал.поля (prettyCreatedAt, prettyUpdatedAt), берут значение createdAt, updatedAt и форматируют.
   prettyCreatedAt: {
     type: DataTypes.VIRTUAL,
@@ -206,7 +251,6 @@ const Order = sequelize.define('order', {
       const year = value.getFullYear();
       const hours = value.getHours();
       const minutes = value.getMinutes();
-      // return day + "." + month + "." + year + " " + hours + ":" + minutes;
       const paddedMonth = month < 10 ? `0${month}` : month;
       const paddedHours = hours < 10 ? `0${hours}` : hours;
       const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
@@ -216,22 +260,15 @@ const Order = sequelize.define('order', {
 });
 
 // позиции заказа, в одном заказе может быть несколько позиций (товаров)
-const OrderItem = sequelize.define('order_item', {
+const OrderItemModel = sequelize.define<
+  Model<OrderItemAttributes, OrderItemCreationAttributes>
+>('order_item', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
-  price: { type: DataTypes.FLOAT /* INTEGER */, allowNull: false },
+  price: { type: DataTypes.FLOAT, allowNull: false },
   quantity: { type: DataTypes.INTEGER, allowNull: false },
+  orderId: { type: DataTypes.INTEGER, allowNull: false },
 });
-
-// const UserToken = sequelize.define("user_token", {
-//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-//   // refreshToken: { type: DataTypes.STRING },
-// });
-
-// const UserBasket = sequelize.define("user_basket", {
-//   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-//   // refreshToken: { type: DataTypes.STRING },
-// });
 
 /*
  * Описание связей
@@ -252,84 +289,119 @@ const OrderItem = sequelize.define('order_item', {
 
 // связь many-to-many User и Role через промежуточную таблицу user_roles;
 // у Польз.может быть несколько Ролей, у Роли может быть несколько Польз.
-User.belongsToMany(Role, { through: UserRole, onDelete: 'CASCADE' });
-Role.belongsToMany(User, { through: UserRole, onDelete: 'CASCADE' });
+UserModel.belongsToMany(RoleModel, {
+  through: UserRoleModel,
+  onDelete: 'CASCADE',
+});
+RoleModel.belongsToMany(UserModel, {
+  through: UserRoleModel,
+  onDelete: 'CASCADE',
+});
 // super many-to-many https://sequelize.org/master/manual/advanced-many-to-many.html
 // это обеспечит возможность любых include при запросах findAll, findOne, findByPk
-User.hasMany(UserRole);
-UserRole.belongsTo(User);
-Role.hasMany(UserRole);
-UserRole.belongsTo(Role);
+UserModel.hasMany(UserRoleModel);
+UserRoleModel.belongsTo(UserModel);
+RoleModel.hasMany(UserRoleModel);
+UserRoleModel.belongsTo(RoleModel);
 
 // связь many-to-many товаров и пользователей через промежуточную таблицу token;
 // за один товар могут проголосовать несколько зарегистрированных пользователей, один пользователь может проголосовать за несколько товаров
-User.hasOne(Basket, { through: Token, onDelete: 'CASCADE' });
-Basket.belongsTo(User, { through: Token, onDelete: 'CASCADE' });
+UserModel.hasOne(BasketModel, { onDelete: 'CASCADE' });
+BasketModel.belongsTo(UserModel, { onDelete: 'CASCADE' });
 // super many-to-many https://sequelize.org/master/manual/advanced-many-to-many.html
 // это обеспечит возможность любых include при запросах findAll, findOne, findByPk
-User.hasMany(Token);
-Token.belongsTo(User);
-Basket.hasMany(Token);
-Token.belongsTo(Basket);
+UserModel.hasMany(TokenModel, { foreignKey: 'userId' });
+TokenModel.belongsTo(UserModel, { foreignKey: 'userId' });
+BasketModel.hasMany(TokenModel, { foreignKey: 'basketId' });
+TokenModel.belongsTo(BasketModel, { foreignKey: 'basketId' });
 
 // связь many-to-many товаров и корзин через промежуточную таблицу basket_products;
 // товар может быть в нескольких корзинах, в корзине может быть несколько товаров
-Basket.belongsToMany(Product, { through: BasketProduct, onDelete: 'CASCADE' });
-Product.belongsToMany(Basket, { through: BasketProduct, onDelete: 'CASCADE' });
+BasketModel.belongsToMany(ProductModel, {
+  through: BasketProductModel,
+  foreignKey: 'basketId',
+  // onDelete: 'CASCADE',
+});
+ProductModel.belongsToMany(BasketModel, {
+  through: BasketProductModel,
+  foreignKey: 'productId',
+  // onDelete: 'CASCADE',
+});
 // super many-to-many https://sequelize.org/master/manual/advanced-many-to-many.html
 // это обеспечит возможность любых include при запросах findAll, findOne, findByPk
-Basket.hasMany(BasketProduct);
-BasketProduct.belongsTo(Basket);
-Product.hasMany(BasketProduct);
-BasketProduct.belongsTo(Product);
+BasketModel.hasMany(BasketProductModel);
+BasketProductModel.belongsTo(BasketModel);
+ProductModel.hasMany(BasketProductModel);
+BasketProductModel.belongsTo(ProductModel);
 
 // связь категории с товарами: в категории может быть несколько товаров, но каждый товар может принадлежать только одной категории
-Category.hasMany(Product, { onDelete: 'RESTRICT' });
-Product.belongsTo(Category);
+CategoryModel.hasMany(ProductModel, {
+  onDelete: 'RESTRICT',
+  foreignKey: 'categoryId',
+});
+ProductModel.belongsTo(CategoryModel, { foreignKey: 'categoryId' });
 
 // связь бренда с товарами: у бренда может быть много товаров, но каждый товар может принадлежать только одному бренду
-Brand.hasMany(Product, { onDelete: 'RESTRICT' });
-Product.belongsTo(Brand);
+BrandModel.hasMany(ProductModel, {
+  onDelete: 'RESTRICT',
+  foreignKey: 'brandId',
+});
+ProductModel.belongsTo(BrandModel, { foreignKey: 'brandId' });
 
 // связь many-to-many товаров и пользователей через промежуточную таблицу rating;
 // за один товар могут проголосовать несколько зарегистрированных пользователей, один пользователь может проголосовать за несколько товаров
-Product.belongsToMany(User, { through: Rating, onDelete: 'CASCADE' });
-User.belongsToMany(Product, { through: Rating, onDelete: 'CASCADE' });
+ProductModel.belongsToMany(UserModel, {
+  through: RatingModel,
+  onDelete: 'CASCADE',
+});
+UserModel.belongsToMany(ProductModel, {
+  through: RatingModel,
+  onDelete: 'CASCADE',
+});
 
 // super many-to-many https://sequelize.org/master/manual/advanced-many-to-many.html
 // это обеспечит возможность любых include при запросах findAll, findOne, findByPk
-Product.hasMany(Rating /* , { as: "rating", onDelete: "RESTRICT" } */);
-Rating.belongsTo(Product);
-User.hasMany(Rating /* , { as: "rating", onDelete: "RESTRICT" } */);
-Rating.belongsTo(User);
+ProductModel.hasMany(
+  RatingModel /* , { as: "rating", onDelete: "RESTRICT" } */,
+);
+RatingModel.belongsTo(ProductModel);
+UserModel.hasMany(RatingModel /* , { as: "rating", onDelete: "RESTRICT" } */);
+RatingModel.belongsTo(UserModel);
 
 // связь товара с его свойствами: у товара может быть несколько свойств, но каждое свойство связано только с одним товаром
-Product.hasMany(ProductProp, { as: 'props', onDelete: 'CASCADE' });
-ProductProp.belongsTo(Product);
+ProductModel.hasMany(ProductPropModel, {
+  as: 'props',
+  foreignKey: 'productId',
+  onDelete: 'CASCADE',
+});
+ProductPropModel.belongsTo(ProductModel, { foreignKey: 'productId' });
 
 // связь заказа с позициями: в заказе может быть несколько позиций, но
 // каждая позиция связана только с одним заказом
-Order.hasMany(OrderItem, { as: 'items', onDelete: 'CASCADE' });
-OrderItem.belongsTo(Order);
+OrderModel.hasMany(OrderItemModel, {
+  as: 'items',
+  foreignKey: 'orderId',
+  onDelete: 'CASCADE',
+});
+OrderItemModel.belongsTo(OrderModel, { foreignKey: 'orderId' });
 
 // связь заказа с пользователями: у пользователя может быть несколько заказов,
 // но заказ может принадлежать только одному пользователю
-User.hasMany(Order, { as: 'orders', onDelete: 'SET NULL' });
-Order.belongsTo(User);
+UserModel.hasMany(OrderModel, { as: 'orders', onDelete: 'SET NULL' });
+OrderModel.belongsTo(UserModel);
 
 export {
-  User,
-  Role,
-  UserRole,
-  // UserBasket,
-  Token,
-  Category,
-  Brand,
-  Rating,
-  Product,
-  ProductProp,
-  Basket,
-  BasketProduct,
-  Order,
-  OrderItem,
+  UserModel,
+  RoleModel,
+  UserRoleModel,
+  TokenModel,
+  CategoryModel,
+  BrandModel,
+  RatingModel,
+  ProductModel,
+  ProductPropModel,
+  BasketModel,
+  BasketProductModel,
+  OrderModel,
+  OrderItemModel,
 };
