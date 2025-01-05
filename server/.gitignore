@@ -14,4 +14,5 @@ dist/
 vr*/
 .env*
 tmp/*
+logs/*
 public/img/shop
