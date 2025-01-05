@@ -8,18 +8,22 @@ import UserService from '../services/user.service';
 // мокает сервис > изоляц.от БД
 jest.mock('../services/user.service');
 
-describe('GET /api/user/getone/:id', () => {
+describe('GET /user/getone/:id', () => {
   // перед каждым тестом
   beforeEach(() => {
     jest.clearAllMocks(); // очистка моки
   });
 
+  // баз.имя сайта
+  const url = `${process.env.SRV_NAME}`;
   // секрет > подписи Токена
-  const secretKey = `${process.env.SECRET_KEY}`;
+  const secretKey = `${process.env.JWT_ACCESS_SECRET_KEY}`;
   // cозд. фейковый токен с ролью admin
-  const fakeToken = jwt.sign({ userId: 1, role: 'admin' }, secretKey, {
-    expiresIn: '1h',
-  });
+  const fakeToken = jwt.sign(
+    { userId: 1, role: `${process.env.MAIN_ROLE}` },
+    secretKey,
+    { expiresIn: '1h' },
+  );
   // структура Пользователя
   const mockUser = {
     id: 1,
@@ -37,7 +41,7 @@ describe('GET /api/user/getone/:id', () => {
     (UserService.getOneUser as jest.Mock).mockResolvedValue(mockUser); // мокает успешный ответ getOneUser к jest.Mock
 
     const res = await request(app)
-      .get('/api/user/getone/1')
+      .get(`/${url}/user/getone/1`)
       .set('Authorization', `Bearer ${fakeToken}`) // + заголовок авторизации
       .set('Cache-Control', 'no-cache'); // + заголовок от кеширования
 
@@ -53,7 +57,7 @@ describe('GET /api/user/getone/:id', () => {
     (UserService.getOneUser as jest.Mock).mockResolvedValue(null); // мокает ответ что пользователя нет
 
     const res = await request(app)
-      .get(`/api/user/getone/${moreUser}`)
+      .get(`/${url}/user/getone/${moreUser}`)
       .set('Authorization', `Bearer ${fakeToken}`);
     expect(res.status).toEqual(404);
     expect(res.body).toEqual({
@@ -69,7 +73,7 @@ describe('GET /api/user/getone/:id', () => {
     ); // мокает ошибку сервиса
 
     const res = await request(app)
-      .get('/api/user/getone/1')
+      .get(`/${url}/user/getone/1`)
       .set('Authorization', `Bearer ${fakeToken}`);
 
     expect(res.status).toEqual(500);

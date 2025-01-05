@@ -97,6 +97,6 @@ const start = async () => {
 };
 
 // start() при прямом запуске > изоляции сервера при тестах
-if (require.main === module) start();
+if (isDevelopment && require.main === module) start();
 // экспорт приложения > тестов
 export default app;
