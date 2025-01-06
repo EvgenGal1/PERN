@@ -1,162 +1,194 @@
 import express from 'express';
 const router = express();
-// подкл. валидацию
-import { check } from 'express-validator';
 
 import authMiddleware from '../middleware/authMiddleware';
 import adminMiddleware from '../middleware/adminMiddleware';
-// подкл. middleware доступов
-// const checkRole = require("../middleware/checkRoleMiddleware");
 import UserController from '../controllers/user.controller';
 
 // настр.swg JSDoc (доки.в JSON/YAML) > swg UI-dist (визуал.в браузере)
 /**
  * @swagger
  * tags:
- *   name: User
- *   description: Управление Пользователями
+ *   name: Users
+ *   description: API Управление Пользователями
  */
-
-// любой Пользователь
-// РЕГИСТРАЦИЯ
-/**
- * @swagger
- * /user/signup:
- *   post:
- *     summary: Регистрация нового Пользователя
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Пользователь успешно зарегистрирован.
- *       400:
- *         description: Ошибка валидации данных.
- */
-router.post(
-  '/signup',
-  // проверки валидации // ? шаблоны проверки, сам код в controllere
-  [
-    // валидация. normalize не пропускает RU email е/и записаны в ВерБлюд стиле.
-    check('email', 'Некорректый email').isEmail().normalizeEmail(),
-    check('password')
-      .not()
-      .isIn([
-        '123qwe',
-        '123qwerty',
-        'qwerty',
-        'qwe123',
-        'qwerty123',
-        '123456',
-        'password123',
-        'god123',
-        '123qwe!@#',
-        '123!@#qwe',
-        '!@#123qwe',
-        '!@#qwe123',
-        'qwe!@#123',
-        'qwe123!@#',
-        '123Qwe!@#',
-        '123!@#Qwe',
-        '!@#123Qwe',
-        '!@#Qwe123',
-        'Qwe!@#123',
-        'Qwe123!@#',
-      ])
-      .withMessage('Не используйте обычные значения в качестве пароля')
-      .isLength({ min: 6 })
-      .withMessage('Минимальная длина пароля 6 символов')
-      .isLength({ max: 32 })
-      .withMessage('Максимальная длина пароля 32 символа')
-      .matches(/\d/)
-      .withMessage('Пароль должен содержать число')
-      .matches(/(?=(.*\W){2})/)
-      .withMessage('Где два специальных символа'),
-  ],
-  UserController.signupUser,
-);
-
-// АВТОРИЗАЦИЯ
-/**
- * @swagger
- * /user/login:
- *   post:
- *     summary: Авторизация Пользователя
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Успешная авторизация.
- *       401:
- *         description: Неверный логин или пароль.
- */
-router.post(
-  '/login',
-  [check('email', 'Некорректый email на входе').isEmail().normalizeEmail()],
-  UserController.loginUser,
-);
-
-// USER Пользователь
-// АКТИВАЦИЯ АКАУНТА. По ссылке в почту
-router.get('/activate/:link', UserController.activateUser);
-// ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
-router.get('/refresh', UserController.refreshUser);
-// ПРОВЕРКА | auth
-router.get('/check', authMiddleware, UserController.checkUser);
-// ВЫХОД. Удален.Token.refreshToken
-router.post('/logout', UserController.logoutUser);
 
 // ADMIN Пользователь
+/**
+ * @swagger
+ * /user/create:
+ *   post:
+ *     summary: Создать нового пользователя
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: strongPassword123!
+ *     responses:
+ *       201:
+ *         description: Пользователь успешно создан
+ *       400:
+ *         description: Некорректные данные
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
 router.post(
   '/create',
   authMiddleware,
   adminMiddleware,
   UserController.createUser,
 );
+// получить по id
+/**
+ * @swagger
+ * /user/getone/{id}:
+ *   get:
+ *     summary: Получить информацию о пользователе по ID
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Информация о пользователе
+ *       404:
+ *         description: Пользователь не найден
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
 router.get(
   '/getone/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
   UserController.getOneUser,
 );
+// получит всех пользователей
+/**
+ * @swagger
+ * /user/users:
+ *   get:
+ *     summary: Получить список всех пользователей (только для администратора)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Список пользователей
+ *       403:
+ *         description: Недостаточно прав
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
 router.get(
   '/getall',
   authMiddleware,
   adminMiddleware,
   UserController.getAllUser,
 );
+// обновить по id
+/**
+ * @swagger
+ * /user/update/{id}:
+ *   put:
+ *     summary: Обновить данные пользователя
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: updatedUser@example.com
+ *               password:
+ *                 type: string
+ *                 example: newPassword123!
+ *     responses:
+ *       200:
+ *         description: Пользователь обновлен
+ *       400:
+ *         description: Некорректные данные
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
 router.put(
   '/update/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
   UserController.updateUser,
 );
+// удалить по id
+/**
+ * @swagger
+ * /user/delete/{id}:
+ *   delete:
+ *     summary: Удалить пользователя
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Пользователь удален
+ *       404:
+ *         description: Пользователь не найден
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
 router.delete(
   '/delete/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
   UserController.deleteUser,
 );
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
 
 export default router;
