@@ -3,6 +3,7 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { Express } from 'express';
+import path from 'path';
 
 // fn подкл. swg UI
 export const documentSwagger = (app: Express) => {
@@ -18,7 +19,7 @@ export const documentSwagger = (app: Express) => {
       servers: [{ url: process.env.SRV_URL }],
     },
     // путь ф.с коммент.JSON
-    apis: ['./routes/**/*.ts'],
+    apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')], // абсолютный путь к маршрутам
   };
 
   // спецификация swg в JSON
