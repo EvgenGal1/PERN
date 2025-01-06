@@ -1,10 +1,10 @@
-import express /* , { Application } */ from "express";
+import express /* , { Application } */ from 'express';
 const router /* : Application */ = express();
 
-import authMiddleware from "../middleware/authMiddleware";
-import adminMiddleware from "../middleware/adminMiddleware";
-import OrderController from "../controllers/order.controller";
-import OrderItemsController from "../controllers/orderItems.controller";
+import authMiddleware from '../middleware/authMiddleware';
+import adminMiddleware from '../middleware/adminMiddleware';
+import OrderController from '../controllers/order.controller';
+import OrderItemsController from '../controllers/orderItems.controller';
 
 /*
  * ЗАКАЗЫ для ADNIN магазина
@@ -12,45 +12,45 @@ import OrderItemsController from "../controllers/orderItems.controller";
 
 // создать новый заказ
 router.post(
-  "/admin/create",
+  '/admin/create',
   authMiddleware,
   adminMiddleware,
-  OrderController.adminCreateOrder
+  OrderController.adminCreateOrder,
 );
 // получить заказ по id
 router.get(
-  "/admin/getone/:id([0-9]+)",
+  '/admin/getone/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  OrderController.adminGetOneOrder
+  OrderController.adminGetOneOrder,
 );
 // получить список всех заказов магазина
 router.get(
-  "/admin/getall",
+  '/admin/getall',
   authMiddleware,
   adminMiddleware,
-  OrderController.adminGetAllOrder
+  OrderController.adminGetAllOrder,
 );
 // получить список заказов пользователя
 router.get(
-  "/admin/getall/user/:id([0-9]+)",
+  '/admin/getall/user/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  OrderController.adminGetOrder
+  OrderController.adminGetOrder,
 );
 // обновить заказ
 router.put(
-  "/admin/update/:id([0-9]+)",
+  '/admin/update/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  OrderController.adminUpdateOrder
+  OrderController.adminUpdateOrder,
 );
 // удалить заказ по id
 router.delete(
-  "/admin/delete/:id([0-9]+)",
+  '/admin/delete/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  OrderController.adminDeleteOrder
+  OrderController.adminDeleteOrder,
 );
 
 /*
@@ -59,34 +59,34 @@ router.delete(
 
 // создать позицию заказа
 router.post(
-  "/:orderId([0-9]+)/item/create",
+  '/:orderId([0-9]+)/item/create',
   authMiddleware,
   adminMiddleware,
-  OrderItemsController.createOrderItems
+  OrderItemsController.createOrderItems,
 );
 // одна позиция заказа
 router.get(
-  "/:orderId([0-9]+)/item/getone/:id([0-9]+)",
-  OrderItemsController.getOneOrderItems
+  '/:orderId([0-9]+)/item/getone/:id([0-9]+)',
+  OrderItemsController.getOneOrderItems,
 );
 // список позицый заказа
 router.get(
-  "/:orderId([0-9]+)/item/getall",
-  OrderItemsController.getAllOrderItems
+  '/:orderId([0-9]+)/item/getall',
+  OrderItemsController.getAllOrderItems,
 );
 // обновить позицию заказа
 router.put(
-  "/:orderId([0-9]+)/item/update/:id([0-9]+)",
+  '/:orderId([0-9]+)/item/update/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  OrderItemsController.updateOrderItems
+  OrderItemsController.updateOrderItems,
 );
 // удалить позицию заказа
 router.delete(
-  "/:orderId([0-9]+)/item/delete/:id([0-9]+)",
+  '/:orderId([0-9]+)/item/delete/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  OrderItemsController.deleteOrderItems
+  OrderItemsController.deleteOrderItems,
 );
 
 /*
@@ -94,21 +94,21 @@ router.delete(
  */
 
 // создать новый заказ
-router.post("/user/create", authMiddleware, OrderController.userCreateOrder);
+router.post('/user/create', authMiddleware, OrderController.userCreateOrder);
 // получить один заказ пользователя
 router.get(
-  "/user/getone/:id([0-9]+)",
+  '/user/getone/:id([0-9]+)',
   authMiddleware,
-  OrderController.userGetOneOrder
+  OrderController.userGetOneOrder,
 );
 // получить все заказы пользователя
-router.get("/user/getall", authMiddleware, OrderController.userGetAllOrder);
+router.get('/user/getall', authMiddleware, OrderController.userGetAllOrder);
 
 /*
  * для неавторизованного пользователя
  */
 
 // создать новый заказ
-router.post("/guest/create", OrderController.guestCreateOrder);
+router.post('/guest/create', OrderController.guestCreateOrder);
 
 export default router;
