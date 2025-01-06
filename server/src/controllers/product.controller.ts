@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 import ProductService from '../services/product.service';
 
 class ProductController {
   async getAllProduct(
-    req /* : Request */ /* // ! от ошб.number не может назнач... для string */,
+    req: any /* Request */ /* // ! от ошб.number не может назнач... для string */,
     res: Response,
     next: NextFunction,
   ): Promise<void> {

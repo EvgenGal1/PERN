@@ -1,8 +1,14 @@
-import AppError from '../error/ApiError';
+import { NextFunction } from 'express';
+
+import AppError from '../middleware/errors/ApiError';
 import RatingService from '../services/rating.service';
 
 class RatingController {
-  async getOneRating(req, res, next) {
+  async getOneRating(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       const rating = await RatingService.getOneRating(req.params.productId);
       res.json(rating);
@@ -15,7 +21,11 @@ class RatingController {
     }
   }
 
-  async createRating(req, res, next) {
+  async createRating(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       const { productId, rate } = req.params;
       const rating = await RatingService.createRating(

@@ -1,4 +1,6 @@
-import AppError from '../error/ApiError';
+import { NextFunction } from 'express';
+
+import AppError from '../middleware/errors/ApiError';
 import BasketService from '../services/basket.service';
 
 const maxAge = 60 * 60 * 1000 * 24 * 365; // один год
@@ -6,7 +8,11 @@ const signed = true;
 
 class BasketController {
   // добавить
-  async appendBasket(req, res, next) {
+  async appendBasket(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       let basketId: number;
 
@@ -34,7 +40,11 @@ class BasketController {
   }
 
   // получить одну
-  async getOneBasket(req, res, next) {
+  async getOneBasket(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       let basket;
       if (req.signedCookies.basketId) {
@@ -57,7 +67,11 @@ class BasketController {
   }
 
   // увеличение
-  async incrementBasket(req, res, next) {
+  async incrementBasket(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
@@ -85,7 +99,11 @@ class BasketController {
   }
 
   // уменьшение
-  async decrementBasket(req, res, next) {
+  async decrementBasket(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
@@ -112,7 +130,11 @@ class BasketController {
   }
 
   // очистка
-  async clearBasket(req, res, next) {
+  async clearBasket(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {
@@ -137,7 +159,11 @@ class BasketController {
   async deleteBasket(basketId: number) {}
 
   // удаление Корзины с Товарами
-  async removeBasket(req, res, next) {
+  async removeBasket(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       let basketId;
       if (!req.signedCookies.basketId) {

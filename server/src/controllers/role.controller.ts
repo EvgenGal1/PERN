@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
-import BrandService from '../services/brand.service';
+import AppError from '../middleware/errors/ApiError';
+import RoleService from '../services/role.service';
 
-class BrandController {
-  async getAllBrand(req: Request, res: Response, next: NextFunction) {
+class RoleController {
+  async getAllRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const brands = await BrandService.getAllBrand();
-      res.json(brands);
+      const roles = await RoleService.getAllRole();
+      res.json(roles);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -17,13 +17,13 @@ class BrandController {
     }
   }
 
-  async getOneBrand(req: Request, res: Response, next: NextFunction) {
+  async getOneRole(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error('Не указан id Бренда');
+        throw new Error('Не указан id Роли');
       }
-      const brand = await BrandService.getOneBrand(req.params.id);
-      res.json(brand);
+      const role = await RoleService.getOneRole(+req.params.id);
+      res.json(role);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -33,10 +33,10 @@ class BrandController {
     }
   }
 
-  async createBrand(req: Request, res: Response, next: NextFunction) {
+  async createRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const brand = await BrandService.createBrand(req.body);
-      res.json(brand);
+      const role = await RoleService.createRole(req.body);
+      res.json(role);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -46,29 +46,29 @@ class BrandController {
     }
   }
 
-  async updateBrand(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Бренда');
-      }
-      const brand = await BrandService.updateBrand(req.params.id, req.body);
-      res.json(brand);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-
-  async deleteBrand(req: Request, res: Response, next: NextFunction) {
+  async updateRole(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.params.id) {
-        throw new Error('Не указан id Бренда');
+        throw new Error('Не указан id Роли');
       }
-      const brand = await BrandService.deleteBrand(req.params.id);
-      res.json(brand);
+      const role = await RoleService.updateRole(+req.params.id, req.body);
+      res.json(role);
+    } catch (error: unknown) {
+      next(
+        AppError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
+      );
+    }
+  }
+
+  async deleteRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.params.id) {
+        throw new Error('Не указан id Роли');
+      }
+      const role = await RoleService.deleteRole(+req.params.id);
+      res.json(role);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -79,4 +79,4 @@ class BrandController {
   }
 }
 
-export default new BrandController();
+export default new RoleController();

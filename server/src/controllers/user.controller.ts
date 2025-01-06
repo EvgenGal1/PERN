@@ -1,14 +1,15 @@
 // подкл. валидацию
-const { validationResult } = require('express-validator');
+import { validationResult } from 'express-validator';
+import { NextFunction } from 'express';
 
 // модели данных табл.
-import { User as UserModel } from '../models/model';
+import { UserModel } from '../models/model';
 // services
 import UserService from '../services/user.service';
 import TokenService from '../services/token.service';
 import RoleService from '../services/role.service';
 // обраб.ошб.
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 // выборка полей
 import UserDto from '../dtos/user.dto';
 import TokenDto from '../dtos/token.dto';
@@ -22,7 +23,11 @@ const httpOnly = true;
 class UserController {
   // любой Пользователь
   // РЕГИСТРАЦИЯ
-  async signupUser(req, res, next) {
+  async signupUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       const errorsValid = validationResult(req);
@@ -49,7 +54,7 @@ class UserController {
       if ('errors' in userData) {
         const user = await UserModel.findOne({ where: { email } });
         if (user) {
-          await UserService.deleteUser(user.id);
+          await UserService.deleteUser(user.getDataValue('id'));
         }
         if ('message' in userData) {
           return next(
@@ -79,7 +84,7 @@ class UserController {
       const { email } = req.body;
       const user = await UserModel.findOne({ where: { email } });
       if (user) {
-        await UserService.deleteUser(user.id);
+        await UserService.deleteUser(user.getDataValue('id'));
       }
       return next(
         AppError.badRequest(
@@ -89,7 +94,11 @@ class UserController {
     }
   }
   // АВТОРИЗАЦИЯ
-  async loginUser(req, res, next) {
+  async loginUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       const errorsValid = validationResult(req);
@@ -124,7 +133,7 @@ class UserController {
           .cookie('refreshToken', usTokRef, { maxAge1, httpOnly })
           .cookie('basketId', userData.basketId, { maxAge2, signed });
         tokens = userData.tokens.accessToken;
-        activated = userData.activated;
+        activated = userData.activated ?? false;
       }
 
       // return res.json(userData);
@@ -142,7 +151,11 @@ class UserController {
 
   // USER Пользователь
   // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
-  async activateUser(req, res, next) {
+  async activateUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       // из стр.получ.ссы.актив.
       const activationLink = req.params.link;
@@ -154,7 +167,11 @@ class UserController {
     }
   }
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
-  async refreshUser(req, res, next) {
+  async refreshUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       const { refreshToken } = req.cookies;
       // const { username, email } = req.body;
@@ -172,30 +189,41 @@ class UserController {
     }
   }
   // ПРОВЕРКА. Польз.
-  async checkUser(req, res, next) {
+  async checkUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     const user = await UserService.getOneUser(req.auth.id);
-    const activated = user.isActivated;
-
     // провер.существ.Роли пользователя
-    const userRoles = await RoleService.getOneUserRole(user.id, 'user');
+    if (!user) {
+      return next(AppError.badRequest('Пользователь не найден'));
+    }
+    const activated = user ? user.getDataValue('isActivated') : false;
+
+    const userRoles = await RoleService.getOneUserRole(
+      user.getDataValue('id'),
+      'user',
+    );
     // опред.Роли User
     let roleUs: string = '';
-    if (userRoles.roleId === 1) {
+    if (userRoles.get('roleId') === 1) {
       roleUs = 'USER';
-    } else if (userRoles.roleId === 2) {
+    } else if (userRoles.get('roleId') === 2) {
       roleUs = 'ADMIN';
-    } else if (!userRoles || userRoles === null || userRoles.errors) {
+    } else if (!userRoles || userRoles === null || userRoles.get('errors')) {
       // привязка.существ.Роли пользователя
-      await RoleService.assignUserRole(user.id, 'USER');
+      await RoleService.assignUserRole(user.getDataValue('id'), 'USER');
       roleUs = 'USER';
     }
     // объ.перед.данн.> Роли > id/email/username/role/level
     const tokenDto = new TokenDto({
-      id: user.id,
-      email: user.email,
-      username: user.username,
+      id: user.getDataValue('id'),
+      email: user.getDataValue('email'),
+      username: user.getDataValue('username'),
       role: roleUs,
-      level: userRoles.level,
+      // level: userRoles.level,
+      level: userRoles.get('level'),
     });
 
     // созд./получ. 2 токена. email/role
@@ -205,7 +233,11 @@ class UserController {
     return res.json({ token, activated });
   }
   // ВЫХОД. Удал.Cookie.refreshToken
-  async logoutUser(req, res, next) {
+  async logoutUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       // получ refresh из cookie, передача в service, удал.обоих, возвращ.смс об удален.
       const { refreshToken } = req.cookies;
@@ -227,7 +259,11 @@ class UserController {
 
   // ADMIN Пользователь
   // пока отд.нет
-  async createUser(req, res, next) {
+  async createUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) /* : Promise<User> {} */ {
     const { email, password, role = 'USER' } = req.body;
     try {
       if (!email || !password) {
@@ -254,7 +290,11 @@ class UserController {
       );
     }
   }
-  async getOneUser(req, res, next) {
+  async getOneUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id пользователя');
@@ -270,9 +310,7 @@ class UserController {
       }
       return res.json(user);
     } catch (error: unknown) {
-      return next(
-        AppError.internalServerError('Ошибка при получении пользователя'),
-      );
+      return next(AppError.internal('Ошибка при получении пользователя'));
 
       // next(AppError.badRequest((error as Error).message));
 
@@ -288,7 +326,11 @@ class UserController {
       // );
     }
   }
-  async getAllUser(req, res, next) {
+  async getAllUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       const users = await UserService.getAllUser();
       res.json(users);
@@ -300,7 +342,11 @@ class UserController {
       );
     }
   }
-  async updateUser(req, res, next) {
+  async updateUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id пользователя');
@@ -329,7 +375,11 @@ class UserController {
       );
     }
   }
-  async deleteUser(req, res, next) {
+  async deleteUser(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id пользователя');

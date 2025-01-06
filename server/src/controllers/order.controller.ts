@@ -1,30 +1,42 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 import OrderService from '../services/order.service';
 import BasketService from '../services/basket.service';
 import UserService from '../services/user.service';
 
 class OrderController {
   // созд.admin`администратор`
-  adminCreateOrder = async (req, res, next) => {
+  adminCreateOrder = async (
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) => {
     await this.createOrder(req, res, next, 'admin');
   };
   // созд.user`пользователь`
-  userCreateOrder = async (req, res, next) => {
+  userCreateOrder = async (
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) => {
     await this.createOrder(req, res, next, 'user');
   };
   // созд.guest`гость`
-  guestCreateOrder = async (req, res, next) => {
+  guestCreateOrder = async (
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) => {
     await this.createOrder(req, res, next, 'guest');
   };
 
   // созд.общ.
   async createOrder(
-    req /* : Request */,
+    req: any /* Request */,
     res: Response,
     next: NextFunction,
-    type,
+    type: string,
   ) {
     try {
       const { name, email, phone, address, comment = null } = req.body;
@@ -86,7 +98,11 @@ class OrderController {
   }
 
   // ADMIN ord
-  async adminGetOneOrder(req, res, next) {
+  async adminGetOneOrder(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id заказа');
@@ -101,7 +117,11 @@ class OrderController {
       );
     }
   }
-  async adminGetOrder(req, res, next) {
+  async adminGetOrder(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id пользователя');
@@ -116,7 +136,11 @@ class OrderController {
       );
     }
   }
-  async adminGetAllOrder(req, res, next) {
+  async adminGetAllOrder(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       OrderController;
       const orders = await OrderService.getAllOrder();
@@ -150,7 +174,11 @@ class OrderController {
       );
     }
   }
-  async adminDeleteOrder(req, res, next) {
+  async adminDeleteOrder(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id заказа');
@@ -167,7 +195,11 @@ class OrderController {
   }
 
   // USER ord
-  async userGetAllOrder(req, res, next) {
+  async userGetAllOrder(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       const orders = await OrderService.getAllOrder(req.auth.id);
       res.json(orders);
@@ -179,7 +211,11 @@ class OrderController {
       );
     }
   }
-  async userGetOneOrder(req, res, next) {
+  async userGetOneOrder(
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     try {
       if (!req.params.id) {
         throw new Error('Не указан id заказа');

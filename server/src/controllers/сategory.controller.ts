@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 import CategoryService from '../services/category.service';
 
 class CategoryController {
@@ -22,7 +22,7 @@ class CategoryController {
       if (!req.params.id) {
         throw new Error('Не указан id Категории');
       }
-      const category = await CategoryService.getOneCategory(req.params.id);
+      const category = await CategoryService.getOneCategory(+req.params.id);
       res.json(category);
     } catch (error: unknown) {
       next(
@@ -58,7 +58,7 @@ class CategoryController {
         throw new Error('Нет названия Категории');
       }
       const category = await CategoryService.updateCategory(
-        req.params.id,
+        +req.params.id,
         req.body,
       );
       res.json(category);
@@ -76,7 +76,7 @@ class CategoryController {
       if (!req.params.id) {
         throw new Error('Не указан id Категории');
       }
-      const category = await CategoryService.deleteCategory(req.params.id);
+      const category = await CategoryService.deleteCategory(+req.params.id);
       res.json(category);
     } catch (error: unknown) {
       next(

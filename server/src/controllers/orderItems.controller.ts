@@ -1,19 +1,22 @@
 // ^ controller для свойств товара
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../error/ApiError';
-import ProductPropService from '../services/productProp.service';
+import AppError from '../middleware/errors/ApiError';
+// import OrderService from "../services/order.service";
+// import BasketService from "../services/basket.service";
+// import UserService from "../services/user.service";
+import OrderItemsService from '../services/orderItems.service';
 
-class ProductPropController {
-  async getAllProdProp(req: Request, res: Response, next: NextFunction) {
+class orderItemsController {
+  async getAllOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
+      if (!req.params.orderId) {
         throw new Error('Не указан id товара');
       }
-      const properties = await ProductPropService.getAllProdProp(
-        req.params.productId,
+      const items = await OrderItemsService.getAllOrderItems(
+        +req.params.orderId,
       );
-      res.json(properties);
+      res.json(items);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -23,19 +26,19 @@ class ProductPropController {
     }
   }
 
-  async getOneProdProp(req: Request, res: Response, next: NextFunction) {
+  async getOneOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
+      if (!req.params.orderId) {
         throw new Error('Не указан id товара');
       }
       if (!req.params.id) {
         throw new Error('Не указано id свойства');
       }
-      const property = await ProductPropService.getOneProdProp(
-        req.params.productId,
-        req.params.id,
+      const item = await OrderItemsService.getOneOrderItems(
+        +req.params.orderId,
+        +req.params.id,
       );
-      res.json(property);
+      res.json(item);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -45,19 +48,19 @@ class ProductPropController {
     }
   }
 
-  async createProdProp(req: Request, res: Response, next: NextFunction) {
+  async createOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
+      if (!req.params.orderId) {
         throw new Error('Не указан id товара');
       }
       if (Object.keys(req.body).length === 0) {
         throw new Error('Нет данных для создания');
       }
-      const property = await ProductPropService.createProdProp(
-        req.params.productId,
+      const item = await OrderItemsService.createOrderItems(
+        +req.params.orderId,
         req.body,
       );
-      res.json(property);
+      res.json(item);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -67,9 +70,9 @@ class ProductPropController {
     }
   }
 
-  async updateProdProp(req: Request, res: Response, next: NextFunction) {
+  async updateOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
+      if (!req.params.orderId) {
         throw new Error('Не указан id товара');
       }
       if (!req.params.id) {
@@ -78,12 +81,12 @@ class ProductPropController {
       if (Object.keys(req.body).length === 0) {
         throw new Error('Нет данных для обновления');
       }
-      const property = await ProductPropService.updateProdProp(
-        req.params.productId,
-        req.params.id,
+      const item = await OrderItemsService.updateOrderItems(
+        +req.params.orderId,
+        +req.params.id,
         req.body,
       );
-      res.json(property);
+      res.json(item);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -93,19 +96,19 @@ class ProductPropController {
     }
   }
 
-  async deleteProdProp(req: Request, res: Response, next: NextFunction) {
+  async deleteOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
+      if (!req.params.orderId) {
         throw new Error('Не указан id товара');
       }
       if (!req.params.id) {
         throw new Error('Не указано id свойства');
       }
-      const property = await ProductPropService.deleteProdProp(
-        req.params.productId,
+      const item = await OrderItemsService.deleteOrderItems(
+        +req.params.orderId,
         req.params.id,
       );
-      res.json(property);
+      res.json(item);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -116,4 +119,4 @@ class ProductPropController {
   }
 }
 
-export default new ProductPropController();
+export default new orderItemsController();
