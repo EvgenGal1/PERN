@@ -14,17 +14,9 @@ export function loggingMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  // лог.вход.HTTP req без ignoredPaths
+  // лог.вход.HTTP req с исключениями
   // if (isDevelopment && !ignoredPathsRegex.some((regex) => regex.test(req.url)))
   if (isDevelopment && !ignoredPaths.some((path) => req.url.startsWith(path)))
-    logger.debug(`MW_log Request: ${req.method} ${req.url} - ${req.ip}`);
-  // ошб.сервера (есть в ErrorHandler)
-  // res.on('finish', () => {
-  //   if (res.statusCode >= 400) {
-  //     logger.error(
-  //       `MW_log Error: ${req.method} ${req.url} - ${res.statusCode}`,
-  //     );
-  //   }
-  // });
+    logger.debug(`HTTP REQ: ${req.method} ${req.url} - ${req.ip}`);
   next();
 }

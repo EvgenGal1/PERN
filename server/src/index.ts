@@ -1,7 +1,7 @@
 // ^ Запуск Сервера. Базов.конфиг для приёма запросов
 
 // express ч/з require для прилож.
-import express from 'express';
+import express, { Application, Request, Response } from 'express';
 // наст./перем.окруж.
 import { config } from 'dotenv';
 // cors > отправ.запр.с брауз.
@@ -33,9 +33,9 @@ config({ path: `.env.${process.env.NODE_ENV}` });
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // созд.server
-const app = express();
+const app: Application = express();
 // порт из перем.окруж. | умолч.
-const PORT = process.env.SRV_PORT;
+const PORT = Number(process.env.SRV_PORT) || 5000;
 const PUB_DIR = process.env.PUB_DIR || 'public';
 
 // совместн.использ.ресурс.разн.источников client/server > разрещ.cookie опред.url
@@ -54,7 +54,7 @@ app.use(fileUpload());
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
 app.use(`/${process.env.SRV_NAME}`, router);
 // тест.маршрут
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.send(`Hello, World!`);
 });
 
@@ -64,7 +64,7 @@ documentSwagger(app);
 // обработка ошибок
 app.use(ErrorHandler);
 
-const start = async () => {
+const start = async (): Promise<void> => {
   try {
     // подкл.к БД.
     await sequelize.authenticate();
@@ -87,16 +87,20 @@ const start = async () => {
       }
     });
   } catch (error: unknown) {
-    console.log('m.err : ', error);
-    logger.error(`ошибка запуска сервера: ${(error as Error)?.message}`, {
-      stack: (error as Error)?.stack,
+    const err = error as Error;
+    console.log('ошибка запуска сервера : ', err.message);
+    logger.error(`ошибка запуска сервера, e.msg: ${err?.message}`, {
+      stack: err?.stack,
     });
     process.exit(1);
   }
 };
 
 // start() при прямом запуске > изоляции сервера при тестах
-if (isProduction) start();
-else if (isDevelopment && require.main === module) start();
+if (
+  /* isProduction) start();
+else if (isDevelopment && */ require.main === module
+)
+  start();
 // экспорт приложения > тестов
 export default app;

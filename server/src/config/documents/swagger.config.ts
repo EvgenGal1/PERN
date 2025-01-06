@@ -2,24 +2,24 @@
 
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { Express } from 'express';
+import { Application } from 'express';
 import path from 'path';
 
 // fn подкл. swg UI
-export const documentSwagger = (app: Express) => {
+export const documentSwagger = (app: Application): void => {
   // конфиг.swg
   const swaggerOptions = {
     swaggerDefinition: {
       openapi: '3.0.0',
       info: {
-        title: 'PERN | PostgreSQL, Express, React, NodeJS',
+        title: 'PERN Stack API',
         version: '2.1.0',
-        description: 'Описание методов интеграции API',
+        description: 'Документация API интеграции',
       },
-      servers: [{ url: process.env.SRV_URL }],
+      servers: [{ url: process.env.SRV_URL || 'http://localhost:5000' }],
     },
-    // путь ф.с коммент.JSON
-    apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')], // абсолютный путь к маршрутам
+    // абсол.путь ф.маршрут.с коммент.JSON
+    apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')],
   };
 
   // спецификация swg в JSON
@@ -34,7 +34,7 @@ export const documentSwagger = (app: Express) => {
         // `постоянное разрешение` на использ.JWT Токен в swg
         persistAuthorization: true,
       },
-      customSiteTitle: 'PERN (Swagger)',
+      customSiteTitle: 'PERN API Docs',
       // кастом иконки в браузере
       customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_IMG}/ico/icon.ico`,
       // кастом ф.CSS

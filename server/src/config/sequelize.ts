@@ -1,7 +1,6 @@
 // ^ настройки подключения к серверу БД (sequelize | db)
-// import Sequelize  from 'sequelize';
-import { Dialect, Sequelize } from 'sequelize';
 
+import { Dialect, Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
 // загр.перем.окруж.из ф..env
@@ -19,7 +18,7 @@ const sequelize = new Sequelize(
   {
     dialect: process.env.DB_USER as Dialect,
     host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 5125,
+    port: Number(process.env.DB_PORT) || 5432,
     define: {
       underscored: true, // вкл. snake_case вместо camelCase > назв.полей БД
       timestamps: true, // вкл.поля created_at и updated_at
@@ -32,12 +31,13 @@ const sequelize = new Sequelize(
 );
 
 // асинхр.проверка подкл.к БД
-export const connectToDatabase = async () => {
+export const connectToDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
     console.log('Подключение к БД успешно.');
-  } catch (err) {
-    console.error('Не удалось подключиться к БД:', err);
+  } catch (error) {
+    console.error('Не удалось подключиться к БД:', error);
+    throw new Error(`Ошибка подключения к БД: ${(error as Error).message}`);
   }
 };
 

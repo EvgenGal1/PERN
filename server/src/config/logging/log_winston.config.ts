@@ -9,11 +9,7 @@ import fs from 'fs';
 import { isProduction, isDevelopment } from '../envs/env.consts';
 
 // путь п.логов DEV/PROD
-const logDir = path.join(
-  process.cwd(),
-  `${isDevelopment ? 'tmp' : ''}`,
-  'logs',
-);
+const logDir = path.join(process.cwd(), isDevelopment ? 'tmp/logs' : 'logs');
 // проверка/созд.п. > логов
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
 
@@ -31,7 +27,7 @@ export const LoggingWinston = createLogger({
           colorize(), // цв.отображ.
           printf(
             ({ timestamp, level, message, context, stack }) =>
-              `${timestamp} ${level}: ${message}${context ? ' | ' + context : ''}${stack ? '\nStack ' + stack : ''}`,
+              `${timestamp} ${level}: ${message}${context ? ` | ${context}` : ''}${stack ? `\nStack: ${stack}` : ''}`,
           ), // формат
         )
       : json(),
@@ -47,21 +43,22 @@ export const LoggingWinston = createLogger({
       maxFiles: '14d', // дней хранений
       maxSize: '20m', // размер ф.в MB
     }),
-    // доп.ф. > лог.ошб.
+    // доп.ф.error.log > лог.ошб.
     new transports.File({
       filename: path.join(logDir, 'error.log'),
-      level: 'error', // лог.ошб.в ф.error.log
+      level: 'error',
     }),
   ],
 });
 
 // логг. > PROD
 if (isProduction) {
-  const httpTransport = new transports.Http({
-    host: 'log-service.example.com',
-    path: '/logs',
-    ssl: true,
-  });
-  // отправка логов в сторонний сервис
-  LoggingWinston.add(httpTransport);
+  LoggingWinston.add(
+    new transports.Http({
+      // отправка логов в сторонний сервис
+      host: 'log-service.example.com',
+      path: '/logs',
+      ssl: true,
+    }),
+  );
 }
