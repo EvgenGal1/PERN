@@ -1,34 +1,34 @@
 // const Router = require("express");
 // const router = new Router();
-import express /* , { Application } */ from "express";
+import express /* , { Application } */ from 'express';
 const router /* : Application */ = express();
 
-import authMiddleware from "../middleware/authMiddleware";
-import adminMiddleware from "../middleware/adminMiddleware";
-import CategoryController from "../controllers/сategory.controller";
+import authMiddleware from '../middleware/authMiddleware';
+import adminMiddleware from '../middleware/adminMiddleware';
+import CategoryController from '../controllers/category.controller';
 // ! разбор из UTV
 // const checkRole = require("../middleware/checkRoleMiddleware");
 // const brandController = require("../controllers/brand.controller");
 
 router.post(
-  "/create",
+  '/create',
   authMiddleware,
   adminMiddleware,
-  CategoryController.createCategory
+  CategoryController.createCategory,
 );
-router.get("/getone/:id([0-9]+)", CategoryController.getOneCategory);
-router.get("/getall", CategoryController.getAllCategory);
+router.get('/getone/:id([0-9]+)', CategoryController.getOneCategory);
+router.get('/getall', CategoryController.getAllCategory);
 router.put(
-  "/update/:id([0-9]+)",
+  '/update/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  CategoryController.updateCategory
+  CategoryController.updateCategory,
 );
 router.delete(
-  "/delete/:id([0-9]+)",
+  '/delete/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  CategoryController.deleteCategory
+  CategoryController.deleteCategory,
 );
 
 export default router;
