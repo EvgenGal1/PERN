@@ -1,19 +1,20 @@
-import AppError from "../error/ApiError";
-import { Rating as RatingModel } from "../models/model";
-import { Product as ProductModel } from "../models/model";
-import { User as UserModel } from "../models/model";
+import { ProductAttributes } from 'models/sequelize-types';
+import AppError from '../middleware/errors/ApiError';
+import { RatingModel } from '../models/model';
+import { ProductModel } from '../models/model';
+import { UserModel } from '../models/model';
 
 class RatingService {
   async getOneRating(productId: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     // `голосов`
     const votes = await RatingModel.count({ where: { productId } });
     if (votes) {
       // `ставки`
-      const rates = await RatingModel.sum("rate", { where: { productId } });
+      const rates = await RatingModel.sum('rate', { where: { productId } });
       return { rates, votes, rating: rates / votes };
     }
     // `ставки голоса рейтинг`
@@ -23,11 +24,11 @@ class RatingService {
   async createRating(rate: number, productId: number, userId: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     const user = await UserModel.findByPk(userId);
     if (!user) {
-      throw new Error("Пользователь не найден в БД");
+      throw new Error('Пользователь не найден в БД');
     }
 
     // находим/удаляем данн.Рейтинга/Пользователя е/и он уже голосовал
@@ -36,8 +37,8 @@ class RatingService {
     });
 
     if (
-      ratingUserId?.userId == userId &&
-      ratingUserId?.productId == productId
+      ratingUserId?.get('userId') == userId &&
+      ratingUserId?.get('productId') == productId
     ) {
       await RatingModel.destroy({
         where: { userId: userId, productId: productId },
@@ -53,15 +54,12 @@ class RatingService {
 
     // запросы для вычисления средн.Рейтинга (ставки, голоса)
     const votes = await RatingModel.count({ where: { productId } });
-    const rates = await RatingModel.sum("rate", { where: { productId } });
+    const rates = await RatingModel.sum('rate', { where: { productId } });
     const ratingAll = rates / votes;
 
     // перем./запрос для обнов.Товара
-    let name = product.name;
-    let price = product.price;
-    let image = product.image;
-    let categoryId = product.categoryId;
-    let brandId = product.brandId;
+    const { name, price, image, categoryId, brandId } =
+      product.get() as ProductAttributes;
     if (ratingAll) {
       await product.update({
         name: name,

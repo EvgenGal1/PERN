@@ -1,12 +1,17 @@
 import {
-  Product as ProductModel,
-  ProductProp as ProductPropModel,
-  Brand as BrandModel,
-  Category as CategoryModel,
-  Rating as RatingModel,
+  ProductModel,
+  ProductPropModel,
+  BrandModel,
+  CategoryModel,
+  RatingModel,
 } from '../models/model';
 import FileService from './file.service';
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
+import {
+  ProductAttributes,
+  ProductPropAttributes,
+} from 'models/sequelize-types';
+import { Model } from 'sequelize';
 
 // Типы данных
 interface Products {
@@ -197,8 +202,8 @@ class ProductService {
           name,
           price,
           image,
-          categoryId,
-          brandId,
+          // categoryId,
+          // brandId,
         });
         // созд.свойства 1го Товара
         if (data.props) {
@@ -211,13 +216,14 @@ class ProductService {
             await ProductPropModel.create({
               name: prop.name,
               value: prop.value,
-              productId: product.id,
+              productId: product.get('id') as number,
+              // productId: product.id,
             });
           }
         }
 
         // возврат 1го Товар со свойствами
-        returned = await ProductModel.findByPk(product.id, {
+        returned = await ProductModel.findByPk(product.getDataValue('id'), {
           include: [{ model: ProductPropModel, as: 'props' }],
         });
       }
@@ -275,22 +281,24 @@ class ProductService {
         // е/и есть Хар-ки Товара
         if (data.props) {
           // преобразуем вход.строку в объ/масс. с масс.объ.
-          const propsParse = JSON.parse(data.props);
+          const propsParse: any = JSON.parse(data.props);
           // [
           //   0: [ { name: '1212', value: 'qw' }, { name: '121212', value: 'qwqw' } ],
           //   1: [ { name: '9898', value: 'as' } ]
           // ]
 
           // перебор всех key в Хар-ах
-          for (let key of Object.keys(propsParse)) {
+          for (const keys of Object.keys(propsParse)) {
+            const key: any = keys;
             // Object.keys(propsParse) - ['0', '1'] | key - 0 затем 1
 
             // получ.позиц.id нов.Товаров по key имеющихся Хар-ик (каждому Товару свои Хар-ки)
-            let productBulkId = productBulk[key].id;
+            const productBulkId: any /* number */ /* | undefined */ =
+              productBulk[key].getDataValue('id');
             // 304 затем 305
 
             // перем. масс.значений определённого key
-            let value = propsParse[key];
+            const value = propsParse[key];
             // [ { name: '1212', value: 'qw' }, { name: '121212', value: 'qwqw' } ]
 
             // перебор объ.в опред.масс.значений
@@ -329,26 +337,35 @@ class ProductService {
     img: any /* : Express.Multer.File */,
   ) {
     try {
-      const product = await ProductModel.findByPk(id, {
+      // const order = (await OrderModel.findByPk(id, {
+      //   include: [{ model: OrderItemModel, as: 'items' }],
+      // })) /* as unknown as OrderAttributes */ as Model<OrderAttributes> & {
+      //   items: OrderItemAttributes[];
+      // };
+
+      const product = (await ProductModel.findByPk(id, {
         include: [{ model: ProductPropModel, as: 'props' }],
-      });
+      })) as Model<ProductAttributes> & {
+        items: ProductPropAttributes[];
+      };
       if (!product) {
         throw new Error('Товар не найден в БД');
       }
       // сохр.изо. е/и загружено
       const file = FileService.saveFile(img);
       // если загружено новое изображение — надо удалить старое
-      if (file && product.image) {
-        FileService.deleteFile(product.image);
+      if (file && product.get('image')) {
+        FileService.deleteFile(product.get('image') as string);
+        // FileService.deleteFile(product.image);
       }
       // подготовка вход.данн. для обнов. в БД
       const {
-        name = product.name,
-        price = product.price,
-        rating = product.rating,
-        categoryId = product.categoryId,
-        brandId = product.brandId,
-        image = file ? file : product.image,
+        name = product.get('name') as string,
+        price = product.get('price') as number,
+        rating = product.get('rating') as number,
+        categoryId = product.get('categoryId') as number,
+        brandId = product.get('brandId') as number,
+        image = (file ? file : product.get('image')) as string,
       } = data;
 
       await product.update({ name, price, rating, image, categoryId, brandId });
@@ -362,7 +379,7 @@ class ProductService {
           await ProductPropModel.create({
             name: prop.name,
             value: prop.value,
-            productId: product.id,
+            productId: product.get('id') as number,
           });
         }
       }
@@ -385,13 +402,23 @@ class ProductService {
         throw new Error('Товар не найден в БД');
       }
       // удаляем ИЗО Товара
-      if (product.image) {
-        FileService.deleteFile(product.image);
+      const imagePath = product.get('image') as string;
+      if (imagePath) {
+        FileService.deleteFile(imagePath);
       }
+
       // удаляем Хар-ки Товара
-      if (product.prop) {
-        ProductPropModel.destroy({ where: { productId: id } });
+      if (product.get('prop')) {
+        //   ProductPropModel.destroy({ where: { productId: id } });
+        // const propsExist = await ProductPropModel.count({
+        //   where: { productId: id },
+        // });
+        // if (propsExist) {
+        //   await ProductPropModel.destroy({ where: { productId: id } });
+        // }
+        await ProductPropModel.destroy({ where: { productId: id } });
       }
+
       await product.destroy();
       return product;
     } catch (error: unknown) {

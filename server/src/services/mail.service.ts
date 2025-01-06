@@ -4,7 +4,7 @@ export {};
 // раб.с почтой
 const nodemailer = require('nodemailer');
 
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 
 // ! врем.откл.в UserService > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password
 class MailService {
@@ -27,11 +27,11 @@ class MailService {
   }
 
   // `Отправить смс/действие на Почту`(email,ссылка)
-  async sendActionMail(to, Link) {
+  async sendActionMail(to: string, Link: string) {
     const message =
       'Привет, вы были отправлены мне по электронной почте через Nodemailer';
 
-    const HTML_TEMPLATE = (text) => {
+    const HTML_TEMPLATE = (text: string) => {
       return `
         <!DOCTYPE html>
         <html>

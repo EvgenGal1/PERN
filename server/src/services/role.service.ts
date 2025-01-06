@@ -1,6 +1,7 @@
-import { Role as RoleModel, UserRole as UserRoleModel } from '../models/model';
-import AppError from '../error/ApiError';
+import { RoleModel, UserRoleModel } from '../models/model';
+import AppError from '../middleware/errors/ApiError';
 import DatabaseUtils from '../utils/database.utils';
+import { UserRoleCreationAttributes } from 'models/sequelize-types';
 
 class RoleService {
   async getAllRole() {
@@ -15,9 +16,11 @@ class RoleService {
     }
   }
 
-  async getOneRole(id) {
+  async getOneRole(id: number) {
     try {
-      const role = await RoleModel.findByPk(id);
+      const role = (await RoleModel.findByPk(id)) as unknown as InstanceType<
+        typeof RoleModel
+      > & { name: string };
       if (!role) {
         throw new Error('Роль не найден в БД');
       }
@@ -36,13 +39,13 @@ class RoleService {
       let userRole;
       // определение привязки
       if (param && param.includes('user')) {
-        userRole = await UserRoleModel.findOne({ where: { user_id: id } });
+        userRole = await UserRoleModel.findOne({ where: { userId: id } });
       } else if (param && param.includes('role')) {
-        userRole = await RoleModel.findOne({ where: { roleId: id } });
+        userRole = await UserRoleModel.findOne({ where: { roleId: id } });
       } else if (param && param.includes('value')) {
-        userRole = await RoleModel.findOne({ where: { level: id } });
+        userRole = await UserRoleModel.findOne({ where: { level: id } });
       } else {
-        userRole = await RoleModel.findOne(id);
+        userRole = await RoleModel.findByPk(id);
       }
       if (!userRole) {
         throw new Error('Роль не найден в БД');
@@ -57,14 +60,25 @@ class RoleService {
   }
 
   // `назначать` неск.Польз. неск.Ролей
-  async assignUserRole(userId, roleParam, level = 1) {
+  async assignUserRole(
+    userId: number,
+    roleParam: string | number,
+    level: number = 1,
+  ): Promise<InstanceType<typeof UserRoleModel>> {
     try {
       // перем.Роли, поиск по ID|name
-      let role;
-      if (!isNaN(parseInt(roleParam))) {
-        role = await roleParam.findOne({ where: { id: roleParam } });
+      let role: (InstanceType<typeof RoleModel> & { id: number }) | null = null;
+      if (!isNaN(parseInt(roleParam as string))) {
+        role = (await RoleModel.findOne({ where: { id: roleParam } })) as
+          | (InstanceType<typeof RoleModel> & { id: number })
+          | null;
       } else if (typeof roleParam === 'string') {
-        role = await RoleModel.findOne({ where: { value: roleParam } });
+        role = (await RoleModel.findOne({ where: { value: roleParam } })) as
+          | (InstanceType<typeof RoleModel> & { id: number })
+          | null;
+      }
+      if (!role) {
+        throw new Error('Роль не найдена');
       }
       // `получить наименьший доступный идентификатор` из табл.БД
       const smallestFreeId =
@@ -72,12 +86,12 @@ class RoleService {
       // созд.связь user-role
       const createdUserRole = await UserRoleModel.create({
         id: smallestFreeId,
-        userId: userId.toString(),
+        userId: userId,
         roleId: role.id,
         level,
       });
       // обраб.ошб.
-      if (!createdUserRole || createdUserRole === 0) {
+      if (!createdUserRole) {
         throw AppError.badRequest(
           `НЕ удалось записать Роли до CATCH `,
           ' -нет- ',
@@ -92,10 +106,10 @@ class RoleService {
     }
   }
 
-  async createRole(data) {
+  async createRole(data: any): Promise<UserRoleCreationAttributes> {
     try {
       const { name } = data;
-      const exist = await RoleModel.findOne({ where: { name } });
+      const exist = await RoleModel.findOne({ where: { value: name } });
       if (exist) {
         throw new Error('Роль уже есть');
       }
@@ -109,14 +123,16 @@ class RoleService {
     }
   }
 
-  async updateRole(id, data) {
+  async updateRole(id: number, data: any) {
     try {
-      const role = await RoleModel.findByPk(id);
+      const role = (await RoleModel.findByPk(
+        id,
+      )) as unknown as typeof RoleModel & { name: string };
       if (!role) {
         throw new Error('Роль не найден в БД');
       }
       const { name = role.name } = data;
-      await role.update({ name });
+      await role.update({ value: name }, { where: { id }, returning: true });
       return role;
     } catch (error: unknown) {
       throw AppError.badRequest(
@@ -126,7 +142,7 @@ class RoleService {
     }
   }
 
-  async deleteRole(id) {
+  async deleteRole(id: number) {
     try {
       const role = await RoleModel.findByPk(id);
       if (!role) {

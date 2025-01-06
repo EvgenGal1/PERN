@@ -1,17 +1,17 @@
 // табл.
-import { Basket as BasketModel } from '../models/model';
-import { Product as ProductModel } from '../models/model';
-import { BasketProduct as BasketProductModel } from '../models/model';
+import { BasketModel } from '../models/model';
+import { ProductModel } from '../models/model';
+import { BasketProductModel } from '../models/model';
 // утилиты/helpы/ошб.
 import DatabaseUtils from '../utils/database.utils';
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 
-const pretty = (basket) => {
+const pretty = (basket: any) => {
   const data: any = {};
   data.id = basket.id;
   data.products = [];
   if (basket.products) {
-    data.products = basket.products.map((item) => {
+    data.products = basket.products.map((item: any) => {
       return {
         id: item.id,
         name: item.name,
@@ -28,13 +28,20 @@ class BasketService {
     try {
       // получ.basket_id
       if (basketId == null && userId) {
-        const idBasket = await BasketModel.findOne({
+        const idBasket = (await BasketModel.findOne({
           where: { userId: userId },
-        });
-        return idBasket.id;
+        })) as unknown as typeof BasketModel;
+        if (idBasket) {
+          return (idBasket as any).id;
+        } else {
+          throw AppError.badRequest('Корзина не найдена', 'idBasket is null');
+        }
       }
 
       // получ. basket с product
+      if (basketId === null) {
+        throw AppError.badRequest('Корзина не найдена', 'basketId is null');
+      }
       const basketProd = await BasketModel.findByPk(basketId, {
         attributes: ['id'],
         include: [{ model: ProductModel, attributes: ['id', 'name', 'price'] }],
@@ -119,7 +126,6 @@ class BasketService {
       let basket = await BasketModel.findByPk(basketId, {
         include: [{ model: ProductModel, as: 'products' }],
       });
-
       if (!basket) basket = await BasketModel.create();
 
       // проверяем, есть ли этот товар в корзине
@@ -127,7 +133,7 @@ class BasketService {
         where: { basketId, productId },
       });
 
-      if (basket_product) {
+      if (basket_product && (basket_product as any).quantity > quantity) {
         await basket_product.increment('quantity', { by: quantity });
         // обновим объект корзины, чтобы вернуть свежие данные
         await basket.reload();
@@ -158,7 +164,7 @@ class BasketService {
       });
 
       if (basket_product) {
-        if (basket_product.quantity > quantity) {
+        if ((basket_product as any).quantity > quantity) {
           await basket_product.decrement('quantity', { by: quantity });
         } else {
           await basket_product.destroy();
@@ -207,7 +213,7 @@ class BasketService {
       });
       if (!basket) throw new Error('Корзина не найдена в БД');
 
-      if (basketId == basket.userId) {
+      if (basketId == (basket as any).userId) {
         BasketModel.destroy({ where: { userId: basketId } });
       } else {
         await basket.destroy();

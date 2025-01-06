@@ -4,17 +4,20 @@ const bcrypt = require('bcryptjs');
 const uuid = require('uuid');
 
 // модель данных табл.User
-import { User as UserModel, User } from '../models/model';
+import { UserModel } from '../models/model';
+import { UserRoleModel } from '../models/model';
 // serv разные
-import BasketService from '../services/basket.service';
-import TokenService from '../services/token.service';
-import MailService from '../services/mail.service';
-import RoleService from '../services/role.service';
+import BasketService from './basket.service';
+import TokenService from './token.service';
+import MailService from './mail.service';
+import RoleService from './role.service';
 // утилиты/helpы/обраб.ошб./dto
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 import UserDto from '../dtos/user.dto';
 import TokenDto from '../dtos/token.dto';
 import DatabaseUtils from '../utils/database.utils';
+import { UserAttributes, UserCreationAttributes } from 'models/sequelize-types';
+import { Model } from 'sequelize';
 
 // перем.степень шифр.
 const hashSync = 5;
@@ -66,34 +69,43 @@ class UserService {
       });
 
       // привязка.существ.Роли пользователя
-      const userRoles = await RoleService.assignUserRole(user.id, role);
-      if (!userRoles || userRoles === null || userRoles.errors) {
+      const userRoles = await RoleService.assignUserRole(
+        user.getDataValue('id') /* id */ /* get('id') */,
+        role,
+      );
+      if (!userRoles || userRoles === null) {
         throw AppError.badRequest('НЕ удалось записать Роль');
       }
 
       // опред.Роли User
       let roleUs: string = '';
-      if (userRoles.roleId === 1) {
+      if (userRoles.getDataValue('roleId') === 1) {
         roleUs = 'USER';
       }
 
       // объ.перед.данн.> Роли > id/email/username/role/level
+      // const { id, username } = user.get();
       const tokenDto = new TokenDto({
-        id: user.id,
+        id: user.getDataValue('id'),
         email,
-        username: user.username,
+        username: user.getDataValue('username'),
         role: roleUs,
-        level: userRoles.level,
+        level: userRoles.getDataValue('level'),
+        // level: userRoles.level,
       });
 
       // созд./получ. 2 токена. email/role
       const tokens = TokenService.generateToken({ ...tokenDto });
 
       // созд.Корзину по User.id
-      const basket = await BasketService.createBasket(user.id);
+      const basket = await BasketService.createBasket(user.getDataValue('id'));
 
       // сохр.refresh в БД
-      await TokenService.saveToken(user.id, basket.id, tokens.refreshToken);
+      await TokenService.saveToken(
+        user.getDataValue('id'),
+        basket.id,
+        tokens.refreshToken,
+      );
 
       // возвращ.tokens/basket.id
       return { tokens: tokens, basketId: basket.id };
@@ -113,51 +125,64 @@ class UserService {
         throw AppError.badRequest(`Пользователь с Email <${email}> не найден`);
       }
       // `сравнивания` пароля с шифрованым
-      let comparePassword = bcrypt.compareSync(password, user.password);
+      let comparePassword = bcrypt.compareSync(
+        password,
+        user.getDataValue('password'),
+      );
       if (!comparePassword) {
         throw AppError.badRequest('Указан неверный пароль');
       }
 
       // провер.существ.Роли пользователя
-      const userRoles = await RoleService.getOneUserRole(user.id, 'user');
-      if (!userRoles || userRoles === null || userRoles.errors) {
+      const userRoles = await RoleService.getOneUserRole(
+        user.getDataValue('id'),
+        'user',
+      );
+      if (!userRoles || userRoles === null) {
         throw AppError.badRequest('НЕ удалось записать Роль');
       }
 
       // опред.Роли User
       let roleUs: string = '';
-      if (userRoles.roleId === 1) {
+      if (userRoles.get('roleId') === 1) {
         roleUs = 'USER';
-      } else if (userRoles.roleId === 2) {
+      } else if (userRoles.get('roleId') === 2) {
         roleUs = 'ADMIN';
-      } else if (!userRoles || userRoles === null || userRoles.errors) {
+      } else if (!userRoles || userRoles === null) {
         // привязка.существ.Роли пользователя
-        await RoleService.assignUserRole(user.id, 'USER');
+        await RoleService.assignUserRole(user.getDataValue('id'), 'USER');
         roleUs = 'USER';
       }
 
       // объ.перед.данн.> Роли > id/email/username/role/level
       const tokenDto = new TokenDto({
-        id: user.id,
+        id: user.getDataValue('id'),
         email,
-        username: user.username,
+        username: user.getDataValue('username'),
         role: roleUs,
-        level: userRoles.level,
+        level: userRoles.get('level'),
       });
       // созд./получ. 2 токена. email/role
       const tokens = TokenService.generateToken({ ...tokenDto });
 
       // получ.basket_id
-      const basketId = await BasketService.getOneBasket(null, user.id);
+      const basketId = await BasketService.getOneBasket(
+        null,
+        user.getDataValue('id'),
+      );
 
       // сохр.refreshToken > user_id и basket_id
-      await TokenService.saveToken(user.id, basketId, tokens.refreshToken);
+      await TokenService.saveToken(
+        user.getDataValue('id'),
+        basketId,
+        tokens.refreshToken,
+      );
 
       return {
         // message: `Зашёл ${user.username} <${email}>. ID_${user.id}_${roleUs}`,
         tokens: tokens,
         basketId: basketId,
-        activated: user.isActivated,
+        activated: user.getDataValue('isActivated'),
       };
     } catch (error: unknown) {
       return AppError.badRequest(
@@ -177,7 +202,7 @@ class UserService {
       throw AppError.badRequest(`Некорр ссы.актив. Пользователя НЕТ`);
     }
     // флаг в true и сохр.
-    user.isActivated = true;
+    user.set('isActivated', true);
     user.save();
   }
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
@@ -185,7 +210,7 @@ class UserService {
     try {
       // е/и нет то ошб.не авториз
       if (!refreshToken) {
-        return AppError.unauthorizedError('Требуется авторизация');
+        return AppError.unauthorized('Требуется авторизация');
       }
 
       // валид.токен.refresh
@@ -195,39 +220,52 @@ class UserService {
 
       // проверка валид и поиск
       if (!userData || !tokenFromDB) {
-        return AppError.unauthorizedError('Токен  отсутствует');
+        return AppError.unauthorized('Токен  отсутствует');
       }
 
       // вытаск.польз.с БД по ID
       const user = await UserModel.findByPk(userData.id);
+      if (!user) {
+        return AppError.unauthorized('Пользователь отсутствует');
+      }
 
       // провер.существ.Роли пользователя
-      const userRoles = await RoleService.getOneUserRole(user.id, 'user');
+      const userRoles = await RoleService.getOneUserRole(
+        user.getDataValue('id'),
+        'user',
+      );
 
       // опред.Роли User
       let roleUs: string = '';
-      if (userRoles.roleId === 1) {
+      if (userRoles.get('roleId') === 1) {
         roleUs = 'USER';
       }
 
       // объ.перед.данн.> Роли > id/email/username/role/level
       const tokenDto = new TokenDto({
-        id: user.id,
-        email: user.email,
-        username: user.username,
+        id: user.getDataValue('id'),
+        email: user.getDataValue('email'),
+        username: user.getDataValue('username'),
         role: roleUs,
-        level: userRoles.level,
+        level: userRoles.get('level'),
       });
 
       // созд./получ. 2 токена. email/role
       const tokens = TokenService.generateToken({ ...tokenDto });
 
-      const basketId = await BasketService.getOneBasket(null, user.id);
+      const basketId = await BasketService.getOneBasket(
+        null,
+        user.getDataValue('id'),
+      );
 
-      await TokenService.saveToken(user.id, basketId, tokens.refreshToken);
+      await TokenService.saveToken(
+        user.getDataValue('id'),
+        basketId,
+        tokens.refreshToken,
+      );
 
       return {
-        message: `ПЕРЕЗАПИСЬ ${user.username} <${user.email}>. ID_${user.id}_${roleUs}`,
+        message: `ПЕРЕЗАПИСЬ ${user.get('username')} <${user.get('email')}>. ID_${user.get('id')}_${roleUs}`,
         tokens: tokens,
       };
     } catch (error: unknown) {
@@ -256,7 +294,7 @@ class UserService {
   }
 
   // ADMIN Пользователь
-  async createUser(data) {
+  async createUser(data: any) {
     try {
       const { email, password, role } = data;
       const check = await UserModel.findOne({ where: { email } });
@@ -265,7 +303,7 @@ class UserService {
         throw AppError.badRequest('Пользователь уже существует');
       const user = await UserModel.create({ email, password, role });
       // созд.Корзину по User.id
-      if (user.id) await BasketService.createBasket(user.id);
+      if (user.get('id')) await BasketService.createBasket(user.get('id'));
       return user;
     } catch (error: unknown) {
       throw AppError.badRequest(
@@ -274,7 +312,9 @@ class UserService {
       );
     }
   }
-  async getOneUser(id: number): Promise<typeof User | null> {
+  async getOneUser(
+    id: number,
+  ): Promise<Model<UserAttributes, UserCreationAttributes> | null> {
     try {
       const user = await UserModel.findByPk(id);
       if (!user) {
@@ -299,18 +339,26 @@ class UserService {
       );
     }
   }
-  async updateUser(id: number, data) {
+  async updateUser(id: number, data: any) {
     try {
-      const user = await UserModel.findByPk(id);
+      const user = await UserModel.findByPk(id /* , { raw: true } */);
       if (!user)
         return AppError.notFound(`Пользователь по id ${id} не найден в БД`);
       const {
-        email = user.email,
-        password = user.password,
+        email = user./* email */ get('email'),
+        password = user./* password */ get('password'),
         // ! заменить на роль из UserRoles
-        role = user.role,
+        role = user./* role */ get('role'),
       } = data;
-      await user.update({ email, password, role });
+      await user.update({ email, password });
+
+      if (data.role) {
+        await UserRoleModel.update(
+          { roleId: data.role },
+          { where: { userId: id } },
+        );
+      }
+
       return user;
     } catch (error: unknown) {
       throw AppError.badRequest(
@@ -323,7 +371,7 @@ class UserService {
     try {
       const user = await UserModel.findByPk(id);
       if (!user) return AppError.badRequest('Пользователь не найден в БД');
-      if (user.id) BasketService.deleteBasket(user.id);
+      if (user.get('id')) BasketService.deleteBasket(user.get('id') as number);
       await user.destroy();
       return user;
     } catch (error: unknown) {

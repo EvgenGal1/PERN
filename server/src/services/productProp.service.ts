@@ -1,13 +1,13 @@
 // ^ servis для свойств товара
-import AppError from "../error/ApiError";
-import { Product as ProductModel } from "../models/model";
-import { ProductProp as ProductPropModel } from "../models/model";
+import AppError from '../middleware/errors/ApiError';
+import { ProductModel } from '../models/model';
+import { ProductPropModel } from '../models/model';
 
 class ProductPropService {
-  async getAllProdProp(productId) {
+  async getAllProdProp(productId: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     const properties = await ProductPropModel.findAll({
       where: { productId },
@@ -15,24 +15,24 @@ class ProductPropService {
     return properties;
   }
 
-  async getOneProdProp(productId, id) {
+  async getOneProdProp(productId: number, id: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     const property = await ProductPropModel.findOne({
       where: { productId, id },
     });
     if (!property) {
-      throw new Error("Свойство товара не найдено в БД");
+      throw new Error('Свойство товара не найдено в БД');
     }
     return property;
   }
 
-  async createProdProp(productId, data) {
+  async createProdProp(productId: number, data: any) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     const { name, value } = data;
     const property = await ProductPropModel.create({
@@ -43,32 +43,32 @@ class ProductPropService {
     return property;
   }
 
-  async updateProdProp(productId, id, data) {
+  async updateProdProp(productId: number, id: number, data: any) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     const property = await ProductPropModel.findOne({
       where: { productId, id },
     });
     if (!property) {
-      throw new Error("Свойство товара не найдено в БД");
+      throw new Error('Свойство товара не найдено в БД');
     }
-    const { name = property.name, value = property.value } = data;
+    const { name = property.get('name'), value = property.get('value') } = data;
     await property.update({ name, value });
     return property;
   }
 
-  async deleteProdProp(productId, id: number | string) {
+  async deleteProdProp(productId: number, id: number | string) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error("Товар не найден в БД");
+      throw new Error('Товар не найден в БД');
     }
     const property = await ProductPropModel.findOne({
       where: { productId, id },
     });
     if (!property) {
-      throw new Error("Свойство товара не найдено в БД");
+      throw new Error('Свойство товара не найдено в БД');
     }
     await property.destroy();
     return property;

@@ -4,7 +4,7 @@ const uuid = require('uuid');
 // подкл.для созд.пути
 const path = require('path');
 
-import AppError from '../error/ApiError';
+import AppError from '../middleware/errors/ApiError';
 
 class FileService {
   saveFile(file: /* : Express.Multer.File */ any): string | null {

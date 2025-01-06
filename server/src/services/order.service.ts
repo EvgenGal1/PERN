@@ -1,7 +1,9 @@
 // ^ сервис для работы с заказами
-import AppError from '../error/ApiError';
-import { Order as OrderModel } from '../models/model';
-import { OrderItem as OrderItemModel } from '../models/model';
+import { OrderAttributes, OrderItemAttributes } from 'models/sequelize-types';
+import { Model } from 'sequelize';
+import AppError from '../middleware/errors/ApiError';
+import { OrderModel } from '../models/model';
+import { OrderItemModel } from '../models/model';
 
 // Типы данных
 interface Orders {
@@ -47,6 +49,7 @@ interface OrderItem {
   name: string;
   price: number;
   quantity: number;
+  orderId: number;
   // createdAt: Date;
   // updatedAt: Date;
 }
@@ -90,7 +93,7 @@ class OrderService {
       if (!order) {
         throw new Error('Заказ не найден в БД');
       }
-      return order;
+      return order as unknown as OrderAttributes;
     } catch (error: unknown) {
       throw AppError.badRequest(
         `Заказ не получен`,
@@ -99,7 +102,7 @@ class OrderService {
     }
   }
 
-  async createOrder(data: any /* CreateData */) /* : Promise<Orders> */ {
+  async createOrder(data: any /* CreateData */): Promise<OrderAttributes> {
     try {
       // общая стоимость заказа
       const items = data.items;
@@ -120,13 +123,15 @@ class OrderService {
       } = data;
 
       const order = await OrderModel.create({
+        // id,
         name,
         email,
         phone,
         address,
         comment,
         amount,
-        userId,
+        status: 2001, // or any default status value
+        // userId,
       });
 
       // товары, входящие в заказ
@@ -135,12 +140,13 @@ class OrderService {
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          orderId: order.id,
+          orderId: order.getDataValue('id'),
         });
       }
 
       // возвращать будем заказ с составом
-      const created = await OrderModel.findByPk(order.id, {
+      // const created = await OrderModel.findByPk(order.id, {
+      const created = await OrderModel.findByPk(order.getDataValue('id'), {
         include: [
           {
             model: OrderItemModel,
@@ -150,7 +156,10 @@ class OrderService {
         ],
       });
 
-      return created;
+      if (!created) {
+        throw new Error('Созданный заказ не найден');
+      }
+      return created as unknown as OrderAttributes;
     } catch (error: unknown) {
       throw AppError.badRequest(
         `Заказ не создан`,
@@ -159,12 +168,17 @@ class OrderService {
     }
   }
 
-  async updateOrder(id: string | number, data: /* any */ UpdateData) {
+  async updateOrder(
+    id: string | number,
+    data: any /* UpdateData */,
+  ): Promise<OrderAttributes> {
     try {
       // const order = await OrderModel.findByPk(id);
-      const order = await OrderModel.findByPk(id, {
+      const order = (await OrderModel.findByPk(id, {
         include: [{ model: OrderItemModel, as: 'items' }],
-      });
+      })) /* as unknown as OrderAttributes */ as Model<OrderAttributes> & {
+        items: OrderItemAttributes[];
+      };
       if (!order) {
         throw new Error('Заказ не найден в БД');
       }
@@ -179,13 +193,14 @@ class OrderService {
       );
 
       // статус
-      let status: number = order.status;
+      // let status: number = order.status;
+      let status: number = order.get('status') as unknown as number;
       if (
-        data.name !== order.name ||
-        data.email !== order.email ||
-        data.phone !== order.phone ||
-        data.address !== order.address ||
-        data.comment !== order.comment
+        data.name !== order.get('name') ||
+        data.email !== order.get('email') ||
+        data.phone !== order.get('phone') ||
+        data.address !== order.get('address') ||
+        data.comment !== order.get('comment')
       ) {
         if (status === 2002 || status === 2003) {
           status = 2003;
@@ -197,12 +212,12 @@ class OrderService {
       // данные для создания заказа
       // const { name, email, phone, address, comment = null, userId = null } = data;
       const {
-        name = order.name,
-        email = order.email,
-        phone = order.phone,
-        address = order.address,
-        comment = order.comment,
-        userId = order.userId,
+        name = order.get('name'),
+        email = order.get('email'),
+        phone = order.get('phone'),
+        address = order.get('address'),
+        comment = order.get('comment'),
+        // userId = order.userId,
       } = data;
       await order.update({
         name,
@@ -211,22 +226,25 @@ class OrderService {
         address,
         comment,
         amount,
-        userId,
+        // userId,
         status,
       });
       //
       if (data.items) {
         // свойства товара
         // удаляем старые и добавляем новые
-        await OrderItemModel.destroy({ where: { orderId: id } });
+        // await OrderItemModel.destroy({ where: { orderId: id } });
+        await OrderItemModel.destroy({
+          where: { id: order.getDataValue('id') },
+        });
         // const items: any = JSON.parse(data.items);
         // товары, входящие в заказ
         for (let item of items) {
           await OrderItemModel.create({
+            id: order.getDataValue('id'),
             name: item.name,
             price: item.price,
             quantity: item.quantity,
-            orderId: order.id,
           });
         }
       }
@@ -247,7 +265,8 @@ class OrderService {
       // обновим объект товара, чтобы вернуть свежие данные
       await order.reload();
 
-      return order;
+      // return order as unknown as OrderAttributes;
+      return order.get() as OrderAttributes;
       // return pretty(order);
     } catch (error: unknown) {
       throw AppError.badRequest(
@@ -257,7 +276,7 @@ class OrderService {
     }
   }
 
-  async deleteOrder(id) {
+  async deleteOrder(id: number) {
     try {
       let order = await OrderModel.findByPk(id, {
         include: [

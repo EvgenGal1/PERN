@@ -1,9 +1,10 @@
-import { Token as TokenModel } from "../models/model";
-import AppError from "../error/ApiError";
-import DatabaseUtils from "../utils/database.utils";
+import { TokenModel } from '../models/model';
+import AppError from '../middleware/errors/ApiError';
+import DatabaseUtils from '../utils/database.utils';
+import { TokenAttributes } from 'models/sequelize-types';
 
 // подкл.ф.контролера для генерац.web токена
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 // сохр.токенов по id при регистр/логин
 class TokenService {
@@ -17,7 +18,7 @@ class TokenService {
       return null;
     }
   }
-  validateRefreshToken(token) {
+  validateRefreshToken(token: string) {
     try {
       const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
       return userData;
@@ -32,16 +33,16 @@ class TokenService {
       payload,
       process.env.JWT_ACCESS_SECRET_KEY,
       {
-        expiresIn: "24h",
-      }
+        expiresIn: '24h',
+      },
     );
 
     const refreshToken = /* await */ jwt.sign(
       payload,
       process.env.JWT_REFRESH_SECRET_KEY,
       {
-        expiresIn: "30d",
-      }
+        expiresIn: '30d',
+      },
     );
 
     return { accessToken, refreshToken };
@@ -59,17 +60,17 @@ class TokenService {
     if (tokenData) {
       await TokenModel.update(
         { refreshToken },
-        { where: { userId: userId, basketId: basketId } }
+        { where: { userId: userId, basketId: basketId } },
       );
-      tokenData.userId = userId;
-      tokenData.refreshToken = refreshToken;
+      (tokenData as unknown as TokenAttributes).userId = userId;
+      (tokenData as unknown as TokenAttributes).refreshToken = refreshToken;
 
       // сохр. для обнов.в БД
       return tokenData.save();
     }
 
     // `получить наименьший доступный идентификатор` из табл.БД
-    const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable("user");
+    const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable('user');
 
     // СОЗД.НОВ.ТОКЕН
     const token = await TokenModel.create({
