@@ -1,52 +1,62 @@
 // табл.
-import { BasketModel } from '../models/model';
-import { ProductModel } from '../models/model';
-import { BasketProductModel } from '../models/model';
+import { BasketModel, ProductModel, BasketProductModel } from '../models/model';
 // утилиты/helpы/ошб.
 import DatabaseUtils from '../utils/database.utils';
 import AppError from '../middleware/errors/ApiError';
 
-const pretty = (basket: any) => {
-  const data: any = {};
-  data.id = basket.id;
-  data.products = [];
-  if (basket.products) {
-    data.products = basket.products.map((item: any) => {
-      return {
+export interface BasketProduct {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface BasketResponse {
+  id: number;
+  products: BasketProduct[];
+}
+
+// Утилита для форматирования ответа корзины
+const pretty = (basket: any): BasketResponse => {
+  return {
+    id: basket.id,
+    products:
+      basket.products?.map((item: any) => ({
         id: item.id,
         name: item.name,
         price: item.price,
         quantity: item.basket_product.quantity,
-      };
-    });
-  }
-  return data;
+      })) || [],
+  };
 };
 
 class BasketService {
-  async getOneBasket(basketId: number | null, userId?: number) {
+  // Получить ID корзины по ID пользователя или переданному basketId
+  async getOneBasket(
+    basketId: number | null,
+    userId?: number,
+  ): Promise<BasketResponse /* | number */> {
     try {
       // получ.basket_id
-      if (basketId == null && userId) {
-        const idBasket = (await BasketModel.findOne({
-          where: { userId: userId },
-        })) as unknown as typeof BasketModel;
-        if (idBasket) {
-          return (idBasket as any).id;
-        } else {
-          throw AppError.badRequest('Корзина не найдена', 'idBasket is null');
-        }
+      if (!basketId && userId) {
+        const basket = await BasketModel.findOne({ where: { userId } });
+        if (!basket)
+          throw AppError.badRequest(
+            'Корзина по userId не найдена',
+            'idBasket is null',
+          );
+        return basket as any /* .id */;
       }
-
       // получ. basket с product
       if (basketId === null) {
         throw AppError.badRequest('Корзина не найдена', 'basketId is null');
       }
       const basketProd = await BasketModel.findByPk(basketId, {
-        attributes: ['id'],
+        // attributes: ['id'],
         include: [{ model: ProductModel, attributes: ['id', 'name', 'price'] }],
       });
-
+      if (!basketProd)
+        throw AppError.badRequest('Корзина не найдена', 'idBasket is null');
       return pretty(basketProd);
     } catch (error: unknown) {
       throw AppError.badRequest(
@@ -56,31 +66,25 @@ class BasketService {
     }
   }
 
-  async createBasket(userId?: any) {
+  // Создать корзину для пользователя
+  async createBasket(userId?: any): Promise<BasketResponse> {
     try {
       // `получить наименьший доступный идентификатор` из табл.БД
       const smallestFreeId =
         await DatabaseUtils.getSmallestIDAvailable('basket');
-      let returned: any = {};
       // при передаче userId созд. Корзину с привязкой к User (Регистр User)
-      if (userId) {
-        returned = await BasketModel.create({
-          id: smallestFreeId,
-          userId: userId,
-        });
-      } else {
+      if (!userId) {
         throw AppError.badRequest(
           `для Корзины не передан userId`,
           'НЕТ userId',
         );
-        // ! прописать для всех createBasket передачу/подтягивание user_id убрав лишн.код с if/else
-        returned = await BasketModel.create({
-          id: smallestFreeId,
-          userId: userId,
-        });
       }
+      const basket = await BasketModel.create({
+        id: smallestFreeId,
+        userId: userId,
+      });
 
-      return pretty(returned);
+      return pretty(basket);
     } catch (error: unknown) {
       throw AppError.badRequest(
         `Корзина не создана`,
@@ -89,14 +93,20 @@ class BasketService {
     }
   }
 
-  async appendBasket(basketId: number, productId: number, quantity: number) {
+  // Добавить товар в корзину
+  async appendBasket(
+    basketId: number,
+    productId: number,
+    quantity: number,
+  ): Promise<BasketResponse> {
     try {
       let basket = await BasketModel.findByPk(basketId, {
-        attributes: ['id'],
+        // attributes: ['id'],
         include: [{ model: ProductModel, attributes: ['id', 'name', 'price'] }],
       });
-
-      if (!basket) basket = await BasketModel.create();
+      if (!basket)
+        throw AppError.badRequest('Корзина не найдена', 'idBasket is null');
+      // if (!basket) basket = await BasketModel.create({ id: basketId });
 
       // проверяем, есть ли уже этот товар в корзине
       const basket_product = await BasketProductModel.findOne({
