@@ -35,9 +35,9 @@ export const documentSwagger = (app: Express) => {
       },
       customSiteTitle: 'PERN (Swagger)',
       // кастом иконки в браузере
-      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/${process.env.PUB_IMG}/ico/icon.ico`,
+      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_IMG}/ico/icon.ico`,
       // кастом ф.CSS
-      customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
+      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
       //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`, // темы + своё

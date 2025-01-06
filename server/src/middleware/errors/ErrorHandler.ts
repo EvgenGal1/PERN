@@ -16,7 +16,7 @@ const ErrorHandler = (
   // ошб.экземпл.AppError
   if (err instanceof AppError) {
     logger.error(
-      `API Error - ${req.method} ${req.url}: ${err.message} (${err.status})`,
+      `API ОШБ.: ${req.method} ${req.url}: ${err.message} (${err.status})`,
     );
     return res.status(err.status).json({
       status: err.status,

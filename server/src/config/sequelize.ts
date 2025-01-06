@@ -31,14 +31,14 @@ const sequelize = new Sequelize(
   },
 );
 
-// Проверка подключения к базе данных
-sequelize
-  .authenticate()
-  .then(() => {
+// асинхр.проверка подкл.к БД
+export const connectToDatabase = async () => {
+  try {
+    await sequelize.authenticate();
     console.log('Подключение к БД успешно.');
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error('Не удалось подключиться к БД:', err);
-  });
+  }
+};
 
 export default sequelize;
