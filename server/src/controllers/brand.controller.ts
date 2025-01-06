@@ -19,10 +19,9 @@ class BrandController {
 
   async getOneBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Бренда');
-      }
-      const brand = await BrandService.getOneBrand(+req.params.id);
+      const id = +req.params.id;
+      if (isNaN(id)) throw new AppError(400, 'Некорректный ID');
+      const brand = await BrandService.getOneBrand(id);
       res.json(brand);
     } catch (error: unknown) {
       next(
@@ -35,8 +34,11 @@ class BrandController {
 
   async createBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      const brand = await BrandService.createBrand(req.body);
-      res.json(brand);
+      const { name } = req.body;
+      if (!name || typeof name !== 'string')
+        throw new AppError(400, 'Некорректное название бренда');
+      const brand = await BrandService.createBrand({ name });
+      res.status(201).json(brand);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -48,10 +50,11 @@ class BrandController {
 
   async updateBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Бренда');
-      }
-      const brand = await BrandService.updateBrand(+req.params.id, req.body);
+      const id = +req.params.id;
+      const { name } = req.body;
+      if (!name || typeof name !== 'string' || isNaN(id))
+        throw new AppError(400, 'Некорректные данные для обновления');
+      const brand = await BrandService.updateBrand(id, { name });
       res.json(brand);
     } catch (error: unknown) {
       next(
@@ -64,10 +67,9 @@ class BrandController {
 
   async deleteBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Бренда');
-      }
-      const brand = await BrandService.deleteBrand(+req.params.id);
+      const id = +req.params.id;
+      if (isNaN(id)) throw new AppError(400, 'Некорректный ID');
+      const brand = await BrandService.deleteBrand(id);
       res.json(brand);
     } catch (error: unknown) {
       next(

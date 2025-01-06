@@ -4,47 +4,33 @@ import { BrandModel } from '../models/model';
 
 class BrandService {
   async getAllBrand() {
-    const brands = await BrandModel.findAll();
-    return brands;
+    return await BrandModel.findAll();
   }
 
   async getOneBrand(id: number) {
     const brand = await BrandModel.findByPk(id);
-    if (!brand) {
-      throw new Error('Бренд не найден в БД');
-    }
+    if (!brand) throw new AppError(404, 'Бренд не найден');
     return brand;
   }
 
-  async createBrand(data: any) {
+  async createBrand(data: BrandAttributes) {
     const { name } = data;
     const exist = await BrandModel.findOne({ where: { name } });
-    if (exist) {
-      throw new Error('Бренд уже есть');
-    }
-    const brand = await BrandModel.create({ name });
-    return brand;
+    if (exist) throw new AppError(400, 'Бренд уже есть');
+    return await BrandModel.create({ name });
   }
 
-  async updateBrand(id: number, data: { name?: string }) {
+  async updateBrand(id: number, data: Partial<BrandAttributes>) {
     const brand = await BrandModel.findByPk(id);
-    if (!brand) {
-      throw new Error('Бренд не найден в БД');
-    }
-    const { name = brand.get('name') as string } = data;
-    // const { name = (brand as unknown as BrandAttributes).name } = data;
-    // const { name = (brand as BrandAttributes).name } = data;
-    await brand.update({ name });
-    return brand;
+    if (!brand) throw new AppError(404, 'Бренд не найден');
+    return await brand.update(data);
   }
 
   async deleteBrand(id: number) {
     const brand = await BrandModel.findByPk(id);
-    if (!brand) {
-      throw new Error('Бренд не найден в БД');
-    }
+    if (!brand) throw new AppError(404, 'Бренд не найден');
     await brand.destroy();
-    return brand;
+    return { message: `Бренд '${brand.get('name')}' удален` };
   }
 }
 
