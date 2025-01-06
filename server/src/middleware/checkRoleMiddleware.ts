@@ -1,34 +1,35 @@
 // middleware по добав.нов.устройство только ADMIN, +декодер,валид.
 
-// от ошб.повтор.объяв.перем в блоке
-// export {};
+import { NextFunction } from 'express';
 
 // подкл.обраб.ошиб.
-const ApiErrorJS = require("../error/vr/ApiErrorJS");
-const TokenService = require("../services/token.service");
-
-// interface T {
-//   string: string;
-// }
+// import { UnauthorizedError, BadRequest } from '../error/vr/ApiErrorJS';
+// import validateAccessToken from '../services/token.service';
+import TokenService from '../services/token.service';
+import AppError from '../middleware/errors/ApiError';
 
 // экспорт fn принимающая Роль (вызов fn с передачей Роли и возврат.middleware)
-module.exports = function (role /* : Array<T> */ /* : string */) {
+export default function (role /* : Array<T> */ : string[]) {
   // возвращ. сам middleware
-  return function (req, res, next) {
+  return function (
+    req: any /* Request */,
+    res: any /* Response */,
+    next: NextFunction,
+  ) {
     // ~ console.log("role ", role); // [ 'SUPER', 'ADMIN', 'MODER' ]
-    if (req.method === "OPTIONS") {
+    if (req.method === 'OPTIONS') {
       next();
     }
     try {
       // провер header на наличие поля authorization
       const authorizationHeader = req.headers.authorization;
       if (!authorizationHeader) {
-        return next(ApiErrorJS.UnauthorizedError("authoriz undf"));
+        return AppError.unauthorized('Требуется авторизация (authoriz undf)');
       }
       // достаём токен из header (отделяя от Типа`Носитель` передающ по ind 0) из шапки(обычн.там токен)
-      const accessToken = authorizationHeader.split(" ")[1]; // Bearer asfasnfkajsfnjk..
+      const accessToken = authorizationHeader.split(' ')[1]; // Bearer asfasnfkajsfnjk..
       if (!accessToken) {
-        return next(ApiErrorJS.UnauthorizedError("Токен err" /* , `${e}` */));
+        return AppError.unauthorized('Токен err' /* , `${e}` */);
         // return res.status(401).json({ message: "Не авторизован" });
       }
 
@@ -37,9 +38,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       // req.id = decoded.id;
       const decoded = TokenService.validateAccessToken(accessToken);
       if (!decoded) {
-        return next(
-          ApiErrorJS.UnauthorizedError("Токен не валид" /* , `${e}` */)
-        );
+        return AppError.unauthorized('Токен не валид' /* , `${e}` */);
       }
 
       // раскодир.токен.`проверять`на валидность. const опред.с др.именем т.к. role уже есть. получ.масс.Ролей
@@ -47,7 +46,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       const { role: userRoles } = TokenService.validateAccessToken(accessToken);
       // ~ console.log("userRoles ", userRoles); // от польз. ~ USER
       if (!userRoles) {
-        return next(ApiErrorJS.UnauthorizedError("НЕТ РОЛИ" /* , `${e}` */));
+        return AppError.unauthorized('НЕТ РОЛИ' /* , `${e}` */);
       }
 
       // проверка масс.польз.Ролей с масс.разреш.Ролей для этой fn
@@ -64,10 +63,8 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       });
       // ! ошб. - НЕ воспринимает все позиции, только первую если передавать role из auth.rout без []. Попробовать редачить в checkRole
       if (!hasRoles) {
-        return next(
-          ApiErrorJS.BadRequest(
-            `Нет доступа у Роли ${decoded.role} или ошб.Ролей`
-          )
+        return AppError.badRequest(
+          `Нет доступа у Роли ${decoded.role} или ошб.Ролей`,
         );
       }
 
@@ -75,7 +72,7 @@ module.exports = function (role /* : Array<T> */ /* : string */) {
       next();
     } catch (e) {
       // res.status(401).json({ message: `Не авторизован. Ошибка ${e}` });
-      throw next(ApiErrorJS.UnauthorizedError("!", `${e}`));
+      throw AppError.unauthorized(`! ${e}`);
     }
   };
-};
+}
