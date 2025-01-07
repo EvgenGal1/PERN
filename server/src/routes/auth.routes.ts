@@ -1,17 +1,18 @@
 import express from 'express';
-const router = express();
 // подкл. валидацию
 import { check } from 'express-validator';
 
 import authMiddleware from '../middleware/authMiddleware';
 import AuthController from '../controllers/auth.controller';
 
+const router = express.Router();
+
 // настр.swg JSDoc (доки.в JSON/YAML) > swg UI-dist (визуал.в браузере)
 /**
  * @swagger
  * tags:
  *   name: Authentication
- *   description: Эндпоинты авторизации и регистрации
+ *   description: Эндпоинты Авторизации и регистрации
  */
 
 // любой Пользователь
@@ -35,10 +36,10 @@ import AuthController from '../controllers/auth.controller';
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Электронная почта пользователя
+ *                 description: Электронная почта Пользователя
  *               password:
  *                 type: string
- *                 description: Пароль пользователя
+ *                 description: Пароль Пользователя
  *     responses:
  *       201:
  *         description: Успешная регистрация

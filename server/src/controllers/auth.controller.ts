@@ -1,6 +1,6 @@
 // подкл. валидацию
 import { validationResult } from 'express-validator';
-import { NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 // модели данных табл.
 import { UserModel } from '../models/model';
@@ -14,20 +14,30 @@ import AppError from '../middleware/errors/ApiError';
 // выборка полей
 import TokenDto from '../dtos/token.dto';
 
-// перем.cookie. // ^ domain - управ.поддомен.использования, path - маршр.действ., maxAge - вр.жизни, secure - только по HTTPS, httpOnly - измен.ток.ч/з SRV, signed - подписан
-const maxAge1 = 60 * 60 * 1000 * 24 * 30; // вр.жизни 1 месяц
-const maxAge2 = 60 * 60 * 1000 * 24 * 365; // вр.жизни один год
-const signed = true;
-const httpOnly = true;
+// перам.cookie. // ^ domain - управ.поддомен.использования, path - маршр.действ., maxAge - вр.жизни, secure - только по HTTPS, httpOnly - измен.ток.ч/з SRV, signed - подписан
+const COOKIE_OPTIONS = {
+  refreshToken: {
+    maxAge: 60 * 60 * 1000 * 24 * 30, // 1 месяц
+    httpOnly: true,
+    signed: true,
+  },
+  basketId: {
+    maxAge: 60 * 60 * 1000 * 24 * 365, // 1 год
+    httpOnly: true,
+    signed: true,
+  },
+};
+
+declare module 'express' {
+  export interface Request {
+    auth?: { id: number };
+  }
+}
 
 class AuthController {
   // любой Пользователь
   // РЕГИСТРАЦИЯ
-  async signupUser(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async signupUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       const errorsValid = validationResult(req);
@@ -58,28 +68,22 @@ class AuthController {
         }
         if ('message' in userData) {
           return next(
-            AppError.badRequest(
-              String(userData.message),
-              String(userData.errors),
-            ),
+            AppError.badRequest(String(userData.message), userData.errors),
           );
         }
       }
 
       // сохр.refreshToken/basketId в cookie и возвращ. access
-      let tokens: string = '';
       if ('tokens' in userData) {
-        const usTokRef = userData.tokens.refreshToken;
+        const { refreshToken, accessToken } = userData.tokens;
         res
-          .cookie('refreshToken', usTokRef, { maxAge1, httpOnly })
-          .cookie('basketId', userData.basketId, { maxAge2, signed });
-        tokens = userData.tokens.accessToken;
+          .cookie('refreshToken', refreshToken, COOKIE_OPTIONS.refreshToken)
+          .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId);
+        // возвращ. accessToken
+        return res.status(200).json({ tokens: accessToken });
       }
 
-      // return res.json(userData);
-      // возвращ. accessToken
-      const data = { tokens };
-      return res.json(data);
+      throw new Error('Неизвестная ошибка при регистрации');
     } catch (error: unknown) {
       const { email } = req.body;
       const user = await UserModel.findOne({ where: { email } });
@@ -94,11 +98,7 @@ class AuthController {
     }
   }
   // АВТОРИЗАЦИЯ
-  async loginUser(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       const errorsValid = validationResult(req);
@@ -112,34 +112,22 @@ class AuthController {
 
       const userData = await AuthService.loginUser(email, password);
       // return next(AppError.badRequest(userData.message, userData.errors));
-      if ('message' in userData || 'errors' in userData) {
-        if (userData instanceof AppError) {
-          return next(
-            AppError.badRequest(
-              String(userData.message),
-              String(userData.errors),
-            ),
-          );
-        }
-        return next(AppError.badRequest('Unknown error', 'Unknown error'));
+      if ('message' in userData /* || 'errors' in userData */) {
+        return next(AppError.badRequest(userData.message, userData.errors));
       }
 
       // сохр.refreshToken/basketId в cookie и возвращ. access и сост.активации
-      let tokens: string = '';
-      let activated: boolean = false;
       if ('tokens' in userData) {
-        const usTokRef = userData.tokens.refreshToken;
+        const { refreshToken, accessToken } = userData.tokens;
+        const activated = userData.activated ?? false;
         res
-          .cookie('refreshToken', usTokRef, { maxAge1, httpOnly })
-          .cookie('basketId', userData.basketId, { maxAge2, signed });
-        tokens = userData.tokens.accessToken;
-        activated = userData.activated ?? false;
+          .cookie('refreshToken', refreshToken, COOKIE_OPTIONS.refreshToken)
+          .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId);
+        // возвращ. accessToken и activated(сост.активации)
+        return res.status(200).json({ tokens: accessToken, activated });
       }
 
-      // return res.json(userData);
-      // возвращ. accessToken и activated(сост.активации)
-      const data = { tokens, activated };
-      return res.json(data);
+      throw new Error('Неизвестная ошибка при авторизации');
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -151,11 +139,7 @@ class AuthController {
 
   // USER Пользователь
   // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
-  async activateUser(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async activateUser(req: Request, res: Response, next: NextFunction) {
     try {
       // из стр.получ.ссы.актив.
       const activationLink = req.params.link;
@@ -167,11 +151,7 @@ class AuthController {
     }
   }
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
-  async refreshUser(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async refreshUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.cookies;
       // const { username, email } = req.body;
@@ -180,64 +160,47 @@ class AuthController {
       );
       if ('tokens' in userData) {
         const usTokRef = userData.tokens.refreshToken;
-        res.cookie('refreshToken', usTokRef, { maxAge1, httpOnly });
+        res.cookie('refreshToken', usTokRef, COOKIE_OPTIONS.refreshToken);
       }
       // return res.json(username, email);
-      return res.json(userData /* , username, email */);
+      return res.status(200).json(userData /* , username, email */);
     } catch (error) {
       return next(AppError.badRequest(`НЕ удалось ПЕРЕЗАПИСАТЬ - ${error}.`));
     }
   }
   // ПРОВЕРКА. Польз.
-  async checkUser(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async checkUser(req: Request, res: Response, next: NextFunction) {
+    if (!req.auth?.id) {
+      return next(AppError.badRequest('ID Пользователя не найден'));
+    }
     const user = await UserService.getOneUser(req.auth.id);
-    // провер.существ.Роли пользователя
     if (!user) {
       return next(AppError.badRequest('Пользователь не найден'));
     }
-    const activated = user ? user.getDataValue('isActivated') : false;
 
+    const activated = user.getDataValue('isActivated');
     const userRoles = await RoleService.getOneUserRole(
       user.getDataValue('id'),
       'user',
     );
     // опред.Роли User
-    let roleUs: string = '';
-    if (userRoles.get('roleId') === 1) {
-      roleUs = 'USER';
-    } else if (userRoles.get('roleId') === 2) {
-      roleUs = 'ADMIN';
-    } else if (!userRoles || userRoles === null || userRoles.get('errors')) {
-      // привязка.существ.Роли пользователя
-      await RoleService.assignUserRole(user.getDataValue('id'), 'USER');
-      roleUs = 'USER';
-    }
+    let roleUs = userRoles.get('roleId') === 1 ? 'USER' : 'ADMIN';
+
     // объ.перед.данн.> Роли > id/email/username/role/level
     const tokenDto = new TokenDto({
       id: user.getDataValue('id'),
       email: user.getDataValue('email'),
       username: user.getDataValue('username'),
       role: roleUs,
-      // level: userRoles.level,
       level: userRoles.get('level'),
     });
 
     // созд./получ. 2 токена. email/role
     const tokens = TokenService.generateToken({ ...tokenDto });
-    const token = tokens.accessToken;
-
-    return res.json({ token, activated });
+    return res.status(200).json({ token: tokens.accessToken, activated });
   }
   // ВЫХОД. Удал.Cookie.refreshToken
-  async logoutUser(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
       // получ refresh из cookie, передача в service, удал.обоих, возвращ.смс об удален.
       const { refreshToken } = req.cookies;

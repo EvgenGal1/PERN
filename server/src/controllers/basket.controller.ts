@@ -21,7 +21,7 @@ class BasketController {
         +quantity,
       );
       res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.json(basket);
+      res.status(200).json(basket);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -44,7 +44,7 @@ class BasketController {
         basket = await BasketService.createBasket();
       }
       res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.json(basket);
+      res.status(200).json(basket);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -72,7 +72,7 @@ class BasketController {
         +quantity,
       );
       res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.json(basket);
+      res.status(200).json(basket);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -99,7 +99,7 @@ class BasketController {
         +quantity,
       );
       res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.json(basket);
+      res.status(200).json(basket);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -121,7 +121,7 @@ class BasketController {
       }
       const basket = await BasketService.clearBasket(basketId);
       res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.json(basket);
+      res.status(201).json(basket);
     } catch (error: unknown) {
       next(
         AppError.badRequest(

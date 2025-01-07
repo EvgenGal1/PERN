@@ -1,22 +1,23 @@
 import express from 'express';
-const router = express();
 
 import authMiddleware from '../middleware/authMiddleware';
 import adminMiddleware from '../middleware/adminMiddleware';
 import BrandController from '../controllers/brand.controller';
 
+const router = express.Router();
+
 /**
  * @swagger
  * tags:
  *   name: Brands
- *   description: API для управления брендами
+ *   description: API для управления Брендами
  */
 
 /**
  * @swagger
  * /brands/create:
  *   post:
- *     summary: Создать новый бренд
+ *     summary: Создать новый Бренд
  *     tags: [Brands]
  *     security:
  *       - bearerAuth: []
@@ -29,7 +30,7 @@ import BrandController from '../controllers/brand.controller';
  *             properties:
  *               name:
  *                 type: string
- *                 description: Название бренда
+ *                 description: Название Бренда
  *     responses:
  *       200:
  *         description: Бренд успешно создан
@@ -46,7 +47,7 @@ router.post(
  * @swagger
  * /brands/getone/{id}:
  *   get:
- *     summary: Получить один бренд
+ *     summary: Получить один Бренд по ID
  *     tags: [Brands]
  *     parameters:
  *       - name: id
@@ -54,10 +55,10 @@ router.post(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID бренда
+ *         description: ID Бренда
  *     responses:
  *       200:
- *         description: Данные бренда
+ *         description: Данные Бренда
  *       404:
  *         description: Бренд не найден
  */
@@ -66,11 +67,11 @@ router.get('/getone/:id([0-9]+)', BrandController.getOneBrand);
  * @swagger
  * /brands/getall:
  *   get:
- *     summary: Получить все бренды
+ *     summary: Получить все Бренды
  *     tags: [Brands]
  *     responses:
  *       200:
- *         description: Список брендов
+ *         description: Список Брендов
  */
 
 router.get('/getall', BrandController.getAllBrand);
@@ -78,7 +79,7 @@ router.get('/getall', BrandController.getAllBrand);
  * @swagger
  * /brands/update/{id}:
  *   put:
- *     summary: Обновить бренд
+ *     summary: Обновить Бренд
  *     tags: [Brands]
  *     security:
  *       - bearerAuth: []
@@ -88,7 +89,7 @@ router.get('/getall', BrandController.getAllBrand);
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID бренда
+ *         description: ID Бренда
  *     requestBody:
  *       required: true
  *       content:
@@ -100,7 +101,7 @@ router.get('/getall', BrandController.getAllBrand);
  *                 type: string
  *     responses:
  *       200:
- *         description: Обновленный бренд
+ *         description: Обновленный Бренд
  *       404:
  *         description: Бренд не найден
  */
@@ -114,7 +115,7 @@ router.put(
  * @swagger
  * /brands/delete/{id}:
  *   delete:
- *     summary: Удалить бренд
+ *     summary: Удалить Бренд
  *     tags: [Brands]
  *     security:
  *       - bearerAuth: []
@@ -124,7 +125,7 @@ router.put(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID бренда
+ *         description: ID Бренда
  *     responses:
  *       200:
  *         description: Бренд удален

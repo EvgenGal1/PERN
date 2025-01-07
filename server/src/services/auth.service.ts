@@ -169,7 +169,7 @@ class AuthService {
       // сохр.refreshToken > user_id и basket_id
       await TokenService.saveToken(
         user.getDataValue('id'),
-        basketId,
+        basketId.id,
         tokens.refreshToken,
       );
 
@@ -255,7 +255,7 @@ class AuthService {
 
       await TokenService.saveToken(
         user.getDataValue('id'),
-        basketId,
+        basketId.id,
         tokens.refreshToken,
       );
 
