@@ -4,14 +4,13 @@ import type { CategoryAttributes } from '../models/sequelize-types';
 
 class CategoryService {
   async getAllCategory() {
-    const categories = await CategoryModel.findAll();
-    return categories;
+    return await CategoryModel.findAll();
   }
 
   async getOneCategory(id: number) {
     const category = await CategoryModel.findByPk(id);
     if (!category) {
-      throw new Error('Категория не найдена в БД');
+      throw new AppError(404, 'Категория не найдена');
     }
     return category;
   }
@@ -19,33 +18,21 @@ class CategoryService {
   async createCategory(data: { name: string }) {
     const { name } = data;
     const exist = await CategoryModel.findOne({ where: { name } });
-    if (exist) {
-      throw new Error('Категория уже есть');
-    }
-    const category = await CategoryModel.create({ name });
-    return category;
+    if (exist) throw new AppError(400, 'Категория уже есть');
+    return await CategoryModel.create({ name });
   }
 
   async updateCategory(id: number, data: Partial<CategoryAttributes>) {
     const category = await CategoryModel.findByPk(id);
-    if (!category) {
-      throw new Error('Категория не найдена в БД');
-    }
-    const name: string =
-      typeof data.name === 'string'
-        ? data.name
-        : (category.get('name') as string);
-    await category.update({ name });
-    return category;
+    if (!category) throw new AppError(404, 'Категория не найдена');
+    return await category.update(data);
   }
 
   async deleteCategory(id: number) {
     const category = await CategoryModel.findByPk(id);
-    if (!category) {
-      throw new Error('Категория не найдена в БД');
-    }
+    if (!category) throw new AppError(404, 'Категория не найдена');
     await category.destroy();
-    return category;
+    return { message: `Категория '${category.get('name')}' удалена` };
   }
 }
 

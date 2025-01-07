@@ -7,7 +7,7 @@ class CategoryController {
   async getAllCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const categories = await CategoryService.getAllCategory();
-      res.json(categories);
+      res.status(200).json(categories);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -19,11 +19,10 @@ class CategoryController {
 
   async getOneCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Категории');
-      }
+      if (isNaN(+req.params.id))
+        throw new AppError(400, 'Некорректный ID Категории');
       const category = await CategoryService.getOneCategory(+req.params.id);
-      res.json(category);
+      res.status(200).json(category);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -35,11 +34,11 @@ class CategoryController {
 
   async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.body.name) {
-        throw new Error('Нет названия Категории');
-      }
-      const category = await CategoryService.createCategory(req.body);
-      res.json(category);
+      const { name } = req.body;
+      if (!name || typeof name !== 'string')
+        throw new AppError(400, 'Название категории обязательно');
+      const category = await CategoryService.createCategory({ name });
+      res.status(201).json(category);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -51,17 +50,14 @@ class CategoryController {
 
   async updateCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Категории');
-      }
-      if (!req.body.name) {
-        throw new Error('Нет названия Категории');
-      }
+      if (isNaN(+req.params.id))
+        throw new AppError(400, 'Некорректный ID Категории');
+      if (!req.body.name) throw new AppError(400, 'Нет названия Категории');
       const category = await CategoryService.updateCategory(
         +req.params.id,
         req.body,
       );
-      res.json(category);
+      res.status(200).json(category);
     } catch (error: unknown) {
       next(
         AppError.badRequest(
@@ -73,11 +69,10 @@ class CategoryController {
 
   async deleteCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Категории');
-      }
-      const category = await CategoryService.deleteCategory(+req.params.id);
-      res.json(category);
+      if (isNaN(+req.params.id))
+        throw new AppError(400, 'Некорректный ID Категории');
+      await CategoryService.deleteCategory(+req.params.id);
+      res.status(200).json({ message: 'Категория успешно удалена' });
     } catch (error: unknown) {
       next(
         AppError.badRequest(
