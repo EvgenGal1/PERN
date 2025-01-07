@@ -67,7 +67,7 @@ class BasketService {
   }
 
   // Создать корзину для пользователя
-  async createBasket(userId?: any): Promise<BasketResponse> {
+  async createBasket(userId?: number): Promise<BasketResponse> {
     try {
       // `получить наименьший доступный идентификатор` из табл.БД
       const smallestFreeId =

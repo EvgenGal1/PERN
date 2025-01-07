@@ -1,9 +1,10 @@
 import express from 'express';
-const router = express();
 
 import authMiddleware from '../middleware/authMiddleware';
 import adminMiddleware from '../middleware/adminMiddleware';
 import UserController from '../controllers/user.controller';
+
+const router = express.Router();
 
 // настр.swg JSDoc (доки.в JSON/YAML) > swg UI-dist (визуал.в браузере)
 /**
@@ -180,15 +181,5 @@ router.delete(
   adminMiddleware,
   UserController.deleteUser,
 );
-
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- */
 
 export default router;

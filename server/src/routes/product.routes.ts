@@ -1,12 +1,11 @@
-// const Router = require("express");
-// const router = new Router();
-import express /* , { Application } */ from "express";
-const router /* : Application */ = express();
+import express from 'express';
 
-import authMiddleware from "../middleware/authMiddleware";
-import adminMiddleware from "../middleware/adminMiddleware";
-import ProductController from "../controllers/product.controller";
-import ProductPropController from "../controllers/productProp.controller";
+import authMiddleware from '../middleware/authMiddleware';
+import adminMiddleware from '../middleware/adminMiddleware';
+import ProductController from '../controllers/product.controller';
+import ProductPropController from '../controllers/productProp.controller';
+
+const router = express.Router();
 
 /*
  * Товары
@@ -15,28 +14,28 @@ import ProductPropController from "../controllers/productProp.controller";
 // ^ Стандартные
 // создать товар каталога — нужны права администратора
 router.post(
-  "/create",
+  '/create',
   authMiddleware,
   adminMiddleware,
-  ProductController.createProduct
+  ProductController.createProduct,
 );
 // получить один товар каталога
-router.get("/getone/:id([0-9]+)", ProductController.getOneProduct);
+router.get('/getone/:id([0-9]+)', ProductController.getOneProduct);
 // список всех товаров каталога
-router.get("/getall", ProductController.getAllProduct);
+router.get('/getall', ProductController.getAllProduct);
 // обновить товар каталога  — нужны права администратора
 router.put(
-  "/update/:id([0-9]+)",
+  '/update/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  ProductController.updateProduct
+  ProductController.updateProduct,
 );
 // удалить товар каталога  — нужны права администратора
 router.delete(
-  "/delete/:id([0-9]+)",
+  '/delete/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  ProductController.deleteProduct
+  ProductController.deleteProduct,
 );
 
 // ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
@@ -44,20 +43,20 @@ router.delete(
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
   // ^ запрос под неск.парам.ч/з запятую (,? - опциональная запятая, * - 0 и более повторений, + - 1 и более повторений)
-  "/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)",
-  ProductController.getAllProduct
+  '/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)',
+  ProductController.getAllProduct,
 );
 // список товаров выбранной категории
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)",
-  "/getall/categoryId/:categoryId(,?[0-9]+*)",
-  ProductController.getAllProduct
+  '/getall/categoryId/:categoryId(,?[0-9]+*)',
+  ProductController.getAllProduct,
 );
 // список товаров выбранного бренда
 router.get(
   // "/getall/brandId/:brandId([0-9]+)",
-  "/getall/brandId/:brandId(,?[0-9]+*)",
-  ProductController.getAllProduct
+  '/getall/brandId/:brandId(,?[0-9]+*)',
+  ProductController.getAllProduct,
 );
 
 /*
@@ -66,34 +65,34 @@ router.get(
 
 // создать свойство товара
 router.post(
-  "/:productId([0-9]+)/property/create",
+  '/:productId([0-9]+)/property/create',
   authMiddleware,
   adminMiddleware,
-  ProductPropController.createProdProp
+  ProductPropController.createProdProp,
 );
 // одно свойство товара
 router.get(
-  "/:productId([0-9]+)/property/getone/:id([0-9]+)",
-  ProductPropController.getOneProdProp
+  '/:productId([0-9]+)/property/getone/:id([0-9]+)',
+  ProductPropController.getOneProdProp,
 );
 // список свойств товара
 router.get(
-  "/:productId([0-9]+)/property/getall",
-  ProductPropController.getAllProdProp
+  '/:productId([0-9]+)/property/getall',
+  ProductPropController.getAllProdProp,
 );
 // обновить свойство товара
 router.put(
-  "/:productId([0-9]+)/property/update/:id([0-9]+)",
+  '/:productId([0-9]+)/property/update/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  ProductPropController.updateProdProp
+  ProductPropController.updateProdProp,
 );
 // удалить свойство товара
 router.delete(
-  "/:productId([0-9]+)/property/delete/:id([0-9]+)",
+  '/:productId([0-9]+)/property/delete/:id([0-9]+)',
   authMiddleware,
   adminMiddleware,
-  ProductPropController.deleteProdProp
+  ProductPropController.deleteProdProp,
 );
 
 export default router;
