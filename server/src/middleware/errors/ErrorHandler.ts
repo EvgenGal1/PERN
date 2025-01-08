@@ -3,18 +3,23 @@
 import { Request, Response, NextFunction } from 'express';
 
 // клс.польз.ошб.
-import AppError from './ApiError';
+import ApiError from './ApiError';
 // логг.ошб.
 import { LoggingWinston as logger } from '../../config/logging/log_winston.config';
 
 const ErrorHandler = (
-  err: AppError | Error,
+  err: ApiError | Error,
   req: Request,
   res: any /* Response */,
   next: NextFunction,
 ) => {
-  // ошб.экземпл.AppError
-  if (err instanceof AppError) {
+  // преобраз.неизвест.ошб.в формат ApiError
+  if (!(err instanceof ApiError) && err instanceof Error) {
+    err = ApiError.internal(err.message);
+  }
+
+  // ошб.экземпл.ApiError
+  if (err instanceof ApiError) {
     logger.error(
       `API ОШБ.: ${req.method} ${req.url}: ${err.message} (${err.status})`,
     );
@@ -25,15 +30,12 @@ const ErrorHandler = (
     });
   }
 
-  // обраб./лог./ответ неизвестной ошб.
-  const message = err?.message || 'Произошла неизвестная ошибка';
-  const stack = err?.stack || 'Трассировка стека недоступна';
-  logger.error(`Неизвестная ошибка - ${req.method} ${req.url}: ${message}`, {
-    stack,
-  });
+  // неизвестые ошб. обраб./лог./ответ
+  const message = JSON.stringify(err) || 'Произошла неизвестная ошибка';
+  logger.error(`API ... ОШБ.: ${req.method} ${req.url}: ${message}`);
   return res.status(500).json({
-    message: 'Непредвиденная ошибка',
-    errors: /* err?.errors || */ null,
+    message: message,
+    errors: null,
   });
 };
 

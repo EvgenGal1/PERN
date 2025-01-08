@@ -3,16 +3,20 @@
 import ApiError from '../middleware/errors/ApiError';
 
 /**
- * Выбрасывает исключение с указанным статусом.
- * @param status Код статуса HTTP.
- * @param message Сообщение об ошибке.
- * @param errors Дополнительные детали ошибки.
+ * выброс ошибки HTTP со статусом
+ * @param status Код статуса HTTP
+ * @param message Сообщение об ошибке
+ * @param errors Доп.детали ошибки (строка/объект/Error)
  */
-export function throwError(
+export const throwError = (
   status: number,
   message: string,
-  errors: any = null,
-) {
+  errors: unknown | null = null,
+): never => {
+  // выброс.ошб.ApiError
+  if (errors instanceof ApiError) throw errors;
+
+  // станд.ApiError
   switch (status) {
     case 400:
       throw ApiError.badRequest(message, errors);
@@ -22,7 +26,18 @@ export function throwError(
       throw ApiError.forbidden(message);
     case 404:
       throw ApiError.notFound(message);
+    case 409:
+      throw ApiError.conflict(message);
+    case 422:
+      throw ApiError.unprocessable(message, errors);
+    case 429:
+      throw ApiError.manyRequests(message);
     default:
-      throw ApiError.internal(message);
+      // преобраз.др.ошб.в клс.ApiError
+      throw new ApiError(
+        status,
+        message,
+        errors instanceof Error ? errors.message : String(errors),
+      );
   }
-}
+};

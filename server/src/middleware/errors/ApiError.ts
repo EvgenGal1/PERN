@@ -17,32 +17,52 @@ class ApiError extends Error {
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 
-  // статич.мтд. (можно вызыв.без созд.объ.обращ.на прямую к кл.)
+  // статич.мтд.созд.объ.ошб. (мжн.вызов.без созд.объ.обращ.на прямую к кл.)
+
+  // `не изменён`
+  static notModified(message: string): ApiError {
+    return new ApiError(304, message);
+  }
 
   // `плохой запрос`
-  static badRequest(message: string, errors: any = null) {
+  static badRequest(message: string, errors: any = null): ApiError {
     // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
     return new ApiError(400, message, errors);
   }
 
-  // `несанкционированная ошибка`
-  static unauthorized(message: string) {
+  // `несанкционирован`/не авторизован
+  static unauthorized(message: string): ApiError {
     // возвращ.экземпл.текущ.кл.
     return new ApiError(401, message);
   }
 
-  // `запрещенный`
-  static forbidden(message: string) {
+  // `запрещенный`/нет доступа
+  static forbidden(message: string): ApiError {
     return new ApiError(403, message);
   }
 
   // `не найдено`
-  static notFound(message: string) {
+  static notFound(message: string): ApiError {
     return new ApiError(404, message);
   }
 
-  // `внутренняя ошибка сервера`
-  static internal(message: string) {
+  // `конфликт` данных
+  static conflict(message: string): ApiError {
+    return new ApiError(409, message);
+  }
+
+  // `необработанный`/невалид.данн.
+  static unprocessable(message: string, errors: any = null): ApiError {
+    return new ApiError(422, message, errors);
+  }
+
+  // `много запросов` */
+  static manyRequests(message: string): ApiError {
+    return new ApiError(429, message);
+  }
+
+  // `внутренняя` ошб.сервера
+  static internal(message: string): ApiError {
     return new ApiError(500, message);
   }
 }
