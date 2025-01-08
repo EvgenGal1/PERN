@@ -1,8 +1,8 @@
 export interface DecodedToken {
-  id?: string;
-  role?: string;
+  id?: number; // мжт.отсутств.до валидации
+  role?: string; // мжт.отсутств.до валидации
 }
 
-export interface CustomRequest extends Request {
+export interface CustomDecodedTokenRequest extends Request {
   auth?: DecodedToken;
 }
