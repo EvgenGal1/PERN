@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authMiddleware from '../middleware/authMiddleware';
-import adminMiddleware from '../middleware/adminMiddleware';
+import authMW from '../middleware/authMiddleware';
+import adminMW from '../middleware/adminMiddleware';
 import UserController from '../controllers/user.controller';
 
 const router = express.Router();
@@ -48,12 +48,7 @@ const router = express.Router();
  *       500:
  *         description: Внутренняя ошибка сервера
  */
-router.post(
-  '/create',
-  authMiddleware,
-  adminMiddleware,
-  UserController.createUser,
-);
+router.post('/create', authMW, adminMW, UserController.createUser);
 // получить по id
 /**
  * @swagger
@@ -78,12 +73,7 @@ router.post(
  *       500:
  *         description: Внутренняя ошибка сервера
  */
-router.get(
-  '/getone/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
-  UserController.getOneUser,
-);
+router.get('/getone/:id([0-9]+)', authMW, adminMW, UserController.getOneUser);
 // получит всех пользователей
 /**
  * @swagger
@@ -101,12 +91,7 @@ router.get(
  *       500:
  *         description: Внутренняя ошибка сервера
  */
-router.get(
-  '/getall',
-  authMiddleware,
-  adminMiddleware,
-  UserController.getAllUser,
-);
+router.get('/getall', authMW, adminMW, UserController.getAllUser);
 // обновить по id
 /**
  * @swagger
@@ -145,12 +130,7 @@ router.get(
  *       500:
  *         description: Внутренняя ошибка сервера
  */
-router.put(
-  '/update/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
-  UserController.updateUser,
-);
+router.put('/update/:id([0-9]+)', authMW, adminMW, UserController.updateUser);
 // удалить по id
 /**
  * @swagger
@@ -177,8 +157,8 @@ router.put(
  */
 router.delete(
   '/delete/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
+  authMW,
+  adminMW,
   UserController.deleteUser,
 );
 

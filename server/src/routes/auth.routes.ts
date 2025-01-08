@@ -2,7 +2,7 @@ import express from 'express';
 // подкл. валидацию
 import { check } from 'express-validator';
 
-import authMiddleware from '../middleware/authMiddleware';
+import authMW from '../middleware/authMiddleware';
 import AuthController from '../controllers/auth.controller';
 
 const router = express.Router();
@@ -160,7 +160,7 @@ router.get('/activate/:link', AuthController.activateUser);
  */
 router.get('/refresh', AuthController.refreshUser);
 // ПРОВЕРКА | auth
-router.get('/check', authMiddleware, AuthController.checkUser);
+router.get('/check', authMW, AuthController.checkUser);
 // ВЫХОД. Удален.Token.refreshToken
 /**
  * @swagger

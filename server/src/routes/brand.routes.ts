@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authMiddleware from '../middleware/authMiddleware';
-import adminMiddleware from '../middleware/adminMiddleware';
+import authMW from '../middleware/authMiddleware';
+import adminMW from '../middleware/adminMiddleware';
 import BrandController from '../controllers/brand.controller';
 
 const router = express.Router();
@@ -37,12 +37,7 @@ const router = express.Router();
  *       400:
  *         description: Ошибка валидации данных
  */
-router.post(
-  '/create',
-  authMiddleware,
-  adminMiddleware,
-  BrandController.createBrand,
-);
+router.post('/create', authMW, adminMW, BrandController.createBrand);
 /**
  * @swagger
  * /brands/getone/{id}:
@@ -105,12 +100,7 @@ router.get('/getall', BrandController.getAllBrand);
  *       404:
  *         description: Бренд не найден
  */
-router.put(
-  '/update/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
-  BrandController.updateBrand,
-);
+router.put('/update/:id([0-9]+)', authMW, adminMW, BrandController.updateBrand);
 /**
  * @swagger
  * /brands/delete/{id}:
@@ -134,8 +124,8 @@ router.put(
  */
 router.delete(
   '/delete/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
+  authMW,
+  adminMW,
   BrandController.deleteBrand,
 );
 

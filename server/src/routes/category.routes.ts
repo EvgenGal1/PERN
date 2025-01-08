@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authMiddleware from '../middleware/authMiddleware';
-import adminMiddleware from '../middleware/adminMiddleware';
+import authMW from '../middleware/authMiddleware';
+import adminMW from '../middleware/adminMiddleware';
 import CategoryController from '../controllers/category.controller';
 
 const router = express.Router();
@@ -37,12 +37,7 @@ const router = express.Router();
  *       400:
  *         description: Ошибка валидации или другая ошибка
  */
-router.post(
-  '/create',
-  authMiddleware,
-  adminMiddleware,
-  CategoryController.createCategory,
-);
+router.post('/create', authMW, adminMW, CategoryController.createCategory);
 /**
  * @swagger
  * /categories/getone/{id}:
@@ -108,8 +103,8 @@ router.get('/getall', CategoryController.getAllCategory);
  */
 router.put(
   '/update/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
+  authMW,
+  adminMW,
   CategoryController.updateCategory,
 );
 /**
@@ -136,8 +131,8 @@ router.put(
  */
 router.delete(
   '/delete/:id([0-9]+)',
-  authMiddleware,
-  adminMiddleware,
+  authMW,
+  adminMW,
   CategoryController.deleteCategory,
 );
 
