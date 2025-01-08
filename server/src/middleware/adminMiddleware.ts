@@ -2,22 +2,17 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from './errors/ApiError';
-import { DecodedToken } from '../types/DecodedToken';
+import ApiError from './errors/ApiError';
 
-interface CustomRequest extends Request {
-  auth?: DecodedToken;
-}
-
-const admin = (req: CustomRequest, res: Response, next: NextFunction): void => {
+const adminMW = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    if (req.auth?.role !== 'ADMIN') {
-      throw new Error('Только для администратора');
+    if (!req.auth || req.auth?.role !== 'ADMIN') {
+      throw ApiError.forbidden('Только для администратора');
     }
     next();
   } catch (error: unknown) {
-    next(AppError.forbidden((error as Error).message));
+    next(ApiError.forbidden((error as Error).message));
   }
 };
 
-export default admin;
+export default adminMW;

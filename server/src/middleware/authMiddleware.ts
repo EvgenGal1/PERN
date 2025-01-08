@@ -2,46 +2,42 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from './errors/ApiError';
+import ApiError from './errors/ApiError';
 import { DecodedToken } from '../types/DecodedToken';
+import { AuthPayload } from '../types/AuthPayload';
 import TokenService from '../services/token.service';
 
-interface CustomRequest extends Request {
-  auth?: DecodedToken;
-}
-
-const auth = (req: CustomRequest, res: Response, next: NextFunction): void => {
+const authMW = (req: Request, res: Response, next: NextFunction): void => {
   // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)
-  if (req.method === 'OPTIONS') {
-    next();
-  }
+  if (req.method === 'OPTIONS') next();
+
   try {
     // провер header на наличие поля authorization
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
-      return next(AppError.unauthorized('Требуется авторизация'));
+      throw ApiError.unauthorized('Требуется Авторизация');
     }
 
-    // достаём токен из header (отделяя от типа `Носитель` передающегося по ind 0) из шапки(обычн.там токен)
+    // достать токен из header (отделяя от типа `Носитель` передающегося по ind 0)
     const accessToken = authorizationHeader?.split(' ')[1]; // Bearer token (asfasnfkajsfnjk)
     if (!accessToken) {
-      return next(AppError.unauthorized('Токен  отсутствует'));
+      throw ApiError.unauthorized('Токен отсутствует');
     }
 
     // раскодир.токен. `проверять` валидации ч/з services (токен)
     const decoded = TokenService.validateAccessToken(
       accessToken,
     ) as DecodedToken;
-    if (!decoded) return next(AppError.forbidden('Токен не валиден'));
+    if (!decoded || !decoded.id || !decoded.role) {
+      throw ApiError.forbidden('Токен не валиден');
+    }
 
-    // к запросу в поле user добав.раскодированые данн.
-    req.auth = decoded;
-
-    // вызов след.middlware
+    // к req в auth добав.строг.тип.раскодир.данн и вызов след.middlware
+    req.auth = decoded as AuthPayload;
     next();
   } catch (error: unknown) {
-    next(AppError.forbidden((error as Error).message));
+    throw ApiError.forbidden((error as Error).message);
   }
 };
 
-export default auth;
+export default authMW;
