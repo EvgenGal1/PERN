@@ -16,7 +16,13 @@ export const documentSwagger = (app: Application): void => {
         version: '2.1.0',
         description: 'Документация API интеграции',
       },
-      servers: [{ url: process.env.SRV_URL || 'http://localhost:5000' }],
+      servers: [
+        {
+          url:
+            `${process.env.SRV_URL}/${process.env.SRV_NAME}` ||
+            `http://localhost:5000/${process.env.SRV_NAME}`,
+        },
+      ],
     },
     // абсол.путь ф.маршрут.с коммент.JSON
     apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')],
