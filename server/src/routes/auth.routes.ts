@@ -1,8 +1,7 @@
 import express from 'express';
-// подкл. валидацию
-import { check } from 'express-validator';
 
 import authMW from '../middleware/authMiddleware';
+import { validateSignup } from '../middleware/validation/authValidator';
 import AuthController from '../controllers/auth.controller';
 
 const router = express.Router();
@@ -46,48 +45,7 @@ const router = express.Router();
  *       400:
  *         description: Некорректные входные данные
  */
-router.post(
-  '/signup',
-  // проверки валидации // ? шаблоны проверки, сам код в controllere
-  [
-    // валидация. normalize не пропускает RU email е/и записаны в ВерБлюд стиле.
-    check('email', 'Некорректый email').isEmail().normalizeEmail(),
-    check('password')
-      .not()
-      .isIn([
-        '123qwe',
-        '123qwerty',
-        'qwerty',
-        'qwe123',
-        'qwerty123',
-        '123456',
-        'password123',
-        'god123',
-        '123qwe!@#',
-        '123!@#qwe',
-        '!@#123qwe',
-        '!@#qwe123',
-        'qwe!@#123',
-        'qwe123!@#',
-        '123Qwe!@#',
-        '123!@#Qwe',
-        '!@#123Qwe',
-        '!@#Qwe123',
-        'Qwe!@#123',
-        'Qwe123!@#',
-      ])
-      .withMessage('Не используйте обычные значения в качестве пароля')
-      .isLength({ min: 6 })
-      .withMessage('Минимальная длина пароля 6 символов')
-      .isLength({ max: 32 })
-      .withMessage('Максимальная длина пароля 32 символа')
-      .matches(/\d/)
-      .withMessage('Пароль должен содержать число')
-      .matches(/(?=(.*\W){2})/)
-      .withMessage('Где два специальных символа'),
-  ],
-  AuthController.signupUser,
-);
+router.post('/signup', validateSignup, AuthController.signupUser);
 
 // АВТОРИЗАЦИЯ
 /**
@@ -117,11 +75,7 @@ router.post(
  *       401:
  *         description: Неверный логин или пароль.
  */
-router.post(
-  '/login',
-  [check('email', 'Некорректый email на входе').isEmail().normalizeEmail()],
-  AuthController.loginUser,
-);
+router.post('/login', validateSignup, AuthController.loginUser);
 
 // USER Пользователь
 // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
