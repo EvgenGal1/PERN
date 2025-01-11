@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 // services
 import UserService from '../services/user.service';
 // обраб.ошб.
-import AppError from '../middleware/errors/ApiError';
+import ApiError from '../middleware/errors/ApiError';
 
 class UserController {
   // пока отд.нет
@@ -33,7 +33,7 @@ class UserController {
       /* return */ res.json(user);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -48,14 +48,14 @@ class UserController {
       if (!user) {
         // Если служба возвращает null, значит, пользователь не найден, устанавливаем статус 404.
         return next(
-          AppError.notFound(
+          ApiError.notFound(
             `Пользователь по id ${req.params.id} не найден в БД`,
           ),
         );
       }
       /* return */ res.json(user);
     } catch (error: unknown) {
-      return next(AppError.internal('Ошибка при получении пользователя'));
+      return next(ApiError.internal('Ошибка при получении пользователя'));
     }
   }
   async getAllUser(req: Request, res: Response, next: NextFunction) {
@@ -64,7 +64,7 @@ class UserController {
       res.json(users);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -93,7 +93,7 @@ class UserController {
       res.json(user);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -108,7 +108,7 @@ class UserController {
       res.json(user);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );

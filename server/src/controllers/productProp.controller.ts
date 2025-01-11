@@ -1,7 +1,7 @@
 // ^ controller для свойств товара
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../middleware/errors/ApiError';
+import ApiError from '../middleware/errors/ApiError';
 import ProductPropService from '../services/productProp.service';
 
 class ProductPropController {
@@ -16,7 +16,7 @@ class ProductPropController {
       res.json(properties);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -38,7 +38,7 @@ class ProductPropController {
       res.json(property);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -60,7 +60,7 @@ class ProductPropController {
       res.json(property);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -86,7 +86,7 @@ class ProductPropController {
       res.json(property);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -108,7 +108,7 @@ class ProductPropController {
       res.json(property);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );

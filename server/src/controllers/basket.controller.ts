@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import AppError from '../middleware/errors/ApiError';
+import ApiError from '../middleware/errors/ApiError';
 import BasketService from '../services/basket.service';
 
 const COOKIE_OPTIONS = {
@@ -24,7 +24,7 @@ class BasketController {
       res.status(200).json(basket);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -47,7 +47,7 @@ class BasketController {
       res.status(200).json(basket);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -75,7 +75,7 @@ class BasketController {
       res.status(200).json(basket);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -102,7 +102,7 @@ class BasketController {
       res.status(200).json(basket);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -124,7 +124,7 @@ class BasketController {
       res.status(201).json(basket);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -152,7 +152,7 @@ class BasketController {
       res.json(basket);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );

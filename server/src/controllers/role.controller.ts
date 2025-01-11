@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../middleware/errors/ApiError';
+import ApiError from '../middleware/errors/ApiError';
 import RoleService from '../services/role.service';
 
 class RoleController {
@@ -10,7 +10,7 @@ class RoleController {
       res.json(roles);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -26,7 +26,7 @@ class RoleController {
       res.json(role);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -39,7 +39,7 @@ class RoleController {
       res.json(role);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -55,7 +55,7 @@ class RoleController {
       res.json(role);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -71,7 +71,7 @@ class RoleController {
       res.json(role);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );

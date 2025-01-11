@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../middleware/errors/ApiError';
+import ApiError from '../middleware/errors/ApiError';
 import ProductService from '../services/product.service';
 
 class ProductController {
@@ -42,7 +42,7 @@ class ProductController {
       res.json(products);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -62,7 +62,7 @@ class ProductController {
       res.json(product);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -85,7 +85,7 @@ class ProductController {
       res.json(product);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -112,7 +112,7 @@ class ProductController {
       res.json(product);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -132,7 +132,7 @@ class ProductController {
       res.json(product);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );

@@ -1,7 +1,7 @@
 // ^ controller для свойств товара
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../middleware/errors/ApiError';
+import ApiError from '../middleware/errors/ApiError';
 // import OrderService from "../services/order.service";
 // import BasketService from "../services/basket.service";
 // import UserService from "../services/user.service";
@@ -19,7 +19,7 @@ class orderItemsController {
       res.json(items);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -41,7 +41,7 @@ class orderItemsController {
       res.json(item);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -63,7 +63,7 @@ class orderItemsController {
       res.json(item);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -89,7 +89,7 @@ class orderItemsController {
       res.json(item);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
@@ -111,7 +111,7 @@ class orderItemsController {
       res.json(item);
     } catch (error: unknown) {
       next(
-        AppError.badRequest(
+        ApiError.badRequest(
           error instanceof Error ? error.message : 'Неизвестная ошибка',
         ),
       );
