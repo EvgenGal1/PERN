@@ -31,7 +31,7 @@ class RatingModel extends Model<
   static initModel(sequelize: Sequelize) {
     RatingModel.init(
       {
-        rate: { type: DataTypes.STRING, allowNull: false },
+        rate: { type: DataTypes.FLOAT, allowNull: false },
         productId: { type: DataTypes.INTEGER, allowNull: false },
         userId: { type: DataTypes.INTEGER, allowNull: false },
       },

@@ -35,6 +35,7 @@ class OrderModel extends Model<
       onDelete: 'CASCADE',
     });
     OrderModel.belongsTo(UserModel, {
+      as: 'user',
       foreignKey: 'userId',
       onDelete: 'SET NULL',
     });

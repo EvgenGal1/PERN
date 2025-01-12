@@ -19,6 +19,7 @@ class CategoryModel extends Model<
   static associate() {
     CategoryModel.hasMany(ProductModel, {
       foreignKey: 'categoryId',
+      as: 'products',
       onDelete: 'RESTRICT',
     });
   }

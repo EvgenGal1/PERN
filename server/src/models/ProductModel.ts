@@ -39,15 +39,18 @@ class ProductModel extends Model<
       foreignKey: 'productId',
       onDelete: 'CASCADE',
     });
-    ProductModel.belongsTo(CategoryModel, { foreignKey: 'categoryId' });
-    ProductModel.belongsTo(BrandModel, { foreignKey: 'brandId' });
+    ProductModel.belongsTo(CategoryModel, {
+      as: 'category',
+      foreignKey: 'categoryId',
+    });
+    ProductModel.belongsTo(BrandModel, { as: 'brand', foreignKey: 'brandId' });
     ProductModel.belongsToMany(UserModel, {
       through: RatingModel,
+      as: 'ratings',
       foreignKey: 'productId', // указ.внешн.ключ
       otherKey: 'userId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });
-    console.log('ProductModel ассоциации установлены.');
   }
 
   // мтд.инициализации модели, опред.структуры

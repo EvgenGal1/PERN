@@ -20,7 +20,10 @@ class OrderItemModel extends Model<
   declare orderId: number;
 
   static associate() {
-    OrderItemModel.belongsTo(OrderModel, { foreignKey: 'orderId' });
+    OrderItemModel.belongsTo(OrderModel, {
+      as: 'order',
+      foreignKey: 'orderId',
+    });
   }
 
   static initModel(sequelize: Sequelize) {

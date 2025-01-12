@@ -20,11 +20,13 @@ class BasketModel extends Model<
 
   static associate() {
     BasketModel.belongsTo(UserModel, {
+      as: 'user',
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
     BasketModel.belongsToMany(ProductModel, {
       through: BasketProductModel,
+      as: 'products',
       foreignKey: 'basketId',
       otherKey: 'productId',
       onDelete: 'CASCADE',

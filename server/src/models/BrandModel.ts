@@ -19,6 +19,7 @@ class BrandModel extends Model<
   static associate() {
     BrandModel.hasMany(ProductModel, {
       foreignKey: 'brandId',
+      as: 'products',
       onDelete: 'RESTRICT',
     });
   }

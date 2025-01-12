@@ -19,7 +19,10 @@ class ProductPropModel extends Model<
   declare productId: number;
 
   static associate() {
-    ProductPropModel.belongsTo(ProductModel, { foreignKey: 'productId' });
+    ProductPropModel.belongsTo(ProductModel, {
+      as: 'product',
+      foreignKey: 'productId',
+    });
   }
 
   static initModel(sequelize: Sequelize) {
