@@ -26,6 +26,7 @@ import { loggingMiddleware as loggerMW } from './middleware/logging.middleware';
 import { documentSwagger } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment, isProduction } from './config/envs/env.consts';
+import initModels from './models/index';
 
 // загр.перем.окруж.из опред.ф.env
 config({ path: `.env.${process.env.NODE_ENV}` });
@@ -70,8 +71,15 @@ const start = async (): Promise<void> => {
     await sequelize.authenticate();
     // проверка подкл.к БД
     if (isDevelopment) await connectToDatabase();
+    // инициализация моделей и связей табл.БД
+    initModels();
     // синхрониз.структуру БД со схемой данн.(опред.моделью)
-    await sequelize.sync();
+    if (isDevelopment)
+      await sequelize
+        // force:true удал./созд.табл.  |  alter:true обнов.табл.
+        .sync({ alter: true })
+        .then(() => console.log('Синхронизация завершена'))
+        .catch((error) => console.error('Ошибка при синхронизации:', error));
     // цвета запуска: DEV - зелённый, PROD - синий
     const mainColor = isDevelopment ? '\x1b[32m' : '\x1b[34m';
     // прослуш.подключ.PORT и fn()callback
