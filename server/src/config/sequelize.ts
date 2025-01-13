@@ -38,7 +38,7 @@ const sequelize = new Sequelize(
         },
       },
     },
-    logging: true, // false - без лог.записей
+    logging: false, // false - без лог.записей
     timezone: 'Europe/Moscow',
   },
 );

@@ -1,9 +1,11 @@
-// ^^ различные/помошники Утилиты База Данных
+// ^ различные/помошники Утилиты База Данных
+
 import UserModel from '../models/UserModel';
-import TokenModel from '../models/TokenModel';
 import RoleModel from '../models/RoleModel';
 import UserRoleModel from '../models/UserRoleModel';
 import BasketModel from '../models/BasketModel';
+import TokenModel from '../models/TokenModel';
+import { BasketResponse } from '../types/basket.interface';
 
 class DatabaseUtils {
   // ^^ `получить наименьший доступный идентификатор` из табл.БД>tableName
@@ -12,10 +14,10 @@ class DatabaseUtils {
     let model: any;
     // выбор.табл.>tableName
     if (tableName === 'user') model = UserModel;
-    else if (tableName === 'token') model = TokenModel;
     else if (tableName === 'role') model = RoleModel;
     else if (tableName === 'userrole') model = UserRoleModel;
     else if (tableName === 'basket') model = BasketModel;
+    else if (tableName === 'token') model = TokenModel;
     else throw new Error('Неверное название таблицы');
     // req.составной
     const result = await model.findAll({ order: [['id', 'ASC']] });
@@ -30,6 +32,20 @@ class DatabaseUtils {
     }
     // возврат первого свободного ID
     return id;
+  }
+
+  // утилита форматир.res.корзины
+  async formatBasketResponse(basket: BasketModel): Promise<BasketResponse> {
+    return {
+      id: basket.id,
+      products:
+        basket.products?.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: product.basket_product.quantity,
+        })) || [],
+    };
   }
 }
 

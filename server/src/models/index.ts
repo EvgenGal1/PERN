@@ -4,34 +4,34 @@
 import sequelize from '../config/sequelize';
 // модули
 import UserModel from './UserModel';
-import TokenModel from './TokenModel';
 import RoleModel from './RoleModel';
 import UserRoleModel from './UserRoleModel';
 import BasketModel from './BasketModel';
-import BasketProductModel from './BasketProductModel';
-import ProductModel from './ProductModel';
-import CategoryModel from './CategoryModel';
+import TokenModel from './TokenModel';
 import BrandModel from './BrandModel';
-import RatingModel from './RatingModel';
-import OrderModel from './OrderModel';
+import CategoryModel from './CategoryModel';
+import ProductModel from './ProductModel';
 import ProductPropModel from './ProductPropModel';
+import OrderModel from './OrderModel';
 import OrderItemModel from './OrderItemModel';
+import BasketProductModel from './BasketProductModel';
+import RatingModel from './RatingModel';
 
 // масс.всех моделей
 const models = {
   UserModel,
-  TokenModel,
   RoleModel,
   UserRoleModel,
   BasketModel,
-  BasketProductModel,
-  ProductModel,
-  CategoryModel,
+  TokenModel,
   BrandModel,
-  RatingModel,
-  OrderModel,
+  CategoryModel,
+  ProductModel,
   ProductPropModel,
+  OrderModel,
   OrderItemModel,
+  BasketProductModel,
+  RatingModel,
 };
 
 // fn инициализ.модулей/устан.ассоциация
