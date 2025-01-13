@@ -1,11 +1,9 @@
 // ^^ различные/помошники Утилиты База Данных
-import {
-  UserModel,
-  TokenModel,
-  RoleModel,
-  UserRoleModel,
-  BasketModel,
-} from '../models/model';
+import UserModel from '../models/UserModel';
+import TokenModel from '../models/TokenModel';
+import RoleModel from '../models/RoleModel';
+import UserRoleModel from '../models/UserRoleModel';
+import BasketModel from '../models/BasketModel';
 
 class DatabaseUtils {
   // ^^ `получить наименьший доступный идентификатор` из табл.БД>tableName

@@ -32,7 +32,7 @@ const ErrorHandler = (
 
   // неизвестые ошб. обраб./лог./ответ
   const message = JSON.stringify(err) || 'Произошла неизвестная ошибка';
-  logger.error(`API ... ОШБ.: ${req.method} ${req.url}: ${message}`);
+  logger.error(`API ... ОШБ.: ${req.method} ${req.url}: ${err.message}`);
   return res.status(500).json({
     message: message,
     errors: null,
