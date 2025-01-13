@@ -14,7 +14,6 @@ const router = express.Router();
  *   description: Эндпоинты Авторизации и регистрации
  */
 
-// любой Пользователь
 // РЕГИСТРАЦИЯ
 /**
  * @swagger
@@ -54,6 +53,8 @@ router.post('/signup', validateSignup, AuthController.signupUser);
  *   post:
  *     summary: Авторизация Пользователя
  *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -67,8 +68,10 @@ router.post('/signup', validateSignup, AuthController.signupUser);
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: user@example.com
  *               password:
  *                 type: string
+ *                 example: strong@Password123!
  *     responses:
  *       200:
  *         description: Успешная авторизация.
@@ -77,7 +80,6 @@ router.post('/signup', validateSignup, AuthController.signupUser);
  */
 router.post('/login', validateSignup, AuthController.loginUser);
 
-// USER Пользователь
 // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
 /**
  * @swagger
@@ -99,6 +101,7 @@ router.post('/login', validateSignup, AuthController.loginUser);
  *         description: Ошибка активации
  */
 router.get('/activate/:link', AuthController.activateUser);
+
 // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
 /**
  * @swagger
@@ -106,6 +109,8 @@ router.get('/activate/:link', AuthController.activateUser);
  *   get:
  *     summary: Обновление токена доступа
  *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Токен успешно обновлён
@@ -113,8 +118,10 @@ router.get('/activate/:link', AuthController.activateUser);
  *         description: Невалидный токен обновления
  */
 router.get('/refresh', AuthController.refreshUser);
+
 // ПРОВЕРКА | auth
 router.get('/check', authMW, AuthController.checkUser);
+
 // ВЫХОД. Удален.Token.refreshToken
 /**
  * @swagger
