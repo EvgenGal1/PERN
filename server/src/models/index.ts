@@ -40,7 +40,7 @@ function initModels() {
     // инициализ.всех модулей ч/з экземп.Sequelize
     Object.values(models).forEach((model) => {
       if (typeof model.initModel === 'function') {
-        console.log(`Инициализация модели: ${model.name}`);
+        // console.log(`Инициализация модели: ${model.name}`);
         model.initModel(sequelize);
       }
     });
@@ -54,7 +54,7 @@ function initModels() {
     });
     // console.log('Модели успешно инициализированы и ассоциации установлены.');
   } catch (error) {
-    console.error('Ошибка при инициализации моделей:', error);
+    // console.error('Ошибка при инициализации моделей:', error);
   }
 }
 

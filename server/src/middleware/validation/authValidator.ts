@@ -34,5 +34,5 @@ export const validateSignup = [
     .matches(/\d/)
     .withMessage('Пароль должен содержать число')
     .matches(/(?=(.*\W){2})/)
-    .withMessage('Где два специальных символа'),
+    .withMessage('Нужны 2 специальных символа'),
 ];
