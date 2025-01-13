@@ -7,10 +7,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import UserModel from './UserModel';
-import ProductModel from './ProductModel';
-import BasketProductModel from './BasketProductModel';
-
 class BasketModel extends Model<
   InferAttributes<BasketModel>,
   InferCreationAttributes<BasketModel>
@@ -18,14 +14,14 @@ class BasketModel extends Model<
   declare id: CreationOptional<number>;
   declare userId: number;
 
-  static associate() {
-    BasketModel.belongsTo(UserModel, {
+  static associate(models: any) {
+    BasketModel.belongsTo(models.UserModel, {
       as: 'user',
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
-    BasketModel.belongsToMany(ProductModel, {
-      through: BasketProductModel,
+    BasketModel.belongsToMany(models.ProductModel, {
+      through: models.BasketProductModel,
       as: 'products',
       foreignKey: 'basketId',
       otherKey: 'productId',

@@ -11,7 +11,6 @@ import ProductPropModel from './ProductPropModel';
 import CategoryModel from './CategoryModel';
 import BrandModel from './BrandModel';
 import RatingModel from './RatingModel';
-import UserModel from './UserModel';
 
 class ProductModel extends Model<
   InferAttributes<ProductModel>,
@@ -33,19 +32,22 @@ class ProductModel extends Model<
   public readonly ratings?: RatingModel[];
 
   // мтд.устан.связей м/у моделями
-  static associate() {
-    ProductModel.hasMany(ProductPropModel, {
+  static associate(models: any) {
+    ProductModel.hasMany(models.ProductPropModel, {
       as: 'props',
       foreignKey: 'productId',
       onDelete: 'CASCADE',
     });
-    ProductModel.belongsTo(CategoryModel, {
+    ProductModel.belongsTo(models.CategoryModel, {
       as: 'category',
       foreignKey: 'categoryId',
     });
-    ProductModel.belongsTo(BrandModel, { as: 'brand', foreignKey: 'brandId' });
-    ProductModel.belongsToMany(UserModel, {
-      through: RatingModel,
+    ProductModel.belongsTo(models.BrandModel, {
+      as: 'brand',
+      foreignKey: 'brandId',
+    });
+    ProductModel.belongsToMany(models.UserModel, {
+      through: models.RatingModel,
       as: 'ratings',
       foreignKey: 'productId', // указ.внешн.ключ
       otherKey: 'userId', // указ.доп.внешн.ключ
@@ -67,7 +69,6 @@ class ProductModel extends Model<
       },
       { sequelize, tableName: 'products' },
     );
-    console.log('ProductModel инициализирован.');
   }
 }
 

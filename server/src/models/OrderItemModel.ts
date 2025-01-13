@@ -7,8 +7,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import OrderModel from './OrderModel';
-
 class OrderItemModel extends Model<
   InferAttributes<OrderItemModel>,
   InferCreationAttributes<OrderItemModel>
@@ -19,8 +17,8 @@ class OrderItemModel extends Model<
   declare quantity: number;
   declare orderId: number;
 
-  static associate() {
-    OrderItemModel.belongsTo(OrderModel, {
+  static associate(models: any) {
+    OrderItemModel.belongsTo(models.OrderModel, {
       as: 'order',
       foreignKey: 'orderId',
     });

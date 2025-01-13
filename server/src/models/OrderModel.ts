@@ -8,9 +8,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import UserModel from './UserModel';
-import OrderItemModel from './OrderItemModel';
-
 class OrderModel extends Model<
   InferAttributes<OrderModel>,
   InferCreationAttributes<OrderModel>
@@ -28,13 +25,13 @@ class OrderModel extends Model<
   declare createdAt?: Date;
   declare updatedAt?: Date;
 
-  static associate() {
-    OrderModel.hasMany(OrderItemModel, {
+  static associate(models: any) {
+    OrderModel.hasMany(models.OrderItemModel, {
       as: 'items',
       foreignKey: 'orderId',
       onDelete: 'CASCADE',
     });
-    OrderModel.belongsTo(UserModel, {
+    OrderModel.belongsTo(models.UserModel, {
       as: 'user',
       foreignKey: 'userId',
       onDelete: 'SET NULL',

@@ -7,9 +7,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import UserModel from './UserModel';
-import UserRoleModel from './UserRoleModel';
-
 class RoleModel extends Model<
   InferAttributes<RoleModel>,
   InferCreationAttributes<RoleModel>
@@ -18,19 +15,19 @@ class RoleModel extends Model<
   declare value: string;
   declare description: string;
 
-  static associate() {
-    RoleModel.belongsToMany(UserModel, {
-      through: UserRoleModel,
+  static associate(models: any) {
+    RoleModel.belongsToMany(models.UserModel, {
+      through: models.UserRoleModel,
       foreignKey: 'roleId', // указ.внешн.ключ
       otherKey: 'userId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });
     // доп.связи > раб.с промеж.табл.
-    RoleModel.hasMany(UserRoleModel, {
+    RoleModel.hasMany(models.UserRoleModel, {
       foreignKey: 'roleId',
       onDelete: 'CASCADE',
     });
-    UserRoleModel.belongsTo(RoleModel, { foreignKey: 'roleId' });
+    models.UserRoleModel.belongsTo(RoleModel, { foreignKey: 'roleId' });
   }
 
   static initModel(sequelize: Sequelize) {

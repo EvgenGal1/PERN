@@ -7,9 +7,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import UserModel from './UserModel';
-import BasketModel from './BasketModel';
-
 class TokenModel extends Model<
   InferAttributes<TokenModel>,
   InferCreationAttributes<TokenModel>
@@ -21,9 +18,9 @@ class TokenModel extends Model<
   declare refreshToken: string;
 
   // мтд.устан.связей м/у моделями
-  static associate() {
-    TokenModel.belongsTo(UserModel, { foreignKey: 'userId' });
-    TokenModel.belongsTo(BasketModel, { foreignKey: 'basketId' });
+  static associate(models: any) {
+    TokenModel.belongsTo(models.UserModel, { foreignKey: 'userId' });
+    TokenModel.belongsTo(models.BasketModel, { foreignKey: 'basketId' });
   }
 
   // мтд.инициализации модели, опред.структуры

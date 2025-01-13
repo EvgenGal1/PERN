@@ -7,8 +7,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import ProductModel from './ProductModel';
-
 class BrandModel extends Model<
   InferAttributes<BrandModel>,
   InferCreationAttributes<BrandModel>
@@ -16,8 +14,8 @@ class BrandModel extends Model<
   declare id: CreationOptional<number>;
   declare name: string;
 
-  static associate() {
-    BrandModel.hasMany(ProductModel, {
+  static associate(models: any) {
+    BrandModel.hasMany(models.ProductModel, {
       foreignKey: 'brandId',
       as: 'products',
       onDelete: 'RESTRICT',

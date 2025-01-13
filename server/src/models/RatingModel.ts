@@ -6,9 +6,6 @@ import {
   Sequelize,
 } from 'sequelize';
 
-import UserModel from './UserModel';
-import ProductModel from './ProductModel';
-
 class RatingModel extends Model<
   InferAttributes<RatingModel>,
   InferCreationAttributes<RatingModel>
@@ -17,12 +14,12 @@ class RatingModel extends Model<
   declare productId: number;
   declare userId: number;
 
-  static associate() {
-    RatingModel.belongsTo(ProductModel, {
+  static associate(models: any) {
+    RatingModel.belongsTo(models.ProductModel, {
       foreignKey: 'productId',
       onDelete: 'CASCADE',
     });
-    RatingModel.belongsTo(UserModel, {
+    RatingModel.belongsTo(models.UserModel, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });

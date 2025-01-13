@@ -17,38 +17,42 @@ import OrderModel from './OrderModel';
 import ProductPropModel from './ProductPropModel';
 import OrderItemModel from './OrderItemModel';
 
-// инициализация моделей
+// масс.всех моделей
+const models = {
+  UserModel,
+  TokenModel,
+  RoleModel,
+  UserRoleModel,
+  BasketModel,
+  BasketProductModel,
+  ProductModel,
+  CategoryModel,
+  BrandModel,
+  RatingModel,
+  OrderModel,
+  ProductPropModel,
+  OrderItemModel,
+};
+
+// fn инициализ.модулей/устан.ассоциация
 function initModels() {
   try {
-    // инициализ.М.ч/з экземп.Sequelize
-    UserModel.initModel(sequelize);
-    TokenModel.initModel(sequelize);
-    RoleModel.initModel(sequelize);
-    UserRoleModel.initModel(sequelize);
-    CategoryModel.initModel(sequelize);
-    BrandModel.initModel(sequelize);
-    ProductModel.initModel(sequelize);
-    ProductPropModel.initModel(sequelize);
-    BasketModel.initModel(sequelize);
-    BasketProductModel.initModel(sequelize);
-    RatingModel.initModel(sequelize);
-    OrderModel.initModel(sequelize);
-    OrderItemModel.initModel(sequelize);
+    // инициализ.всех модулей ч/з экземп.Sequelize
+    Object.values(models).forEach((model) => {
+      if (typeof model.initModel === 'function') {
+        console.log(`Инициализация модели: ${model.name}`);
+        model.initModel(sequelize);
+      }
+    });
 
-    // устан.связей м/у моделями
-    UserModel.associate();
-    TokenModel.associate();
-    RoleModel.associate();
-    UserRoleModel.associate();
-    CategoryModel.associate();
-    BrandModel.associate();
-    ProductModel.associate();
-    ProductPropModel.associate();
-    BasketModel.associate();
-    BasketProductModel.associate();
-    RatingModel.associate();
-    OrderModel.associate();
-    OrderItemModel.associate();
+    // устан.ассоциаций/связей м/у моделями
+    Object.values(models).forEach((model) => {
+      if (typeof model.associate === 'function') {
+        // console.log(`Установка ассоциаций для: ${model.name}`);
+        model.associate(models);
+      }
+    });
+    // console.log('Модели успешно инициализированы и ассоциации установлены.');
   } catch (error) {
     console.error('Ошибка при инициализации моделей:', error);
   }

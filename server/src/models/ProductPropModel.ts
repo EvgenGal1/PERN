@@ -7,8 +7,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 
-import ProductModel from './ProductModel';
-
 class ProductPropModel extends Model<
   InferAttributes<ProductPropModel>,
   InferCreationAttributes<ProductPropModel>
@@ -18,8 +16,8 @@ class ProductPropModel extends Model<
   declare value: string;
   declare productId: number;
 
-  static associate() {
-    ProductPropModel.belongsTo(ProductModel, {
+  static associate(models: any) {
+    ProductPropModel.belongsTo(models.ProductModel, {
       as: 'product',
       foreignKey: 'productId',
     });

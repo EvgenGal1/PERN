@@ -6,9 +6,6 @@ import {
   Sequelize,
 } from 'sequelize';
 
-import BasketModel from './BasketModel';
-import ProductModel from './ProductModel';
-
 class BasketProductModel extends Model<
   InferAttributes<BasketProductModel>,
   InferCreationAttributes<BasketProductModel>
@@ -17,9 +14,13 @@ class BasketProductModel extends Model<
   declare productId: number;
   declare quantity: number;
 
-  static associate() {
-    BasketProductModel.belongsTo(BasketModel, { foreignKey: 'basketId' });
-    BasketProductModel.belongsTo(ProductModel, { foreignKey: 'productId' });
+  static associate(models: any) {
+    BasketProductModel.belongsTo(models.BasketModel, {
+      foreignKey: 'basketId',
+    });
+    BasketProductModel.belongsTo(models.ProductModel, {
+      foreignKey: 'productId',
+    });
   }
 
   static initModel(sequelize: Sequelize) {

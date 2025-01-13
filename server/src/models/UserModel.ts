@@ -12,8 +12,6 @@ import TokenModel from './TokenModel';
 import BasketModel from './BasketModel';
 import RatingModel from './RatingModel';
 import OrderModel from './OrderModel';
-import ProductModel from './ProductModel';
-import UserRoleModel from './UserRoleModel';
 
 class UserModel extends Model<
   InferAttributes<UserModel>,
@@ -35,40 +33,40 @@ class UserModel extends Model<
   public readonly ratings?: RatingModel[];
 
   // мтд.устан.связей м/у моделями
-  static associate() {
-    UserModel.belongsToMany(RoleModel, {
-      through: UserRoleModel,
+  static associate(models: any) {
+    UserModel.belongsToMany(models.RoleModel, {
+      through: models.UserRoleModel,
       foreignKey: 'userId', // указ.внешн.ключ
       otherKey: 'roleId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });
-    RoleModel.belongsToMany(UserModel, {
-      through: UserRoleModel,
+    models.RoleModel.belongsToMany(UserModel, {
+      through: models.UserRoleModel,
       foreignKey: 'roleId', // указ.внешн.ключ
       otherKey: 'userId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });
     // доп.связи > раб.с промеж.табл.
-    UserModel.hasMany(UserRoleModel, {
+    UserModel.hasMany(models.UserRoleModel, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
-    UserRoleModel.belongsTo(UserModel, { foreignKey: 'userId' });
-    UserModel.hasOne(BasketModel, {
+    models.UserRoleModel.belongsTo(UserModel, { foreignKey: 'userId' });
+    UserModel.hasOne(models.BasketModel, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
-    UserModel.hasMany(TokenModel, {
+    UserModel.hasMany(models.TokenModel, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
-    UserModel.hasMany(OrderModel, {
+    UserModel.hasMany(models.OrderModel, {
       as: 'orders',
       foreignKey: 'userId',
       onDelete: 'SET NULL',
     });
-    UserModel.belongsToMany(ProductModel, {
-      through: RatingModel,
+    UserModel.belongsToMany(models.ProductModel, {
+      through: models.RatingModel,
       foreignKey: 'userId', // указ.внешн.ключ
       otherKey: 'productId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
@@ -109,6 +107,7 @@ class UserModel extends Model<
         },
       },
     );
+    console.log('UserModel инициализирован.');
   }
 }
 
