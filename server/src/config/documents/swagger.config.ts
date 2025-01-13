@@ -42,7 +42,7 @@ export const documentSwagger = (app: Application): void => {
       },
       customSiteTitle: 'PERN API Docs',
       // кастом иконки в браузере
-      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_IMG}/ico/icon.ico`,
+      customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
       // кастом ф.CSS
       customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
       // customCssUrl: [
