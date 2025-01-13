@@ -16,7 +16,7 @@ class ProductModel extends Model<
   InferAttributes<ProductModel>,
   InferCreationAttributes<ProductModel>
 > {
-  // объяв.тип > атриб.модели (CreationOptional - мжн.пусто, авто.созд.)
+  // св-ва модели с типами (CreationOptional - мжн.пусто, авто.созд.)
   declare id: CreationOptional<number>;
   declare name: string;
   declare price: number;
@@ -51,6 +51,13 @@ class ProductModel extends Model<
       as: 'ratings',
       foreignKey: 'productId', // указ.внешн.ключ
       otherKey: 'userId', // указ.доп.внешн.ключ
+      onDelete: 'CASCADE',
+    });
+    ProductModel.belongsToMany(models.BasketModel, {
+      through: models.BasketProductModel,
+      as: 'baskets',
+      foreignKey: 'productId',
+      otherKey: 'basketId',
       onDelete: 'CASCADE',
     });
   }

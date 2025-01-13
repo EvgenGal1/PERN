@@ -5,16 +5,24 @@ import {
   InferCreationAttributes,
   Sequelize,
   CreationOptional,
+  NonAttribute,
 } from 'sequelize';
+
+import { Models } from '../types/models.interfaсe';
+import BasketProductModel from './BasketProductModel';
 
 class BasketModel extends Model<
   InferAttributes<BasketModel>,
   InferCreationAttributes<BasketModel>
 > {
+  // св-ва модели с типами (CreationOptional - мжн.пусто, авто.созд.)
   declare id: CreationOptional<number>;
   declare userId: number;
+  // св-во модели как связь масс.данн.
+  declare products?: NonAttribute<BasketProductModel[]>;
 
-  static associate(models: any) {
+  // мтд.устан.связей м/у моделями
+  static associate(models: Models) {
     BasketModel.belongsTo(models.UserModel, {
       as: 'user',
       foreignKey: 'userId',
@@ -29,6 +37,7 @@ class BasketModel extends Model<
     });
   }
 
+  // мтд.инициализации модели, опред.структуры
   static initModel(sequelize: Sequelize) {
     BasketModel.init(
       {

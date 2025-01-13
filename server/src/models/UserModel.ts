@@ -17,13 +17,15 @@ class UserModel extends Model<
   InferAttributes<UserModel>,
   InferCreationAttributes<UserModel>
 > {
-  // объяв.тип > атриб.модели (CreationOptional - мжн.пусто, авто.созд.)
+  // св-ва модели с типами (CreationOptional - мжн.пусто, авто.созд.)
   declare id: CreationOptional<number>;
   declare username: string;
   declare email: string;
   declare password: string;
   declare isActivated: CreationOptional<boolean>;
   declare activationLink: CreationOptional<string>;
+  // declare createdAt?: Date;
+  // declare updatedAt?: Date | null;
 
   // Ассоциации. Cвязанные моделей ток.чтен.со Мн.данн.
   public readonly roles?: RoleModel[];
@@ -93,6 +95,8 @@ class UserModel extends Model<
         password: { type: DataTypes.STRING, allowNull: false },
         isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
         activationLink: { type: DataTypes.STRING, defaultValue: 'нет ссылки' },
+        // createdAt: { type: DataTypes.DATE, allowNull: false },
+        // updatedAt: { type: DataTypes.DATE, allowNull: true },
       },
       // конфигурация модели
       {
@@ -107,7 +111,7 @@ class UserModel extends Model<
         },
       },
     );
-    console.log('UserModel инициализирован.');
+    // console.log('UserModel инициализирован.');
   }
 }
 

@@ -11,7 +11,7 @@ class TokenModel extends Model<
   InferAttributes<TokenModel>,
   InferCreationAttributes<TokenModel>
 > {
-  // объяв.тип > атриб.модели (CreationOptional - мжн.пусто, авто.созд.)
+  // св-ва модели с типами (CreationOptional - мжн.пусто, авто.созд.)
   declare id: CreationOptional<number>;
   declare userId: number;
   declare basketId: number;

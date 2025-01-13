@@ -17,9 +17,11 @@ class BasketProductModel extends Model<
   static associate(models: any) {
     BasketProductModel.belongsTo(models.BasketModel, {
       foreignKey: 'basketId',
+      onDelete: 'CASCADE',
     });
     BasketProductModel.belongsTo(models.ProductModel, {
       foreignKey: 'productId',
+      onDelete: 'CASCADE',
     });
   }
 
