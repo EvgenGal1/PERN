@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-export const validateSignup = [
+export const validateAuth = [
   body('email', 'Некорректый email').isEmail().normalizeEmail(),
   body('password')
     .not()

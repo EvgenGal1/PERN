@@ -39,12 +39,21 @@ class DatabaseUtils {
     return {
       id: basket.id,
       products:
-        basket.products?.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          quantity: product.basket_product.quantity,
-        })) || [],
+        basket.products?.map((product: any) => {
+          // проверка наличия BasketProductModel
+          const quantity = product.BasketProductModel?.quantity;
+          if (quantity === undefined) {
+            console.error(
+              `Ошибка: Отсутствует связь BasketProductModel для продукта с id=${product.id}`,
+            );
+          }
+          return {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: quantity ?? 0, // е/и связи нет - возврат 0
+          };
+        }) || [],
     };
   }
 }
