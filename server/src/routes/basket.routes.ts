@@ -12,10 +12,12 @@ import BasketController from '../controllers/basket.controller';
 
 /**
  * @swagger
- * /getone:
+ * /basket/getone:
  *   get:
  *     summary: Получить одну корзину
  *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Успешный ответ
@@ -25,10 +27,12 @@ import BasketController from '../controllers/basket.controller';
 router.get('/getone', BasketController.getOneBasket);
 /**
  * @swagger
- * /product/{productId}/append/{quantity}:
+ * /basket/product/{productId}/append/{quantity}:
  *   put:
  *     summary: Добавить продукт в корзину
  *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: productId
@@ -50,14 +54,19 @@ router.get('/getone', BasketController.getOneBasket);
  */
 router.put(
   '/product/:productId([0-9]+)/append/:quantity([0-9]+)',
-  BasketController.appendBasket,
+  // ! Cannot read properties of undefined (reading 'getBasketId')
+  // BasketController.appendBasket,
+  // вызов с привязкой к экземпл.клс. > доступа к конексту с getBasketId
+  BasketController.appendBasket.bind(BasketController),
 );
 /**
  * @swagger
- * /product/{productId}/increment/{quantity}:
+ * /basket/product/{productId}/increment/{quantity}:
  *   put:
  *     summary: Увеличить количество продукта в корзине
  *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: productId
@@ -83,10 +92,12 @@ router.put(
 );
 /**
  * @swagger
- * /product/{productId}/decrement/{quantity}:
+ * /basket/product/{productId}/decrement/{quantity}:
  *   put:
  *     summary: Уменьшить количество продукта в корзине
  *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: productId
@@ -112,10 +123,12 @@ router.put(
 );
 /**
  * @swagger
- * /product/{productId}/remove:
+ * /basket/product/{productId}/remove:
  *   put:
  *     summary: Удалить продукт из корзины
  *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: productId
@@ -132,10 +145,12 @@ router.put(
 router.put('/product/:productId([0-9]+)/remove', BasketController.removeBasket);
 /**
  * @swagger
- * /clear:
+ * /basket/clear:
  *   put:
  *     summary: Очистить корзину
  *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Корзина очищена

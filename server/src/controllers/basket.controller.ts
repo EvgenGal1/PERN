@@ -9,19 +9,28 @@ const COOKIE_OPTIONS = {
 };
 
 class BasketController {
+  // получ.basketId из cookies
+  private async getBasketId(req: Request): Promise<number> {
+    // private getBasketId = async (req: Request): Promise<number > => {
+    const basketId = req.signedCookies.basketId;
+    if (!basketId) throw ApiError.badRequest('ID не передан в cookies'); // ошб.без basketId в cookies
+    return parseInt(basketId);
+  }
+
   // добавить
   async appendBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      let basketId =
-        req.signedCookies.basketId || (await BasketService.createBasket());
+      const basketId = await this.getBasketId(req);
       const { productId, quantity } = req.params;
       const basket = await BasketService.appendBasket(
-        +basketId,
+        basketId!,
         +productId,
         +quantity,
       );
-      res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.status(200).json(basket);
+      res
+        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .status(200)
+        .json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
@@ -34,17 +43,12 @@ class BasketController {
   // получить одну
   async getOneBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      let basket;
-      if (req.signedCookies.basketId) {
-        basket = await BasketService.getOneBasket(
-          parseInt(req.signedCookies.basketId),
-        );
-      } else {
-        // ! пересмотр.лог.по созд.
-        basket = await BasketService.createBasket();
-      }
-      res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.status(200).json(basket);
+      const basketId = await this.getBasketId(req);
+      const basket = await BasketService.getOneBasket(basketId!);
+      res
+        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .status(200)
+        .json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
@@ -57,22 +61,17 @@ class BasketController {
   // увеличение
   async incrementBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      let basketId;
-      if (!req.signedCookies.basketId) {
-        // ! пересмотр.лог.по созд.
-        let created = await BasketService.createBasket();
-        basketId = created.id;
-      } else {
-        basketId = parseInt(req.signedCookies.basketId);
-      }
+      const basketId = await this.getBasketId(req);
       const { productId, quantity } = req.params;
       const basket = await BasketService.incrementBasket(
-        +basketId,
+        basketId!,
         +productId,
         +quantity,
       );
-      res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.status(200).json(basket);
+      res
+        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .status(200)
+        .json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
@@ -85,21 +84,17 @@ class BasketController {
   // уменьшение
   async decrementBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      let basketId;
-      if (!req.signedCookies.basketId) {
-        let created = await BasketService.createBasket();
-        basketId = created.id;
-      } else {
-        basketId = parseInt(req.signedCookies.basketId);
-      }
+      const basketId = await this.getBasketId(req);
       const { productId, quantity } = req.params;
       const basket = await BasketService.decrementBasket(
-        +basketId,
+        basketId!,
         +productId,
         +quantity,
       );
-      res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.status(200).json(basket);
+      res
+        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .status(200)
+        .json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
@@ -112,16 +107,12 @@ class BasketController {
   // очистка
   async clearBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      let basketId;
-      if (!req.signedCookies.basketId) {
-        let created = await BasketService.createBasket();
-        basketId = created.id;
-      } else {
-        basketId = parseInt(req.signedCookies.basketId);
-      }
-      const basket = await BasketService.clearBasket(basketId);
-      res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.status(201).json(basket);
+      const basketId = await this.getBasketId(req);
+      const basket = await BasketService.clearBasket(basketId!);
+      res
+        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .status(200)
+        .json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
@@ -131,25 +122,27 @@ class BasketController {
     }
   }
 
-  // удаление Корзины
-  async deleteBasket(basketId: number) {}
-
   // удаление Корзины с Товарами
   async removeBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      let basketId;
-      if (!req.signedCookies.basketId) {
-        let created = await BasketService.createBasket();
-        basketId = created.id;
-      } else {
-        basketId = parseInt(req.signedCookies.basketId);
-      }
-      const basket = await BasketService.removeBasket(
-        +basketId,
-        +req.params.productId,
+      const basketId = await this.getBasketId(req);
+      const basket = await BasketService.removeBasket(basketId!);
+      res.cookie('basketId', basketId, COOKIE_OPTIONS).json(basket);
+    } catch (error: unknown) {
+      next(
+        ApiError.badRequest(
+          error instanceof Error ? error.message : 'Неизвестная ошибка',
+        ),
       );
-      res.cookie('basketId', basket.id, COOKIE_OPTIONS);
-      res.json(basket);
+    }
+  }
+
+  // удаление Корзины (с Товарами как в removeBasket но без проверок)
+  async deleteBasket(req: Request, res: Response, next: NextFunction) {
+    try {
+      const basketId = parseInt(req.params.basketId);
+      const basket = await BasketService.deleteBasket(basketId!);
+      res.status(200).json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
