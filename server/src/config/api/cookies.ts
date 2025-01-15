@@ -3,12 +3,12 @@
 
 export const COOKIE_OPTIONS = {
   refreshToken: {
-    maxAge: 60 * 60 * 1000 * 24 * 30, // 1 месяц
+    maxAge: +process.env.REFRESH_TOKEN_LIFETIME!,
     httpOnly: true,
     signed: true,
   },
   basketId: {
-    maxAge: 60 * 60 * 1000 * 24 * 365, // 1 год
+    maxAge: +process.env.BASKET_LIFETIME!,
     httpOnly: true,
     signed: true,
   },
