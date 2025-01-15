@@ -16,6 +16,9 @@ class TokenModel extends Model<
   declare userId: number;
   declare basketId: number;
   declare refreshToken: string;
+  declare refreshTokenExpires: Date;
+  declare resetToken?: CreationOptional<string>;
+  declare resetTokenExpires?: Date;
 
   // мтд.устан.связей м/у моделями
   static associate(models: any) {
@@ -34,7 +37,10 @@ class TokenModel extends Model<
           allowNull: false,
           primaryKey: true,
         },
-        refreshToken: { type: DataTypes.STRING(300), allowNull: true },
+        refreshToken: { type: DataTypes.STRING(300), allowNull: false },
+        refreshTokenExpires: { type: DataTypes.DATE, allowNull: false },
+        resetToken: { type: DataTypes.STRING(300), allowNull: true },
+        resetTokenExpires: { type: DataTypes.DATE, allowNull: true },
       },
       { sequelize, tableName: 'tokens' },
     );
