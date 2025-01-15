@@ -1,9 +1,8 @@
 // ^ servis для свойств товара
-import { OrderItemAttributes } from 'models/sequelize-types';
-import AppError from '../middleware/errors/ApiError';
-import { OrderModel } from '../models/model';
-import { OrderItemModel } from '../models/model';
-import sequelize from 'sequelize';
+
+import OrderModel from '../models/OrderModel';
+import OrderItemModel from '../models/OrderItemModel';
+import { OrderItemAttributes } from '../models/sequelize-types';
 
 class OrderItemService {
   async getAllOrderItems(orderId: number): Promise<OrderItemAttributes[]> {

@@ -1,10 +1,8 @@
 import fs from 'fs';
 // подкл.генир.уник.рандом.id
-const uuid = require('uuid');
+import uuid from 'uuid';
 // подкл.для созд.пути
-const path = require('path');
-
-import AppError from '../middleware/errors/ApiError';
+import path from 'path';
 
 class FileService {
   saveFile(file: /* : Express.Multer.File */ any): string | null {

@@ -1,8 +1,7 @@
 import { ProductAttributes } from 'models/sequelize-types';
-import AppError from '../middleware/errors/ApiError';
-import { RatingModel } from '../models/model';
-import { ProductModel } from '../models/model';
-import { UserModel } from '../models/model';
+import RatingModel from '../models/RatingModel';
+import ProductModel from '../models/ProductModel';
+import UserModel from '../models/UserModel';
 
 class RatingService {
   async getOneRating(productId: number) {

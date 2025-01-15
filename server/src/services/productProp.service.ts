@@ -1,7 +1,7 @@
 // ^ servis для свойств товара
-import AppError from '../middleware/errors/ApiError';
-import { ProductModel } from '../models/model';
-import { ProductPropModel } from '../models/model';
+
+import ProductModel from '../models/ProductModel';
+import ProductPropModel from '../models/ProductPropModel';
 
 class ProductPropService {
   async getAllProdProp(productId: number) {

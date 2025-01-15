@@ -1,7 +1,8 @@
-import { RoleModel, UserRoleModel } from '../models/model';
-import AppError from '../middleware/errors/ApiError';
+import RoleModel from '../models/RoleModel';
+import UserRoleModel from '../models/UserRoleModel';
+import { UserRoleCreationAttributes } from '../models/sequelize-types';
+import ApiError from '../middleware/errors/ApiError';
 import DatabaseUtils from '../utils/database.utils';
-import { UserRoleCreationAttributes } from 'models/sequelize-types';
 
 class RoleService {
   async getAllRole() {
@@ -9,7 +10,7 @@ class RoleService {
       const roles = await RoleModel.findAll();
       return roles;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Роли не получены`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -26,7 +27,7 @@ class RoleService {
       }
       return role;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Роль не получена`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -35,7 +36,7 @@ class RoleService {
   // получ.привязку UserRole
   async getOneUserRole(id: number, param?: string) {
     try {
-      // перем.Привязки
+      // перем.привязки
       let userRole;
       // определение привязки
       if (param && param.includes('user')) {
@@ -52,7 +53,7 @@ class RoleService {
       }
       return userRole;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `НЕ удалось записать Роли ${error}`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -78,7 +79,7 @@ class RoleService {
           | null;
       }
       if (!role) {
-        throw new Error('Роль не найдена');
+        throw new ApiError(500, 'Роль не найдена');
       }
       // `получить наименьший доступный идентификатор` из табл.БД
       const smallestFreeId =
@@ -92,14 +93,11 @@ class RoleService {
       });
       // обраб.ошб.
       if (!createdUserRole) {
-        throw AppError.badRequest(
-          `НЕ удалось записать Роли до CATCH `,
-          ' -нет- ',
-        );
+        throw ApiError.badRequest(`НЕ удалось записать Роли`);
       }
       return createdUserRole;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `НЕ удалось записать Роли ${error}`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -113,10 +111,13 @@ class RoleService {
       if (exist) {
         throw new Error('Роль уже есть');
       }
-      const role = await RoleModel.create({ name });
+      const role = await RoleModel.create({
+        value: name,
+        description: name.toUpperCase(),
+      });
       return role;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Роль не создана`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -135,7 +136,7 @@ class RoleService {
       await role.update({ value: name }, { where: { id }, returning: true });
       return role;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Роль не обновлена`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -151,7 +152,7 @@ class RoleService {
       await role.destroy();
       return role;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Роль не удалена`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );

@@ -1,32 +1,11 @@
-import {
-  ProductModel,
-  ProductPropModel,
-  BrandModel,
-  CategoryModel,
-  RatingModel,
-} from '../models/model';
+import ProductModel from '../models/ProductModel';
+import ProductPropModel from '../models/ProductPropModel';
+import BrandModel from '../models/BrandModel';
+import CategoryModel from '../models/CategoryModel';
 import FileService from './file.service';
-import AppError from '../middleware/errors/ApiError';
-import {
-  ProductAttributes,
-  ProductPropAttributes,
-} from 'models/sequelize-types';
-import { Model } from 'sequelize';
+import ApiError from '../middleware/errors/ApiError';
 
 // Типы данных
-interface Products {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  categoryId: number | null | any;
-  brandId: number | null | any;
-  props?: ProductProp[];
-  category?: Category;
-  brand?: Brand;
-  // createdAt: Date;
-  // updatedAt: Date;
-}
 
 interface CreateData {
   name: string | any;
@@ -46,41 +25,16 @@ interface UpdateData {
   props?: string;
 }
 
-interface ProductProp {
-  id: number | any;
-  name: string | any;
-  value: string | any;
-  productId: number | any;
-  // createdAt: Date;
-  // updatedAt: Date;
-}
-
-interface Category {
-  id: number | any;
-  name: string | any;
-  // createdAt: Date;
-  // updatedAt: Date;
-}
-
-interface Brand {
-  id: number | any;
-  name: string | any;
-  // createdAt: Date;
-  // updatedAt: Date;
-}
-
 class ProductService {
   async getAllProduct(options: any) {
     try {
       const {
         categoryId,
-        categoryId_q,
         brandId,
-        brandId_q,
-        limit,
-        page,
-        sortOrd,
-        sortField,
+        limit = 20,
+        page = 1,
+        sortOrd = 'ASC',
+        sortField = 'name',
       } = options;
 
       // перем.для уточнения запроса к др.Табл.
@@ -151,7 +105,7 @@ class ProductService {
 
       return { ...products, limit };
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Товары не найдены в БД`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -174,7 +128,7 @@ class ProductService {
       }
       return product;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Товар не найден в БД`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -184,7 +138,7 @@ class ProductService {
   async createProduct(
     data: CreateData,
     img: any /* : Express.Multer.File */,
-  ): Promise<Products | any> {
+  ): Promise</* Products | */ any> {
     try {
       // сохр.изо.с указ.'' от null
       const image = FileService.saveFile(img) ?? '';
@@ -324,7 +278,7 @@ class ProductService {
       // возвращ.результ.созд.
       return returned;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Товар не создан в БД`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -343,11 +297,9 @@ class ProductService {
       //   items: OrderItemAttributes[];
       // };
 
-      const product = (await ProductModel.findByPk(id, {
+      const product = /* ( */ await ProductModel.findByPk(id, {
         include: [{ model: ProductPropModel, as: 'props' }],
-      })) as Model<ProductAttributes> & {
-        items: ProductPropAttributes[];
-      };
+      }); /* ) as Model<ProductAttributes> & { items: ProductPropAttributes[]; } */
       if (!product) {
         throw new Error('Товар не найден в БД');
       }
@@ -388,7 +340,7 @@ class ProductService {
       await product.reload();
       return product;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Товар не обновлён`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -422,7 +374,7 @@ class ProductService {
       await product.destroy();
       return product;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Товар не удалён`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );

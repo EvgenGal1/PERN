@@ -1,12 +1,10 @@
 // модель данных табл.User
-import { UserModel } from '../models/model';
-import { UserRoleModel } from '../models/model';
+import UserModel from '../models/UserModel';
+import UserRoleModel from '../models/UserRoleModel';
 // serv разные
 import BasketService from './basket.service';
 // утилиты/helpы/обраб.ошб./dto
-import AppError from '../middleware/errors/ApiError';
-import { UserAttributes, UserCreationAttributes } from 'models/sequelize-types';
-import { Model } from 'sequelize';
+import ApiError from '../middleware/errors/ApiError';
 
 class UserService {
   async createUser(data: any) {
@@ -15,29 +13,31 @@ class UserService {
       const check = await UserModel.findOne({ where: { email } });
       if (check)
         /* throw new Error // ! как-то не так отраб.*/
-        throw AppError.badRequest('Пользователь уже существует');
-      const user = await UserModel.create({ email, password, role });
+        throw ApiError.badRequest('Пользователь уже существует');
+      const user = await UserModel.create({
+        email,
+        password,
+        username: '',
+      });
       // созд.Корзину по User.id
       if (user.get('id')) await BasketService.createBasket(user.get('id'));
       return user;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Пользователь  не создан`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
     }
   }
-  async getOneUser(
-    id: number,
-  ): Promise<Model<UserAttributes, UserCreationAttributes> | null> {
+  async getOneUser(id: number): Promise<UserModel | null> {
     try {
       const user = await UserModel.findByPk(id);
       if (!user) {
-        throw AppError.notFound(`Пользователь по id ${id} не найден в БД`);
+        throw ApiError.notFound(`Пользователь по id ${id} не найден в БД`);
       }
       return user;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Один Пользователь не прошёл`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -48,7 +48,7 @@ class UserService {
       const users = await UserModel.findAll();
       return users;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Все Пользователи не прошли`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -56,9 +56,9 @@ class UserService {
   }
   async updateUser(id: number, data: any) {
     try {
-      const user = await UserModel.findByPk(id /* , { raw: true } */);
+      const user = await UserModel.findByPk(id);
       if (!user)
-        return AppError.notFound(`Пользователь по id ${id} не найден в БД`);
+        return ApiError.notFound(`Пользователь по id ${id} не найден в БД`);
       const {
         email = user./* email */ get('email'),
         password = user./* password */ get('password'),
@@ -76,7 +76,7 @@ class UserService {
 
       return user;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Обновление Пользователя не прошло`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -85,12 +85,12 @@ class UserService {
   async deleteUser(id: number) {
     try {
       const user = await UserModel.findByPk(id);
-      if (!user) return AppError.badRequest('Пользователь не найден в БД');
+      if (!user) return ApiError.badRequest('Пользователь не найден в БД');
       if (user.get('id')) BasketService.deleteBasket(user.get('id') as number);
       await user.destroy();
       return user;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `Удаление Пользователя не прошло`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
@@ -101,12 +101,12 @@ class UserService {
     try {
       const user = await UserModel.findOne({ where: { email } });
       if (!user)
-        throw AppError.badRequest(
+        throw ApiError.badRequest(
           `Пользователь с email ${email} не найден в БД`,
         );
       return user;
     } catch (error: unknown) {
-      throw AppError.badRequest(
+      throw ApiError.badRequest(
         `По email найти Пользователя не прошло`,
         error instanceof Error ? error.message : 'Неизвестная ошибка',
       );
