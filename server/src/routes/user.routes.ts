@@ -39,7 +39,7 @@ const router = express.Router();
  *                 example: user@example.com
  *               password:
  *                 type: string
- *                 example: strongPassword123!
+ *                 example: strong@Password123!
  *     responses:
  *       201:
  *         description: Пользователь успешно создан

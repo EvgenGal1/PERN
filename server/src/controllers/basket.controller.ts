@@ -2,11 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import ApiError from '../middleware/errors/ApiError';
 import BasketService from '../services/basket.service';
-
-const COOKIE_OPTIONS = {
-  maxAge: 60 * 60 * 24 * 365 * 1000, // 1 год
-  signed: true,
-};
+import { COOKIE_OPTIONS } from '../config/api/cookies';
 
 class BasketController {
   // получ.basketId из cookies
@@ -28,7 +24,7 @@ class BasketController {
         +quantity,
       );
       res
-        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
         .json(basket);
     } catch (error: unknown) {
@@ -46,7 +42,7 @@ class BasketController {
       const basketId = await this.getBasketId(req);
       const basket = await BasketService.getOneBasket(basketId!);
       res
-        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
         .json(basket);
     } catch (error: unknown) {
@@ -69,7 +65,7 @@ class BasketController {
         +quantity,
       );
       res
-        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
         .json(basket);
     } catch (error: unknown) {
@@ -92,7 +88,7 @@ class BasketController {
         +quantity,
       );
       res
-        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
         .json(basket);
     } catch (error: unknown) {
@@ -110,7 +106,7 @@ class BasketController {
       const basketId = await this.getBasketId(req);
       const basket = await BasketService.clearBasket(basketId!);
       res
-        .cookie('basketId', basket.id, COOKIE_OPTIONS)
+        .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
         .json(basket);
     } catch (error: unknown) {
@@ -127,7 +123,7 @@ class BasketController {
     try {
       const basketId = await this.getBasketId(req);
       const basket = await BasketService.removeBasket(basketId!);
-      res.cookie('basketId', basketId, COOKIE_OPTIONS).json(basket);
+      res.cookie('basketId', basketId, COOKIE_OPTIONS.basketId).json(basket);
     } catch (error: unknown) {
       next(
         ApiError.badRequest(
