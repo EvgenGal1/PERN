@@ -54,10 +54,7 @@ router.get('/getone', BasketController.getOneBasket);
  */
 router.put(
   '/product/:productId([0-9]+)/append/:quantity([0-9]+)',
-  // ! Cannot read properties of undefined (reading 'getBasketId')
-  // BasketController.appendBasket,
-  // вызов с привязкой к экземпл.клс. > доступа к конексту с getBasketId
-  BasketController.appendBasket.bind(BasketController),
+  BasketController.appendBasket,
 );
 /**
  * @swagger

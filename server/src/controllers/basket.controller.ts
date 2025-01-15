@@ -5,6 +5,16 @@ import BasketService from '../services/basket.service';
 import { COOKIE_OPTIONS } from '../config/api/cookies';
 
 class BasketController {
+  constructor() {
+    // привязка мтд. к экземпл.клс. > доступа routes к конексту this с getBasketId от ошб. // ! Cannot read properties of undefined (reading 'getBasketId')
+    this.appendBasket = this.appendBasket.bind(this);
+    this.getOneBasket = this.getOneBasket.bind(this);
+    this.incrementBasket = this.incrementBasket.bind(this);
+    this.decrementBasket = this.decrementBasket.bind(this);
+    this.clearBasket = this.clearBasket.bind(this);
+    this.removeBasket = this.removeBasket.bind(this);
+  }
+
   // получ.basketId из cookies
   private async getBasketId(req: Request): Promise<number> {
     // private getBasketId = async (req: Request): Promise<number > => {
