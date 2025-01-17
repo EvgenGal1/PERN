@@ -6,6 +6,7 @@ import UserRoleModel from '../models/UserRoleModel';
 import BasketModel from '../models/BasketModel';
 import TokenModel from '../models/TokenModel';
 import { BasketResponse } from '../types/basket.interface';
+import ApiError from '../middleware/errors/ApiError';
 
 class DatabaseUtils {
   // ^^ `получить наименьший доступный идентификатор` из табл.БД>tableName
@@ -18,7 +19,7 @@ class DatabaseUtils {
     else if (tableName === 'userrole') model = UserRoleModel;
     else if (tableName === 'basket') model = BasketModel;
     else if (tableName === 'token') model = TokenModel;
-    else throw new Error('Неверное название таблицы');
+    else throw ApiError.internal('Неверное название таблицы');
     // req.составной
     const result = await model.findAll({ order: [['id', 'ASC']] });
     // обраб.0

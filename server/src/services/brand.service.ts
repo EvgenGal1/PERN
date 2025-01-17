@@ -1,4 +1,4 @@
-import { BrandAttributes } from 'models/sequelize-types';
+import { BrandAttributes } from '../models/sequelize-types';
 import ApiError from '../middleware/errors/ApiError';
 import BrandModel from '../models/BrandModel';
 

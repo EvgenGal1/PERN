@@ -45,7 +45,7 @@ export default function roleMW(roles: string[]) {
         );
       }
       // cохр.декод.инфо.Пользователя в req
-      req.user = decoded;
+      req.body.user = decoded;
       next();
     } catch (error: unknown) {
       throw ApiError.forbidden((error as ApiError).message);

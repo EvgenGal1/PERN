@@ -9,7 +9,7 @@ import ApiError from '../middleware/errors/ApiError';
 class UserService {
   async createUser(data: any) {
     try {
-      const { email, password, role } = data;
+      const { email, password, username, role } = data;
       const check = await UserModel.findOne({ where: { email } });
       if (check)
         /* throw new Error // ! как-то не так отраб.*/
@@ -17,7 +17,7 @@ class UserService {
       const user = await UserModel.create({
         email,
         password,
-        username: '',
+        username,
       });
       // созд.Корзину по User.id
       if (user.get('id')) await BasketService.createBasket(user.get('id'));

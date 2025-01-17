@@ -21,7 +21,7 @@ import ErrorHandler from './middleware/errors/ErrorHandler';
 // логирование LH Winston
 import { LoggingWinston as logger } from './config/logging/log_winston.config';
 // MW логгирование входящих HTTP запросов
-import { loggingMiddleware as loggerMW } from './middleware/logging.middleware';
+import { loggingMiddleware as loggerMW } from './middleware/logging/logging.middleware';
 // документирование/настр. Swagger
 import { documentSwagger } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
