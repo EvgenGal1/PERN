@@ -2,8 +2,8 @@
 
 import express from 'express';
 
-import authMW from '../middleware/authMiddleware';
-import adminMW from '../middleware/adminMiddleware';
+import authMW from '../middleware/auth/authMiddleware';
+import adminMW from '../middleware/auth/adminMiddleware';
 import OrderController from '../controllers/order.controller';
 import OrderItemsController from '../controllers/orderItems.controller';
 

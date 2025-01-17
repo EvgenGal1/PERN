@@ -1,8 +1,8 @@
 import express from 'express';
 
-import authMW from '../middleware/authMiddleware';
-import adminMW from '../middleware/adminMiddleware';
-import roleMW from '../middleware/roleMiddleware';
+import authMW from '../middleware/auth/authMiddleware';
+import adminMW from '../middleware/auth/adminMiddleware';
+import roleMW from '../middleware/auth/roleMiddleware';
 import RatingController from '../controllers/rating.controller';
 
 const router = express.Router();

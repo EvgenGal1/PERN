@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authMW from '../middleware/authMiddleware';
-import adminMW from '../middleware/adminMiddleware';
+import authMW from '../middleware/auth/authMiddleware';
+import adminMW from '../middleware/auth/adminMiddleware';
 import CategoryController from '../controllers/category.controller';
 
 const router = express.Router();
