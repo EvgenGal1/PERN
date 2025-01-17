@@ -7,6 +7,8 @@ import {
   CreationOptional,
 } from 'sequelize';
 
+import { Models } from '../types/models.interfaсe';
+
 class TokenModel extends Model<
   InferAttributes<TokenModel>,
   InferCreationAttributes<TokenModel>
@@ -21,7 +23,7 @@ class TokenModel extends Model<
   declare resetTokenExpires?: Date;
 
   // мтд.устан.связей м/у моделями
-  static associate(models: any) {
+  static associate(models: Models) {
     TokenModel.belongsTo(models.UserModel, { foreignKey: 'userId' });
     TokenModel.belongsTo(models.BasketModel, { foreignKey: 'basketId' });
   }
@@ -38,7 +40,7 @@ class TokenModel extends Model<
           primaryKey: true,
         },
         refreshToken: { type: DataTypes.STRING(300), allowNull: false },
-        refreshTokenExpires: { type: DataTypes.DATE, allowNull: false },
+        refreshTokenExpires: { type: DataTypes.DATE, allowNull: true },
         resetToken: { type: DataTypes.STRING(300), allowNull: true },
         resetTokenExpires: { type: DataTypes.DATE, allowNull: true },
       },

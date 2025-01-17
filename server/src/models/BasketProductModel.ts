@@ -6,6 +6,8 @@ import {
   Sequelize,
 } from 'sequelize';
 
+import { Models } from '../types/models.interfaсe';
+
 class BasketProductModel extends Model<
   InferAttributes<BasketProductModel>,
   InferCreationAttributes<BasketProductModel>
@@ -14,7 +16,7 @@ class BasketProductModel extends Model<
   declare productId: number;
   declare quantity: number;
 
-  static associate(models: any) {
+  static associate(models: Models) {
     BasketProductModel.belongsTo(models.BasketModel, {
       foreignKey: 'basketId',
       onDelete: 'CASCADE',

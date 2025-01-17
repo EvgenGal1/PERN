@@ -11,6 +11,7 @@ import ProductPropModel from './ProductPropModel';
 import CategoryModel from './CategoryModel';
 import BrandModel from './BrandModel';
 import RatingModel from './RatingModel';
+import { Models } from '../types/models.interfaсe';
 
 class ProductModel extends Model<
   InferAttributes<ProductModel>,
@@ -32,7 +33,7 @@ class ProductModel extends Model<
   public readonly ratings?: RatingModel[];
 
   // мтд.устан.связей м/у моделями
-  static associate(models: any) {
+  static associate(models: Models) {
     ProductModel.hasMany(models.ProductPropModel, {
       as: 'props',
       foreignKey: 'productId',

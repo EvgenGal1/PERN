@@ -7,6 +7,8 @@ import {
   CreationOptional,
 } from 'sequelize';
 
+import { Models } from '../types/models.interfaсe';
+
 class RoleModel extends Model<
   InferAttributes<RoleModel>,
   InferCreationAttributes<RoleModel>
@@ -15,7 +17,7 @@ class RoleModel extends Model<
   declare value: string;
   declare description: string;
 
-  static associate(models: any) {
+  static associate(models: Models) {
     RoleModel.belongsToMany(models.UserModel, {
       through: models.UserRoleModel,
       foreignKey: 'roleId', // указ.внешн.ключ

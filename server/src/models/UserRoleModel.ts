@@ -7,6 +7,8 @@ import {
   CreationOptional,
 } from 'sequelize';
 
+import { Models } from '../types/models.interfaсe';
+
 class UserRoleModel extends Model<
   InferAttributes<UserRoleModel>,
   InferCreationAttributes<UserRoleModel>
@@ -16,7 +18,7 @@ class UserRoleModel extends Model<
   declare roleId: number;
   declare level: number;
 
-  static associate(models: any) {
+  static associate(models: Models) {
     UserRoleModel.belongsTo(models.UserModel, { foreignKey: 'userId' });
     UserRoleModel.belongsTo(models.RoleModel, { foreignKey: 'roleId' });
   }
@@ -27,7 +29,7 @@ class UserRoleModel extends Model<
         id: { type: DataTypes.INTEGER, allowNull: false },
         userId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
         roleId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
-        level: { type: DataTypes.INTEGER, defaultValue: 1 },
+        level: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
       },
       { sequelize, tableName: 'user_roles' },
     );

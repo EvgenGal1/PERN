@@ -13,6 +13,7 @@ import BasketModel from './BasketModel';
 import RatingModel from './RatingModel';
 import OrderModel from './OrderModel';
 import UserRoleModel from './UserRoleModel';
+import { Models } from '../types/models.interfaсe';
 
 class UserModel extends Model<
   InferAttributes<UserModel>,
@@ -30,14 +31,14 @@ class UserModel extends Model<
 
   // Ассоциации. Cвязанные моделей ток.чтен.со Мн.данн.
   public readonly roles?: RoleModel[];
-  public readonly userrole?: UserRoleModel[];
+  public readonly userRoles?: UserRoleModel[];
   public readonly tokens?: TokenModel[];
   public readonly basket?: BasketModel;
   public readonly orders?: OrderModel[];
   public readonly ratings?: RatingModel[];
 
   // мтд.устан.связей м/у моделями
-  static associate(models: any) {
+  static associate(models: Models) {
     UserModel.belongsToMany(models.RoleModel, {
       through: models.UserRoleModel,
       foreignKey: 'userId', // указ.внешн.ключ

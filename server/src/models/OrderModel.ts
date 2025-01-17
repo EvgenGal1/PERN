@@ -8,6 +8,8 @@ import {
   CreationOptional,
 } from 'sequelize';
 
+import { Models } from '../types/models.interfaсe';
+
 class OrderModel extends Model<
   InferAttributes<OrderModel>,
   InferCreationAttributes<OrderModel>
@@ -25,7 +27,7 @@ class OrderModel extends Model<
   declare createdAt?: Date;
   declare updatedAt?: Date;
 
-  static associate(models: any) {
+  static associate(models: Models) {
     OrderModel.hasMany(models.OrderItemModel, {
       as: 'items',
       foreignKey: 'orderId',
