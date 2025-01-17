@@ -9,7 +9,7 @@ export interface Tokens {
   tokens: JwtToken;
 }
 
-export interface GenerTokenDto {
+export interface TokenDto {
   id: number;
   email: string;
   username: string;

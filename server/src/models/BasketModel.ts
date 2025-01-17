@@ -18,7 +18,7 @@ class BasketModel extends Model<
   // св-ва модели с типами (CreationOptional - мжн.пусто, авто.созд.)
   declare id: CreationOptional<number>;
   declare userId: number;
-  // св-во модели как связь масс.данн.
+  // св-во модели как связь/ассоц. масс.данн.
   declare products?: NonAttribute<BasketProductModel[]>;
 
   // мтд.устан.связей м/у моделями
