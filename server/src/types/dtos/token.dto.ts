@@ -22,13 +22,11 @@ export class TokenDto {
   }
 }
 
-export class GenerTokenDto {
-  constructor(
-    public id: number,
-    public email: string,
-    public username: string,
-    public role: string,
-    public level: number,
-    public basket: number,
-  ) {}
-}
+export type GenerTokenDto = {
+  id: number;
+  email: string;
+  username: string;
+  role: string;
+  level: number;
+  basket: number;
+};
