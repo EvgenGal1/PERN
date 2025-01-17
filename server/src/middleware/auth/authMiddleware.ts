@@ -2,10 +2,10 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from './errors/ApiError';
-import { DecodedToken } from '../types/DecodedToken';
-import { AuthPayload } from '../types/AuthPayload';
-import TokenService from '../services/token.service';
+import ApiError from '../errors/ApiError';
+import { DecodedToken } from '../../types/DecodedToken';
+import { AuthPayload } from '../../types/AuthPayload';
+import TokenService from '../../services/token.service';
 
 const authMW = (req: Request, res: Response, next: NextFunction): void => {
   // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)

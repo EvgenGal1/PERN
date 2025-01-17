@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import ApiError from '../middleware/errors/ApiError';
+
+import ApiError from '../errors/ApiError';
 
 const roleMW = (requiredRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {

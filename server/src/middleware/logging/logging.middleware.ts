@@ -2,8 +2,8 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import { LoggingWinston as logger } from '../config/logging/log_winston.config';
-import { isDevelopment } from '../config/envs/env.consts';
+import { LoggingWinston as logger } from '../../config/logging/log_winston.config';
+import { isDevelopment } from '../../config/envs/env.consts';
 
 // url игнор (нач./полн.)
 // const ignoredPathsRegex = [/^\/swagger/, /^\/favicon/, /^\/img\/ico/];

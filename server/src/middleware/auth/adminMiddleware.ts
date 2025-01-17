@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from './errors/ApiError';
+import ApiError from '../errors/ApiError';
 
 const adminMW = (req: Request, res: Response, next: NextFunction): void => {
   try {
