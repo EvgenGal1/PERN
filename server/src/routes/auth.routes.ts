@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authMW from '../middleware/authMiddleware';
-import { validateSignup } from '../middleware/validation/authValidator';
+import authMW from '../middleware/auth/authMiddleware';
+import { validateAuth } from '../middleware/validation/authValidator';
 import AuthController from '../controllers/auth.controller';
 
 const router = express.Router();
@@ -34,9 +34,11 @@ const router = express.Router();
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: user@example.com
  *                 description: Электронная почта Пользователя
  *               password:
  *                 type: string
+ *                 example: strong@Password123!
  *                 description: Пароль Пользователя
  *     responses:
  *       201:
@@ -44,7 +46,7 @@ const router = express.Router();
  *       400:
  *         description: Некорректные входные данные
  */
-router.post('/signup', validateSignup, AuthController.signupUser);
+router.post('/signup', validateAuth, AuthController.signupUser);
 
 // АВТОРИЗАЦИЯ
 /**
@@ -53,8 +55,6 @@ router.post('/signup', validateSignup, AuthController.signupUser);
  *   post:
  *     summary: Авторизация Пользователя
  *     tags: [Authentication]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -78,7 +78,7 @@ router.post('/signup', validateSignup, AuthController.signupUser);
  *       401:
  *         description: Неверный логин или пароль.
  */
-router.post('/login', validateSignup, AuthController.loginUser);
+router.post('/login', validateAuth, AuthController.loginUser);
 
 // АКТИВАЦИЯ АКАУНТА. По ссылке в почту
 /**
@@ -106,7 +106,7 @@ router.get('/activate/:link', AuthController.activateUser);
 /**
  * @swagger
  * /auth/refresh:
- *   get:
+ *   post:
  *     summary: Обновление токена доступа
  *     tags: [Authentication]
  *     security:
@@ -117,7 +117,7 @@ router.get('/activate/:link', AuthController.activateUser);
  *       401:
  *         description: Невалидный токен обновления
  */
-router.get('/refresh', AuthController.refreshUser);
+router.post('/refresh', AuthController.refreshUser);
 
 // ПРОВЕРКА | auth
 router.get('/check', authMW, AuthController.checkUser);
@@ -129,6 +129,8 @@ router.get('/check', authMW, AuthController.checkUser);
  *   post:
  *     summary: Выход из системы
  *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Успешный выход
