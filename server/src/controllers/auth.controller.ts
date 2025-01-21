@@ -1,18 +1,16 @@
 // подкл. валидацию
-import { validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 
 // модели данных табл.
 import UserModel from '../models/UserModel';
 // services
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
+import BasketService from '../services/basket.service';
 import TokenService from '../services/token.service';
-import RoleService from '../services/role.service';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
-// выборка полей
-import TokenDto from '../dtos/token.dto';
 // парам.куки
 import { COOKIE_OPTIONS } from '../config/api/cookies';
 
@@ -22,7 +20,7 @@ class AuthController {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       const errorsValid = validationResult(req);
-      // е/и проверка не прошла(не пусто) - возвращ.Ответ на front смс ошб.(кастомизируем) + errors
+      // res на front смс с масс.ошб.
       if (!errorsValid.isEmpty()) {
         return next(
           ApiError.badRequest(
@@ -31,24 +29,37 @@ class AuthController {
           ),
         );
       }
-
       // получ.данн.из тела запроса
-      const { email, password } = req.body;
-      // передача данн.в fn для Service (возвращ.data - ссыл.актив, 2 токена, данн.польз., смс)
-      const userData = await AuthService.signupUser(email, password);
-
-      // сохр.в cookie refreshToken/basketId и возвращ. access
-      const { refreshToken, accessToken } = userData.tokens;
+      const { email, password, username } = req.body;
+      // передача данн.в сервис > возвращ. 2 токена, ID корзины, данн.Польз.
+      const userData = await AuthService.signupUser(email, password, username);
+      const { refreshToken } = userData.tokens;
+      // сохр.в cookie refreshToken/basketId и возвращ.данн.Пользователя
       res
         .cookie('refreshToken', refreshToken, COOKIE_OPTIONS.refreshToken)
         .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId)
         .status(201)
         .json({
-          message: 'Пользователь успешно зарегистрирован',
-          accessToken,
+          message:
+            'Регистрация пройдена. Проверьте эл.почту для активации учётной записи',
+          success: true,
+          data: {
+            user: {
+              id: userData.user.id,
+              email: userData.user.email,
+              name: userData.user.username,
+              isActivated: userData.user.isActivated,
+              roles: userData.user.roles,
+              levels: userData.user.levels,
+              // проверка перед добав. > опцион.типов
+              // ...(userData.user.roles && { roles: userData.user.roles }),
+              // приведение типа > опцион.типов
+              // role: (userData.user as User & Role).role,
+            },
+          },
         });
     } catch (error: unknown) {
-      // удаление user если успел созд.но ошибка
+      // при ошб. удал.нов.созд.user
       const { email } = req.body;
       const user = await UserModel.findOne({ where: { email } });
       if (user) {
@@ -64,21 +75,33 @@ class AuthController {
       // проверка вход.полей на валидацию
       const errorsValid = validationResult(req);
       if (!errorsValid.isEmpty()) {
-        throw ApiError.unprocessable('Некорректый Вход', errorsValid.array());
+        throw ApiError.unprocessable('Некорректный Вход', errorsValid.array());
       }
-
+      // получ.данн.из тела запроса
       const { email, password } = req.body;
-      // авторизация через сервис
+      // авторизация через сервис, получ.данн.
       const userData = await AuthService.loginUser(email, password);
-
-      // сохр.refreshToken/basketId в cookie и возвращ. accessToken и сост.активации
       const { refreshToken, accessToken } = userData.tokens;
-      const activated = userData.activated ?? false;
+      // сохр.refreshToken/basketId в cookie и возвращ. accessToken/данн.Пользователя
       res
         .cookie('refreshToken', refreshToken, COOKIE_OPTIONS.refreshToken)
         .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId)
         .status(200)
-        .json({ tokens: accessToken, activated });
+        .json({
+          success: true,
+          message: 'Успешный Вход',
+          data: {
+            accessToken: accessToken,
+            user: {
+              id: userData.user.id,
+              email: userData.user.email,
+              name: userData.user.username,
+              isActivated: userData.user.isActivated,
+              roles: userData.user.roles,
+              levels: userData.user.levels,
+            },
+          },
+        });
     } catch (error: unknown) {
       return next(error);
     }
@@ -93,7 +116,6 @@ class AuthController {
       // перенаправить на FRONT после перехода по ссылки
       return res.redirect(`${process.env.CLT_URL}/user`);
     } catch (error) {
-      // return next(ApiError.badRequest(`НЕ удалось АКТИВАВИРАВАТЬ - ${error}.`));
       return next(error);
     }
   }
@@ -111,8 +133,7 @@ class AuthController {
           COOKIE_OPTIONS.refreshToken,
         )
         .status(200)
-        .json(userData);
-      // return res.json(username, email); // ! ошб. в routes
+        .json({ accessToken: userData.tokens.accessToken });
     } catch (error) {
       return next(error);
     }
@@ -128,30 +149,22 @@ class AuthController {
       if (!user) {
         return next(ApiError.badRequest('Пользователь не найден'));
       }
-
-      // const activated = user.isActivated; // ! по TS
-      const activated = user.getDataValue('isActivated');
-      const userRoles = await RoleService.getOneUserRole(
-        user.getDataValue('id'),
-        'user',
+      // получ.масс.все Роли/уровни Пользователя
+      const userRoles = await AuthService.getAndTransformUserRolesAndLevels(
+        user.id,
       );
-      // опред.Роли User
-      let roleUs = userRoles.get('roleId') === 1 ? 'USER' : 'ADMIN';
-
-      // объ.перед.данн.> Роли > id/email/username/role/level
-      const tokenDto = new TokenDto({
-        id: user.getDataValue('id'),
-        email: user.getDataValue('email'),
-        username: user.getDataValue('username'),
-        role: roleUs,
-        level: userRoles.get('level'),
-      });
-
-      // созд./получ. 2 токена. email/role
-      const tokens = await TokenService.generateToken({ tokenDto });
-      if (!tokens) throw ApiError.badRequest(`Генерация токенов не прошла`);
-
-      res.status(200).json({ token: tokens.accessToken, activated });
+      // получ.basket_id
+      const basket = await BasketService.getOneBasket(null, user.id);
+      const tokenDto = await AuthService.createTokenDto(
+        user,
+        userRoles.roles,
+        userRoles.levels,
+        basket.id,
+      );
+      // созд./получ. 2 токена
+      const tokens = await TokenService.generateToken(tokenDto);
+      if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
+      res.status(200).json({ accessToken: tokens.accessToken });
     } catch (error: unknown) {
       return next(error);
     }
@@ -160,19 +173,60 @@ class AuthController {
   // ВЫХОД. Удал.Cookie.refreshToken
   async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
-      // получ refresh из cookie, передача в service, удал.обоих, возвращ.смс об удален.
-      const { refreshToken } = req.cookies;
+      // получ.refresh из cookie или заголовка, передача в service, удал.обоих, возвращ.смс об удален.
+      const refreshToken =
+        req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
       const { username, email } = req.body;
-
       await AuthService.logoutUser(refreshToken, username, email);
-
       res.clearCookie('refreshToken').json({ message: 'Вы вышли из системы' });
     } catch (error: unknown) {
-      return next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      return next(error);
+    }
+  }
+
+  // запрос на сброс пароля
+  async requestPasswordReset(req: Request, res: Response, next: NextFunction) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(ApiError.badRequest('Некорректные данные', errors.array()));
+    }
+    const { email } = req.body;
+    try {
+      await AuthService.sendPasswordResetEmail(email);
+      res
+        .status(200)
+        .json({ message: 'Инструкция для сброса отправлена на email' });
+    } catch (error: unknown) {
+      return next(error);
+    }
+  }
+
+  // обновление пароля
+  async completePasswordReset(req: Request, res: Response, next: NextFunction) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(ApiError.badRequest('Некорректные данные', errors.array()));
+    }
+    const token = req.params.token;
+    const password = req.body.password;
+    if (!token || !password) {
+      return next(ApiError.badRequest('Токен и новый пароль обязательны'));
+    }
+    try {
+      const { tokens } = await AuthService.resetPassword(token, password);
+      res
+        .cookie(
+          'refreshToken',
+          tokens.refreshToken,
+          COOKIE_OPTIONS.refreshToken,
+        )
+        .status(200)
+        .json({
+          message: 'Пароль успешно обновлен',
+          accessToken: tokens.accessToken,
+        });
+    } catch (error: unknown) {
+      return next(error);
     }
   }
 }

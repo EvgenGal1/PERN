@@ -139,6 +139,87 @@ router.post('/logout', AuthController.logoutUser);
 
 /**
  * @swagger
+ * /auth/reset-password:
+ *   post:
+ *     summary: Запрос на сброс пароля
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *                 description: Электронная почта Пользователя
+ *               password:
+ *                 type: string
+ *                 example: strong@Password123!
+ *                 description: Пароль Пользователя
+ *     responses:
+ *       200:
+ *         description: Ссылка для сброса пароля отправлена на почту
+ *       400:
+ *         description: Некорректные входные данные
+ */
+router.post(
+  '/reset-password',
+  validateAuth,
+  AuthController.requestPasswordReset,
+);
+
+/**
+ * @swagger
+ * /auth/reset-password/{token}:
+ *   patch:
+ *     summary: Обновление пароля
+ *     tags: [Authentication]
+ *     parameters:
+ *       - name: token
+ *         in: path
+ *         required: true
+ *         description: Токен для сброса пароля
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *                 description: Электронная почта Пользователя
+ *               password:
+ *                 type: string
+ *                 example: strong@Password123!
+ *                 description: Новый Пароль Пользователя
+ *     responses:
+ *       200:
+ *         description: Пароль успешно обновлен
+ *       400:
+ *         description: Некорректные входные данные
+ */
+router.patch(
+  '/reset-password/:token',
+  validateAuth,
+  AuthController.completePasswordReset,
+);
+
+/**
+ * @swagger
  * components:
  *   securitySchemes:
  *     bearerAuth:
