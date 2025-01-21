@@ -31,6 +31,7 @@
     "express-fileupload": "^1.4.0",
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^9.0.0",
+    "node-cache": "^5.1.2",
     "nodemailer": "^6.9.1",
     "notenv": "^2.0.3",
     "pg": "^8.8.0",
