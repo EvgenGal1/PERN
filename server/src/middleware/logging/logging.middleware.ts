@@ -72,9 +72,9 @@ export function requestLoggingMiddleware(
     }
     // лог.req
     logger.debug(
-      `Входящий запрос: ${HTTP_REQ}${Object.keys(requestData).length > 0 ? ` ${JSON.stringify(requestData)}` : ''}`,
+      `Входящий запрос: ${HTTP_REQ}${Object.keys(requestData).length > 0 ? ` ${JSON.stringify(requestData /*,null,2*/)}` : ''}`,
     );
-    // перехват res > лог.вр.выполн.req (перенесено в )
+    // перехват res > лог.вр.выполн.req (перенесено в responseLoggingMiddleware)
     // res.on('finish', () => {
     //   const duration = Date.now() - startTime;
     //   logger.debug(`ИсходящиЙ ОтвеТ: ${req.method} ${req.originalUrl} ~[${res.statusCode}] (${duration} мс)`);
@@ -128,7 +128,7 @@ export function responseLoggingMiddleware(
       }
       // лог.res
       logger.debug(
-        `Исходящий ответ: ${HTTP_RES}${responseData.body ? ` ${JSON.stringify(responseData)}` : ''}`,
+        `Исходящий ответ: ${HTTP_RES}${responseData.body ? ` ${JSON.stringify(responseData /*,null,2*/)}` : ''}`,
       );
       // отправка res ч/з вызов res.send
       return originalSend.call(this, body);
