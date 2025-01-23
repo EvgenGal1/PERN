@@ -1,107 +1,139 @@
 // от ошб.повтор.объяв.перем в блоке
 export {};
 
-// раб.с почтой
-const nodemailer = require('nodemailer');
+// serv.раб.с почтой
+import nodemailer, { Transporter } from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import AppError from '../middleware/errors/ApiError';
+import { MailOptions } from '../types/mail.interface';
+import ApiError from '../middleware/errors/ApiError';
 
 // ! врем.откл.в UserService > ошб. - Invalid login: 535-5.7.8 Username and Password not accepted | 535 5.7.8 Error: authentication failed: Invalid user or password
 class MailService {
-  transporter: any;
+  private transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
   // ч/з констр.инициализ.почтовый клиент
   constructor() {
+    // проверка перем.окруж.
+    const {
+      SMTP_HOST,
+      SMTP_PORT,
+      SMTP_USER,
+      SMTP_APP_PSW,
+      SMTP_SERVICE,
+      SMTP_SECURE,
+    } = process.env;
+    if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_APP_PSW) {
+      throw new Error(
+        'Почтовая конфигурация отсутствует. Проверьте переменные окружения.',
+      );
+    }
+
+    // Инициализация почтового клиента
     // отправка писем на почту ч/з fn с опц.
+    // Инициализация SMTP-транспортера
     this.transporter = nodemailer.createTransport({
       // ^ host - почт.сервис отправки, port - порт почт.сервис, service - почт.сервис обраб., secure`безопасный` для SSL, аунтетиф. - объ.со св-ми)
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      service: process.env.SMTP_SERVICE,
-      secure: process.env.SMTP_SECURE,
+      // ! здесь ошибка - Ни одна перегрузка не соответствует этому вызову. Последняя перегрузка возвратила следующую ошибку. Объектный литерал может использовать только известные свойства. "host" не существует в типе "TransportOptions | Transport<unknown, TransportOptions>".ts(2769) index.d.ts(70, 17): Здесь объявлена последняя перегрузка.
+      host: SMTP_HOST,
+      port: +SMTP_PORT,
+      secure: SMTP_SECURE === 'true', // конверт.в boolean. Используйте true для портов TLS/SSL(465)
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        user: SMTP_USER,
+        pass: SMTP_APP_PSW,
       },
     });
   }
 
-  // `Отправить смс/действие на Почту`(email,ссылка)
-  async sendActionMail(to: string, Link: string) {
-    const message =
-      'Привет, вы были отправлены мне по электронной почте через Nodemailer';
+  // основ.мтд.отправки писем
+  private async sendMail(options: MailOptions): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        // ^ from - адр.Отправителя, to - email Получателей, subject - тема смс, text - тескт смс, html - текст в HTML, attachments - файлы
+        from: `"EvGen Gal" <${process.env.SMTP_USER}>`,
+        to: options.to,
+        subject: options.subject,
+        text: options.text,
+        html: options.html,
+      });
+    } catch (error: unknown) {
+      throw ApiError.internal(
+        `Ошибка отправки письма: ${(error as Error).message}`,
+      );
+    }
+  }
 
-    const HTML_TEMPLATE = (text: string) => {
-      return `
+  // отправка письма для активации акка по ссылке
+  async sendActionMail(email: string, activationLink: string): Promise<void> {
+    const text =
+      'Привет, вы были отправлены мне по электронной почте через Nodemailer';
+    const subject = 'Активация аккаунта';
+    const html = this.generateHtmlTemplate(
+      'Активируйте ваш аккаунт',
+      `Для активации перейдите по ссылке: <a href="${activationLink}">${activationLink}</a>`,
+    );
+    await this.sendMail({ to: email, subject, text, html });
+  }
+
+  // отправка письма для сброса/обновления пароля
+  async sendPasswordResetEmail(
+    email: string,
+    resetLink: string,
+  ): Promise<void> {
+    const subject = 'Сброс пароля';
+    const html = this.generateHtmlTemplate(
+      'Сбросьте ваш пароль',
+      `Для сброса пароля перейдите по ссылке: <a href="${resetLink}">${resetLink}</a>`,
+    );
+    await this.sendMail({ to: email, subject, html });
+  }
+
+  // генер.HTML-шаблона письма
+  private generateHtmlTemplate(title: string, body: string): string {
+    return `
         <!DOCTYPE html>
         <html>
           <head>
             <meta charset="utf-8">
-            <title>NodeMailer Email Template</title>
+            <title>${title}</title>
             <style>
-              .container {
-                width: 100%;
-                height: 100%;
-                padding: 20px;
+              body {
+                font-family: Arial, sans-serif;
                 background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
               }
-              .email {
-                width: 80%;
-                margin: 0 auto;
-                background-color: #fff;
+              .container {
+                max-width: 600px;
+                margin: 20px auto;
+                background: #fff;
                 padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
               }
-              .email-header {
-                background-color: #333;
-                color: #fff;
-                padding: 20px;
-                text-align: center;
+              h1 {
+                color: #333;
               }
-              .email-body {
-                padding: 20px;
+              p {
+                color: #555;
               }
-              .email-footer {
-                background-color: #333;
-                color: #fff;
-                padding: 20px;
-                text-align: center;
+              a {
+                color: #007bff;
+                text-decoration: none;
+              }
+              a:hover {
+                text-decoration: underline;
               }
             </style>
           </head>
           <body>
             <div class="container">
-              <div class="email">
-                <div class="email-header">
-                  <h1>EMAIL HEADER</h1>
-                </div>
-                <div class="email-body">
-                  <h1>Для активации перейдите по ссылке</h1>
-                  <a href="${Link}">${Link}</a>
-                  <p>${text}</p>
-                </div>
-                <div class="email-footer">
-                  <p>EMAIL FOOTER</p>
-                </div>
-              </div>
+              <h1>${title}</h1>
+              <p>${body}</p>
             </div>
           </body>
         </html>
       `;
-    };
-
-    try {
-      await this.transporter.sendMail({
-        // ^ from - адр.Отправителя, to - email Получателей, subject - тема смс, text - тескт смс, html - текст в HTML, attachments - файлы
-        from: `"EvGen Gal " ${process.env.SMTP_USER}`,
-        to: to,
-        subject: 'Активация акуанта на ' + process.env.SRV_URL,
-        text: message,
-        html: HTML_TEMPLATE(message),
-      });
-    } catch (error: any) {
-      const errorMessage = error.message.split('\n')[0];
-      throw AppError.badRequest(`Письмо не отправилось на ${to}`, errorMessage);
-    }
   }
 }
 
