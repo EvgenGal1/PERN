@@ -8,7 +8,7 @@ import UserService from '../services/user.service';
 // мокает сервис > изоляц.от БД
 jest.mock('../services/user.service');
 
-describe('GET /user/getone/:id', () => {
+describe('GET /users/getone/:id', () => {
   // перед каждым тестом
   beforeEach(() => {
     jest.clearAllMocks(); // очистка моки
@@ -41,7 +41,7 @@ describe('GET /user/getone/:id', () => {
     (UserService.getOneUser as jest.Mock).mockResolvedValue(mockUser); // мокает успешный ответ getOneUser к jest.Mock
 
     const res = await request(app)
-      .get(`/${url}/user/getone/1`)
+      .get(`/${url}/users/getone/1`)
       .set('Authorization', `Bearer ${fakeToken}`) // + заголовок авторизации
       .set('Cache-Control', 'no-cache'); // + заголовок от кеширования
 
@@ -57,7 +57,7 @@ describe('GET /user/getone/:id', () => {
     (UserService.getOneUser as jest.Mock).mockResolvedValue(null); // мокает ответ что пользователя нет
 
     const res = await request(app)
-      .get(`/${url}/user/getone/${moreUser}`)
+      .get(`/${url}/users/getone/${moreUser}`)
       .set('Authorization', `Bearer ${fakeToken}`);
     expect(res.status).toEqual(404);
     expect(res.body).toEqual({
@@ -73,7 +73,7 @@ describe('GET /user/getone/:id', () => {
     ); // мокает ошибку сервиса
 
     const res = await request(app)
-      .get(`/${url}/user/getone/1`)
+      .get(`/${url}/users/getone/1`)
       .set('Authorization', `Bearer ${fakeToken}`);
 
     expect(res.status).toEqual(500);

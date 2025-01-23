@@ -16,12 +16,12 @@ import rating from './rating.routes';
 const router = express.Router();
 
 router.use('/auth', auth);
-router.use('/user', user);
-router.use('/category', category);
-router.use('/brand', brand);
-router.use('/product', product);
-router.use('/order', order);
-router.use('/basket', basket);
-router.use('/rating', rating);
+router.use('/users', user);
+router.use('/categories', category);
+router.use('/brands', brand);
+router.use('/products', product);
+router.use('/orders', order);
+router.use('/baskets', basket);
+router.use('/ratings', rating);
 
 export default router;

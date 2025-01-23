@@ -17,7 +17,7 @@ const router = express.Router();
 // ADMIN Пользователь
 /**
  * @swagger
- * /user/create:
+ * /users/create:
  *   post:
  *     summary: Создать нового пользователя
  *     tags: [Users]
@@ -52,7 +52,7 @@ router.post('/create', authMW, adminMW, UserController.createUser);
 // получить по id
 /**
  * @swagger
- * /user/getone/{id}:
+ * /users/getone/{id}:
  *   get:
  *     summary: Получить информацию о пользователе по ID
  *     tags: [Users]
@@ -77,7 +77,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, UserController.getOneUser);
 // получит всех пользователей
 /**
  * @swagger
- * /user/users:
+ * /users/users:
  *   get:
  *     summary: Получить список всех пользователей (только для администратора)
  *     tags: [Users]
@@ -95,7 +95,7 @@ router.get('/getall', authMW, adminMW, UserController.getAllUser);
 // обновить по id
 /**
  * @swagger
- * /user/update/{id}:
+ * /users/update/{id}:
  *   put:
  *     summary: Обновить данные пользователя
  *     tags: [Users]
@@ -134,7 +134,7 @@ router.put('/update/:id([0-9]+)', authMW, adminMW, UserController.updateUser);
 // удалить по id
 /**
  * @swagger
- * /user/delete/{id}:
+ * /users/delete/{id}:
  *   delete:
  *     summary: Удалить пользователя
  *     tags: [Users]

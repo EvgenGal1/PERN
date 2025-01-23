@@ -24,7 +24,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /order/create:
+ * /orders/create:
  *   post:
  *     summary: Создание нового заказа администратором
  *     tags: [Orders]
@@ -65,7 +65,7 @@ router.post('/create', authMW, adminMW, OrderController.createOrder);
 // получить заказ по id
 /**
  * @swagger
- * /order/getone/{id}:
+ * /orders/getone/{id}:
  *   get:
  *     summary: Получить заказ по ID
  *     tags: [Orders]
@@ -89,7 +89,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
 // получить список всех заказов магазина
 /**
  * @swagger
- * /order/getall:
+ * /orders/getall:
  *   get:
  *     summary: Получить список всех заказов
  *     tags: [Orders]
@@ -110,7 +110,7 @@ router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
 // обновить заказ
 /**
  * @swagger
- * /order/update/{id}:
+ * /orders/update/{id}:
  *   put:
  *     summary: Обновить заказ по ID
  *     tags: [Orders]
@@ -152,7 +152,7 @@ router.put('/update/:id([0-9]+)', authMW, adminMW, OrderController.updateOrder);
 // удалить заказ по id
 /**
  * @swagger
- * /order/delete/{id}:
+ * /orders/delete/{id}:
  *   delete:
  *     summary: Удалить заказ по ID
  *     tags: [Orders]
@@ -193,7 +193,7 @@ router.delete(
 // создать позицию заказа
 /**
  * @swagger
- * /order/{orderId}/item/create:
+ * /orders/{orderId}/item/create:
  *   post:
  *     summary: Создание позиции заказа
  *     tags: [OrderItems]
@@ -234,7 +234,7 @@ router.post(
 // одна позиция заказа
 /**
  * @swagger
- * /order/{orderId}/item/getone/{id}:
+ * /orders/{orderId}/item/getone/{id}:
  *   get:
  *     summary: Получить позицию заказа
  *     tags: [OrderItems]
@@ -266,7 +266,7 @@ router.get(
 // список позицый заказа
 /**
  * @swagger
- * /order/{orderId}/item/getall:
+ * /orders/{orderId}/item/getall:
  *   get:
  *     summary: Получить список позиций заказа
  *     tags: [OrderItems]
@@ -289,7 +289,7 @@ router.get(
 // обновить позицию заказа
 /**
  * @swagger
- * /order/{orderId}/item/update/{id}:
+ * /orders/{orderId}/item/update/{id}:
  *   put:
  *     summary: Обновить позицию заказа
  *     tags: [OrderItems]
@@ -339,7 +339,7 @@ router.put(
 // удалить позицию заказа
 /**
  * @swagger
- * /order/{orderId}/item/delete/{id}:
+ * /orders/{orderId}/item/delete/{id}:
  *   delete:
  *     summary: Удалить позицию заказа
  *     tags: [OrderItems]
@@ -380,7 +380,7 @@ router.delete(
 // создать новый заказ
 /**
  * @swagger
- * /order/user/create:
+ * /orders/user/create:
  *   post:
  *     summary: Создать новый заказ для авторизованного пользователя
  *     tags: [Orders]
@@ -412,7 +412,7 @@ router.post('/user/create', authMW, OrderController.createOrder);
 // получить один заказ пользователя
 /**
  * @swagger
- * /order/user/getone/{id}:
+ * /orders/user/getone/{id}:
  *   get:
  *     summary: Получить один заказ пользователя
  *     tags: [Orders]
@@ -436,7 +436,7 @@ router.get('/user/getone/:id([0-9]+)', authMW, OrderController.getOneOrder);
 // получить все заказы пользователя
 /**
  * @swagger
- * /order/user/getall:
+ * /orders/user/getall:
  *   get:
  *     summary: Получить все заказы пользователя
  *     tags: [Orders]
@@ -455,7 +455,7 @@ router.get('/user/getall', authMW, OrderController.getAllOrders);
 // создать новый заказ
 /**
  * @swagger
- * /order/guest/create:
+ * /orders/guest/create:
  *   post:
  *     summary: Создать новый заказ для неавторизованного пользователя
  *     tags: [Orders]

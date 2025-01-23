@@ -16,7 +16,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /rating/product/{productId}:
+ * /ratings/product/{productId}:
  *   get:
  *     summary: Получить рейтинг товара
  *     tags: [Ratings]
@@ -37,7 +37,7 @@ router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
 
 /**
  * @swagger
- * /rating/product/{productId}/rate/{rate}:
+ * /ratings/product/{productId}/rate/{rate}:
  *   post:
  *     summary: Добавить рейтинг для товара (требуются права администратора или модератора)
  *     tags: [Ratings]

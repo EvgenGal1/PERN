@@ -22,7 +22,7 @@ const router = express.Router();
 // создать товар каталога — нужны права администратора
 /**
  * @swagger
- * /product/create:
+ * /products/create:
  *   post:
  *     summary: Создать товар каталога (требуются права администратора)
  *     tags: [Products]
@@ -54,7 +54,7 @@ router.post('/create', authMW, adminMW, ProductController.createProduct);
 // получить один товар каталога
 /**
  * @swagger
- * /product/getone/{id}:
+ * /products/getone/{id}:
  *   get:
  *     summary: Получить один товар каталога
  *     tags: [Products]
@@ -76,7 +76,7 @@ router.get('/getone/:id([0-9]+)', ProductController.getOneProduct);
 // список всех товаров каталога
 /**
  * @swagger
- * /product/getall:
+ * /products/getall:
  *   get:
  *     summary: Получить список всех товаров каталога
  *     tags: [Products]
@@ -88,7 +88,7 @@ router.get('/getall', ProductController.getAllProduct);
 // обновить товар каталога  — нужны права администратора
 /**
  * @swagger
- * /product/update/{id}:
+ * /products/update/{id}:
  *   put:
  *     summary: Обновить товар каталога (требуются права администратора)
  *     tags: [Products]
@@ -129,7 +129,7 @@ router.put(
 // удалить товар каталога  — нужны права администратора
 /**
  * @swagger
- * /product/delete/{id}:
+ * /products/delete/{id}:
  *   delete:
  *     summary: Удалить товар каталога (требуются права администратора)
  *     tags: [Products]
@@ -156,11 +156,11 @@ router.delete(
   ProductController.deleteProduct,
 );
 
-// ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/product/getall/categoryId/3/brandId/4
+// ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/products/getall/categoryId/3/brandId/4
 // список товаров выбранной категории и выбранного бренда
 /**
  * @swagger
- * /product/getall/categoryId/{categoryId}/brandId/{brandId}:
+ * /products/getall/categoryId/{categoryId}/brandId/{brandId}:
  *   get:
  *     summary: Получить список товаров по категории и бренду
  *     tags: [Products]
@@ -190,7 +190,7 @@ router.get(
 // список товаров выбранной категории
 /**
  * @swagger
- * /product/getall/categoryId/{categoryId}:
+ * /products/getall/categoryId/{categoryId}:
  *   get:
  *     summary: Получить список товаров выбранной категории
  *     tags: [Products]
@@ -213,7 +213,7 @@ router.get(
 // список товаров выбранного бренда
 /**
  * @swagger
- * /product/getall/brandId/{brandId}:
+ * /products/getall/brandId/{brandId}:
  *   get:
  *     summary: Получить список товаров выбранного бренда
  *     tags: [Products]
@@ -248,7 +248,7 @@ router.get(
 // создать свойство товара
 /**
  * @swagger
- * /product/{productId}/property/create:
+ * /products/{productId}/property/create:
  *   post:
  *     summary: Создать свойство товара (требуются права администратора)
  *     tags: [Product Properties]
@@ -286,7 +286,7 @@ router.post(
 // одно свойство товара
 /**
  * @swagger
- * /product/{productId}/property/getone/{id}:
+ * /products/{productId}/property/getone/{id}:
  *   get:
  *     summary: Получить одно свойство товара
  *     tags: [Product Properties]
@@ -316,7 +316,7 @@ router.get(
 // список свойств товара
 /**
  * @swagger
- * /product/{productId}/property/getall:
+ * /products/{productId}/property/getall:
  *   get:
  *     summary: Получить список всех свойств товара
  *     tags: [Product Properties]
@@ -338,7 +338,7 @@ router.get(
 // обновить свойство товара
 /**
  * @swagger
- * /product/{productId}/property/update/{id}:
+ * /products/{productId}/property/update/{id}:
  *   put:
  *     summary: Обновить свойство товара (требуются права администратора)
  *     tags: [Product Properties]
@@ -382,7 +382,7 @@ router.put(
 // удалить свойство товара
 /**
  * @swagger
- * /product/{productId}/property/delete/{id}:
+ * /products/{productId}/property/delete/{id}:
  *   delete:
  *     summary: Удалить свойство товара (требуются права администратора)
  *     tags: [Product Properties]

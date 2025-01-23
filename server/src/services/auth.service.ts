@@ -258,7 +258,7 @@ class AuthService {
 
   // отправка на email инструкции по сбросу пароля
   async sendPasswordResetEmail(email: string) {
-    // проверки user/token
+    // проверки users/token
     const user = await UserModel.findOne({ where: { email } });
     if (!user) {
       throw ApiError.notFound(`Пользователь с Email <${email}> не найден`);
