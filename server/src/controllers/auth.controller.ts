@@ -15,28 +15,29 @@ import ApiError from '../middleware/errors/ApiError';
 import { COOKIE_OPTIONS } from '../config/api/cookies';
 
 class AuthController {
+  // проверка валидации
+  private validateRequest(req: Request) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw ApiError.badRequest('Некорректные данные', errors.array());
+    }
+  }
   // РЕГИСТРАЦИЯ
   async signupUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
-      const errorsValid = validationResult(req);
-      // res на front смс с масс.ошб.
-      if (!errorsValid.isEmpty()) {
-        return next(
-          ApiError.badRequest(
-            'Некорректые данные при Регистрации',
-            errorsValid.array(),
-          ),
-        );
-      }
+      this.validateRequest(req);
       // получ.данн.из тела запроса
       const { email, password, username } = req.body;
       // передача данн.в сервис > возвращ. 2 токена, ID корзины, данн.Польз.
       const userData = await AuthService.signupUser(email, password, username);
-      const { refreshToken } = userData.tokens;
       // сохр.в cookie refreshToken/basketId и возвращ.данн.Пользователя
       res
-        .cookie('refreshToken', refreshToken, COOKIE_OPTIONS.refreshToken)
+        .cookie(
+          'refreshToken',
+          userData.tokens.refreshToken,
+          COOKIE_OPTIONS.refreshToken,
+        )
         .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId)
         .status(201)
         .json({
@@ -65,7 +66,7 @@ class AuthController {
       if (user) {
         await UserService.deleteUser(user.getDataValue('id'));
       }
-      return next(error);
+      next(error);
     }
   }
 
@@ -73,25 +74,25 @@ class AuthController {
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию
-      const errorsValid = validationResult(req);
-      if (!errorsValid.isEmpty()) {
-        throw ApiError.unprocessable('Некорректный Вход', errorsValid.array());
-      }
+      this.validateRequest(req);
       // получ.данн.из тела запроса
       const { email, password } = req.body;
-      // авторизация через сервис, получ.данн.
+      // авторизация через сервис
       const userData = await AuthService.loginUser(email, password);
-      const { refreshToken, accessToken } = userData.tokens;
       // сохр.refreshToken/basketId в cookie и возвращ. accessToken/данн.Пользователя
       res
-        .cookie('refreshToken', refreshToken, COOKIE_OPTIONS.refreshToken)
+        .cookie(
+          'refreshToken',
+          userData.tokens.refreshToken,
+          COOKIE_OPTIONS.refreshToken,
+        )
         .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId)
         .status(200)
         .json({
           success: true,
           message: 'Успешный Вход',
           data: {
-            accessToken: accessToken,
+            accessToken: userData.tokens.accessToken,
             user: {
               id: userData.user.id,
               email: userData.user.email,
@@ -103,7 +104,7 @@ class AuthController {
           },
         });
     } catch (error: unknown) {
-      return next(error);
+      next(error);
     }
   }
 
@@ -115,8 +116,8 @@ class AuthController {
       await AuthService.activateUser(activationLink);
       // перенаправить на FRONT после перехода по ссылки
       return res.redirect(`${process.env.CLT_URL}/user`);
-    } catch (error) {
-      return next(error);
+    } catch (error: unknown) {
+      next(error);
     }
   }
 
@@ -134,8 +135,8 @@ class AuthController {
         )
         .status(200)
         .json({ accessToken: userData.tokens.accessToken });
-    } catch (error) {
-      return next(error);
+    } catch (error: unknown) {
+      next(error);
     }
   }
 
@@ -166,7 +167,7 @@ class AuthController {
       if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
       res.status(200).json({ accessToken: tokens.accessToken });
     } catch (error: unknown) {
-      return next(error);
+      next(error);
     }
   }
 
@@ -180,16 +181,13 @@ class AuthController {
       await AuthService.logoutUser(refreshToken, username, email);
       res.clearCookie('refreshToken').json({ message: 'Вы вышли из системы' });
     } catch (error: unknown) {
-      return next(error);
+      next(error);
     }
   }
 
   // запрос на сброс пароля
   async requestPasswordReset(req: Request, res: Response, next: NextFunction) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(ApiError.badRequest('Некорректные данные', errors.array()));
-    }
+    this.validateRequest(req);
     const { email } = req.body;
     try {
       await AuthService.sendPasswordResetEmail(email);
@@ -197,16 +195,13 @@ class AuthController {
         .status(200)
         .json({ message: 'Инструкция для сброса отправлена на email' });
     } catch (error: unknown) {
-      return next(error);
+      next(error);
     }
   }
 
   // обновление пароля
   async completePasswordReset(req: Request, res: Response, next: NextFunction) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(ApiError.badRequest('Некорректные данные', errors.array()));
-    }
+    this.validateRequest(req);
     const token = req.params.token;
     const password = req.body.password;
     if (!token || !password) {
@@ -226,7 +221,7 @@ class AuthController {
           accessToken: tokens.accessToken,
         });
     } catch (error: unknown) {
-      return next(error);
+      next(error);
     }
   }
 }
