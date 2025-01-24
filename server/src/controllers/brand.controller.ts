@@ -1,81 +1,67 @@
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from '../middleware/errors/ApiError';
 import BrandService from '../services/brand.service';
+import { parseId, validateName } from '../utils/validators';
 
 class BrandController {
+  constructor() {
+    // привязка мтд.к контексту клс.
+    this.getAllBrand = this.getAllBrand.bind(this);
+    this.getOneBrand = this.getOneBrand.bind(this);
+    this.createBrand = this.createBrand.bind(this);
+    this.updateBrand = this.updateBrand.bind(this);
+    this.deleteBrand = this.deleteBrand.bind(this);
+  }
+
+  private readonly name = 'Бренда';
+
+  async getOneBrand(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = parseId(req.params.id, this.name);
+      const brand = await BrandService.getOneBrand(id);
+      res.status(200).json(brand);
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+
   async getAllBrand(req: Request, res: Response, next: NextFunction) {
     try {
       const brands = await BrandService.getAllBrand();
       res.status(200).json(brands);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-
-  async getOneBrand(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (isNaN(+req.params.id))
-        throw new ApiError(400, 'Некорректный ID Бренда');
-      const brand = await BrandService.getOneBrand(+req.params.id);
-      res.status(200).json(brand);
-    } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async createBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name } = req.body;
-      if (!name || typeof name !== 'string')
-        throw new ApiError(400, 'Некорректное название Бренда');
+      const { name } = validateName(req.body, this.name);
       const brand = await BrandService.createBrand({ name });
       res.status(201).json(brand);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async updateBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isNaN(+req.params.id))
-        throw new ApiError(400, 'Некорректный ID Бренда');
-      if (!req.body.name) throw new ApiError(400, 'Нет названия Бренда');
-      const brand = await BrandService.updateBrand(+req.params.id, req.body);
+      const id = parseId(req.params.id, this.name);
+      const { name } = validateName(req.body, this.name);
+      const brand = await BrandService.updateBrand(id, { name });
       res.status(200).json(brand);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async deleteBrand(req: Request, res: Response, next: NextFunction) {
     try {
-      if (isNaN(+req.params.id))
-        throw new ApiError(400, 'Некорректный ID Бренда');
-      await BrandService.deleteBrand(+req.params.id);
+      const id = parseId(req.params.id, this.name);
+      await BrandService.deleteBrand(id);
       res.status(200).json({ message: 'Бренд успешно удален' });
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 }
