@@ -1,236 +1,114 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../middleware/errors/ApiError';
 import OrderService from '../services/order.service';
 import BasketService from '../services/basket.service';
 import UserService from '../services/user.service';
+import { parseId, validateData } from '../utils/validators';
+import ApiError from '../middleware/errors/ApiError';
 
 class OrderController {
-  // созд.admin`администратор`
-  adminCreateOrder = async (
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) => {
-    await this.createOrder(req, res, next, 'admin');
-  };
-  // созд.user`пользователь`
-  userCreateOrder = async (
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) => {
-    await this.createOrder(req, res, next, 'user');
-  };
-  // созд.guest`гость`
-  guestCreateOrder = async (
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) => {
-    await this.createOrder(req, res, next, 'guest');
-  };
+  constructor() {
+    // привязка мтд.к контексту клс.
+    this.getOneOrder = this.getOneOrder.bind(this);
+    this.getAllOrders = this.getAllOrders.bind(this);
+    this.createOrder = this.createOrder.bind(this);
+    this.updateOrder = this.updateOrder.bind(this);
+    this.deleteOrder = this.deleteOrder.bind(this);
+  }
 
-  // созд.общ.
-  async createOrder(
-    req: any /* Request */,
-    res: Response,
-    next: NextFunction,
-    type: string,
-  ) {
+  private readonly name = 'Заказа';
+  private readonly user = 'Пользователя';
+
+  async getOneOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, phone, address, comment = null } = req.body;
-      // данные для создания заказа
-      if (!name) throw new Error('Не указано имя покупателя');
-      if (!email) throw new Error('Не указан email покупателя');
-      if (!phone) throw new Error('Не указан телефон покупателя');
-      if (!address) throw new Error('Не указан адрес доставки');
+      // if (!req.auth?.id) throw ApiError.badRequest('Не указан ID Пользователя');
+      // const authId = parseId(req.auth?.id!, this.user);
+      const id = parseId(+req.params.id, this.name);
+      const isAdmin = req.auth?.role === 'ADMIN';
+      const userId = isAdmin ? undefined : req.auth?.id;
+      // по ID Заказа и Пользователя или Заказ > Admin
+      const order = await OrderService.getOneOrder(id, userId);
+      res.status(200).json(order);
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
 
-      let items,
-        userId = null;
-      if (type === 'admin') {
-        // когда заказ делает админ, id пользователя и состав заказа в теле запроса
-        if (!req.body.items) throw new Error('Не указан состав заказа');
-        if (req.body.items.length === 0)
-          throw new Error('Не указан состав заказа');
-        items = req.body.items;
-        // проверяем существование пользователя
-        userId = req.body.userId ?? null;
-        if (userId) {
-          await UserService.getOneUser(userId); // будет исключение, если не найден
-        }
-      } else {
-        // когда заказ делает обычный пользователь (авторизованный или нет), состав заказа получаем из корзины, а id пользователя из req.auth.id (если есть)
-        if (!req.signedCookies.basketId) {
-          throw new Error('Ваша корзина пуста');
-        }
-        const basket = await BasketService.getOneBasket(
-          parseInt(req.signedCookies.basketId),
-        );
-        if (basket.products.length === 0) {
-          throw new Error('Ваша корзина пуста');
-        }
-        items = basket.products;
-        userId = req.auth?.id ?? null;
+  async getAllOrders(req: Request, res: Response, next: NextFunction) {
+    try {
+      // if (!req.auth) throw ApiError.badRequest('Не указан ID Пользователя');
+      const isAdmin = req.auth?.role === 'ADMIN';
+      const userId = isAdmin ? undefined : req.auth?.id;
+      // все Заказы для Admin или по ID User
+      const orders = await OrderService.getAllOrders(userId);
+      res.status(200).json(orders);
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+  async createOrder(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, email, phone, address, comment = null, items } = req.body;
+      const { role, id: userId } = req.auth || {};
+      if (!userId) throw ApiError.badRequest('ID Пользователя не найден');
+      if (!name || !email || !phone || !address) {
+        throw ApiError.badRequest('Отсутствуют обязательные поля');
       }
 
-      // все готово, можно создавать
+      let orderItems = items;
+      if (role === 'ADMIN') {
+        // проверка на наличие items в теле запроса
+        if (!items || items.length === 0) {
+          throw ApiError.badRequest('Не указан Позиции Заказа');
+        }
+        // проверка существования Пользователя
+        if (userId) await UserService.getOneUser(userId);
+      } else if (role === 'USER' || role === 'GUEST') {
+        // получить позиции Заказа из Корзины
+        const basket = await BasketService.getOneBasket(
+          +req.signedCookies.basketId,
+        );
+        if (!basket?.products.length)
+          throw ApiError.badRequest('Корзина пуста');
+        orderItems = basket.products;
+      }
+
       const order = await OrderService.createOrder({
         name,
         email,
         phone,
         address,
         comment,
-        items,
+        items: orderItems,
         userId,
       });
+      if (role !== 'ADMIN')
+        await BasketService.clearBasket(+req.signedCookies.basketId);
 
-      // корзину теперь нужно очистить
-      await BasketService.clearBasket(parseInt(req.signedCookies.basketId));
-      res.json(order);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      res.status(201).json(order);
+    } catch (error) {
+      next(error);
     }
   }
-
-  // ADMIN ord
-  async adminGetOneOrder(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id заказа');
-      }
-      const order = await OrderService.getOneOrder(Number(req.params.id));
-      res.json(order);
+      const id = parseId(req.params.id, this.name);
+      validateData(req.body, this.name);
+      const updatedOrder = await OrderService.updateOrder(id, req.body);
+      res.status(200).json(updatedOrder);
     } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
-  async adminGetOrder(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
+  async deleteOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id пользователя');
-      }
-      const order = await OrderService.getAllOrder(req.params.id);
-      res.json(order);
+      // if (!req.params.id) throw ApiError.badRequest('Не указан ID Заказа');
+      const id = parseId(req.params.id, this.name);
+      if (!req.auth?.id) throw ApiError.badRequest('Не указан ID Пользователя');
+      const order = await OrderService.deleteOrder(id);
+      res.status(200).json(order);
     } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-  async adminGetAllOrder(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
-    try {
-      OrderController;
-      const orders = await OrderService.getAllOrder();
-      res.json(orders);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-  async adminUpdateOrder(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!req.params.id) {
-        throw new Error('Не указан id заказа');
-      }
-      if (Object.keys(req.body).length === 0) {
-        throw new Error('Нет данных для обновления');
-      }
-      // if (!req.body.name) {
-      //   throw new Error("Нет названия заказа");
-      // }
-      const order = await OrderService.updateOrder(req.params.id, req.body);
-      res.json(order);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-  async adminDeleteOrder(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
-    try {
-      if (!req.params.id) {
-        throw new Error('Не указан id заказа');
-      }
-      const order = await OrderService.deleteOrder(req.params.id);
-      res.json(order);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-
-  // USER ord
-  async userGetAllOrder(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
-    try {
-      const orders = await OrderService.getAllOrder(req.auth.id);
-      res.json(orders);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
-  }
-  async userGetOneOrder(
-    req: any /* Request */,
-    res: any /* Response */,
-    next: NextFunction,
-  ) {
-    try {
-      if (!req.params.id) {
-        throw new Error('Не указан id заказа');
-      }
-      const order = await OrderService.getOneOrder(
-        Number(req.params.id),
-        Number(req.auth.id),
-      );
-      res.json(order);
-    } catch (error: unknown) {
-      next(
-        AppError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 }
