@@ -1,53 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from '../middleware/errors/ApiError';
 import ProductService from '../services/product.service';
+import { parseId, validateData, parseQueryParam } from '../utils/validators';
 
 class ProductController {
-  async getAllProduct(
-    req: any /* Request */ /* // ! от ошб.number не может назнач... для string */,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const { categoryId = null, brandId = null } = req.params;
-      let {
-        categoryId_q = null,
-        brandId_q = null,
-        limit = null,
-        page = null,
-        sortOrd = null,
-        sortField = null,
-      } = req.query;
-
-      limit =
-        limit && /[0-9]+/.test(limit) && parseInt(limit) && limit > 0
-          ? parseInt(limit)
-          : 20;
-      page = page && /[0-9]+/.test(page) && parseInt(page) ? parseInt(page) : 1;
-      sortOrd = sortOrd === null || sortOrd === 'ASC' ? 'ASC' : 'DESC';
-
-      const options = {
-        categoryId,
-        categoryId_q,
-        brandId,
-        brandId_q,
-        limit,
-        page,
-        sortOrd,
-        sortField,
-      };
-      const products = await ProductService.getAllProduct(options);
-
-      res.json(products);
-    } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
+  constructor() {
+    this.getAllProduct = this.getAllProduct.bind(this);
+    this.getOneProduct = this.getOneProduct.bind(this);
+    this.createProduct = this.createProduct.bind(this);
+    this.updateProduct = this.updateProduct.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
   }
+
+  private readonly name = 'Товара';
 
   async getOneProduct(
     req: Request,
@@ -55,17 +20,35 @@ class ProductController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id товара');
-      }
-      const product = await ProductService.getOneProduct(Number(req.params.id));
-      res.json(product);
+      const id = parseId(req.params.id, this.name);
+      const product = await ProductService.getOneProduct(id);
+      res.status(200).json(product);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
+    }
+  }
+
+  async getAllProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { categoryId, brandId } = req.params;
+      const { limit, page, sortOrd, sortField } = req.query;
+      const options = {
+        categoryId: categoryId ? Number(categoryId) : null,
+        brandId: brandId ? Number(brandId) : null,
+        limit: parseQueryParam(limit, 20, 'limit'),
+        page: parseQueryParam(page, 1, 'page'),
+        sortOrd: sortOrd === 'ASC' || sortOrd === 'DESC' ? sortOrd : 'ASC',
+        sortField: sortField || null,
+      };
+      const products = await ProductService.getAllProduct(options);
+
+      res.status(200).json(products);
+    } catch (error: unknown) {
+      next(error);
     }
   }
 
@@ -75,20 +58,14 @@ class ProductController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      if (Object.keys(req.body).length === 0) {
-        throw new Error('Нет данных для создания');
-      }
+      validateData(req.body, this.name);
       const product = await ProductService.createProduct(
         req.body,
         req.files?.image,
       );
-      res.json(product);
+      res.status(201).json(product);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
@@ -98,24 +75,16 @@ class ProductController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id товара');
-      }
-      if (Object.keys(req.body).length === 0) {
-        throw new Error('Нет данных для обновления');
-      }
+      const id = parseId(req.params.id, this.name);
+      validateData(req.body, this.name);
       const product = await ProductService.updateProduct(
-        req.params.id,
+        id,
         req.body,
         req.files?.image,
       );
-      res.json(product);
+      res.status(200).json(product);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
@@ -125,17 +94,14 @@ class ProductController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id товара');
-      }
-      const product = await ProductService.deleteProduct(req.params.id);
-      res.json(product);
+      const id = parseId(req.params.id, this.name);
+      const product = await ProductService.deleteProduct(id);
+      res.status(204).json({
+        message: 'Товар успешно удален',
+        data: product,
+      });
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 }

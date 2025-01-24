@@ -1,117 +1,90 @@
-// ^ controller для свойств товара
+// ^ controller Свойств Товара
+
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from '../middleware/errors/ApiError';
 import ProductPropService from '../services/productProp.service';
+import { parseId, validateData } from '../utils/validators';
 
 class ProductPropController {
-  async getAllProdProp(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!req.params.productId) {
-        throw new Error('Не указан id товара');
-      }
-      const properties = await ProductPropService.getAllProdProp(
-        +req.params.productId,
-      );
-      res.json(properties);
-    } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
+  constructor() {
+    this.getAllProdProp = this.getAllProdProp.bind(this);
+    this.getOneProdProp = this.getOneProdProp.bind(this);
+    this.createProdProp = this.createProdProp.bind(this);
+    this.updateProdProp = this.updateProdProp.bind(this);
+    this.deleteProdProp = this.deleteProdProp.bind(this);
   }
+
+  private readonly name = 'Товара';
+  private readonly prop = 'Свойств Товара';
 
   async getOneProdProp(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
-        throw new Error('Не указан id товара');
-      }
-      if (!req.params.id) {
-        throw new Error('Не указано id свойства');
-      }
+      const productId = parseId(req.params.productId, this.name);
+      const propId = parseId(req.params.id, this.prop);
       const property = await ProductPropService.getOneProdProp(
-        +req.params.productId,
-        +req.params.id,
+        productId,
+        propId,
       );
-      res.json(property);
+      res.status(200).json(property);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
+    }
+  }
+
+  async getAllProdProp(req: Request, res: Response, next: NextFunction) {
+    try {
+      const productId = parseId(req.params.productId, this.name);
+      const properties = await ProductPropService.getAllProdProp(productId);
+      res.status(200).json(properties);
+    } catch (error: unknown) {
+      next(error);
     }
   }
 
   async createProdProp(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
-        throw new Error('Не указан id товара');
-      }
-      if (Object.keys(req.body).length === 0) {
-        throw new Error('Нет данных для создания');
-      }
+      const productId = parseId(req.params.productId, this.name);
+      validateData(req.body, this.prop);
       const property = await ProductPropService.createProdProp(
-        +req.params.productId,
+        productId,
         req.body,
       );
-      res.json(property);
+      res.status(201).json(property);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async updateProdProp(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
-        throw new Error('Не указан id товара');
-      }
-      if (!req.params.id) {
-        throw new Error('Не указано id свойства');
-      }
-      if (Object.keys(req.body).length === 0) {
-        throw new Error('Нет данных для обновления');
-      }
+      const productId = parseId(req.params.productId, this.name);
+      const propId = parseId(req.params.id, this.prop);
+      validateData(req.body, this.prop);
       const property = await ProductPropService.updateProdProp(
-        +req.params.productId,
-        +req.params.id,
+        productId,
+        propId,
         req.body,
       );
-      res.json(property);
+      res.status(200).json(property);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async deleteProdProp(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.productId) {
-        throw new Error('Не указан id товара');
-      }
-      if (!req.params.id) {
-        throw new Error('Не указано id свойства');
-      }
+      const productId = parseId(req.params.productId, this.name);
+      const propId = parseId(req.params.id, this.prop);
       const property = await ProductPropService.deleteProdProp(
-        +req.params.productId,
-        req.params.id,
+        productId,
+        propId,
       );
-      res.json(property);
+      res.status(204).json({
+        message: 'Свойство успешно удалено',
+        data: property,
+      });
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 }
