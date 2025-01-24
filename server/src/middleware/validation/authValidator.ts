@@ -1,3 +1,5 @@
+// ^ спец.настр.валидации > eml/psw
+
 import { body } from 'express-validator';
 
 export const validateAuth = [
