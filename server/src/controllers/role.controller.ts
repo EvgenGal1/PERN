@@ -1,80 +1,67 @@
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from '../middleware/errors/ApiError';
 import RoleService from '../services/role.service';
+import { parseId, validateName, validateData } from '../utils/validators';
 
 class RoleController {
-  async getAllRole(req: Request, res: Response, next: NextFunction) {
-    try {
-      const roles = await RoleService.getAllRole();
-      res.json(roles);
-    } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
-    }
+  constructor() {
+    // Привязка методов к контексту класса
+    this.getAllRole = this.getAllRole.bind(this);
+    this.getOneRole = this.getOneRole.bind(this);
+    this.createRole = this.createRole.bind(this);
+    this.updateRole = this.updateRole.bind(this);
+    this.deleteRole = this.deleteRole.bind(this);
   }
+
+  private readonly name = 'Роли';
 
   async getOneRole(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Роли');
-      }
-      const role = await RoleService.getOneRole(+req.params.id);
-      res.json(role);
+      const id = parseId(req.params.id, this.name);
+      const role = await RoleService.getOneRole(id);
+      res.status(200).json(role);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
+    }
+  }
+
+  async getAllRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      const roles = await RoleService.getAllRole();
+      res.status(200).json(roles);
+    } catch (error: unknown) {
+      next(error);
     }
   }
 
   async createRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const role = await RoleService.createRole(req.body);
-      res.json(role);
+      const { name } = validateName(req.body, this.name);
+      const role = await RoleService.createRole({ name });
+      res.status(201).json(role);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async updateRole(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Роли');
-      }
-      const role = await RoleService.updateRole(+req.params.id, req.body);
-      res.json(role);
+      const id = parseId(req.params.id, this.name);
+      validateData(req.body, this.name);
+      const role = await RoleService.updateRole(id, req.body);
+      res.status(200).json(role);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 
   async deleteRole(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        throw new Error('Не указан id Роли');
-      }
-      const role = await RoleService.deleteRole(+req.params.id);
-      res.json(role);
+      const id = parseId(req.params.id, this.name);
+      const role = await RoleService.deleteRole(id);
+      res.status(200).json(role);
     } catch (error: unknown) {
-      next(
-        ApiError.badRequest(
-          error instanceof Error ? error.message : 'Неизвестная ошибка',
-        ),
-      );
+      next(error);
     }
   }
 }
