@@ -1,5 +1,4 @@
 import { BasketResponse } from './basket.interface';
-
 export interface JwtToken {
   accessToken: string;
   refreshToken: string;
@@ -37,7 +36,7 @@ export interface User {
   isActivated: boolean;
 }
 
-export interface Role {
+export interface RoleLevels {
   role: string;
   level: number;
 }
@@ -47,8 +46,7 @@ export interface UserRoles {
   email: string;
   username: string;
   isActivated: boolean;
-  roles?: string[];
-  levels?: number[];
+  roles?: RoleLevels[];
 }
 
 // объедин.три типа
