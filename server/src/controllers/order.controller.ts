@@ -4,6 +4,7 @@ import OrderService from '../services/order.service';
 import BasketService from '../services/basket.service';
 import UserService from '../services/user.service';
 import { parseId, validateData } from '../utils/validators';
+import { NameUserRoles } from '../config/constants/roles';
 import ApiError from '../middleware/errors/ApiError';
 
 class OrderController {
@@ -24,7 +25,7 @@ class OrderController {
       // if (!req.auth?.id) throw ApiError.badRequest('Не указан ID Пользователя');
       // const authId = parseId(req.auth?.id!, this.user);
       const id = parseId(+req.params.id, this.name);
-      const isAdmin = req.auth?.role === 'ADMIN';
+      const isAdmin = req.auth?.role === NameUserRoles.ADMIN;
       const userId = isAdmin ? undefined : req.auth?.id;
       // по ID Заказа и Пользователя или Заказ > Admin
       const order = await OrderService.getOneOrder(id, userId);
@@ -37,7 +38,7 @@ class OrderController {
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
     try {
       // if (!req.auth) throw ApiError.badRequest('Не указан ID Пользователя');
-      const isAdmin = req.auth?.role === 'ADMIN';
+      const isAdmin = req.auth?.role === NameUserRoles.ADMIN;
       const userId = isAdmin ? undefined : req.auth?.id;
       // все Заказы для Admin или по ID User
       const orders = await OrderService.getAllOrders(userId);
@@ -56,14 +57,14 @@ class OrderController {
       }
 
       let orderItems = items;
-      if (role === 'ADMIN') {
+      if (role === NameUserRoles.ADMIN) {
         // проверка на наличие items в теле запроса
         if (!items || items.length === 0) {
           throw ApiError.badRequest('Не указан Позиции Заказа');
         }
         // проверка существования Пользователя
         if (userId) await UserService.getOneUser(userId);
-      } else if (role === 'USER' || role === 'GUEST') {
+      } else if (role === NameUserRoles.USER || role === NameUserRoles.GUEST) {
         // получить позиции Заказа из Корзины
         const basket = await BasketService.getOneBasket(
           +req.signedCookies.basketId,
@@ -82,7 +83,7 @@ class OrderController {
         items: orderItems,
         userId,
       });
-      if (role !== 'ADMIN')
+      if (role !== NameUserRoles.ADMIN)
         await BasketService.clearBasket(+req.signedCookies.basketId);
 
       res.status(201).json(order);

@@ -2,11 +2,12 @@
 
 import { Request, Response, NextFunction } from 'express';
 
+import { NameUserRoles } from '../../config/constants/roles';
 import ApiError from '../errors/ApiError';
 
 const adminMW = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    if (!req.auth || req.auth?.role !== 'ADMIN') {
+    if (!req.auth || req.auth?.role !== NameUserRoles.ADMIN) {
       throw ApiError.forbidden('Только для администратора');
     }
     next();

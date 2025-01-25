@@ -4,6 +4,7 @@ import authMW from '../middleware/auth/authMiddleware';
 import adminMW from '../middleware/auth/adminMiddleware';
 import roleMW from '../middleware/auth/roleMiddleware';
 import RatingController from '../controllers/rating.controller';
+import { NameUserRoles } from '../config/constants/roles';
 
 const router = express.Router();
 
@@ -67,7 +68,7 @@ router.post(
   '/product/:productId([0-9]+)/rate/:rate([1-5])',
   authMW,
   adminMW,
-  roleMW(['SUPER', 'ADMIN', 'MODER']),
+  roleMW([NameUserRoles.SUPER, NameUserRoles.ADMIN, NameUserRoles.MODER]),
   RatingController.createRating,
 );
 

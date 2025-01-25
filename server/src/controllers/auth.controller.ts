@@ -7,6 +7,7 @@ import UserModel from '../models/UserModel';
 // services
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
+import RoleService from '../services/role.service';
 import BasketService from '../services/basket.service';
 import TokenService from '../services/token.service';
 // обраб.ошб.
@@ -16,7 +17,7 @@ import { COOKIE_OPTIONS } from '../config/api/cookies';
 
 class AuthController {
   // проверка валидации
-  private validateRequest(req: Request) {
+  private static async validateRequest(req: Request) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       throw ApiError.badRequest('Некорректные данные', errors.array());
@@ -26,7 +27,7 @@ class AuthController {
   async signupUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
-      this.validateRequest(req);
+      await AuthController.validateRequest(req);
       // получ.данн.из тела запроса
       const { email, password, username } = req.body;
       // передача данн.в сервис > возвращ. 2 токена, ID корзины, данн.Польз.
@@ -51,7 +52,9 @@ class AuthController {
               name: userData.user.username,
               isActivated: userData.user.isActivated,
               roles: userData.user.roles,
-              levels: userData.user.levels,
+              // по отдел.
+              // roles: userData.user.roles,
+              // levels: userData.user.levels,
               // проверка перед добав. > опцион.типов
               // ...(userData.user.roles && { roles: userData.user.roles }),
               // приведение типа > опцион.типов
@@ -74,7 +77,7 @@ class AuthController {
   async loginUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию
-      this.validateRequest(req);
+      AuthController.validateRequest(req);
       // получ.данн.из тела запроса
       const { email, password } = req.body;
       // авторизация через сервис
@@ -99,7 +102,8 @@ class AuthController {
               name: userData.user.username,
               isActivated: userData.user.isActivated,
               roles: userData.user.roles,
-              levels: userData.user.levels,
+              // roles: userData.user.roles,
+              // levels: userData.user.levels,
             },
           },
         });
@@ -151,15 +155,13 @@ class AuthController {
         return next(ApiError.badRequest('Пользователь не найден'));
       }
       // получ.масс.все Роли/уровни Пользователя
-      const userRoles = await AuthService.getAndTransformUserRolesAndLevels(
-        user.id,
-      );
+      const userRoles = await RoleService.getUserRolesWithDetails(user.id);
       // получ.basket_id
       const basket = await BasketService.getOneBasket(null, user.id);
       const tokenDto = await AuthService.createTokenDto(
         user,
-        userRoles.roles,
-        userRoles.levels,
+        userRoles.map((rol) => rol.role),
+        userRoles.map((rol) => rol.level),
         basket.id,
       );
       // созд./получ. 2 токена
@@ -177,8 +179,7 @@ class AuthController {
       // получ.refresh из cookie или заголовка, передача в service, удал.обоих, возвращ.смс об удален.
       const refreshToken =
         req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
-      const { username, email } = req.body;
-      await AuthService.logoutUser(refreshToken, username, email);
+      await AuthService.logoutUser(refreshToken);
       res.clearCookie('refreshToken').json({ message: 'Вы вышли из системы' });
     } catch (error: unknown) {
       next(error);
@@ -187,7 +188,7 @@ class AuthController {
 
   // запрос на сброс пароля
   async requestPasswordReset(req: Request, res: Response, next: NextFunction) {
-    this.validateRequest(req);
+    AuthController.validateRequest(req);
     const { email } = req.body;
     try {
       await AuthService.sendPasswordResetEmail(email);
@@ -201,7 +202,7 @@ class AuthController {
 
   // обновление пароля
   async completePasswordReset(req: Request, res: Response, next: NextFunction) {
-    this.validateRequest(req);
+    AuthController.validateRequest(req);
     const token = req.params.token;
     const password = req.body.password;
     if (!token || !password) {

@@ -3,10 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 
 // services
 import UserService from '../services/user.service';
+// валид.данн.req
+import { parseId, validateData } from '../utils/validators';
+// перем. Ролей/уровней
+import { NameUserRoles } from '../config/constants/roles';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
-// валид.данн.req
-import { parseId, validateName, validateData } from '../utils/validators';
 
 class UserController {
   constructor() {
@@ -50,11 +52,11 @@ class UserController {
   ): Promise<void> {
     try {
       validateData(req.body, this.name);
-      const { email, password, role = 'USER' } = req.body;
+      const { email, password, role = NameUserRoles.USER } = req.body;
       if (!email || !password) {
         throw ApiError.badRequest('Email и пароль обязательны');
       }
-      if (!['USER', 'ADMIN'].includes(role)) {
+      if (![NameUserRoles.USER, NameUserRoles.ADMIN].includes(role)) {
         throw ApiError.badRequest('Недопустимое значение роли');
       }
       const user = await UserService.createUser({
@@ -73,7 +75,7 @@ class UserController {
       const id = parseId(req.params.id, this.name);
       validateData(req.body, this.name);
       const { email, password, role } = req.body;
-      if (role && !['USER', 'ADMIN'].includes(role)) {
+      if (role && ![NameUserRoles.USER, NameUserRoles.ADMIN].includes(role)) {
         throw ApiError.badRequest('Недопустимое значение роли');
       }
       const user = await UserService.updateUser(id, { email, password, role });
