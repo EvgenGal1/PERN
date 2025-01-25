@@ -22,21 +22,7 @@ const sequelize = new Sequelize(
     define: {
       underscored: true, // вкл. snake_case вместо camelCase > назв.полей БД
       timestamps: true, // вкл.поля created_at и updated_at
-      // createdAt: 'created_at', // имя `created_at`
-      // updatedAt: 'updated_at', // имя `updated_at`
-      // updatedAt: {  // ! не раб.
-      //   type: DataTypes.DATE,
-      //   allowNull: true,
-      // },
-      // глобал.хук > настр.опционал. updatedAt // ! не раб.
-      hooks: {
-        beforeFind(attributes: any) {
-          // console.log('attributes : ', attributes);
-          if (attributes./* updatedAt */ updated_at) {
-            attributes./* updatedAt */ updated_at.allowNull = true;
-          }
-        },
-      },
+      freezeTableName: true, // откл.авто.добав.множ-го числа
     },
     logging: false, // false - без лог.записей
     timezone: 'Europe/Moscow',
