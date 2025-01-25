@@ -21,6 +21,7 @@ class RoleModel extends Model<
     RoleModel.belongsToMany(models.UserModel, {
       through: models.UserRoleModel,
       foreignKey: 'roleId', // указ.внешн.ключ
+      as: 'users',
       otherKey: 'userId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });

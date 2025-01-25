@@ -18,9 +18,9 @@ class TokenModel extends Model<
   declare userId: number;
   declare basketId: number;
   declare refreshToken: string;
-  declare refreshTokenExpires: Date;
-  declare resetToken?: CreationOptional<string>;
-  declare resetTokenExpires?: Date;
+  declare refreshTokenExpires: Date | null;
+  declare resetToken: string | null;
+  declare resetTokenExpires: Date | null;
 
   // мтд.устан.связей м/у моделями
   static associate(models: Models) {

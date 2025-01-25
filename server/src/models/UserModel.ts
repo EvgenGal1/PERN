@@ -6,6 +6,7 @@ import {
   CreationOptional,
   Sequelize,
 } from 'sequelize';
+import { Scopes } from 'sequelize-typescript';
 
 import RoleModel from './RoleModel';
 import TokenModel from './TokenModel';
@@ -15,6 +16,8 @@ import OrderModel from './OrderModel';
 import UserRoleModel from './UserRoleModel';
 import { Models } from '../types/models.interfaсe';
 
+// настр. > отдел.вкл.в req
+@Scopes(() => ({ withPassword: { attributes: { include: ['password'] } } }))
 class UserModel extends Model<
   InferAttributes<UserModel>,
   InferCreationAttributes<UserModel>
@@ -44,6 +47,7 @@ class UserModel extends Model<
     UserModel.belongsToMany(models.RoleModel, {
       through: models.UserRoleModel,
       foreignKey: 'userId', // указ.внешн.ключ
+      as: 'roles', // уник.имя ассоциаций
       otherKey: 'roleId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });
@@ -107,7 +111,12 @@ class UserModel extends Model<
       {
         sequelize,
         tableName: 'users',
+        // исключ.из всей выборки
+        defaultScope: { attributes: { exclude: ['password'] } },
+        // отдел.вкл.в выборку
+        scopes: { withPassword: { attributes: { include: ['password'] } } },
         hooks: {
+          // преднастр.пуст.имени
           beforeCreate: async (user) => {
             if (!user.username) {
               user.username = `User__${user.email.split('@')[0]}-${user.email.slice(user.email.lastIndexOf('.') + 1)}`;
@@ -116,7 +125,6 @@ class UserModel extends Model<
         },
       },
     );
-    // console.log('UserModel инициализирован.');
   }
 }
 
