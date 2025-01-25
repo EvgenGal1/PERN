@@ -1,3 +1,5 @@
+// вкл.операторы > сложн.req
+import { Op } from 'sequelize';
 // подкл. библ. для шифрование пароля нов.польз.
 import bcrypt from 'bcrypt';
 // подкл.генир.уник.рандом.id
@@ -15,98 +17,75 @@ import MailService from './mail.service';
 // утилиты/helpы
 import DatabaseUtils from '../utils/database.utils';
 // type/dto
-import { AuthCombinedType, TokenDto } from '../types/auth.interface';
+import { AuthCombinedType, TokenDto, Tokens } from '../types/auth.interface';
+// конст.знач.
+import { NameUserRoles } from '../config/constants/roles';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
 class AuthService {
   // уровень хеширования
-  private readonly saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
-
-  // хэширование пароля
+  private readonly saltRounds = Number(process.env.SALT_ROUNDS) || 10;
+  private readonly resetTokenBytes = 32;
+  // хэширование пароля (синхрон bcrypt)
   private async hashPassword(password: string): Promise<string> {
-    return await bcrypt.hash(password, this.saltRounds);
+    return bcrypt.hash(password, this.saltRounds);
   }
-
-  // сравнение паролей
+  // сравнение паролей (синхрон bcrypt)
   private async comparePasswords(
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
-    return await bcrypt.compare(password, hashedPassword);
+    return bcrypt.compare(password, hashedPassword);
   }
-
+  // генер.ссылки активации акка
+  private generateActivationLink(token: string): string {
+    return `${process.env.SRV_URL}/${process.env.SRV_NAME}/auth/activate/${token}`;
+  }
   // унифиц.парам.Токена
   async createTokenDto(
-    user: any,
+    user: UserModel,
     roles: string[],
     levels: number[],
-    basket: number,
+    basketId: number,
   ): Promise<TokenDto> {
     return {
       id: user.id,
       email: user.email,
-      username: user.username,
+      username: user.username || '',
       roles,
       levels,
-      basket,
+      basket: basketId,
     };
   }
-
-  // генер.Токена > сброса пароля
-  private async processingResetToken(token?: string): Promise<{
-    resetToken: string;
-    hashedToken: string;
-  }> {
-    const resetToken = token || crypto.randomBytes(32).toString('hex'); // оригин.Токен
-    const hashedToken = crypto
-      .createHash('sha256')
-      .update(resetToken)
-      .digest('hex'); // хэшир.Токен
-    return { resetToken, hashedToken };
+  // генер.Токена (синхрон crypto)
+  private generateResetToken(): string {
+    return crypto.randomBytes(this.resetTokenBytes).toString('hex');
   }
-
-  // получить и преобразов.все Роли/уровни Пользователя
-  async getAndTransformUserRolesAndLevels(
-    userId: number,
-  ): Promise<{ roles: string[]; levels: number[] }> {
-    const userRoles = await RoleService.getAllUserRoles(userId);
-    // объ.привязки roleId к именам
-    const roleMap: Record<number, string> = {
-      1: 'USER',
-      2: 'ADMIN',
-      3: 'MODER',
-      4: 'MELOMAN',
-      5: 'VISUAL',
-    };
-    // перебор в масс. role(ч/з объ.)/level (сразу)
-    const roles = userRoles.map((userRole) => roleMap[userRole.roleId]);
-    const levels = userRoles.map((userRole) => userRole.level);
-    // возвр.объ.масс.
-    return { roles, levels };
+  // хеширование строки (синхрон crypto)
+  private hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
   }
 
   // РЕГИСТРАЦИЯ
   async signupUser(
     email: string,
     password: string,
-    username: string = '',
-    role: string = 'USER',
+    username = '',
+    role: NameUserRoles = NameUserRoles.USER,
   ): Promise<AuthCombinedType> {
     const existingUser = await UserModel.findOne({ where: { email } });
     if (existingUser) {
-      throw ApiError.badRequest(
-        `Пользователь с Email <${email}> уже существует`,
-      );
+      throw ApiError.conflict(`Пользователь с Email <${email}> уже существует`);
     }
-    // hashирование(не шифрование) пароля ч/з bcrypt. 1ый пароль, 2ой степень шифр.
-    const hashedPassword = await this.hashPassword(password);
-    // генер.уник.ссылку активации ч/з fn v4(подтверждение акаунта)
-    const activationLink = `${process.env.SRV_URL}/${process.env.SRV_NAME}/auth/activate/${crypto.randomUUID()}`;
-    // отпр.смс на почту для актив-ии (кому,полн.путь ссылки)
-    await MailService.sendActionMail(email, activationLink);
-    // `получить наименьший доступный идентификатор` из табл.БД
-    const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable('user');
+
+    // параллел.req > hash psw, генер.уник.ссы.активации, наименьший ID
+    const [hashedPassword, activationLink, smallestFreeId] = await Promise.all([
+      this.hashPassword(password),
+      this.generateActivationLink(crypto.randomUUID()),
+      DatabaseUtils.getSmallestIDAvailable('user'),
+    ]);
+
     // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
     const user = await UserModel.create({
       id: smallestFreeId,
@@ -115,10 +94,13 @@ class AuthService {
       password: hashedPassword,
       activationLink,
     });
-    // привязка.существ.Роли пользователя
-    const userRoles = await RoleService.assignUserRole(user.id, role);
-    // созд.Корзину по User.id
-    const basket = await BasketService.createBasket(user.id);
+
+    // параллел.req > привязки.существ.Роли Пользователя, созд.Корзину по User.id
+    const [userRoles, basket] = await Promise.all([
+      RoleService.assignUserRole(user.id, role),
+      BasketService.createBasket(user.id),
+    ]);
+
     // объ.перед.данн. > id/email/username/role/level/basketId
     const tokenDto = await this.createTokenDto(
       user,
@@ -128,9 +110,14 @@ class AuthService {
     );
     // созд./получ. 2 токена
     const tokens = await TokenService.generateToken(tokenDto);
-    if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
-    // сохр.refresh в БД
-    await TokenService.saveToken(user.id, basket.id, tokens.refreshToken);
+    if (!tokens) throw ApiError.internal('Генерация токенов не прошла');
+
+    // параллел.req > отпр.смс на почту для актив.акка, сохр.refresh в БД
+    await Promise.all([
+      MailService.sendActionMail(email, activationLink),
+      TokenService.saveToken(user.id, basket.id, tokens.refreshToken),
+    ]);
+
     // возвращ.tokens/basket.id
     return {
       tokens,
@@ -140,8 +127,11 @@ class AuthService {
         email: user.email,
         username: user.username,
         isActivated: false,
-        roles: [role],
-        levels: [userRoles.level],
+        // общ.масс.объ.
+        roles: [{ role: role, level: userRoles.level }],
+        // отдел.передача
+        // roles: [role],
+        // levels: [userRoles.level],
         // явно добав.парам. > опцион.типа(Partial)
         // ...(role && { roles: [role] }),
         // ...(userRoles && { levels: [userRoles.level] }),
@@ -151,29 +141,35 @@ class AuthService {
 
   // АВТОРИЗАЦИЯ
   async loginUser(email: string, password: string): Promise<AuthCombinedType> {
-    // проверка сущест. eml (позже username)
-    const user = await UserModel.findOne({ where: { email } });
-    if (!user) {
-      throw ApiError.badRequest(`Пользователь с Email <${email}> не найден`);
-    }
+    // проверка сущест.eml с отдел.вкл.psw
+    const user = await UserModel.scope('withPassword').findOne({
+      where: { email },
+    });
+    if (!user)
+      throw ApiError.notFound(`Пользователь с Email <${email}> не найден`);
+
     // валид.пароля с шифрованым
-    const isPswValid = await this.comparePasswords(password, user.password);
-    if (!isPswValid) throw ApiError.badRequest('Указан неверный пароль');
-    // получ.масс.все Роли/уровни Пользователя
-    const userRoles = await this.getAndTransformUserRolesAndLevels(user.id);
-    // получ.basket_id
-    const basket = await BasketService.getOneBasket(null, user.id);
-    if (!basket) throw ApiError.badRequest(`Корзины нет`);
+    const isValidPsw = await this.comparePasswords(password, user.password);
+    if (!isValidPsw) throw ApiError.unauthorized('Указан неверный пароль');
+
+    // параллел.req > получ. масс.Роли/уровни, basket_id
+    const [userRoles, basket] = await Promise.all([
+      RoleService.getUserRolesWithDetails(user.id),
+      BasketService.getOneBasket(null, user.id),
+    ]);
+    if (!basket) throw ApiError.notFound('Корзина не найдена');
+
     // объ.перед.данн. > id/email/username/role/level/basketId
     const tokenDto = await this.createTokenDto(
       user,
-      userRoles.roles,
-      userRoles.levels,
+      userRoles.map((r) => r.role),
+      userRoles.map((r) => r.level),
       basket.id,
     );
     // созд./получ. 2 токена. email/role
     const tokens = await TokenService.generateToken(tokenDto);
-    if (!tokens) throw ApiError.badRequest(`Генерация токенов не прошла`);
+    if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
+
     // сохр.refreshToken > user_id и basket_id
     await TokenService.saveToken(user.id, basket.id, tokens.refreshToken);
     return {
@@ -184,8 +180,12 @@ class AuthService {
         email: user.email,
         username: user.username,
         isActivated: user.isActivated,
-        roles: userRoles.roles,
-        levels: userRoles.levels,
+        roles: userRoles,
+        // добав.сразу
+        // ...userRoles,
+        // добав.по отдел.
+        // roles: userRoles.roles,
+        // levels: userRoles.levels,
         // добав.перебором
         // roles: userRoles.roles.map((role) => role),
         // levels: userRoles.levels.map((level) => level),
@@ -194,132 +194,127 @@ class AuthService {
   }
 
   // АКТИВАЦИЯ АКАУНТА. приним.ссылку актив.us из БД
-  async activateUser(activationLink: string) {
+  async activateUser(activationLink: string): Promise<void> {
     const user = await UserModel.findOne({
-      where: {
-        activationLink: `${process.env.SRV_URL}/${process.env.SRV_NAME}/auth/activate/${activationLink}`,
-      },
+      where: { activationLink: this.generateActivationLink(activationLink) },
     });
-    if (!user) {
-      throw ApiError.badRequest(
-        `Некорректная ссылка активации. Пользователя НЕТ`,
-      );
-    }
-    // флаг в true и сохр.
-    user.set('isActivated', true);
-    user.save();
+    if (!user) throw ApiError.badRequest('Недопустимая ссылка активации');
+    // флаг в true и обнов.
+    await user.update({ isActivated: true });
   }
 
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
-  async refreshUser(refreshToken: string) {
+  async refreshUser(refreshToken: string): Promise<Tokens> {
     // е/и нет то ошб.не авториз
     if (!refreshToken) throw ApiError.unauthorized('Требуется авторизация');
+
     // валид.токен.refresh
     const userData = await TokenService.validateRefreshToken(refreshToken);
     // поиск токена
-    const tokenFromDB = await TokenService.findToken(refreshToken);
-    // проверка валид и поиск
-    if (!userData || !tokenFromDB)
-      throw ApiError.unauthorized('Токен отсутствует');
-    // получ.польз.с БД по ID
-    const user = await UserModel.findByPk(userData.id);
-    if (!user) throw ApiError.unauthorized('Пользователь отсутствует');
-    // масс.получ./проверить все Роли/уровни Пользователя
-    const userRoles = await this.getAndTransformUserRolesAndLevels(user.id);
-    if (!userRoles.roles.length) throw ApiError.notFound('Роли не найдены');
+    const token = await TokenService.findToken(refreshToken);
+    // проверка валид и поиска Токена
+    if (!userData?.id || !token) throw ApiError.unauthorized('Неверный токен');
+
+    // параллел.req > получ. user по ID, масс.Роли/уровни
+    const [user, userRoles] = await Promise.all([
+      UserModel.findByPk(userData.id),
+      RoleService.getUserRolesWithDetails(userData.id),
+    ]);
+    if (!user) throw ApiError.notFound('Пользователь не найден');
+    if (!userRoles.length) throw ApiError.notFound('Роли не найдены');
+
     // объ.перед.данн.> Роли > id/email/username/role/level
     const tokenDto = await this.createTokenDto(
       user,
-      userRoles.roles,
-      userRoles.levels,
-      tokenFromDB.basketId,
+      userRoles.map((r) => r.role),
+      userRoles.map((r) => r.level),
+      token.basketId,
     );
-
     // созд./получ. 2 токена. email/role
     const tokens = await TokenService.generateToken(tokenDto);
-    if (!tokens) throw ApiError.badRequest(`Генерация токенов не прошла`);
-    // получ. корзину
-    const basketId = await BasketService.getOneBasket(null, user.id);
-    if (!basketId) throw ApiError.badRequest(`Корзины нет`);
+    if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
+
     // сохр./возврат Токенов
-    await TokenService.saveToken(user.id, basketId.id, tokens.refreshToken);
+    await TokenService.saveToken(user.id, token.basketId, tokens.refreshToken);
     return { tokens };
   }
 
   // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
-  async logoutUser(refreshToken: string, username: string, email: string) {
+  async logoutUser(refreshToken: string): Promise<boolean> {
     // пров.переданого токена
-    if (!refreshToken) {
-      throw ApiError.badRequest(`Токен от ${username} <${email}> не передан`);
-    }
+    if (!refreshToken)
+      throw ApiError.badRequest('Отсутствует токен обновления');
     await TokenService.removeToken(refreshToken);
-    return `Токен Пользователя ${username} <${email}> удалён`;
+    return true;
   }
 
   // отправка на email инструкции по сбросу пароля
-  async sendPasswordResetEmail(email: string) {
+  async sendPasswordResetEmail(email: string): Promise<void> {
     // проверки users/token
     const user = await UserModel.findOne({ where: { email } });
-    if (!user) {
-      throw ApiError.notFound(`Пользователь с Email <${email}> не найден`);
-    }
-    const token = await TokenModel.findOne({ where: { userId: user.id } });
-    if (!token) {
-      throw ApiError.internal('Не найден Токена Пользователя');
-    }
-    // генер.уник.Токена сброса пароля
-    const { resetToken, hashedToken } = await this.processingResetToken();
-    const resetTokenExpires = new Date(
-      Date.now() + +process.env.RESET_TOKEN_LIFETIME!,
+    if (!user) throw ApiError.notFound('Пользователь не найден');
+
+    // генер./хеширование уник.Токена сброса пароля
+    const resetToken = this.generateResetToken();
+    const hashedToken = this.hashToken(resetToken);
+
+    // обнов.Токена/срок действия сброса
+    await TokenModel.update(
+      {
+        resetToken: hashedToken,
+        resetTokenExpires: new Date(
+          Date.now() + Number(process.env.RESET_TOKEN_LIFETIME),
+        ),
+      },
+      { where: { userId: user.id } },
     );
-    // обнов.Токена/времени сброса
-    await token.update({ resetToken: hashedToken, resetTokenExpires });
-    // отправка смс на email > сбросf пароля
+
+    // отправка смс на email > сброса пароля
     const resetLink = `${process.env.SRV_URL}/auth/reset-password/${resetToken}`;
     await MailService.sendActionMail(email, resetLink);
   }
 
   // обновление пароля
-  async resetPassword(resetToken: string, newPassword: string) {
+  async resetPassword(
+    resetToken: string,
+    newPassword: string,
+  ): Promise<Tokens> {
     // расшифр.вход.Токен
-    const { hashedToken } = await this.processingResetToken(resetToken);
-    // получение/проверки Токена/времени
+    const hashedToken = this.hashToken(resetToken);
+    // получение/проверки в БД Токена/срока
     const tokenEntry = await TokenModel.findOne({
-      where: { resetToken: hashedToken },
+      where: {
+        resetToken: hashedToken,
+        resetTokenExpires: { [Op.gt]: new Date() },
+      },
     });
     if (!tokenEntry) throw ApiError.badRequest('Неверный или истёкший Токен');
-    if (
-      tokenEntry.resetTokenExpires &&
-      tokenEntry.resetTokenExpires < new Date()
-    ) {
-      throw ApiError.badRequest('Токен истек');
-    }
-    const user = await UserModel.findByPk(tokenEntry.userId, {
-      // связь напрямую с авто.имен.модели без as
-      include: [{ model: UserRoleModel }],
-    });
-    if (!user || !user.UserRoleModels) {
-      throw ApiError.badRequest('Пользователь не найден');
-    }
-    // хеш./обнов.нов.пароль в БД
-    const hashedPassword = await this.hashPassword(newPassword);
-    await user.update({ password: hashedPassword });
-    // обнов. Токен/время после сброса
-    await tokenEntry.update({
-      resetToken: null as unknown as string,
-      resetTokenExpires: null as unknown as Date,
-    });
-    // получ.масс.все Роли/уровни Пользователя
-    const usersRoles = await this.getAndTransformUserRolesAndLevels(user.id);
+
+    const user = await UserModel.findByPk(tokenEntry.userId);
+    if (!user) throw ApiError.notFound('Пользователь не найден');
+
+    // параллел.req > получ. хеш.нов.пароль, масс.Роли/уровни
+    const [hashedPassword, userRoles] = await Promise.all([
+      this.hashPassword(newPassword),
+      RoleService.getUserRolesWithDetails(user.id),
+    ]);
+
+    // параллел.req > обнов. user.psw, Токен/срок
+    await Promise.all([
+      user.update({ password: hashedPassword }),
+      tokenEntry.update({ resetToken: null, resetTokenExpires: null }),
+    ]);
+
     const tokenDto = await this.createTokenDto(
       user,
-      usersRoles.roles,
-      usersRoles.levels,
+      userRoles.map((r) => r.role),
+      userRoles.map((r) => r.level),
       tokenEntry.basketId,
     );
     // созд./получ. 2 токена
     const tokens = await TokenService.generateToken(tokenDto);
-    if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
+    if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
+
     // сохр.refresh в БД
     await TokenService.saveToken(
       user.id,
