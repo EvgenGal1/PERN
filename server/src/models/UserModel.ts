@@ -40,7 +40,7 @@ class UserModel extends Model<
   public readonly orders?: OrderModel[];
   public readonly ratings?: RatingModel[];
   // > include без as с авто именем модели + s
-  public readonly UserRoleModels?: UserRoleModel[];
+  // public readonly UserRoleModels?: UserRoleModel[];
 
   // мтд.устан.связей м/у моделями
   static associate(models: Models) {

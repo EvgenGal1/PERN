@@ -8,6 +8,7 @@ import {
 } from 'sequelize';
 
 import { Models } from '../types/models.interfaсe';
+import RoleModel from './RoleModel';
 
 class UserRoleModel extends Model<
   InferAttributes<UserRoleModel>,
@@ -17,6 +18,8 @@ class UserRoleModel extends Model<
   declare userId: number;
   declare roleId: number;
   declare level: number;
+  // связь >  доступа к св-ву 'role'
+  declare role?: RoleModel;
 
   static associate(models: Models) {
     UserRoleModel.belongsTo(models.UserModel, {
