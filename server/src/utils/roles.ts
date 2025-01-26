@@ -1,4 +1,4 @@
-import { RoleName } from '../config/constants/roles';
+import { RoleName } from '../types/role.interface';
 
 // проверка наличие роли с определённым уровнем у пользователя
 export const hasRole = (
