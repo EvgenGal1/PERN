@@ -155,7 +155,7 @@ class AuthController {
         return next(ApiError.badRequest('Пользователь не найден'));
       }
       // получ.масс.все Роли/уровни Пользователя
-      const userRoles = await RoleService.getUserRolesWithDetails(user.id);
+      const userRoles = await RoleService.getUserRolesAndLevels(user.id);
       // получ.basket_id
       const basket = await BasketService.getOneBasket(null, user.id);
       const tokenDto = await AuthService.createTokenDto(
