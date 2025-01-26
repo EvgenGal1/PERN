@@ -19,7 +19,7 @@ const router = express.Router();
  * @swagger
  * /users/create:
  *   post:
- *     summary: Создать нового пользователя
+ *     summary: Создать нового Пользователя
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -49,12 +49,13 @@ const router = express.Router();
  *         description: Внутренняя ошибка сервера
  */
 router.post('/create', authMW, adminMW, UserController.createUser);
+
 // получить по id
 /**
  * @swagger
  * /users/getone/{id}:
  *   get:
- *     summary: Получить информацию о пользователе по ID
+ *     summary: Получить информацию о Пользователе по ID
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -67,37 +68,39 @@ router.post('/create', authMW, adminMW, UserController.createUser);
  *           example: 1
  *     responses:
  *       200:
- *         description: Информация о пользователе
+ *         description: Информация о Пользователе
  *       404:
  *         description: Пользователь не найден
  *       500:
  *         description: Внутренняя ошибка сервера
  */
 router.get('/getone/:id([0-9]+)', authMW, adminMW, UserController.getOneUser);
-// получит всех пользователей
+
+// получит всех Пользователей
 /**
  * @swagger
  * /users/users:
  *   get:
- *     summary: Получить список всех пользователей (только для администратора)
+ *     summary: Получить список всех Пользователей
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Список пользователей
+ *         description: Список Пользователей
  *       403:
  *         description: Недостаточно прав
  *       500:
  *         description: Внутренняя ошибка сервера
  */
 router.get('/getall', authMW, adminMW, UserController.getAllUser);
+
 // обновить по id
 /**
  * @swagger
  * /users/update/{id}:
  *   put:
- *     summary: Обновить данные пользователя
+ *     summary: Обновить данные Пользователя
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -131,12 +134,13 @@ router.get('/getall', authMW, adminMW, UserController.getAllUser);
  *         description: Внутренняя ошибка сервера
  */
 router.put('/update/:id([0-9]+)', authMW, adminMW, UserController.updateUser);
+
 // удалить по id
 /**
  * @swagger
  * /users/delete/{id}:
  *   delete:
- *     summary: Удалить пользователя
+ *     summary: Удалить Пользователя
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []

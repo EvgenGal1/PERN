@@ -56,7 +56,7 @@ class BasketController {
     }
   }
 
-  // увелич.кол-во Товаров в Корзине
+  // увелич.кол-во Продуктов в Корзине
   async incrementBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
@@ -75,7 +75,7 @@ class BasketController {
     }
   }
 
-  // уменьш.кол-во Товаров в Корзине
+  // уменьш.кол-во Продуктов в Корзине
   async decrementBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
@@ -108,7 +108,7 @@ class BasketController {
     }
   }
 
-  // удал.Корзины с Товарами
+  // удал.Корзины с Продуктами
   async removeBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
@@ -122,7 +122,7 @@ class BasketController {
     }
   }
 
-  // удал.Корзины с Товарами (как в removeBasket но без проверок)
+  // удал.Корзины с Продуктами (как в removeBasket но без проверок)
   async deleteBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = parseInt(req.params.basketId);

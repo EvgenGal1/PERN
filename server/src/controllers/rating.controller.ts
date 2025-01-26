@@ -10,7 +10,7 @@ class RatingController {
     this.createRating = this.createRating.bind(this);
   }
 
-  private readonly name = 'Товара';
+  private readonly name = 'Продукта';
   private readonly user = 'Пользователя';
   private readonly rating = 'Рейтинга';
 
@@ -27,7 +27,7 @@ class RatingController {
   async createRating(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.auth?.id) {
-        throw ApiError.badRequest('ID пользователя не найден');
+        throw ApiError.badRequest('ID Пользователя не найден');
       }
       const rate = parseId(req.params.rate, this.rating);
       const productId = parseId(req.params.productId, this.name);

@@ -8,28 +8,28 @@ import ProductPropController from '../controllers/productProp.controller';
 const router = express.Router();
 
 /*
- * Товары
+ * Продукты
  */
 
 /**
  * @swagger
  * tags:
  *   name: Products
- *   description: API для управления Товарами
+ *   description: API для управления Продуктами
  */
 
 // ^ Стандартные
-// создать товар каталога — нужны права администратора
+// создать Продукт каталога — нужны права администратора
 /**
  * @swagger
  * /products/create:
  *   post:
- *     summary: Создать товар каталога (требуются права администратора)
+ *     summary: Создать Продукт каталога
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для создания товара
+ *       description: Данные для создания Продукта
  *       required: true
  *       content:
  *         application/json:
@@ -46,17 +46,18 @@ const router = express.Router();
  *                 type: integer
  *     responses:
  *       201:
- *         description: Товар успешно создан
+ *         description: Продукт успешно создан
  *       400:
  *         description: Ошибка валидации данных
  */
 router.post('/create', authMW, adminMW, ProductController.createProduct);
-// получить один товар каталога
+
+// получить один Продукт каталога
 /**
  * @swagger
  * /products/getone/{id}:
  *   get:
- *     summary: Получить один товар каталога
+ *     summary: Получить один Продукт каталога
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -65,32 +66,34 @@ router.post('/create', authMW, adminMW, ProductController.createProduct);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID товара
+ *         description: ID Продукта
  *     responses:
  *       200:
- *         description: Информация о товаре
+ *         description: Информация о Продукте
  *       404:
- *         description: Товар не найден
+ *         description: Продукт не найден
  */
 router.get('/getone/:id([0-9]+)', ProductController.getOneProduct);
-// список всех товаров каталога
+
+// список всех Продуктов каталога
 /**
  * @swagger
  * /products/getall:
  *   get:
- *     summary: Получить список всех товаров каталога
+ *     summary: Получить список всех Продуктов каталога
  *     tags: [Products]
  *     responses:
  *       200:
- *         description: Список всех товаров
+ *         description: Список всех Продуктов
  */
 router.get('/getall', ProductController.getAllProduct);
-// обновить товар каталога  — нужны права администратора
+
+// обновить Продукт каталога  — нужны права администратора
 /**
  * @swagger
  * /products/update/{id}:
  *   put:
- *     summary: Обновить товар каталога (требуются права администратора)
+ *     summary: Обновить Продукт каталога
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -99,11 +102,11 @@ router.get('/getall', ProductController.getAllProduct);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID товара
+ *         description: ID Продукта
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для обновления товара
+ *       description: Данные для обновления Продукта
  *       required: true
  *       content:
  *         application/json:
@@ -116,9 +119,9 @@ router.get('/getall', ProductController.getAllProduct);
  *                 type: number
  *     responses:
  *       200:
- *         description: Товар успешно обновлен
+ *         description: Продукт успешно обновлен
  *       404:
- *         description: Товар не найден
+ *         description: Продукт не найден
  */
 router.put(
   '/update/:id([0-9]+)',
@@ -126,12 +129,13 @@ router.put(
   adminMW,
   ProductController.updateProduct,
 );
-// удалить товар каталога  — нужны права администратора
+
+// удалить Продукт каталога  — нужны права администратора
 /**
  * @swagger
  * /products/delete/{id}:
  *   delete:
- *     summary: Удалить товар каталога (требуются права администратора)
+ *     summary: Удалить Продукт каталога
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -140,14 +144,14 @@ router.put(
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID товара
+ *         description: ID Продукта
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Товар успешно удален
+ *         description: Продукт успешно удален
  *       404:
- *         description: Товар не найден
+ *         description: Продукт не найден
  */
 router.delete(
   '/delete/:id([0-9]+)',
@@ -157,12 +161,12 @@ router.delete(
 );
 
 // ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/products/getall/categoryId/3/brandId/4
-// список товаров выбранной категории и выбранного бренда
+// список Продуктов выбранной категории и выбранного бренда
 /**
  * @swagger
  * /products/getall/categoryId/{categoryId}/brandId/{brandId}:
  *   get:
- *     summary: Получить список товаров по категории и бренду
+ *     summary: Получить список Продуктов по категории и бренду
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -179,7 +183,7 @@ router.delete(
  *         description: ID бренда
  *     responses:
  *       200:
- *         description: Список товаров
+ *         description: Список Продуктов
  */
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
@@ -187,12 +191,13 @@ router.get(
   '/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)',
   ProductController.getAllProduct,
 );
-// список товаров выбранной категории
+
+// список Продуктов выбранной категории
 /**
  * @swagger
  * /products/getall/categoryId/{categoryId}:
  *   get:
- *     summary: Получить список товаров выбранной категории
+ *     summary: Получить список Продуктов выбранной категории
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -203,19 +208,20 @@ router.get(
  *         description: ID категории
  *     responses:
  *       200:
- *         description: Список товаров
+ *         description: Список Продуктов
  */
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)",
   '/getall/categoryId/:categoryId(,?[0-9]+*)',
   ProductController.getAllProduct,
 );
-// список товаров выбранного бренда
+
+// список Продуктов выбранного бренда
 /**
  * @swagger
  * /products/getall/brandId/{brandId}:
  *   get:
- *     summary: Получить список товаров выбранного бренда
+ *     summary: Получить список Продуктов выбранного бренда
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -226,7 +232,7 @@ router.get(
  *         description: ID бренда
  *     responses:
  *       200:
- *         description: Список товаров
+ *         description: Список Продуктов
  */
 router.get(
   // "/getall/brandId/:brandId([0-9]+)",
@@ -242,15 +248,15 @@ router.get(
  * @swagger
  * tags:
  *   name: Product Properties
- *   description: API для управления Свойствами Товара
+ *   description: API для управления Свойствами Продукта
  */
 
-// создать свойство товара
+// создать свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/create:
  *   post:
- *     summary: Создать свойство товара (требуются права администратора)
+ *     summary: Создать свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -258,7 +264,7 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -283,12 +289,13 @@ router.post(
   adminMW,
   ProductPropController.createProdProp,
 );
-// одно свойство товара
+
+// одно свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/getone/{id}:
  *   get:
- *     summary: Получить одно свойство товара
+ *     summary: Получить одно свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -296,7 +303,7 @@ router.post(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *       - in: path
  *         name: id
  *         required: true
@@ -313,12 +320,13 @@ router.get(
   '/:productId([0-9]+)/property/getone/:id([0-9]+)',
   ProductPropController.getOneProdProp,
 );
-// список свойств товара
+
+// список свойств Продукта
 /**
  * @swagger
  * /products/{productId}/property/getall:
  *   get:
- *     summary: Получить список всех свойств товара
+ *     summary: Получить список всех свойств Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -326,21 +334,22 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *     responses:
  *       200:
- *         description: Список свойств товара
+ *         description: Список свойств Продукта
  */
 router.get(
   '/:productId([0-9]+)/property/getall',
   ProductPropController.getAllProdProp,
 );
-// обновить свойство товара
+
+// обновить свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/update/{id}:
  *   put:
- *     summary: Обновить свойство товара (требуются права администратора)
+ *     summary: Обновить свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -348,7 +357,7 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *       - in: path
  *         name: id
  *         required: true
@@ -379,12 +388,13 @@ router.put(
   adminMW,
   ProductPropController.updateProdProp,
 );
-// удалить свойство товара
+
+// удалить свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/delete/{id}:
  *   delete:
- *     summary: Удалить свойство товара (требуются права администратора)
+ *     summary: Удалить свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -392,7 +402,7 @@ router.put(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *       - in: path
  *         name: id
  *         required: true

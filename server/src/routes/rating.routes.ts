@@ -19,7 +19,7 @@ const router = express.Router();
  * @swagger
  * /ratings/product/{productId}:
  *   get:
- *     summary: Получить рейтинг товара
+ *     summary: Получить рейтинг Продукта
  *     tags: [Ratings]
  *     parameters:
  *       - in: path
@@ -27,12 +27,12 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *     responses:
  *       200:
- *         description: Информация о рейтинге товара
+ *         description: Информация о рейтинге Продукта
  *       404:
- *         description: Рейтинг товара не найден
+ *         description: Рейтинг Продукта не найден
  */
 router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
 
@@ -40,7 +40,7 @@ router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
  * @swagger
  * /ratings/product/{productId}/rate/{rate}:
  *   post:
- *     summary: Добавить рейтинг для товара (требуются права администратора или модератора)
+ *     summary: Добавить рейтинг для Продукта
  *     tags: [Ratings]
  *     parameters:
  *       - in: path
@@ -48,7 +48,7 @@ router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID товара
+ *         description: ID Продукта
  *       - in: path
  *         name: rate
  *         required: true

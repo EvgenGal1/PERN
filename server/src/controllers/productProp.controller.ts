@@ -1,4 +1,4 @@
-// ^ controller Свойств Товара
+// ^ controller Свойств Продукта
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -14,8 +14,8 @@ class ProductPropController {
     this.deleteProdProp = this.deleteProdProp.bind(this);
   }
 
-  private readonly name = 'Товара';
-  private readonly prop = 'Свойств Товара';
+  private readonly name = 'Продукта';
+  private readonly prop = 'Свойств Продукта';
 
   async getOneProdProp(req: Request, res: Response, next: NextFunction) {
     try {

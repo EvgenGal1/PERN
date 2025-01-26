@@ -29,7 +29,7 @@ router.get('/getone', BasketController.getOneBasket);
  * @swagger
  * /baskets/product/{productId}/append/{quantity}:
  *   put:
- *     summary: Добавить продукт в корзину
+ *     summary: Добавить Продукт в корзину
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -39,7 +39,7 @@ router.get('/getone', BasketController.getOneBasket);
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID продукта
+ *         description: ID Продукта
  *       - in: path
  *         name: quantity
  *         schema:
@@ -60,7 +60,7 @@ router.put(
  * @swagger
  * /baskets/product/{productId}/increment/{quantity}:
  *   put:
- *     summary: Увеличить количество продукта в корзине
+ *     summary: Увеличить количество Продукта в корзине
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -70,7 +70,7 @@ router.put(
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID продукта
+ *         description: ID Продукта
  *       - in: path
  *         name: quantity
  *         schema:
@@ -91,7 +91,7 @@ router.put(
  * @swagger
  * /baskets/product/{productId}/decrement/{quantity}:
  *   put:
- *     summary: Уменьшить количество продукта в корзине
+ *     summary: Уменьшить количество Продукта в корзине
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -101,7 +101,7 @@ router.put(
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID продукта
+ *         description: ID Продукта
  *       - in: path
  *         name: quantity
  *         schema:
@@ -122,7 +122,7 @@ router.put(
  * @swagger
  * /baskets/product/{productId}/remove:
  *   put:
- *     summary: Удалить продукт из корзины
+ *     summary: Удалить Продукт из корзины
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -132,7 +132,7 @@ router.put(
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID продукта
+ *         description: ID Продукта
  *     responses:
  *       200:
  *         description: Продукт удалён

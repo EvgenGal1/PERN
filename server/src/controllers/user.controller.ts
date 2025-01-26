@@ -31,7 +31,7 @@ class UserController {
       }
       res.status(200).json(user);
     } catch (error: unknown) {
-      return next(ApiError.internal('Ошибка при получении пользователя'));
+      return next(ApiError.internal('Ошибка при получении Пользователя'));
     }
   }
 

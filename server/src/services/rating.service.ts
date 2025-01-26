@@ -2,12 +2,13 @@ import { ProductAttributes } from '../models/sequelize-types';
 import RatingModel from '../models/RatingModel';
 import ProductModel from '../models/ProductModel';
 import UserModel from '../models/UserModel';
+import ApiError from '../middleware/errors/ApiError';
 
 class RatingService {
   async getOneRating(productId: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Продукт не найден');
     }
     // `голосов`
     const votes = await RatingModel.count({ where: { productId } });
@@ -23,11 +24,11 @@ class RatingService {
   async createRating(rate: number, productId: number, userId: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Продукт не найден');
     }
     const user = await UserModel.findByPk(userId);
     if (!user) {
-      throw new Error('Пользователь не найден в БД');
+      throw ApiError.notFound('Пользователь не найден');
     }
 
     // находим/удаляем данн.Рейтинга/Пользователя е/и он уже голосовал
@@ -56,7 +57,7 @@ class RatingService {
     const rates = await RatingModel.sum('rate', { where: { productId } });
     const ratingAll = rates / votes;
 
-    // перем./запрос для обнов.Товара
+    // перем./запрос для обнов.Продукта
     const { name, price, image, categoryId, brandId } =
       product.get() as ProductAttributes;
     if (ratingAll) {

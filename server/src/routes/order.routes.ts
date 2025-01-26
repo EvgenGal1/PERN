@@ -62,6 +62,7 @@ const router = express.Router();
  *         description: Ошибка валидации данных
  */
 router.post('/create', authMW, adminMW, OrderController.createOrder);
+
 // получить заказ по id
 /**
  * @swagger
@@ -86,6 +87,7 @@ router.post('/create', authMW, adminMW, OrderController.createOrder);
  *         description: Заказ не найден
  */
 router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
+
 // получить список всех заказов магазина
 /**
  * @swagger
@@ -100,7 +102,8 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
  *         description: Список всех заказов
  */
 router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
-// // получить список заказов пользователя
+
+// получить список заказов Пользователя
 // router.get(
 //   '/getall/user/:id([0-9]+)',
 //   authMW,
@@ -149,6 +152,7 @@ router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
  *         description: Заказ не найден
  */
 router.put('/update/:id([0-9]+)', authMW, adminMW, OrderController.updateOrder);
+
 // удалить заказ по id
 /**
  * @swagger
@@ -231,6 +235,7 @@ router.post(
   adminMW,
   OrderItemsController.createOrderItems,
 );
+
 // одна позиция заказа
 /**
  * @swagger
@@ -263,6 +268,7 @@ router.get(
   '/:orderId([0-9]+)/item/getone/:id([0-9]+)',
   OrderItemsController.getOneOrderItems,
 );
+
 // список позицый заказа
 /**
  * @swagger
@@ -286,6 +292,7 @@ router.get(
   '/:orderId([0-9]+)/item/getall',
   OrderItemsController.getAllOrderItems,
 );
+
 // обновить позицию заказа
 /**
  * @swagger
@@ -336,6 +343,7 @@ router.put(
   adminMW,
   OrderItemsController.updateOrderItems,
 );
+
 // удалить позицию заказа
 /**
  * @swagger
@@ -374,7 +382,7 @@ router.delete(
 );
 
 /*
- * для авторизованного пользователя
+ * для авторизованного Пользователя
  */
 
 // создать новый заказ
@@ -382,7 +390,7 @@ router.delete(
  * @swagger
  * /orders/user/create:
  *   post:
- *     summary: Создать новый заказ для авторизованного пользователя
+ *     summary: Создать новый заказ для авторизованного Пользователя
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -409,12 +417,13 @@ router.delete(
  *         description: Ошибка валидации данных
  */
 router.post('/user/create', authMW, OrderController.createOrder);
-// получить один заказ пользователя
+
+// получить один заказ Пользователя
 /**
  * @swagger
  * /orders/user/getone/{id}:
  *   get:
- *     summary: Получить один заказ пользователя
+ *     summary: Получить один заказ Пользователя
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -433,23 +442,24 @@ router.post('/user/create', authMW, OrderController.createOrder);
  *         description: Заказ не найден
  */
 router.get('/user/getone/:id([0-9]+)', authMW, OrderController.getOneOrder);
-// получить все заказы пользователя
+
+// получить все заказы Пользователя
 /**
  * @swagger
  * /orders/user/getall:
  *   get:
- *     summary: Получить все заказы пользователя
+ *     summary: Получить все заказы Пользователя
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Список всех заказов пользователя
+ *         description: Список всех заказов Пользователя
  */
 router.get('/user/getall', authMW, OrderController.getAllOrders);
 
 /*
- * для неавторизованного пользователя
+ * для неавторизованного Пользователя
  */
 
 // создать новый заказ
@@ -457,7 +467,7 @@ router.get('/user/getall', authMW, OrderController.getAllOrders);
  * @swagger
  * /orders/guest/create:
  *   post:
- *     summary: Создать новый заказ для неавторизованного пользователя
+ *     summary: Создать новый заказ для неавторизованного Пользователя
  *     tags: [Orders]
  *     requestBody:
  *       description: Данные для создания заказа

@@ -54,7 +54,7 @@ describe('GET /users/getone/:id', () => {
   });
 
   it(`GET_getone/${moreUser} вернёт 404 если Пользователя нет`, async () => {
-    (UserService.getOneUser as jest.Mock).mockResolvedValue(null); // мокает ответ что пользователя нет
+    (UserService.getOneUser as jest.Mock).mockResolvedValue(null); // мокает ответ что Пользователя нет
 
     const res = await request(app)
       .get(`/${url}/users/getone/${moreUser}`)
@@ -78,7 +78,7 @@ describe('GET /users/getone/:id', () => {
 
     expect(res.status).toEqual(500);
     expect(res.body).toEqual({
-      message: `Ошибка при получении пользователя`,
+      message: `Ошибка при получении Пользователя`,
       errors: null,
       status: 500,
     });

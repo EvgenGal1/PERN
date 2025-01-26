@@ -1,6 +1,6 @@
 import { RoleName } from '../types/role.interface';
 
-// проверка наличие роли с определённым уровнем у пользователя
+// проверка наличие Роли с определённым уровнем у Пользователя
 export const hasRole = (
   userRoles: Array<{ name: string; level: number }>,
   requiredRole: RoleName,

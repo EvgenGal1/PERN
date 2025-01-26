@@ -1,14 +1,15 @@
-// ^ servis для свойств товара
+// ^ servis для Позиций Заказа
 
 import OrderModel from '../models/OrderModel';
 import OrderItemModel from '../models/OrderItemModel';
 import { OrderItemAttributes } from '../models/sequelize-types';
+import ApiError from '../middleware/errors/ApiError';
 
 class OrderItemService {
   async getAllOrderItems(orderId: number): Promise<OrderItemAttributes[]> {
     const order = await OrderModel.findByPk(orderId);
     if (!order) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Позиция не найден');
     }
     const items: OrderItemAttributes[] = (
       await OrderItemModel.findAll({
@@ -21,14 +22,14 @@ class OrderItemService {
   async getOneOrderItems(orderId: number, id: number) {
     const order = await OrderModel.findByPk(orderId);
     if (!order) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Позиция не найден');
     }
     const item = await OrderItemModel.findOne({
       where: { id: id /* , orderId: orderId  */ },
       include: [{ model: OrderModel, as: 'order', where: { id: orderId } }],
     });
     if (!item) {
-      throw new Error('Свойство товара не найдено в БД');
+      throw ApiError.notFound('Позиция Заказа не найдена');
     }
     return item.get({ plain: true }) as OrderItemAttributes;
   }
@@ -39,7 +40,7 @@ class OrderItemService {
   ): Promise<OrderItemAttributes> {
     const order = await OrderModel.findByPk(orderId);
     if (!order) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Заказ не найден');
     }
     const { name, price, quantity } = data;
     const item = await OrderItemModel.create(
@@ -65,14 +66,14 @@ class OrderItemService {
   ): Promise<OrderItemAttributes> {
     const order = await OrderModel.findByPk(orderId);
     if (!order) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Заказ не найден');
     }
     const item = await OrderItemModel.findOne({
       where: { id: id /* , orderId: orderId */ },
       include: [{ model: OrderModel, as: 'order', where: { id: orderId } }],
     });
     if (!item) {
-      throw new Error('Свойство товара не найдено в БД');
+      throw ApiError.notFound('Позиция Заказа не найдено');
     }
 
     // статус
@@ -103,14 +104,14 @@ class OrderItemService {
   async deleteOrderItems(orderId: number, id: number | string) {
     const order = await OrderModel.findByPk(orderId);
     if (!order) {
-      throw new Error('Товар не найден в БД');
+      throw ApiError.notFound('Позиция не найден');
     }
     const item = await OrderItemModel.findOne({
       where: { /* orderId, */ id },
       include: [{ model: OrderModel, as: 'order', where: { id: orderId } }],
     });
     if (!item) {
-      throw new Error('Свойство товара не найдено в БД');
+      throw ApiError.notFound('Позиция Заказа не найдено');
     }
     await item.destroy();
     return item;

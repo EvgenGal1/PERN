@@ -12,8 +12,8 @@ if (!process.env.DB_USER || !process.env.DB_NAME) {
 }
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME!, // база данных
-  process.env.DB_USER!, // пользователь
+  process.env.DB_NAME!, // назв.БД
+  process.env.DB_USER!, // Пользователь
   process.env.DB_PSW!, // пароль
   {
     dialect: process.env.DB_USER! as Dialect,

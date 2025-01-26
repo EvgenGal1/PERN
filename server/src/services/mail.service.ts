@@ -24,7 +24,7 @@ class MailService {
       SMTP_SECURE,
     } = process.env;
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_APP_PSW) {
-      throw new Error(
+      throw ApiError.notFound(
         'Почтовая конфигурация отсутствует. Проверьте переменные окружения.',
       );
     }

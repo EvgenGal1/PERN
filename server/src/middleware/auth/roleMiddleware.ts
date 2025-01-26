@@ -6,7 +6,7 @@ const roleMW = (requiredRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const userRole = req.auth?.role;
     if (!userRole) {
-      return next(ApiError.forbidden('Роль пользователя не найдена'));
+      return next(ApiError.forbidden('Роль Пользователя не найдена'));
     }
 
     if (!requiredRoles.includes(userRole)) {

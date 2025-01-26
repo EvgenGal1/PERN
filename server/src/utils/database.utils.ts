@@ -45,7 +45,7 @@ class DatabaseUtils {
           const quantity = product.BasketProductModel?.quantity;
           if (quantity === undefined) {
             console.error(
-              `Ошибка: Отсутствует связь BasketProductModel для продукта с id=${product.id}`,
+              `Ошибка: Отсутствует связь BasketProductModel для Продукта с id=${product.id}`,
             );
           }
           return {

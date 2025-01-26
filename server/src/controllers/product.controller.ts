@@ -12,7 +12,7 @@ class ProductController {
     this.deleteProduct = this.deleteProduct.bind(this);
   }
 
-  private readonly name = 'Товара';
+  private readonly name = 'Продукта';
 
   async getOneProduct(
     req: Request,
@@ -97,7 +97,7 @@ class ProductController {
       const id = parseId(req.params.id, this.name);
       const product = await ProductService.deleteProduct(id);
       res.status(204).json({
-        message: 'Товар успешно удален',
+        message: 'Продукт успешно удален',
         data: product,
       });
     } catch (error: unknown) {
