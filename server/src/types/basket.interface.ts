@@ -8,4 +8,6 @@ export interface BasketProduct {
 export interface BasketResponse {
   id: number;
   products: BasketProduct[];
+  userId?: number;
+  total?: number;
 }
