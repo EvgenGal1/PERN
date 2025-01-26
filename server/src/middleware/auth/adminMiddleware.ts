@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import { NameUserRoles } from '../../config/constants/roles';
+import { NameUserRoles } from '../../types/role.interface';
 import ApiError from '../errors/ApiError';
 
 const adminMW = (req: Request, res: Response, next: NextFunction): void => {

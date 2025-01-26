@@ -4,7 +4,7 @@ import OrderService from '../services/order.service';
 import BasketService from '../services/basket.service';
 import UserService from '../services/user.service';
 import { parseId, validateData } from '../utils/validators';
-import { NameUserRoles } from '../config/constants/roles';
+import { NameUserRoles } from '../types/role.interface';
 import ApiError from '../middleware/errors/ApiError';
 
 class OrderController {

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import RoleService from '../services/role.service';
 import { parseId, validateName, validateData } from '../utils/validators';
+import { RoleID, RoleName } from '../types/role.interface';
 
 class RoleController {
   constructor() {
@@ -18,7 +19,7 @@ class RoleController {
   async getOneRole(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseId(req.params.id, this.name);
-      const role = await RoleService.getOneRole(id);
+      const role = await RoleService.getOneRole(id as RoleID | RoleName);
       res.status(200).json(role);
     } catch (error: unknown) {
       next(error);
@@ -27,7 +28,7 @@ class RoleController {
 
   async getAllRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const roles = await RoleService.getAllRole();
+      const roles = await RoleService.getAllRoles();
       res.status(200).json(roles);
     } catch (error: unknown) {
       next(error);
@@ -37,7 +38,7 @@ class RoleController {
   async createRole(req: Request, res: Response, next: NextFunction) {
     try {
       const { name } = validateName(req.body, this.name);
-      const role = await RoleService.createRole({ name });
+      const role = await RoleService.createRole({ value: name });
       res.status(201).json(role);
     } catch (error: unknown) {
       next(error);

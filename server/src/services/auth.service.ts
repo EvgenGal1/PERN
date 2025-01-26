@@ -18,8 +18,7 @@ import MailService from './mail.service';
 import DatabaseUtils from '../utils/database.utils';
 // type/dto
 import { AuthCombinedType, TokenDto, Tokens } from '../types/auth.interface';
-// конст.знач.
-import { NameUserRoles } from '../config/constants/roles';
+import { NameUserRoles, RoleLevels } from '../types/role.interface';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
@@ -154,7 +153,7 @@ class AuthService {
 
     // параллел.req > получ. масс.Роли/уровни, basket_id
     const [userRoles, basket] = await Promise.all([
-      RoleService.getUserRolesWithDetails(user.id),
+      RoleService.getUserRolesAndLevels(user.id),
       BasketService.getOneBasket(null, user.id),
     ]);
     if (!basket) throw ApiError.notFound('Корзина не найдена');
@@ -162,8 +161,8 @@ class AuthService {
     // объ.перед.данн. > id/email/username/role/level/basketId
     const tokenDto = await this.createTokenDto(
       user,
-      userRoles.map((r) => r.role),
-      userRoles.map((r) => r.level),
+      userRoles.map((rol: RoleLevels) => rol.role),
+      userRoles.map((rol: RoleLevels) => rol.level),
       basket.id,
     );
     // созд./получ. 2 токена. email/role
@@ -218,7 +217,7 @@ class AuthService {
     // параллел.req > получ. user по ID, масс.Роли/уровни
     const [user, userRoles] = await Promise.all([
       UserModel.findByPk(userData.id),
-      RoleService.getUserRolesWithDetails(userData.id),
+      RoleService.getUserRolesAndLevels(userData.id),
     ]);
     if (!user) throw ApiError.notFound('Пользователь не найден');
     if (!userRoles.length) throw ApiError.notFound('Роли не найдены');
@@ -226,8 +225,8 @@ class AuthService {
     // объ.перед.данн.> Роли > id/email/username/role/level
     const tokenDto = await this.createTokenDto(
       user,
-      userRoles.map((r) => r.role),
-      userRoles.map((r) => r.level),
+      userRoles.map((rol: RoleLevels) => rol.role),
+      userRoles.map((rol: RoleLevels) => rol.level),
       token.basketId,
     );
     // созд./получ. 2 токена. email/role
@@ -285,7 +284,7 @@ class AuthService {
     const tokenEntry = await TokenModel.findOne({
       where: {
         resetToken: hashedToken,
-        resetTokenExpires: { [Op.gt]: new Date() },
+        resetTokenExpires: { [Op.gt]: new Date(Date.now()) },
       },
     });
     if (!tokenEntry) throw ApiError.badRequest('Неверный или истёкший Токен');
@@ -296,7 +295,7 @@ class AuthService {
     // параллел.req > получ. хеш.нов.пароль, масс.Роли/уровни
     const [hashedPassword, userRoles] = await Promise.all([
       this.hashPassword(newPassword),
-      RoleService.getUserRolesWithDetails(user.id),
+      RoleService.getUserRolesAndLevels(user.id),
     ]);
 
     // параллел.req > обнов. user.psw, Токен/срок
@@ -307,8 +306,8 @@ class AuthService {
 
     const tokenDto = await this.createTokenDto(
       user,
-      userRoles.map((r) => r.role),
-      userRoles.map((r) => r.level),
+      userRoles.map((rol: RoleLevels) => rol.role),
+      userRoles.map((rol: RoleLevels) => rol.level),
       tokenEntry.basketId,
     );
     // созд./получ. 2 токена

@@ -6,7 +6,7 @@ import UserService from '../services/user.service';
 // валид.данн.req
 import { parseId, validateData } from '../utils/validators';
 // перем. Ролей/уровней
-import { NameUserRoles } from '../config/constants/roles';
+import { NameUserRoles } from '../types/role.interface';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
@@ -37,7 +37,7 @@ class UserController {
 
   async getAllUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await UserService.getAllUser();
+      const users = await UserService.getAllUsers();
       res.status(200).json(users);
     } catch (error: unknown) {
       next(error);

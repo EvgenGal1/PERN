@@ -4,7 +4,7 @@ import authMW from '../middleware/auth/authMiddleware';
 import adminMW from '../middleware/auth/adminMiddleware';
 import roleMW from '../middleware/auth/roleMiddleware';
 import RatingController from '../controllers/rating.controller';
-import { NameUserRoles } from '../config/constants/roles';
+import { NameUserRoles } from '../types/role.interface';
 
 const router = express.Router();
 
