@@ -1,116 +1,74 @@
 // модель данных табл.User
 import UserModel from '../models/UserModel';
-import UserRoleModel from '../models/UserRoleModel';
 // serv разные
+import RoleService from './role.service';
 import BasketService from './basket.service';
-// утилиты/helpы/обраб.ошб./dto
+// type/dto
+import { UserCreateDto, UserUpdateDto } from '../types/user.interface';
+import { NameUserRoles } from '../types/role.interface';
+// обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
 class UserService {
-  async createUser(data: any) {
-    try {
-      const { email, password, username, role } = data;
-      const check = await UserModel.findOne({ where: { email } });
-      if (check)
-        /* throw new Error // ! как-то не так отраб.*/
-        throw ApiError.badRequest('Пользователь уже существует');
-      const user = await UserModel.create({
-        email,
-        password,
-        username,
-      });
-      // созд.Корзину по User.id
-      if (user.get('id')) await BasketService.createBasket(user.get('id'));
-      return user;
-    } catch (error: unknown) {
-      throw ApiError.badRequest(
-        `Пользователь  не создан`,
-        error instanceof Error ? error.message : 'Неизвестная ошибка',
-      );
-    }
-  }
-  async getOneUser(id: number): Promise<UserModel | null> {
-    try {
-      const user = await UserModel.findByPk(id);
-      if (!user) {
-        throw ApiError.notFound(`Пользователь по id ${id} не найден в БД`);
-      }
-      return user;
-    } catch (error: unknown) {
-      throw ApiError.badRequest(
-        `Один Пользователь не прошёл`,
-        error instanceof Error ? error.message : 'Неизвестная ошибка',
-      );
-    }
-  }
-  async getAllUser() {
-    try {
-      const users = await UserModel.findAll();
-      return users;
-    } catch (error: unknown) {
-      throw ApiError.badRequest(
-        `Все Пользователи не прошли`,
-        error instanceof Error ? error.message : 'Неизвестная ошибка',
-      );
-    }
-  }
-  async updateUser(id: number, data: any) {
-    try {
-      const user = await UserModel.findByPk(id);
-      if (!user)
-        return ApiError.notFound(`Пользователь по id ${id} не найден в БД`);
-      const {
-        email = user./* email */ get('email'),
-        password = user./* password */ get('password'),
-        // ! заменить на роль из UserRoles
-        role = user./* role */ get('role'),
-      } = data;
-      await user.update({ email, password });
+  async createUser(data: UserCreateDto): Promise<UserModel> {
+    const { email, password, username = '', role = NameUserRoles.USER } = data;
 
-      if (data.role) {
-        await UserRoleModel.update(
-          { roleId: data.role },
-          { where: { userId: id } },
-        );
-      }
+    const existingUser = await UserModel.findOne({ where: { email } });
+    if (existingUser)
+      throw ApiError.conflict(`Пользователь с email ${email} существует`);
 
-      return user;
-    } catch (error: unknown) {
-      throw ApiError.badRequest(
-        `Обновление Пользователя не прошло`,
-        error instanceof Error ? error.message : 'Неизвестная ошибка',
-      );
-    }
+    const user = await UserModel.create({
+      email,
+      password,
+      username,
+    });
+
+    // параллел.req > созд.Корзину по User.id, привязка к Роли
+    await Promise.all([
+      BasketService.createBasket(user.id),
+      RoleService.assignUserRole(user.id, role as NameUserRoles),
+    ]);
+
+    return user;
   }
-  async deleteUser(id: number) {
-    try {
-      const user = await UserModel.findByPk(id);
-      if (!user) return ApiError.badRequest('Пользователь не найден в БД');
-      if (user.get('id')) BasketService.deleteBasket(user.get('id') as number);
-      await user.destroy();
-      return user;
-    } catch (error: unknown) {
-      throw ApiError.badRequest(
-        `Удаление Пользователя не прошло`,
-        error instanceof Error ? error.message : 'Неизвестная ошибка',
-      );
-    }
+
+  async getOneUser(id: number): Promise<UserModel> {
+    const user = await UserModel.findByPk(id);
+    if (!user) throw ApiError.notFound(`Пользователь с ID '${id}' не найден`);
+    return user;
+  }
+
+  async getAllUsers(): Promise<UserModel[]> {
+    return UserModel.findAll();
+  }
+
+  async updateUser(id: number, data: UserUpdateDto): Promise<UserModel> {
+    const user = await this.getOneUser(id);
+    // опцион.св-ва по модели
+    const updatePayload: Partial<UserModel> = {};
+    // наполн.объ.обнов.
+    if (data.email) updatePayload.email = data.email;
+    if (data.password) updatePayload.password = data.password;
+    if (data.username) updatePayload.username = data.username;
+    // параллел.req > обнов.Пользователя, привязка к Роли
+    await Promise.all([
+      user.update(updatePayload),
+      data.role && RoleService.assignUserRole(id, data.role as NameUserRoles),
+    ]);
+
+    return user;
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const user = await this.getOneUser(id);
+    await user.destroy();
   }
   // поиск по email
-  async getByEmailUser(email: string) {
-    try {
-      const user = await UserModel.findOne({ where: { email } });
-      if (!user)
-        throw ApiError.badRequest(
-          `Пользователь с email ${email} не найден в БД`,
-        );
-      return user;
-    } catch (error: unknown) {
-      throw ApiError.badRequest(
-        `По email найти Пользователя не прошло`,
-        error instanceof Error ? error.message : 'Неизвестная ошибка',
-      );
-    }
+  async getByEmail(email: string): Promise<UserModel> {
+    const user = await UserModel.findOne({ where: { email } });
+    if (!user)
+      throw ApiError.notFound(`Пользователь с email '${email}' не найден`);
+    return user;
   }
 }
 
