@@ -2,80 +2,73 @@
 import jwt from 'jsonwebtoken';
 
 import TokenModel from '../models/TokenModel';
-import ApiError from '../middleware/errors/ApiError';
-import { JwtToken, TokenDto } from '../types/auth.interface';
 import DatabaseUtils from '../utils/database.utils';
+import { JwtToken, TokenDto } from '../types/auth.interface';
+import ApiError from '../middleware/errors/ApiError';
 
 // сохр.токенов по id при регистр/логин
 class TokenService {
+  // обраб.ошб.JWT и их локализация
+  private handleJwtError(error: unknown): never {
+    // [Сохранена оригинальная обработка ошибок]
+    const message = (error as Error).message;
+    switch (message) {
+      case 'jwt malformed':
+        throw ApiError.unauthorized('Некорректный токен');
+      case 'invalid signature':
+        throw ApiError.unauthorized('Неверная подпись');
+      case 'jwt expired':
+        throw ApiError.unauthorized('Токен просрочен');
+      default:
+        throw ApiError.unauthorized('Ошибка авторизации');
+    }
+  }
   // валид./проверка подделки/сроки жизни токена ACCESS и REFRESH
   async validateAccessToken(token: string): Promise<TokenDto> {
     try {
       // верифик.|раскодир.токен. `проверять` на валидность(токен, секр.ключ)
-      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY!);
-      if (!userData || typeof userData !== 'object')
-        throw ApiError.unprocessable('Токен не прошёл валидацию');
-      return userData as TokenDto;
+      const data = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY!);
+      if (typeof data !== 'object')
+        throw ApiError.unauthorized('Неверный формат Токена');
+      return data as TokenDto;
     } catch (error: unknown) {
-      // обраб.ошб.JWT и их локализация
-      const message = (error as Error).message;
-      switch (message) {
-        case 'jwt malformed':
-          throw ApiError.unauthorized('Некорректный токен');
-        case 'invalid signature':
-          throw ApiError.unauthorized('Неверная подпись токена');
-        case 'jwt expired':
-          throw ApiError.unauthorized('Токен просрочен');
-        default:
-          throw ApiError.unauthorized(message);
-      }
+      this.handleJwtError(error);
     }
   }
   async validateRefreshToken(token: string): Promise<TokenDto> {
     try {
-      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY!);
-      if (!userData || typeof userData !== 'object')
-        throw ApiError.unprocessable('Токен не прошёл валидацию');
+      const data = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY!);
+      if (typeof data !== 'object')
+        throw ApiError.unauthorized('Неверный формат токена');
       // доп.проверка срока действия токена
       const tokenRecord = await this.findToken(token);
       if (
-        tokenRecord.refreshTokenExpires &&
+        !tokenRecord.refreshTokenExpires ||
         tokenRecord.refreshTokenExpires < new Date()
       ) {
         throw ApiError.unauthorized('Токен истёк');
       }
-      return userData as TokenDto;
+      return data as TokenDto;
     } catch (error: unknown) {
-      // обраб.ошб.JWT и их локализация
-      const message = (error as Error).message;
-      switch (message) {
-        case 'jwt malformed':
-          throw ApiError.unauthorized('Некорректный токен');
-        case 'invalid signature':
-          throw ApiError.unauthorized('Неверная подпись токена');
-        case 'jwt expired':
-          throw ApiError.unauthorized('Токен просрочен');
-        default:
-          throw ApiError.unauthorized(message);
-      }
+      this.handleJwtError(error);
     }
   }
 
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
-  async generateToken(payload: any): Promise<JwtToken> {
+  async generateToken(payload: TokenDto): Promise<JwtToken> {
     try {
       const accessToken = jwt.sign(
         payload,
         process.env.JWT_ACCESS_SECRET_KEY!,
-        { expiresIn: '24h' },
+        { expiresIn: process.env.RESET_TOKEN_LIFETIME },
       );
       const refreshToken = jwt.sign(
         payload,
         process.env.JWT_REFRESH_SECRET_KEY!,
-        { expiresIn: '30d' },
+        { expiresIn: process.env.REFRESH_TOKEN_LIFETIME },
       );
       return { accessToken, refreshToken };
-    } catch (error) {
+    } catch (error: unknown) {
       throw ApiError.conflict(
         `Ошибка генерации токенов: ${(error as Error).message}`,
       );
@@ -88,14 +81,14 @@ class TokenService {
     basketId: number,
     refreshToken: string,
   ): Promise<void> {
+    const refreshTokenExpires = new Date(
+      Date.now() + +process.env.REFRESH_TOKEN_LIFETIME!,
+    );
     // проверка существ.токена перед сохр.в БД
     // ^ только для одного устр. Заход с др.устр. выбьет первое. Можно сохр по неск.токенов для польз.устр.(обнов.,удал.стар.токенов)
     const tokenData = await TokenModel.findOne({
       where: { userId, basketId },
     });
-    const refreshTokenExpires = new Date(
-      Date.now() + +process.env.REFRESH_TOKEN_LIFETIME!,
-    );
     // обнов.Токен/срок или созд.нов.Токен
     if (tokenData) {
       await tokenData.update({ refreshToken, refreshTokenExpires });
@@ -113,28 +106,23 @@ class TokenService {
   }
 
   // Удален.REFRESH из БД
-  async removeToken(refreshToken: string) {
-    const tokenData = await TokenModel.findOne({ where: { refreshToken } });
-    if (!tokenData) throw ApiError.notFound('Токен не найден');
-    if (
-      tokenData.refreshTokenExpires &&
-      tokenData.refreshTokenExpires < new Date()
-    )
+  async removeToken(refreshToken: string): Promise<boolean> {
+    const token = await TokenModel.findOne({ where: { refreshToken } });
+    if (!token) throw ApiError.notFound('Токен не найден');
+    if (token.refreshTokenExpires && token.refreshTokenExpires < new Date())
       throw ApiError.unauthorized('Токен уже истёк');
-    await TokenModel.destroy({ where: { refreshToken } });
+    await token.destroy();
     return true;
   }
 
   // Поиск REFRESH токена в БД
-  async findToken(refreshToken: string) {
-    const tokenData = await TokenModel.findOne({ where: { refreshToken } });
-    if (!tokenData) throw ApiError.notFound('Токен не найден');
-    if (
-      tokenData.refreshTokenExpires &&
-      tokenData.refreshTokenExpires < new Date()
-    )
-      throw ApiError.unauthorized('Токен уже истёк');
-    return tokenData;
+  async findToken(refreshToken: string): Promise<TokenModel> {
+    const token = await TokenModel.findOne({ where: { refreshToken } });
+    if (!token) throw ApiError.notFound('Токен не найден');
+    if (token.refreshTokenExpires! < new Date()) {
+      throw ApiError.unauthorized('Токен истёк');
+    }
+    return token;
   }
 }
 
