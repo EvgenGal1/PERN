@@ -157,7 +157,7 @@ class AuthController {
       // получ.масс.все Роли/уровни Пользователя
       const userRoles = await RoleService.getUserRolesAndLevels(user.id);
       // получ.basket_id
-      const basket = await BasketService.getOneBasket(null, user.id);
+      const basket = await BasketService.getOneBasket(undefined, user.id);
       const tokenDto = await AuthService.createTokenDto(
         user,
         userRoles.map((rol) => rol.role),

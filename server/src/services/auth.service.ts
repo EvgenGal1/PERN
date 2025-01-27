@@ -154,7 +154,7 @@ class AuthService {
     // параллел.req > получ. масс.Роли/уровни, basket_id
     const [userRoles, basket] = await Promise.all([
       RoleService.getUserRolesAndLevels(user.id),
-      BasketService.getOneBasket(null, user.id),
+      BasketService.getOneBasket(undefined, user.id),
     ]);
     if (!basket) throw ApiError.notFound('Корзина не найдена');
 

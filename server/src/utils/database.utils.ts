@@ -4,8 +4,14 @@ import UserModel from '../models/UserModel';
 import RoleModel from '../models/RoleModel';
 import UserRoleModel from '../models/UserRoleModel';
 import BasketModel from '../models/BasketModel';
+import ProductModel from '../models/ProductModel';
+import BasketProductModel from '../models/BasketProductModel';
 import TokenModel from '../models/TokenModel';
-import { BasketResponse } from '../types/basket.interface';
+import {
+  BasketProduct,
+  BasketResponse,
+  BasketWithProducts,
+} from '../types/basket.interface';
 import ApiError from '../middleware/errors/ApiError';
 
 class DatabaseUtils {
@@ -35,27 +41,30 @@ class DatabaseUtils {
     return id;
   }
 
-  // утилита форматир.res.корзины
-  async formatBasketResponse(basket: BasketModel): Promise<BasketResponse> {
-    return {
+  // утилита форматир.res.Корзины
+  formatBasketResponse(basket: BasketWithProducts): BasketResponse {
+    // базов.объ.возврата
+    if (!basket) throw ApiError.badRequest('Неверный ввод корзины');
+    const base: BasketResponse = {
       id: basket.id,
-      products:
-        basket.products?.map((product: any) => {
-          // проверка наличия BasketProductModel
-          const quantity = product.BasketProductModel?.quantity;
-          if (quantity === undefined) {
-            console.error(
-              `Ошибка: Отсутствует связь BasketProductModel для Продукта с id=${product.id}`,
-            );
-          }
-          return {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            quantity: quantity ?? 0, // е/и связи нет - возврат 0
-          };
-        }) || [],
+      userId: basket.userId,
+      products: [] as BasketProduct[],
+      total: 0,
     };
+    if (!basket.products || !basket.products.length) return base;
+    // созд.масс.Продуктов > подсчёта общ.суммы
+    const products = basket.products.map(
+      (p: ProductModel & { BasketProduct: BasketProductModel }) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        quantity: p.BasketProduct?.quantity || 0,
+      }),
+    );
+    // подсчёт общ.суммы
+    const total = products.reduce((sum, p) => sum + p.price * p.quantity, 0);
+    // возврат данн.с фикс.тчк.в сумме
+    return { ...base, products, total: Number(total.toFixed(2)) };
   }
 }
 
