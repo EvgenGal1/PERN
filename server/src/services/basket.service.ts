@@ -1,21 +1,23 @@
 // табл.
+import UserModel from '../models/UserModel';
 import BasketModel from '../models/BasketModel';
 import ProductModel from '../models/ProductModel';
 import BasketProductModel from '../models/BasketProductModel';
-// утилиты/helpы/ошб.
+// утилиты/helpы/
 import DatabaseUtils from '../utils/database.utils';
+// type/dto
+import { BasketResponse, BasketWithProducts } from '../types/basket.interface';
+// обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
-import { BasketResponse } from '../types/basket.interface';
-import UserModel from '../models/UserModel';
 
 class BasketService {
-  // получить корзину по basketId или userId
+  // получить корзину по basketId/userId
   async getOneBasket(
-    basketId: number | null,
+    basketId?: number,
     userId?: number,
   ): Promise<BasketResponse> {
     if (!basketId && !userId)
-      throw ApiError.badRequest('Не переданы basketId или userId');
+      throw ApiError.badRequest('Требуется basketId или userId');
     // получ.по basketId или userId
     const basket = await BasketModel.findOne({
       where: basketId ? { id: basketId } : { userId },
@@ -23,76 +25,60 @@ class BasketService {
         {
           model: ProductModel,
           as: 'products',
-          attributes: ['id', 'name', 'price'],
+          attributes: ['id', 'name', 'price'], // поля Продукта
+          through: { attributes: ['quantity'], as: 'BasketProduct' }, // вкл.кол-во из связ.табл.
         },
       ],
     });
-    if (!basket) {
+    if (!basket || !basket.products)
       throw ApiError.notFound(
-        `Корзина ${basketId ? `basketId: '${basketId}'` : `userId: '${userId}'`} не найдена`,
+        `Корзина ${basketId ? `с ID '${basketId}' ` : `Пользователя с ID ${userId}`} не найдена`,
       );
-    }
-    return await DatabaseUtils.formatBasketResponse(basket as any);
+    return DatabaseUtils.formatBasketResponse(basket as BasketWithProducts);
   }
 
   // созд.корзину по userId
-  async createBasket(userId?: number): Promise<BasketResponse> {
-    if (!userId) throw ApiError.badRequest(`Нет userId для создания корзины`);
-    const user = await UserModel.findByPk(userId);
-    if (!user) throw ApiError.notFound('Пользователь не найден');
-    // `получить наименьший доступный идентификатор` из табл.БД
-    const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable('basket');
-    const basket = await BasketModel.create({
-      id: smallestFreeId,
-      userId: userId,
-    });
-    if (!basket) throw ApiError.internal(`Ошибка при создании корзины`);
-    return await DatabaseUtils.formatBasketResponse(basket);
+  async createBasket(userId: number): Promise<BasketResponse> {
+    // параллел.req >  получ. наименьший ID, user по ID
+    const [user, smallestId] = await Promise.all([
+      UserModel.findByPk(userId),
+      DatabaseUtils.getSmallestIDAvailable('basket'),
+    ]);
+    if (!user)
+      throw ApiError.notFound(`Пользователь с ID '${userId}' не найден`);
+
+    const basket = await BasketModel.create({ id: smallestId, userId });
+    return DatabaseUtils.formatBasketResponse(basket as BasketWithProducts);
   }
 
-  // добавить товар в корзину
+  // добавить Продукт в корзину
   async appendBasket(
     basketId: number,
     productId: number,
     quantity: number,
   ): Promise<BasketResponse> {
-    // Корзина с Товарами
-    const basket: any = await BasketModel.findByPk(basketId, {
-      include: [
-        {
-          model: ProductModel,
-          as: 'products',
-          through: { attributes: ['quantity'] }, // вкл.кол-во из связ.табл.
-          attributes: ['id', 'name', 'price'], // поля продукта
-        },
-      ],
-    });
+    // параллел.req > получ. Корзины и Продуктов по их ID
+    const [basket, product] = await Promise.all([
+      BasketModel.findByPk(basketId),
+      ProductModel.findByPk(productId),
+    ]);
     if (!basket) throw ApiError.notFound('Корзина не найдена');
-    // обнов.кол-во или добав.нов.Товар в Корзину
-    const [basketProduct, created] = await BasketProductModel.findOrCreate({
+    if (!product) throw ApiError.notFound('Продукт не найден');
+    // обнов.кол-во или добав.нов.Продукт в Корзину
+    const [item] = await BasketProductModel.findOrCreate({
       where: { basketId, productId },
-      defaults: { basketId, productId, quantity }, // созд.е/и отсутствует
+      // созд.е/и отсутствует
+      defaults: { basketId, productId, quantity },
     });
-    // е/и Товар не нов.созд. - увелич.кол-во в Корзине
-    if (!created) {
-      await basketProduct.increment('quantity', { by: quantity });
+    // е/и Продукт стар. - увелич.кол-во Продуктов в Корзине
+    if (!item.isNewRecord) {
+      await item.increment('quantity', { by: quantity });
     }
-    // обнов.объ.корзины, вкл.связ.продукты
-    await basket.reload({
-      include: [
-        {
-          model: ProductModel,
-          as: 'products',
-          through: { attributes: ['quantity'] }, // вкл.обнов.кол-во из связ.табл.
-          attributes: ['id', 'name', 'price'], // поля продукта
-        },
-      ],
-    });
-    // формир./возвращ.ответ
-    return await DatabaseUtils.formatBasketResponse(basket);
+    // нов.req > актуал.данн.
+    return this.getOneBasket(basketId);
   }
 
-  // увелич.кол-во Товаров в Корзине
+  // добавить Продукт в Корзину
   async incrementBasket(
     basketId: number,
     productId: number,
@@ -100,79 +86,64 @@ class BasketService {
   ): Promise<BasketResponse> {
     if (quantity <= 0)
       throw ApiError.badRequest('Количество должно быть больше 0');
-    const basketProduct = await BasketProductModel.findOne({
+    const item = await BasketProductModel.findOne({
       where: { basketId, productId },
     });
-    if (!basketProduct) throw ApiError.notFound('Товар не найден в корзине');
-    await basketProduct.increment('quantity', { by: quantity });
+    if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
+    await item.increment('quantity', { by: quantity });
     return this.getOneBasket(basketId);
   }
 
-  // уменьш.кол-во Товаров в Корзине
+  // убрать Продукт из Корзины
   async decrementBasket(
     basketId: number,
     productId: number,
     quantity: number,
   ): Promise<BasketResponse> {
-    const basketProduct = await BasketProductModel.findOne({
+    const item = await BasketProductModel.findOne({
       where: { basketId, productId },
     });
-    if (!basketProduct) throw ApiError.notFound('Товар не найден в корзине');
-    // сравнения кол-ва Товаров
-    if (basketProduct.quantity <= quantity) {
-      await basketProduct.destroy(); // удал.Товар е/и 0|<
+    if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
+    // сравнения кол-ва Продуктов (удал.Продукт е/и 0|< или уменьш.кол-ва Продукта)
+    if (item.quantity <= quantity) {
+      await item.destroy();
     } else {
-      await basketProduct.decrement('quantity', { by: quantity }); // уменьш.Товар
+      await item.decrement('quantity', { by: quantity });
     }
     return this.getOneBasket(basketId);
   }
 
-  // очистка Корзины от Товаров
+  // очистка Корзины от Продуктов
   async clearBasket(basketId: number): Promise<BasketResponse> {
     const basket = await BasketModel.findByPk(basketId);
-    if (!basket) {
-      throw ApiError.notFound(`Корзина с ID '${basketId}' не найдена`);
-    }
-    // удал.всех Товаров Корзины
-    try {
-      await BasketProductModel.destroy({ where: { basketId } });
-    } catch (error) {
-      throw ApiError.internal('Ошибка при удалении товаров из корзины');
-    }
+    if (!basket) throw ApiError.notFound('Корзина не найдена');
+    // удал.всех Продуктов Корзины
+    await BasketProductModel.destroy({ where: { basketId } });
     return this.getOneBasket(basketId);
   }
 
-  // удаление Корзины с Товарами
-  async removeBasket(
-    basketId: number,
-    // productId: number,
-  ): Promise</* BasketResponse | */ { message: string }> {
+  // удаление Корзины с Продуктами
+  async removeBasket(basketId: number): Promise<{ message: string }> {
     const basket = await BasketModel.findByPk(basketId, {
-      include: [{ model: BasketProductModel, as: 'products' }],
+      include: [BasketProductModel],
     });
     if (!basket)
       throw ApiError.notFound(`Корзина с ID '${basketId}' не найдена`);
-    // удал.пуст.Корзину
-    if (!basket.products || basket.products.length === 0) {
-      // throw ApiError.badRequest('Корзина пуста, Товаров нет');
-      await basket.destroy();
-      return {
-        message: `Корзина с ID '${basket.id}' удалена, Товаров не было`,
-      };
-    }
-    // удал.Корзину с Товарами
-    await basket.destroy(); // связь CASCADE удаляет и Товары и Корзину
-    return { message: `Корзина с ID '${basket.id}' удалена` };
+    // удал., возврат смс
+    const productCount = basket.products?.length ?? 0;
+    await basket.destroy();
+    return {
+      message: `Корзина с ID '${basketId}' ${productCount ? `с ${productCount} товарами` : 'без товаров'} удалена`,
+    };
   }
 
-  // удаление Корзины (с Товарами как в removeBasket но без проверок)
-  async deleteBasket(
-    basketId: number,
-  ): Promise<void | { message: string } /* BasketResponse */> {
+  // удаление Корзины (с Продуктами как в removeBasket но без проверок)
+  async deleteBasket(basketId: number): Promise<void | { message: string }> {
     const basket = await BasketModel.findByPk(basketId);
     if (!basket)
       throw ApiError.notFound(`Корзина с ID '${basketId}' не найдена`);
-    await basket.destroy(); // связь CASCADE удаляет и Товары и Корзину
+    // связь CASCADE удаляет и Продукты и Корзину
+    await basket.destroy();
     return { message: `Корзина с ID '${basket.id}' удалена` };
   }
 }
