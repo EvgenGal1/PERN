@@ -20,6 +20,7 @@
     "test": "cross-env NODE_ENV=development jest --detectOpenHandles"
   },
   "dependencies": {
+    "@types/multer": "^1.4.12",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.8",
