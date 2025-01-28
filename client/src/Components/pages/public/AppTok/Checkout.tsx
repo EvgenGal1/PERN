@@ -10,7 +10,7 @@ import { userCreate, guestCreate } from "../../../../http/Tok/orderAPI_Tok";
 import { BASKET_ROUTE, USERORDERS_ROUTE } from "../../../../utils/consts";
 import FormField__eg from "../../../ui/Form/FormField__eg";
 import FormFieldRecursive__EG from "../../../ui/Form/FormFieldRecursive__EG";
-import Form__Bootstrap from "../../../ui/Form/Form__Bootstrap";
+// import Form__Bootstrap from "../../../ui/Form/Form__Bootstrap";
 
 interface CheckoutFormValues {
   name: string;
@@ -88,7 +88,7 @@ const Checkout = () => {
         }
       })
       .catch((/* error */) => user.logout());
-  }, []);
+  }, [basket, user]);
 
   // Авториз.Корзин. loader, пока получаем корзину
   if (fetching) {
@@ -196,7 +196,7 @@ const Checkout = () => {
       {basket.count === 0 && <Navigate to={BASKET_ROUTE} replace={true} />}
       {/*  */}
       <h1 className="mb-4 mt-4">Оформление заказа</h1>
-      <Form__Bootstrap />
+      {/* <Form__Bootstrap /> */}
       {/* eslint-disable-next-line react/jsx-pascal-case  */}
       <FormFieldRecursive__EG
         handleSubmit={handleSubmit}
