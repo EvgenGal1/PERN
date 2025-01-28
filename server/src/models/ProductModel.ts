@@ -21,10 +21,10 @@ class ProductModel extends Model<
   declare id: CreationOptional<number>;
   declare name: string;
   declare price: number;
-  declare rating?: number;
-  declare image: string;
-  declare categoryId?: number | null;
-  declare brandId?: number | null;
+  declare rating: number | null;
+  declare image: string | null;
+  declare categoryId: number | null;
+  declare brandId: number | null;
 
   // Ассоциации. Cвязанные моделей ток.чтен.со Мн.данн.
   public readonly props?: ProductPropModel[];
@@ -71,7 +71,7 @@ class ProductModel extends Model<
         name: { type: DataTypes.STRING, unique: true, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
         rating: { type: DataTypes.FLOAT, defaultValue: 0 },
-        image: { type: DataTypes.STRING, allowNull: false },
+        image: { type: DataTypes.STRING, allowNull: true },
         categoryId: { type: DataTypes.INTEGER, allowNull: true },
         brandId: { type: DataTypes.INTEGER, allowNull: true },
       },
