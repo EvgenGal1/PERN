@@ -8,7 +8,6 @@ import crypto from 'crypto';
 // модель данных табл.User
 import UserModel from '../models/UserModel';
 import TokenModel from '../models/TokenModel';
-import UserRoleModel from '../models/UserRoleModel';
 // serv разные
 import RoleService from './role.service';
 import BasketService from './basket.service';

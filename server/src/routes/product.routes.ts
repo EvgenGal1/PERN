@@ -86,7 +86,7 @@ router.get('/getone/:id([0-9]+)', ProductController.getOneProduct);
  *       200:
  *         description: Список всех Продуктов
  */
-router.get('/getall', ProductController.getAllProduct);
+router.get('/getall', ProductController.getAllProducts);
 
 // обновить Продукт каталога  — нужны права администратора
 /**
@@ -189,7 +189,7 @@ router.get(
   // "/getall/categoryId/:categoryId([0-9]+)/brandId/:brandId([0-9]+)",
   // ^ запрос под неск.парам.ч/з запятую (,? - опциональная запятая, * - 0 и более повторений, + - 1 и более повторений)
   '/getall/categoryId/:categoryId(,?[0-9]+*)/brandId/:brandId(,?[0-9]+*)',
-  ProductController.getAllProduct,
+  ProductController.getAllProducts,
 );
 
 // список Продуктов выбранной категории
@@ -213,7 +213,7 @@ router.get(
 router.get(
   // "/getall/categoryId/:categoryId([0-9]+)",
   '/getall/categoryId/:categoryId(,?[0-9]+*)',
-  ProductController.getAllProduct,
+  ProductController.getAllProducts,
 );
 
 // список Продуктов выбранного бренда
@@ -237,7 +237,7 @@ router.get(
 router.get(
   // "/getall/brandId/:brandId([0-9]+)",
   '/getall/brandId/:brandId(,?[0-9]+*)',
-  ProductController.getAllProduct,
+  ProductController.getAllProducts,
 );
 
 /*

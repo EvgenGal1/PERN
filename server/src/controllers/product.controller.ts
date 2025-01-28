@@ -5,8 +5,8 @@ import { parseId, validateData, parseQueryParam } from '../utils/validators';
 
 class ProductController {
   constructor() {
-    this.getAllProduct = this.getAllProduct.bind(this);
     this.getOneProduct = this.getOneProduct.bind(this);
+    this.getAllProducts = this.getAllProducts.bind(this);
     this.createProduct = this.createProduct.bind(this);
     this.updateProduct = this.updateProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
@@ -28,7 +28,7 @@ class ProductController {
     }
   }
 
-  async getAllProduct(
+  async getAllProducts(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -37,14 +37,17 @@ class ProductController {
       const { categoryId, brandId } = req.params;
       const { limit, page, sortOrd, sortField } = req.query;
       const options = {
-        categoryId: categoryId ? Number(categoryId) : null,
-        brandId: brandId ? Number(brandId) : null,
+        categoryId: categoryId ? String(categoryId) : undefined,
+        brandId: brandId ? String(brandId) : undefined,
         limit: parseQueryParam(limit, 20, 'limit'),
         page: parseQueryParam(page, 1, 'page'),
-        sortOrd: sortOrd === 'ASC' || sortOrd === 'DESC' ? sortOrd : 'ASC',
-        sortField: sortField || null,
+        sortOrd:
+          sortOrd === 'ASC' || sortOrd === 'DESC'
+            ? (sortOrd as 'ASC' | 'DESC')
+            : undefined,
+        sortField: sortField ? String(sortField) : undefined,
       };
-      const products = await ProductService.getAllProduct(options);
+      const products = await ProductService.getAllProducts(options);
 
       res.status(200).json(products);
     } catch (error: unknown) {
@@ -59,9 +62,12 @@ class ProductController {
   ): Promise<void> {
     try {
       validateData(req.body, this.name);
+      // присвойка типов
+      const imageFile = req.files?.image as Express.Multer.File | undefined;
       const product = await ProductService.createProduct(
         req.body,
-        req.files?.image,
+        // обраб.е/и масс.ф.
+        Array.isArray(imageFile) ? imageFile[0] : imageFile,
       );
       res.status(201).json(product);
     } catch (error: unknown) {
@@ -77,10 +83,13 @@ class ProductController {
     try {
       const id = parseId(req.params.id, this.name);
       validateData(req.body, this.name);
+      // присвойка типов
+      const imageFile = req.files?.image as Express.Multer.File | undefined;
       const product = await ProductService.updateProduct(
         id,
         req.body,
-        req.files?.image,
+        // обраб.е/и масс.ф.
+        Array.isArray(imageFile) ? imageFile[0] : imageFile,
       );
       res.status(200).json(product);
     } catch (error: unknown) {
