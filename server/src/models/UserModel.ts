@@ -80,6 +80,7 @@ class UserModel extends Model<
       through: models.RatingModel,
       foreignKey: 'userId', // указ.внешн.ключ
       otherKey: 'productId', // указ.доп.внешн.ключ
+      as: 'ratings',
       onDelete: 'CASCADE',
     });
   }

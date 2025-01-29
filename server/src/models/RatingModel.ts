@@ -12,7 +12,7 @@ class RatingModel extends Model<
   InferAttributes<RatingModel>,
   InferCreationAttributes<RatingModel>
 > {
-  declare rate: string | number;
+  declare rate: number;
   declare productId: number;
   declare userId: number;
 

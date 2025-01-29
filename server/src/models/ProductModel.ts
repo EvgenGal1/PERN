@@ -47,9 +47,16 @@ class ProductModel extends Model<
       as: 'brand',
       foreignKey: 'brandId',
     });
+    // Один Продукт - Мн.Рейтингов
+    ProductModel.hasMany(models.RatingModel, {
+      as: 'ratings',
+      foreignKey: 'productId',
+      onDelete: 'CASCADE',
+    });
+    // Один Продукт - Мн.Пользователей ч/з Рейтинги
     ProductModel.belongsToMany(models.UserModel, {
       through: models.RatingModel,
-      as: 'ratings',
+      as: 'users',
       foreignKey: 'productId', // указ.внешн.ключ
       otherKey: 'userId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
