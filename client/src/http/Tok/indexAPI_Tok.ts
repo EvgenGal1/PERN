@@ -1,21 +1,8 @@
-// ^ настр.логики axios перехватов req/res
-import axios from "axios";
+// ^ настр.логики перехватов axios/req/res
 
-export interface AuthResponse {
-  // tokens: ITokens;
-  accessToken: string;
-  refreshToken: string;
-  // указ.интерф. как тип
-  user: IUser;
-}
+import axios, { InternalAxiosRequestConfig } from "axios";
 
-export interface IUser {
-  id: string;
-  email: string;
-  username: string;
-  // role: string;
-  isActivated: boolean;
-}
+import { AuthRes } from "../../types/api/ayth.types";
 
 // 1ый экземпляр req на сервер от любого посетителя (`гостевой экземпляр`)
 const guestInstance = axios.create({
@@ -31,8 +18,8 @@ const authInstance = axios.create({
   withCredentials: true,
 });
 
-// добавляем в запрос данные для авторизации с помощью перехватчика (interceptor)
-const authInterceptor = (config: any) => {
+// добав.в req данн. > авторизации с помощью перехватчика (interceptor)
+const authInterceptor = (config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem("tokenAccess");
   if (token) {
     config.headers.authorization =
@@ -42,8 +29,7 @@ const authInterceptor = (config: any) => {
 };
 authInstance.interceptors.request.use(authInterceptor);
 
-// перехватчики.res`ответ` на 401. 200норм. 401ошб.(нет access)>req`запрос` на обнов.с refresh>е/и валид.>2 token>aces сохр.в LS>нов.res
-// use приним.2парам. 1ый calback е/и всё ОК (возвращ.config), 2ой е/и ошб.
+// перехватчик ответа. cb - 200 - config / error - 401 - (нет access) req обнов.с refresh - валид. - 2 token - aces сохр.в LS - нов.res
 authInstance.interceptors.response.use(
   (config) => {
     return config;
@@ -58,8 +44,8 @@ authInstance.interceptors.response.use(
       originalRequest._isRetry = true;
       try {
         console.log("ind API RES IF 123 : " + 123);
-        const response = await axios.get<AuthResponse>(
-          `${process.env.REACT_APP_API_URL_PERN}/user/refresh`,
+        const response = await axios.get<AuthRes>(
+          `${process.env.REACT_APP_API_URL_PERN}/auth/refresh`,
           {
             withCredentials: true,
           }
