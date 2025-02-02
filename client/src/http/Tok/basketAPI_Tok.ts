@@ -4,7 +4,7 @@ import { guestInstance } from "./indexAPI_Tok";
 
 export const fetchBasket = async () => {
   try {
-    const { data } = await guestInstance.get("basket/getone");
+    const { data } = await guestInstance.get("baskets/getone");
     return data;
   } catch (e: any) {
     const status = e?.response?.status;
@@ -19,7 +19,7 @@ export const fetchBasket = async () => {
 export const appendBasket = async (prodId: number) => {
   try {
     const { data } = await guestInstance.put(
-      `basket/product/${prodId}/append/1`
+      `baskets/product/${prodId}/append/1`
     );
 
     return data;
@@ -34,21 +34,21 @@ export const appendBasket = async (prodId: number) => {
 };
 
 export const incrementBasket = async (id: number) => {
-  const { data } = await guestInstance.put(`basket/product/${id}/increment/1`);
+  const { data } = await guestInstance.put(`baskets/product/${id}/increment/1`);
   return data;
 };
 
 export const decrementBasket = async (id: number) => {
-  const { data } = await guestInstance.put(`basket/product/${id}/decrement/1`);
+  const { data } = await guestInstance.put(`baskets/product/${id}/decrement/1`);
   return data;
 };
 
 export const removeBasket = async (id: number) => {
-  const { data } = await guestInstance.put(`basket/product/${id}/remove`);
+  const { data } = await guestInstance.put(`baskets/product/${id}/remove`);
   return data;
 };
 
 export const clearBasket = async () => {
-  const { data } = await guestInstance.put(`basket/clear`);
+  const { data } = await guestInstance.put(`baskets/clear`);
   return data;
 };

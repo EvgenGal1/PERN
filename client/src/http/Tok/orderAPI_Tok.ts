@@ -13,7 +13,7 @@ interface OrderBody {
 
 export const adminCreate = async (body: OrderBody) => {
   try {
-    const { data } = await authInstance.post("order/admin/create", body);
+    const { data } = await authInstance.post("orders/create", body);
 
     return data;
   } catch (e: unknown) {
@@ -43,17 +43,17 @@ export const adminCreate = async (body: OrderBody) => {
 };
 // получить список всех заказов магазина
 export const adminGetAll = async () => {
-  const { data } = await authInstance.get("order/admin/getall");
+  const { data } = await authInstance.get("orders/getall");
   return data;
 };
 // получить список заказов пользователя
 export const adminGetUser = async (id: number) => {
-  const { data } = await authInstance.get(`order/admin/getall/user/${id}`);
+  const { data } = await authInstance.get(`orders/getall/user/${id}`);
   return data;
 };
 // получить заказ по id
 export const adminGetOne = async (id: number | string | undefined) => {
-  const { data } = await authInstance.get(`order/admin/getone/${id}`);
+  const { data } = await authInstance.get(`orders/getone/${id}`);
   // console.log("ordAPI adm_One data : ", data);
   return data;
 };
@@ -66,13 +66,13 @@ interface UpdateOrderBody {
 }
 
 export const adminUpdate = async (id: number, body: UpdateOrderBody) => {
-  const { data } = await authInstance.put(`order/admin/update/${id}`, body);
+  const { data } = await authInstance.put(`orders/update/${id}`, body);
   // console.log("ordAPI adm_UPD data : ", data);
   return data;
 };
 // удалить заказ по id
 export const adminDelete = async (id: number) => {
-  const { data } = await authInstance.delete(`order/admin/delete/${id}`);
+  const { data } = await authInstance.delete(`orders/delete/${id}`);
   return data;
 };
 
@@ -88,7 +88,7 @@ interface OrderItem {
 export const createItem = async (orderId: number, item: OrderItem) => {
   try {
     const { data } = await authInstance.post(
-      `order/${orderId}/item/create`,
+      `orders/${orderId}/item/create`,
       item
     );
 
@@ -124,7 +124,7 @@ export const updateItem = async (
   item: OrderItem
 ) => {
   const { data } = await authInstance.put(
-    `order/${orderId}/item/update/${id}`,
+    `orders/${orderId}/item/update/${id}`,
     item
   );
   return data;
@@ -132,7 +132,7 @@ export const updateItem = async (
 
 export const deleteItem = async (orderId: number, id: number) => {
   const { data } = await authInstance.delete(
-    `order/${orderId}/item/delete/${id}`
+    `orders/${orderId}/item/delete/${id}`
   );
   return data;
 };
@@ -149,7 +149,7 @@ interface UserOrderBody {
 
 export const userCreate = async (body: UserOrderBody) => {
   try {
-    const { data } = await authInstance.post("order/user/create", body);
+    const { data } = await authInstance.post("orders/user/create", body);
 
     return data;
   } /* catch (e: any) {
@@ -178,12 +178,12 @@ export const userCreate = async (body: UserOrderBody) => {
 };
 // получить список всех заказов пользователя
 export const userGetAll = async () => {
-  const { data } = await authInstance.get("order/user/getall");
+  const { data } = await authInstance.get("orders/user/getall");
   return data;
 };
 // получить один заказ пользователя
 export const userGetOne = async (id: number | string | undefined) => {
-  const { data } = await authInstance.get(`order/user/getone/${id}`);
+  const { data } = await authInstance.get(`orders/user/getone/${id}`);
   return data;
 };
 
@@ -206,7 +206,7 @@ interface ErrorResponse {
 
 export const guestCreate = async (body: GuestOrderBody) => {
   try {
-    const { data } = await guestInstance.post("order/guest/create", body);
+    const { data } = await guestInstance.post("orders/guest/create", body);
 
     return data;
   } catch (e: unknown) {
