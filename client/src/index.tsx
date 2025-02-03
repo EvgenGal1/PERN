@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-// ^ СЛИЯНИЕ (СЛН. НОВЫЙ ПОДХОД)
-import AppTok from "./Components/AppTok";
-// import App from "./App";
+// основ.прилож.
+import App from "./App";
+// контекст приложения (умолчание/настройка/доп.)
 import { AppContextProvider } from "./Components/layout/AppTok/AppContext";
-// перехвата ошб.в дочер.Комп.
+// перехватчик ошб.в дочер.Комп.
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 
 import "./index.css";
@@ -17,8 +17,7 @@ root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <AppContextProvider>
-        <AppTok />
-        {/* <App /> */}
+        <App />
       </AppContextProvider>
     </ErrorBoundary>
   </React.StrictMode>
