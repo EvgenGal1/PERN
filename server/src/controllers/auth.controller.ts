@@ -168,7 +168,11 @@ class AuthController {
       // созд./получ. 2 токена
       const tokens = await TokenService.generateToken(tokenDto);
       if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
-      res.status(200).json({ accessToken: tokens.accessToken });
+      res.status(200).json({
+        success: true,
+        message: 'Пользователь проверен',
+        data: { accessToken: tokens.accessToken },
+      });
     } catch (error: unknown) {
       next(error);
     }
@@ -181,7 +185,9 @@ class AuthController {
       const refreshToken =
         req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
       await AuthService.logoutUser(refreshToken);
-      res.clearCookie('refreshToken').json({ message: 'Вы вышли из системы' });
+      res
+        .clearCookie('refreshToken')
+        .json({ success: true, message: 'Вы вышли из системы' });
     } catch (error: unknown) {
       next(error);
     }
@@ -193,9 +199,10 @@ class AuthController {
     const { email } = req.body;
     try {
       await AuthService.sendPasswordResetEmail(email);
-      res
-        .status(200)
-        .json({ message: 'Инструкция для сброса отправлена на email' });
+      res.status(200).json({
+        success: true,
+        message: 'Инструкция для сброса отправлена на email',
+      });
     } catch (error: unknown) {
       next(error);
     }
@@ -219,8 +226,9 @@ class AuthController {
         )
         .status(200)
         .json({
+          success: true,
           message: 'Пароль успешно обновлен',
-          accessToken: tokens.accessToken,
+          data: { accessToken: tokens.accessToken },
         });
     } catch (error: unknown) {
       next(error);
