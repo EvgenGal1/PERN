@@ -6,16 +6,49 @@ import App from "./App";
 // контекст приложения (умолчание/настройка/доп.)
 import { AppContextProvider } from "./Components/layout/AppTok/AppContext";
 // перехватчик ошб.в дочер.Комп.
-import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
+import ErrorBoundary, {
+  ErrorRes,
+  FallbackComp,
+} from "./Components/ErrorBoundary/ErrorBoundary";
 
 import "./index.css";
+
+// подкл.логг. Sentry ()
+// Sentry.init({
+//   dsn: process.env.REACT_APP_SENTRY_DSN,
+//   environment: process.env.NODE_ENV,
+// });
+
+// глобал.UI отката (fallback UI) от кретич.ошб.рендера
+const GlobalFallback: FallbackComp = ({
+  error,
+  onReset,
+}: {
+  error?: ErrorRes;
+  onReset?: () => void;
+}) => (
+  <div className="global-error">
+    <h1>Критическая ошибка</h1>
+    <p>Приносим извинения за неудобства</p>
+    <div className="error-details">
+      <p>Сообщение: {error?.message}</p>
+      <p>Код: {error?.code}</p>
+    </div>
+    <button className="reload-button" onClick={onReset}>
+      Перезагрузить приложение
+    </button>
+  </div>
+);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ErrorBoundary>
+    <ErrorBoundary
+      // заклушка UI > отката при ошб.
+      FallbackComp={GlobalFallback}
+    >
       <AppContextProvider>
         <App />
       </AppContextProvider>
