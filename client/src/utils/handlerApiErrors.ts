@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 // import * as Sentry from "@sentry/react";
 
 import { logout } from "../api/auth/authAPI";
-import { ErrorRes } from "../types/api/auth.types";
+import { ErrorRes } from "../Components/ErrorBoundary/ErrorBoundary";
 
 export const handlerApiErrors = (error: AxiosError): ErrorRes => {
   // Логирование в Sentry

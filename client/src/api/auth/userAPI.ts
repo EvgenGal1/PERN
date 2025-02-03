@@ -1,13 +1,11 @@
 import { AxiosError } from "axios";
 
-import { IUser, ErrorRes } from "../../types/api/auth.types";
+import { IUser } from "../../types/api/auth.types";
 import { handlerApiErrors } from "../../utils/handlerApiErrors";
 import { authInstance } from "../axiosInstances";
 
 // Создание Пользователя
-export const createUser = async (
-  userData: Partial<IUser>
-): Promise<IUser | ErrorRes> => {
+export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   try {
     const response = await authInstance.post<IUser>("auth/create", userData);
     return response.data;
@@ -17,7 +15,7 @@ export const createUser = async (
 };
 
 // Получение одного Пользователя
-export const getOneUser = async (id: number): Promise<IUser | ErrorRes> => {
+export const getOneUser = async (id: number): Promise<IUser> => {
   try {
     const response = await authInstance.get<IUser>(`auth/${id}`);
     return response.data;
@@ -27,7 +25,7 @@ export const getOneUser = async (id: number): Promise<IUser | ErrorRes> => {
 };
 
 // Получение всех Пользователей
-export const getAllUsers = async (): Promise<IUser[] | ErrorRes> => {
+export const getAllUsers = async (): Promise<IUser[]> => {
   try {
     const response = await authInstance.get<IUser[]>("users");
     return response.data;
@@ -40,7 +38,7 @@ export const getAllUsers = async (): Promise<IUser[] | ErrorRes> => {
 export const updateUser = async (
   id: number,
   userData: Partial<IUser>
-): Promise<IUser | ErrorRes> => {
+): Promise<IUser> => {
   try {
     const response = await authInstance.put<IUser>(`auth/${id}`, userData);
     return response.data;

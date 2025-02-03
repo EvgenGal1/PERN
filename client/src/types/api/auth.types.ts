@@ -31,10 +31,3 @@ export interface TokenDto {
   levels: number[];
   basket: number;
 }
-
-export interface ErrorRes {
-  status?: number;
-  message?: string;
-  errors?: Record<string, unknown>;
-  code?: string;
-}

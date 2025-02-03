@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 // перехватчики
 import { guestInstance, authInstance } from "../axiosInstances";
 // DTO/типы/интерфейсы
-import { AuthRes, ErrorRes, IUser, TokenDto } from "../../types/api/auth.types";
+import { AuthRes, IUser, TokenDto } from "../../types/api/auth.types";
 // обраб.ошб.req/res
 import { handlerApiErrors } from "../../utils/handlerApiErrors";
 
@@ -14,7 +14,7 @@ import { handlerApiErrors } from "../../utils/handlerApiErrors";
 export const register = async (
   email: string,
   password: string
-): Promise<TokenDto | ErrorRes> => {
+): Promise<TokenDto> => {
   try {
     const response = await guestInstance.post<AuthRes>("auth/signup", {
       email,
@@ -36,7 +36,7 @@ export const register = async (
 export const login = async (
   email: string,
   password: string
-): Promise<IUser | ErrorRes> => {
+): Promise<IUser> => {
   try {
     const response = await guestInstance.post<AuthRes>("auth/login", {
       email,
@@ -55,7 +55,7 @@ export const login = async (
 };
 
 // Проверка Токена Пользователя
-export const check = async (): Promise<IUser | ErrorRes> => {
+export const check = async (): Promise<IUser> => {
   try {
     const token = localStorage.getItem("tokenAccess");
     if (!token) throw new Error("Токен отсутствует");
