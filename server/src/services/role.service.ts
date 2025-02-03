@@ -94,9 +94,7 @@ class RoleService {
   async getUserRolesAndLevels(userId: number): Promise<RoleLevels[]> {
     const userRoles = await UserRoleModel.findAll({
       where: { userId },
-      include: [
-        { model: RoleModel, as: 'role', through: { attributes: ['level'] } },
-      ],
+      include: [{ model: RoleModel, as: 'role' }],
     });
     if (!userRoles) throw ApiError.notFound('Связи Пользователя не найден');
     return userRoles.map((ur) => ({

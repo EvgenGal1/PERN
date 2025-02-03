@@ -46,6 +46,7 @@ class AuthController {
             'Регистрация пройдена. Проверьте эл.почту для активации учётной записи',
           success: true,
           data: {
+            accessToken: userData.tokens.accessToken,
             user: {
               id: userData.user.id,
               email: userData.user.email,

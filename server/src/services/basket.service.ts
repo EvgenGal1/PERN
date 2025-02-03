@@ -21,6 +21,7 @@ class BasketService {
     // получ.по basketId или userId
     const basket = await BasketModel.findOne({
       where: basketId ? { id: basketId } : { userId },
+      attributes: ['id', 'userId'],
       include: [
         {
           model: ProductModel,
