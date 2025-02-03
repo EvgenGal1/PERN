@@ -6,10 +6,10 @@ import axios, {
   AxiosError,
 } from "axios";
 
-import { AuthRes } from "../types/api/ayth.types";
+import { AuthRes } from "../types/api/auth.types";
 
 // Базовый URL API
-const API_URL = process.env.CLT_IURL;
+const API_URL = process.env.REACT_APP_CLT_IURL;
 
 // 1. `гостевой экземпляр` axios (неавториз.польз., отправ.cookie в кажд.req(refresh,basketId))
 const guestInstance = axios.create({ baseURL: API_URL, withCredentials: true });
@@ -46,12 +46,12 @@ authInstance.interceptors.response.use(
           withCredentials: true,
         });
         // сохр.нов. accessToken в LS
-        localStorage.setItem("tokenAccess", response.data.accessToken);
+        localStorage.setItem("tokenAccess", response.data.data.accessToken);
         // ч/з экземпл.перехватчика повтор нач.req с нов.Токеном
         return authInstance.request(initialReq);
       } catch (error: unknown) {
-        console.error("Ошибка при обновлении токена:", error);
-        // удал.Токен при неудаче
+        // console.error("Ошибка при обновлении токена:", error);
+        // удал.Токена при неудаче
         localStorage.removeItem("tokenAccess");
         throw error;
       }
