@@ -8,7 +8,7 @@ import { guestInstance, authInstance } from "../axiosInstances";
 // DTO/типы/интерфейсы
 import { AuthRes, IUser, TokenDto } from "../../types/api/auth.types";
 // обраб.ошб.req/res
-import { handlerApiErrors } from "../../utils/handlerApiErrors";
+import { errorHandler } from "../../utils/errorHandler";
 
 // Регистрация Пользователя
 export const register = async (
@@ -28,7 +28,7 @@ export const register = async (
 
     return userData;
   } catch (error) {
-    throw handlerApiErrors(error as AxiosError);
+    throw errorHandler(error as AxiosError);
   }
 };
 
@@ -50,7 +50,7 @@ export const login = async (
 
     return userData;
   } catch (error) {
-    throw handlerApiErrors(error as AxiosError);
+    throw errorHandler(error as AxiosError);
   }
 };
 
@@ -71,7 +71,7 @@ export const check = async (): Promise<IUser> => {
     return userData;
   } catch (error: unknown) {
     localStorage.removeItem("tokenAccess");
-    throw handlerApiErrors(error as AxiosError);
+    throw errorHandler(error as AxiosError);
   }
 };
 

@@ -5,7 +5,7 @@ import React, { Component, ReactNode } from "react";
 
 interface ErrorBoundaryProps {
   children: ReactNode; // вложен.дочер.Комп.
-  fallback?: ReactNode; // возможность передать собственный fallback UI
+  fallback?: ReactNode; // передача отката UI
 }
 
 interface ErrorBoundaryState {
