@@ -36,4 +36,5 @@ export interface ErrorRes {
   status?: number;
   message?: string;
   errors?: Record<string, unknown>;
+  code?: string;
 }

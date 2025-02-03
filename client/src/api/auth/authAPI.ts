@@ -1,24 +1,14 @@
 // ^ HTTP-запросы для работы с пользователями (регистрация, авторизация, проверка токена)
 
 import jwt_decode from "jwt-decode";
+import { AxiosError } from "axios";
 
+// перехватчики
 import { guestInstance, authInstance } from "../axiosInstances";
+// DTO/типы/интерфейсы
 import { AuthRes, ErrorRes, IUser, TokenDto } from "../../types/api/auth.types";
-
-// общ.обраб.ошб.
-const handleApiError = (error: unknown): ErrorRes => {
-  const axiosError = error as {
-    response?: {
-      status: number;
-      data: { errors?: Record<string, unknown>; message?: string };
-    };
-  };
-  return {
-    status: axiosError.response?.status || 500,
-    errors: axiosError.response?.data.errors,
-    message: axiosError.response?.data.message || "Неизвестная ошибка",
-  };
-};
+// обраб.ошб.req/res
+import { handlerApiErrors } from "../../utils/handlerApiErrors";
 
 // Регистрация Пользователя
 export const register = async (
@@ -38,7 +28,7 @@ export const register = async (
 
     return userData;
   } catch (error) {
-    return handleApiError(error);
+    throw handlerApiErrors(error as AxiosError);
   }
 };
 
@@ -60,7 +50,7 @@ export const login = async (
 
     return userData;
   } catch (error) {
-    return handleApiError(error);
+    throw handlerApiErrors(error as AxiosError);
   }
 };
 
@@ -81,7 +71,7 @@ export const check = async (): Promise<IUser | ErrorRes> => {
     return userData;
   } catch (error: unknown) {
     localStorage.removeItem("tokenAccess");
-    return handleApiError(error);
+    throw handlerApiErrors(error as AxiosError);
   }
 };
 
