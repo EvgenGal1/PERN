@@ -51,16 +51,16 @@ class AuthController {
               id: userData.user.id,
               email: userData.user.email,
               name: userData.user.username,
-              isActivated: userData.user.isActivated,
-              roles: userData.user.roles,
-              // по отдел.
-              // roles: userData.user.roles,
-              // levels: userData.user.levels,
-              // проверка перед добав. > опцион.типов
-              // ...(userData.user.roles && { roles: userData.user.roles }),
-              // приведение типа > опцион.типов
-              // role: (userData.user as User & Role).role,
             },
+            isActivated: userData.user.isActivated,
+            roles: userData.user.roles,
+            // по отдел.
+            // roles: userData.user.roles,
+            // levels: userData.user.levels,
+            // проверка перед добав. > опцион.типов
+            // ...(userData.user.roles && { roles: userData.user.roles }),
+            // приведение типа > опцион.типов
+            // role: (userData.user as User & Role).role,
           },
         });
     } catch (error: unknown) {
@@ -101,11 +101,11 @@ class AuthController {
               id: userData.user.id,
               email: userData.user.email,
               name: userData.user.username,
-              isActivated: userData.user.isActivated,
-              roles: userData.user.roles,
-              // roles: userData.user.roles,
-              // levels: userData.user.levels,
             },
+            isActivated: userData.user.isActivated,
+            roles: userData.user.roles,
+            // roles: userData.user.roles,
+            // levels: userData.user.levels,
           },
         });
     } catch (error: unknown) {
