@@ -5,12 +5,8 @@ import React, { Component, ReactNode } from "react";
 
 interface ErrorBoundaryProps {
   children: ReactNode; // вложен.дочер.Комп.
-  fallback?: ReactNode; // передача отката UI
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: ErrorRes | null;
+  //  передача отката UI
+  fallback?: React.ReactElement<{ error: ErrorRes; onReset: () => void }>;
 }
 
 export interface ErrorRes {
@@ -20,11 +16,44 @@ export interface ErrorRes {
   code?: string;
 }
 
+export type FallbackComp = React.ComponentType<{
+  error: ErrorRes;
+  onReset: () => void;
+}>;
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: ErrorRes | null;
+}
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  FallbackComp?: FallbackComp;
+}
+
+// дефолтный UI для отображ./обраб.ошб.
+const DefaultFallback = ({
+  error,
+  onReset,
+}: {
+  error: ErrorRes;
+  onReset: () => void;
+}) => (
+  <div
+    className="error-boundary"
+    style={{ textAlign: "center", marginTop: "50px" }}
+  >
+    <h1>⚠️ Что-то пошло не так</h1>
+    <p className="error-message">{error.message}</p>
+    {error.code && <p className="error-code">Код: {error.code}</p>}
+    <button className="retry-button" onClick={onReset}>
+      Попробовать снова
+    </button>
+  </div>
+);
+
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+  state: ErrorBoundaryState = { hasError: false, error: null };
 
   // перехват ошб.в дочер.Комп.
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -57,22 +86,13 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     // при ошб.отображ. переданный UI`резерв` или дефолтный
     if (this.state.hasError) {
-      return (
-        this.props.fallback || (
-          <div
-            className="error-boundary"
-            style={{ textAlign: "center", marginTop: "50px" }}
-          >
-            <h1>⚠️ Упс! Что-то пошло не так.</h1>
-            <p>{this.state.error?.message}</p>
-            {this.state.error?.code && (
-              <p>Код ошибки: {this.state.error.code}</p>
-            )}
-            {/* ручной сброс ошб. */}
-            <button onClick={this.handleReset}>Попробовать снова</button>
-            <p>Попробуйте обновить страницу или зайдите позже.</p>
-          </div>
-        )
+      return this.props.FallbackComp ? (
+        <this.props.FallbackComp
+          error={this.state.error!}
+          onReset={this.handleReset}
+        />
+      ) : (
+        <DefaultFallback error={this.state.error!} onReset={this.handleReset} />
       );
     }
     // без ошб.отраж.дочер.эл.
