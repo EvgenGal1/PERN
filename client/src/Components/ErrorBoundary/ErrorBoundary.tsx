@@ -3,27 +3,22 @@
 import React, { Component, ReactNode } from "react";
 // import * as Sentry from "@sentry/react";
 
+import { ApiError } from "../../utils/errorHandler";
+
 interface ErrorBoundaryProps {
   children: ReactNode; // вложен.дочер.Комп.
   //  передача отката UI
-  fallback?: React.ReactElement<{ error: ErrorRes; onReset: () => void }>;
-}
-
-export interface ErrorRes {
-  status?: number;
-  message?: string;
-  errors?: Record<string, unknown>;
-  code?: string;
+  fallback?: React.ReactElement<{ error: ApiError; onReset: () => void }>;
 }
 
 export type FallbackComp = React.ComponentType<{
-  error: ErrorRes;
+  error: ApiError;
   onReset: () => void;
 }>;
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error: ErrorRes | null;
+  error: ApiError | null;
 }
 
 interface ErrorBoundaryProps {
@@ -36,7 +31,7 @@ const DefaultFallback = ({
   error,
   onReset,
 }: {
-  error: ErrorRes;
+  error: ApiError;
   onReset: () => void;
 }) => (
   <div
