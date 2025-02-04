@@ -1,81 +1,136 @@
-// ^ HTTP-запросы для работы с пользователями (регистрация, авторизация, проверка токена)
+// ^ HTTP-запросы для работы с определёнными Пользователями (аутентификация, регистрация, авторизация, проверка токена и пр.)
 
 import jwt_decode from "jwt-decode";
-import { AxiosError } from "axios";
 
 // перехватчики
 import { guestInstance, authInstance } from "../axiosInstances";
 // DTO/типы/интерфейсы
-import { AuthRes, IUser, TokenDto } from "../../types/api/auth.types";
-// обраб.ошб.req/res
-import { errorHandler } from "../../utils/errorHandler";
+import { AuthRes, TokenPayload } from "../../types/api/auth.types";
+// обраб.req/res
+import { handleRequest } from "../handleRequest";
 
-// Регистрация Пользователя
-export const register = async (
-  email: string,
-  password: string
-): Promise<TokenDto> => {
-  try {
-    const response = await guestInstance.post<AuthRes>("auth/signup", {
-      email,
-      password,
-    });
-    const token = response.data?.data.accessToken;
-    if (!token) throw new Error("Токен отсутствует в ответе сервера");
+export const authAPI = {
+  /**
+   * Общая обработка успешного ответа аутентификации
+   */
+  processAuthResponse(response: AuthRes): TokenPayload {
+    if (!response.data.accessToken) {
+      throw Object.assign(new Error("Токен отсутствует"), {
+        status: 401,
+        code: "MISSING_TOKEN",
+      });
+    }
 
-    const userData = jwt_decode(token) as TokenDto;
-    localStorage.setItem("tokenAccess", token);
-
+    const userData = this.parseToken(response.data.accessToken);
+    localStorage.setItem("tokenAccess", response.data.accessToken);
     return userData;
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
-};
+  },
 
-// Авторизация Пользователя
-export const login = async (
-  email: string,
-  password: string
-): Promise<IUser> => {
-  try {
-    const response = await guestInstance.post<AuthRes>("auth/login", {
-      email,
-      password,
-    });
-    const token = response.data?.data.accessToken;
-    if (!token) throw new Error("Токен отсутствует в ответе сервера");
+  /**
+   * Парсинг JWT токена
+   */
+  parseToken(token: string): TokenPayload {
+    try {
+      return jwt_decode<TokenPayload>(token);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: any) {
+      throw Object.assign(new Error("Невалидный токен"), {
+        status: 401,
+        code: "INVALID_TOKEN",
+      });
+    }
+  },
 
-    const userData = jwt_decode(token) as TokenDto;
-    localStorage.setItem("tokenAccess", token);
+  /**
+   * Регистрация Пользователя
+   * @param email - Email пользователя
+   * @param password - Пароль
+   */
+  async register(email: string, password: string): Promise<TokenPayload> {
+    const response = await handleRequest(
+      () => guestInstance.post<AuthRes>("auth/signup", { email, password }),
+      "Auth/Register"
+    );
+    return this.processAuthResponse(response);
+  },
 
-    return userData;
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
-};
+  /**
+   * Авторизация пользователя
+   * @param email - Email пользователя
+   * @param password - Пароль
+   */
+  async login(email: string, password: string): Promise<TokenPayload> {
+    const response = await handleRequest(
+      () => guestInstance.post<AuthRes>("auth/login", { email, password }),
+      "Auth/Login"
+    );
+    return this.processAuthResponse(response);
+  },
 
-// Проверка Токена Пользователя
-export const check = async (): Promise<IUser> => {
-  try {
-    const token = localStorage.getItem("tokenAccess");
-    if (!token) throw new Error("Токен отсутствует");
+  /**
+   * Проверка Токена Пользователя
+   */
+  async check(): Promise<TokenPayload> {
+    const response = await handleRequest(
+      () => authInstance.get<AuthRes>("auth/check"),
+      "Auth/Check"
+    );
+    return this.processAuthResponse(response);
+  },
 
-    const response = await authInstance.get("auth/check");
-    const newToken = response.data.accessToken;
+  /**
+   * Обновление Токена Пользователя
+   */
+  async refresh(): Promise<TokenPayload> {
+    const response = await handleRequest(
+      () => authInstance.get<AuthRes>("auth/refresh"),
+      "Auth/Refresh"
+    );
+    return this.processAuthResponse(response);
+  },
 
-    if (!newToken) throw new Error("Невалидный токен");
-
-    const userData = jwt_decode(newToken) as TokenDto;
-    localStorage.setItem("tokenAccess", newToken);
-
-    return userData;
-  } catch (error: unknown) {
+  /**
+   * Выход Пользователя
+   */
+  async logout(): Promise<void> {
     localStorage.removeItem("tokenAccess");
-    throw errorHandler(error as AxiosError);
-  }
-};
+    await handleRequest(() => authInstance.post("auth/logout"), "Auth/Logout");
+  },
 
-// Выход Пользователя
-export const logout = (): void => {
-  localStorage.removeItem("tokenAccess");
+  /**
+   * Активация Аккаунта по Ссылке
+   * @param activationLink - Ссылка Активация
+   */
+  async activate(activationLink: string): Promise<void> {
+    await handleRequest(
+      () => guestInstance.get(`auth/activate/${activationLink}`),
+      "Auth/Activate"
+    );
+  },
+
+  /**
+   * запрос Сброса Пароля
+   * @param email - Email Пользователя
+   */
+  async requestPasswordReset(email: string): Promise<void> {
+    await handleRequest(
+      () => guestInstance.post("auth/reset-password", { email }),
+      "Auth/requestPasswordReset"
+    );
+  },
+
+  /**
+   * подтверждение Сброса Пароля
+   * @param token - Токен Сброса
+   * @param newPassword - новый Пароль
+   */
+  async confirmPasswordReset(
+    token: string,
+    newPassword: string
+  ): Promise<void> {
+    await handleRequest(
+      () => guestInstance.post(`auth/reset-password/${token}`, { newPassword }),
+      "Auth/confirmPasswordReset"
+    );
+  },
 };
