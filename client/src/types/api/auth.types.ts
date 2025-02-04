@@ -1,8 +1,3 @@
-// тип > хран.данн.Токена
-export interface UserTokenAcs {
-  [key: string]: string | number | boolean;
-}
-
 export interface AuthRes {
   status: number;
   success: true;
@@ -10,7 +5,7 @@ export interface AuthRes {
   data: {
     accessToken: string;
     user?: IUser;
-    roles?: string[];
+    roles?: RoleLevels[];
     isActivated?: boolean;
   };
 }
@@ -23,11 +18,15 @@ export interface IUser {
   isActivated?: boolean;
 }
 
-export interface TokenDto {
+export interface RoleLevels {
+  role: string;
+  level: number;
+}
+
+export interface TokenPayload {
   id: number;
   email: string;
   username: string;
-  roles: string[];
-  levels: number[];
+  roles: RoleLevels[];
   basket: number;
 }

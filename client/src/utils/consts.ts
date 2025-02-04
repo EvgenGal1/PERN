@@ -9,7 +9,7 @@ export const CONTACTS_ROUTE = "/contacts";
 export const NOTFOUND_ROUTE = "*";
 // ^ tokmakov
 export const LOGIN_ROUTE = "/login";
-export const SIGNUP_ROUTE = "/signup";
+export const REGISTER_ROUTE = "/register";
 export const PRODUCT_ROUTE = "/products";
 export const BASKET_ROUTE = "/baskets";
 export const CHECKOUT_ROUTE = "/checkout";
