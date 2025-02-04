@@ -124,16 +124,16 @@ class AuthService {
         id: user.id,
         email: user.email,
         username: user.username,
-        isActivated: false,
-        // общ.масс.объ.
-        roles: [{ role: role, level: userRoles.level }],
-        // отдел.передача
-        // roles: [role],
-        // levels: [userRoles.level],
-        // явно добав.парам. > опцион.типа(Partial)
-        // ...(role && { roles: [role] }),
-        // ...(userRoles && { levels: [userRoles.level] }),
       },
+      isActivated: false,
+      // общ.масс.объ.
+      roles: [{ role: role, level: userRoles.level }],
+      // отдел.передача
+      // roles: [role],
+      // levels: [userRoles.level],
+      // явно добав.парам. > опцион.типа(Partial)
+      // ...(role && { roles: [role] }),
+      // ...(userRoles && { levels: [userRoles.level] }),
     };
   }
 
@@ -177,17 +177,17 @@ class AuthService {
         id: user.id,
         email: user.email,
         username: user.username,
-        isActivated: user.isActivated,
-        roles: userRoles,
-        // добав.сразу
-        // ...userRoles,
-        // добав.по отдел.
-        // roles: userRoles.roles,
-        // levels: userRoles.levels,
-        // добав.перебором
-        // roles: userRoles.roles.map((role) => role),
-        // levels: userRoles.levels.map((level) => level),
       },
+      isActivated: user.isActivated,
+      roles: userRoles,
+      // добав.сразу
+      // ...userRoles,
+      // добав.по отдел.
+      // roles: userRoles.roles,
+      // levels: userRoles.levels,
+      // добав.перебором
+      // roles: userRoles.roles.map((role) => role),
+      // levels: userRoles.levels.map((level) => level),
     };
   }
 

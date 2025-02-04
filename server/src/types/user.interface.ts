@@ -18,6 +18,4 @@ export interface UserProfile {
   id: number;
   email: string;
   username: string | null;
-  isActivated: boolean;
-  roles: RoleLevels[];
 }

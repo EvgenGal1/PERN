@@ -1,4 +1,5 @@
 import { UserProfile } from './user.interface';
+import { RoleLevels } from './role.interface';
 
 export interface JwtToken {
   accessToken: string;
@@ -21,4 +22,6 @@ export interface TokenDto {
 export interface AuthCombinedType extends Tokens {
   basketId: number;
   user: UserProfile;
+  isActivated: boolean;
+  roles: RoleLevels[];
 }
