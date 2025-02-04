@@ -14,8 +14,7 @@ export interface TokenDto {
   id: number;
   email: string;
   username: string;
-  roles: string[];
-  levels: number[];
+  roles: RoleLevels[];
   basket: number;
 }
 

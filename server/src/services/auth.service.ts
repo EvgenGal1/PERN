@@ -43,8 +43,7 @@ class AuthService {
   // унифиц.парам.Токена
   async createTokenDto(
     user: UserModel,
-    roles: string[],
-    levels: number[],
+    roles: RoleLevels[],
     basketId: number,
   ): Promise<TokenDto> {
     return {
@@ -52,7 +51,6 @@ class AuthService {
       email: user.email,
       username: user.username || '',
       roles,
-      levels,
       basket: basketId,
     };
   }
@@ -102,8 +100,7 @@ class AuthService {
     // объ.перед.данн. > id/email/username/role/level/basketId
     const tokenDto = await this.createTokenDto(
       user,
-      [role],
-      [userRoles.level],
+      [{ role: role, level: userRoles.level }],
       basket.id,
     );
     // созд./получ. 2 токена
@@ -158,12 +155,7 @@ class AuthService {
     if (!basket) throw ApiError.notFound('Корзина не найдена');
 
     // объ.перед.данн. > id/email/username/role/level/basketId
-    const tokenDto = await this.createTokenDto(
-      user,
-      userRoles.map((rol: RoleLevels) => rol.role),
-      userRoles.map((rol: RoleLevels) => rol.level),
-      basket.id,
-    );
+    const tokenDto = await this.createTokenDto(user, userRoles, basket.id);
     // созд./получ. 2 токена. email/role
     const tokens = await TokenService.generateToken(tokenDto);
     if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
@@ -222,12 +214,7 @@ class AuthService {
     if (!userRoles.length) throw ApiError.notFound('Роли не найдены');
 
     // объ.перед.данн.> Роли > id/email/username/role/level
-    const tokenDto = await this.createTokenDto(
-      user,
-      userRoles.map((rol: RoleLevels) => rol.role),
-      userRoles.map((rol: RoleLevels) => rol.level),
-      token.basketId,
-    );
+    const tokenDto = await this.createTokenDto(user, userRoles, token.basketId);
     // созд./получ. 2 токена. email/role
     const tokens = await TokenService.generateToken(tokenDto);
     if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
@@ -305,8 +292,7 @@ class AuthService {
 
     const tokenDto = await this.createTokenDto(
       user,
-      userRoles.map((rol: RoleLevels) => rol.role),
-      userRoles.map((rol: RoleLevels) => rol.level),
+      userRoles,
       tokenEntry.basketId,
     );
     // созд./получ. 2 токена

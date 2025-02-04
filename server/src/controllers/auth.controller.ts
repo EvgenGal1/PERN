@@ -161,8 +161,7 @@ class AuthController {
       const basket = await BasketService.getOneBasket(undefined, user.id);
       const tokenDto = await AuthService.createTokenDto(
         user,
-        userRoles.map((rol) => rol.role),
-        userRoles.map((rol) => rol.level),
+        userRoles,
         basket.id,
       );
       // созд./получ. 2 токена
