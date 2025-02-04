@@ -212,7 +212,7 @@ class AuthController {
   }
 
   // обновление пароля
-  async completePasswordReset(req: Request, res: Response, next: NextFunction) {
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
     AuthController.validateRequest(req);
     const token = req.params.token;
     const password = req.body.password;

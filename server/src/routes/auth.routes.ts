@@ -215,7 +215,7 @@ router.post(
 router.patch(
   '/reset-password/:token',
   validateAuth,
-  AuthController.completePasswordReset,
+  AuthController.resetPassword,
 );
 
 /**
