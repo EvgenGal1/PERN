@@ -64,7 +64,7 @@ class AuthService {
   }
 
   // РЕГИСТРАЦИЯ
-  async signupUser(
+  async registerUser(
     email: string,
     password: string,
     username = '',

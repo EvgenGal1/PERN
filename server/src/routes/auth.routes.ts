@@ -17,7 +17,7 @@ const router = express.Router();
 // РЕГИСТРАЦИЯ
 /**
  * @swagger
- * /auth/signup:
+ * /auth/register:
  *   post:
  *     summary: Регистрация нового Пользователя
  *     tags: [Authentication]
@@ -46,7 +46,7 @@ const router = express.Router();
  *       400:
  *         description: Некорректные входные данные
  */
-router.post('/signup', validateAuth, AuthController.signupUser);
+router.post('/register', validateAuth, AuthController.registerUser);
 
 // АВТОРИЗАЦИЯ
 /**

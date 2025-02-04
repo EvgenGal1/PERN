@@ -24,14 +24,18 @@ class AuthController {
     }
   }
   // РЕГИСТРАЦИЯ
-  async signupUser(req: Request, res: Response, next: NextFunction) {
+  async registerUser(req: Request, res: Response, next: NextFunction) {
     try {
       // проверка вход.полей на валидацию. шаблоны в route
       await AuthController.validateRequest(req);
       // получ.данн.из тела запроса
       const { email, password, username } = req.body;
       // передача данн.в сервис > возвращ. 2 токена, ID корзины, данн.Польз.
-      const userData = await AuthService.signupUser(email, password, username);
+      const userData = await AuthService.registerUser(
+        email,
+        password,
+        username,
+      );
       // сохр.в cookie refreshToken/basketId и возвращ.данн.Пользователя
       res
         .cookie(
