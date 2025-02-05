@@ -7,7 +7,7 @@ import {
   SHOP_CATALOG_ROUTE,
   FILTER_ROUTE,
   LOGIN_ROUTE,
-  SIGNUP_ROUTE,
+  REGISTER_ROUTE,
   PRODUCT_ROUTE,
   BASKET_ROUTE,
   USER_ROUTE,
@@ -29,7 +29,7 @@ import Contacts from "../../pages/public/Contacts";
 import NotFound from "../../pages/public/NotFound";
 // ^ tokmakov
 // import Login from "../../pages/public/AppTok/Login";
-// import Signup from "../../pages/public/AppTok/Signup";
+// import Register from "../../pages/public/AppTok/Register";
 import Shop from "../../pages/public/AppTok/Shop";
 import SearchFilter from "../../pages/public/AppTok/SearchFilter";
 import Auth from "../../pages/public/AppTok/Auth";
@@ -56,9 +56,9 @@ export const publicRoutes = [
   { /* "/", */ path: SHOP_ROUTE, Component: Shop },
   { path: SHOP_CATALOG_ROUTE, Component: Shop },
   { path: FILTER_ROUTE, Component: SearchFilter },
-  // Замена 2 Комп.Login|Signup на один Комп.с разн.маршр. в строке запроса
+  // Замена 2 Комп.Login|Register на один Комп.с разн.маршр. в строке запроса
   { path: LOGIN_ROUTE, Component: /* Login */ Auth },
-  { path: SIGNUP_ROUTE, Component: /* Signup */ Auth },
+  { path: REGISTER_ROUTE, Component: /* Register */ Auth },
   { path: PRODUCT_ROUTE + "/:id", Component: Product },
   { path: DEVICE_ROUTE + "/:id", Component: DevicePage },
   { path: DELIVERY_ROUTE, Component: Delivery },

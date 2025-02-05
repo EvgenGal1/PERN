@@ -9,10 +9,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { loginUser, signupUser } from "../../../../http/Tok/userAPI_Tok";
+import { authAPI } from "../../../../api/auth/authAPI";
 import {
   LOGIN_ROUTE,
-  SIGNUP_ROUTE,
+  REGISTER_ROUTE,
   USER_ROUTE,
   ADMIN_ROUTE,
 } from "../../../../utils/consts";
@@ -199,8 +199,9 @@ const Auth = observer(() => {
     // ч/з опред.метод запрос к БД
     let dataRes: any; //{ errors: any[]; message: any; };
     if (isLogin)
-      dataRes = await loginUser(formValues.email, formValues.password);
-    else dataRes = await signupUser(formValues.email, formValues.password);
+      dataRes = await authAPI.login(formValues.email, formValues.password);
+    else
+      dataRes = await authAPI.register(formValues.email, formValues.password);
     console.log("DATA 00000 ", dataRes);
 
     // пров./ввывод errors
@@ -373,7 +374,7 @@ const Auth = observer(() => {
             </button>
             {isLogin ? (
               <p className="tac mt-2 mb-0">
-                Нет аккаунта? <Link to={SIGNUP_ROUTE}>Зарегистрирутесь!</Link>
+                Нет аккаунта? <Link to={REGISTER_ROUTE}>Зарегистрирутесь!</Link>
               </p>
             ) : (
               <p className="tac mt-2 mb-0">

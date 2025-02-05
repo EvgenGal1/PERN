@@ -16,7 +16,7 @@ import {
   DELIVERY_ROUTE,
   CONTACTS_ROUTE,
   LOGIN_ROUTE,
-  SIGNUP_ROUTE,
+  REGISTER_ROUTE,
   BASKET_ROUTE,
   USER_ROUTE,
   ADMIN_ROUTE,
@@ -100,7 +100,7 @@ const NavBar = observer(() => {
               <NavLink to={LOGIN_ROUTE} className="nav-link">
                 Войти
               </NavLink>
-              <NavLink to={SIGNUP_ROUTE} className="nav-link">
+              <NavLink to={REGISTER_ROUTE} className="nav-link">
                 Регистрация
               </NavLink>
             </>
