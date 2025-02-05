@@ -8,19 +8,18 @@ import { guestInstance, authInstance } from "../axiosInstances";
 import { AuthRes, TokenPayload } from "../../types/api/auth.types";
 // обраб.req/res
 import { handleRequest } from "../handleRequest";
+// общ.клс.ошб.
+import { ApiError } from "../../utils/errorClasses";
 
 export const authAPI = {
   /**
    * Общая обработка успешного ответа аутентификации
    */
   processAuthResponse(response: AuthRes): TokenPayload {
-    if (!response.data.accessToken) {
-      throw Object.assign(new Error("Токен отсутствует"), {
-        status: 401,
-        code: "MISSING_TOKEN",
-      });
+    const { accessToken } = response.data;
+    if (!accessToken) {
+      throw new ApiError("Токен отсутствует", 401, "MISSING_TOKEN");
     }
-
     const userData = this.parseToken(response.data.accessToken);
     localStorage.setItem("tokenAccess", response.data.accessToken);
     return userData;
@@ -32,12 +31,8 @@ export const authAPI = {
   parseToken(token: string): TokenPayload {
     try {
       return jwt_decode<TokenPayload>(token);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: any) {
-      throw Object.assign(new Error("Невалидный токен"), {
-        status: 401,
-        code: "INVALID_TOKEN",
-      });
+    } catch (error: unknown) {
+      throw new ApiError("Невалидный токен", 401, "INVALID_TOKEN", { error });
     }
   },
 
@@ -70,12 +65,16 @@ export const authAPI = {
   /**
    * Проверка Токена Пользователя
    */
-  async check(): Promise<TokenPayload> {
+  async check(): Promise<{ userData: TokenPayload; activated: boolean }> {
     const response = await handleRequest(
       () => authInstance.get<AuthRes>("auth/check"),
       "Auth/Check"
     );
-    return this.processAuthResponse(response);
+    const token = this.processAuthResponse(response);
+    return {
+      userData: token,
+      activated: response.data.isActivated!,
+    };
   },
 
   /**

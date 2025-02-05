@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 // import axios from "axios";
 // окружение/API
 import { AppContext } from "./Components/layout/AppTok/AppContext";
-import { check } from "./api/auth/authAPI";
+import { authAPI } from "./api/auth/authAPI";
 // гл.Компоненты
 import { Header } from "./Components/layout/Header";
 import NavBar from "./Components/layout/AppTok/NavBar";
@@ -24,7 +24,7 @@ const AppTok: React.FC = observer(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { userData, activated }: any = await check();
+        const { userData, activated } = await authAPI.check();
         if (userData) user.login(userData);
         if (activated) user.isActivated(activated);
       } catch (error) {
