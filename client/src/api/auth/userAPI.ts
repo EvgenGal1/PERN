@@ -1,57 +1,59 @@
-import { AxiosError } from "axios";
-
 import { IUser } from "../../types/api/auth.types";
-import { errorHandler } from "../../utils/errorHandler";
 import { authInstance } from "../axiosInstances";
+import { handleRequest } from "../handleRequest";
 
-// Создание Пользователя
-export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
-  try {
-    const response = await authInstance.post<IUser>("auth/create", userData);
-    return response.data;
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
-};
+export const userAPI = {
+  /**
+   * Создание Пользователя (Admin)
+   */
+  async create(userData: Partial<IUser>): Promise<IUser> {
+    return handleRequest(
+      () => authInstance.post<IUser>("users/create", userData),
+      "User/Create"
+    ).then((response) => response);
+  },
 
-// Получение одного Пользователя
-export const getOneUser = async (id: number): Promise<IUser> => {
-  try {
-    const response = await authInstance.get<IUser>(`auth/${id}`);
-    return response.data;
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
-};
+  /**
+   * Получение Одного Пользователя
+   * @param id - ID Пользователя
+   */
+  async getOne(id: number): Promise<IUser> {
+    return handleRequest(
+      () => authInstance.get<IUser>(`users/${id}`),
+      "User/GetOne"
+    ).then((response) => response);
+  },
 
-// Получение всех Пользователей
-export const getAllUsers = async (): Promise<IUser[]> => {
-  try {
-    const response = await authInstance.get<IUser[]>("users");
-    return response.data;
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
-};
+  /**
+   * Получение Всех Пользователей (Admin)
+   */
+  async getAll(): Promise<IUser[]> {
+    return handleRequest(
+      () => authInstance.get<IUser[]>("users"),
+      "User/GetAll"
+    ).then((response) => response);
+  },
 
-// Обновление Пользователя
-export const updateUser = async (
-  id: number,
-  userData: Partial<IUser>
-): Promise<IUser> => {
-  try {
-    const response = await authInstance.put<IUser>(`auth/${id}`, userData);
-    return response.data;
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
-};
+  /**
+   * Обновление данных Пользователя
+   * @param id - ID Пользователя
+   * @param userData - новые данные
+   */
+  async update(id: number, userData: Partial<IUser>): Promise<IUser> {
+    return handleRequest(
+      () => authInstance.put<IUser>(`users/${id}`, userData),
+      "User/Update"
+    ).then((response) => response);
+  },
 
-// Удаление Пользователя
-export const deleteUser = async (id: number): Promise<void> => {
-  try {
-    await authInstance.delete(`auth/${id}`);
-  } catch (error) {
-    throw errorHandler(error as AxiosError);
-  }
+  /**
+   * Удаление Пользователя
+   * @param id - ID Пользователя
+   */
+  async delete(id: number): Promise<void> {
+    await handleRequest(
+      () => authInstance.delete(`users/${id}`),
+      "User/Delete"
+    );
+  },
 };
