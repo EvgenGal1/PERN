@@ -1,9 +1,10 @@
-// ^ перехвата ошб.в дочер.Комп., предотвращает "падение" всего приложения. Показ резервный польз.интерфейс (fallback UI) и логировать ошб.
+// ^ перехватчик ошб.в дочер.Комп.(заглушка(fallback UI) от ошб.рендер, логировать ошб.)
 
 import React, { Component, ReactNode } from "react";
 // import * as Sentry from "@sentry/react";
 
-import { ApiError } from "../../utils/errorHandler";
+// клс.обраб.ошб.
+import { ApiError } from "../../utils/errorClasses";
 
 interface ErrorBoundaryProps {
   children: ReactNode; // вложен.дочер.Комп.
@@ -17,7 +18,6 @@ export type FallbackComp = React.ComponentType<{
 }>;
 
 interface ErrorBoundaryState {
-  hasError: boolean;
   error: ApiError | null;
 }
 
@@ -35,7 +35,7 @@ const DefaultFallback = ({
   onReset: () => void;
 }) => (
   <div
-    className="error-boundary"
+    className="error-boundary error-fallback"
     style={{ textAlign: "center", marginTop: "50px" }}
   >
     <h1>⚠️ Что-то пошло не так</h1>
@@ -48,50 +48,47 @@ const DefaultFallback = ({
 );
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false, error: null };
+  state: ErrorBoundaryState = { error: null };
 
   // перехват ошб.в дочер.Комп.
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    console.error("ErrorBoundary ОШБ: ", error);
     // логгирование
+    console.error("ErrorBoundary ОШБ: ", error);
     // Sentry.captureException(error);
     return {
-      hasError: true,
-      error: {
-        status: 500,
-        message: error.message,
-        code: "COMPONENT_ERROR",
-      },
+      error: new ApiError(error.message, 500, "COMPONENT_ERROR", {
+        stack: error.stack,
+      }),
     };
   }
 
   // логирование ошб. > аналитики
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Подробности ошибки:", error, errorInfo);
-    // мжн.добав.интеграцию с Sentry > лог.ошб.
+    // лог.ошб. Sentry
     // Sentry.captureException(error, { extra: errorInfo });
   }
 
   // сброс сост.после ошб.
   handleReset = () => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ error: null });
     window.location.reload();
   };
 
   render() {
+    const { error } = this.state;
+    const { FallbackComp, children } = this.props;
+
     // при ошб.отображ. переданный UI`резерв` или дефолтный
-    if (this.state.hasError) {
-      return this.props.FallbackComp ? (
-        <this.props.FallbackComp
-          error={this.state.error!}
-          onReset={this.handleReset}
-        />
+    if (error) {
+      return FallbackComp ? (
+        <FallbackComp error={error} onReset={this.handleReset} />
       ) : (
-        <DefaultFallback error={this.state.error!} onReset={this.handleReset} />
+        <DefaultFallback error={error} onReset={this.handleReset} />
       );
     }
     // без ошб.отраж.дочер.эл.
-    return this.props.children;
+    return children;
   }
 }
 

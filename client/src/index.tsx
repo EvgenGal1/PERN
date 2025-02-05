@@ -7,9 +7,9 @@ import App from "./App";
 import { AppContextProvider } from "./Components/layout/AppTok/AppContext";
 // перехватчик ошб.в дочер.Комп.
 import ErrorBoundary, {
-  ErrorRes,
   FallbackComp,
 } from "./Components/ErrorBoundary/ErrorBoundary";
+import { ApiError } from "./utils/errorClasses";
 
 import "./index.css";
 
@@ -24,10 +24,10 @@ const GlobalFallback: FallbackComp = ({
   error,
   onReset,
 }: {
-  error?: ErrorRes;
+  error?: ApiError;
   onReset?: () => void;
 }) => (
-  <div className="global-error">
+  <div className="global-error auth-error">
     <h1>Критическая ошибка</h1>
     <p>Приносим извинения за неудобства</p>
     <div className="error-details">

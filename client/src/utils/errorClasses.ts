@@ -1,13 +1,23 @@
 // ^ дополнительный класс обработки типизированных ошибок
 
-export class APIError extends Error {
+export class ApiError extends Error {
   constructor(
-    message: string,
+    public message: string,
     public status: number,
     public code: string,
     public errors?: Record<string, unknown>
   ) {
     super(message);
-    Object.setPrototypeOf(this, APIError.prototype);
+    this.name = "ApiError";
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+
+  toJSON() {
+    return {
+      status: this.status,
+      code: this.code,
+      message: this.message,
+      ...(this.errors && { errors: this.errors }),
+    };
   }
 }

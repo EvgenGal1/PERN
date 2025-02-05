@@ -4,23 +4,12 @@ import { AxiosError } from "axios";
 // логгирование
 // import * as Sentry from "@sentry/react";
 
-import { APIError } from "./errorClasses";
+import { ApiError } from "./errorClasses";
 import { authAPI } from "../api/auth/authAPI";
-
-export interface ApiError {
-  status: number;
-  message: string;
-  code: string;
-  errors?: Record<string, unknown>;
-}
 
 export const errorHandler = (error: unknown, context?: string): ApiError => {
   // баз.объ.ошб.
-  const baseError = {
-    status: 500,
-    message: "Неизвестная ошибка",
-    code: "UNKNOWN_ERROR",
-  };
+  const baseError = new ApiError("Неизвестная ошибка", 500, "UNKNOWN_ERROR");
   // логг.Sentry
   // if (process.env.NODE_ENV === "production") Sentry.captureException(error, { tags: { context } });
   // Логирование контекста
@@ -34,7 +23,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
         status: 503,
         message: "Сервер недоступен",
         code: "NETWORK_ERROR",
-      };
+      } as ApiError;
     }
 
     // ошб.от БД
@@ -45,8 +34,6 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
     if (status === 401) {
       authAPI.logout();
       window.location.href = "auth/login";
-      // localStorage.removeItem("tokenAccess");
-      // window.location.href = "/login";
     }
 
     return {
@@ -54,22 +41,14 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
       message: responseData?.message || "Неизвестная ошибка",
       errors: responseData?.errors,
       code: responseData?.code || "UNKNOWN_ERROR",
-    };
+    } as ApiError;
   }
 
   // спец.доп.ошб.
-  if (error instanceof APIError) {
-    return {
-      status: error.status,
-      message: error.message,
-      code: error.code,
-      errors: error.errors,
-    };
-  }
-
+  if (error instanceof ApiError) return error;
   // натив.ошб.JS
-  if (error instanceof Error) return { ...baseError, message: error.message };
-
-  // Неизвестные ошибки
+  if (error instanceof Error)
+    return { ...baseError, message: error.message } as ApiError;
+  // неизвестные ошб.
   return baseError;
 };
