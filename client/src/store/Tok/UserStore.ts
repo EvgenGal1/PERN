@@ -1,5 +1,6 @@
 // ^ хранилище состояний пользователей сайта
 import { makeAutoObservable } from "mobx";
+import { TokenPayload } from "../../types/api/auth.types";
 
 export default class UserStore {
   id: number | null = null;
@@ -13,22 +14,12 @@ export default class UserStore {
     makeAutoObservable(this);
   }
 
-  login({
-    id,
-    username,
-    email,
-    role,
-  }: {
-    id: number;
-    username: string;
-    email: string;
-    role: string;
-  }) {
+  login({ id, username, email, roles }: TokenPayload) {
     this.id = id;
     this.username = username;
     this.email = email;
     this.isAuth = true;
-    this.isAdmin = role === "ADMIN";
+    this.isAdmin = roles[0].role === "ADMIN";
   }
 
   isActivated(activated: boolean) {
