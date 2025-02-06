@@ -2,7 +2,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-// import axios from "axios";
+
 // окружение/API
 import { AppContext } from "./Components/layout/AppTok/AppContext";
 import { authAPI } from "./api/auth/authAPI";

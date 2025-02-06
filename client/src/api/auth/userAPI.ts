@@ -6,7 +6,7 @@ export const userAPI = {
   /**
    * Создание Пользователя (Admin)
    */
-  async create(userData: Partial<IUser>): Promise<IUser> {
+  async createUser(userData: Partial<IUser>): Promise<IUser> {
     return handleRequest(
       () => authInstance.post<IUser>("users/create", userData),
       "User/Create"
@@ -17,7 +17,7 @@ export const userAPI = {
    * Получение Одного Пользователя
    * @param id - ID Пользователя
    */
-  async getOne(id: number): Promise<IUser> {
+  async getOneUser(id: number): Promise<IUser> {
     return handleRequest(
       () => authInstance.get<IUser>(`users/${id}`),
       "User/GetOne"
@@ -27,7 +27,7 @@ export const userAPI = {
   /**
    * Получение Всех Пользователей (Admin)
    */
-  async getAll(): Promise<IUser[]> {
+  async getAllUsers(): Promise<IUser[]> {
     return handleRequest(
       () => authInstance.get<IUser[]>("users"),
       "User/GetAll"
@@ -39,7 +39,7 @@ export const userAPI = {
    * @param id - ID Пользователя
    * @param userData - новые данные
    */
-  async update(id: number, userData: Partial<IUser>): Promise<IUser> {
+  async updateUser(id: number, userData: Partial<IUser>): Promise<IUser> {
     return handleRequest(
       () => authInstance.put<IUser>(`users/${id}`, userData),
       "User/Update"
@@ -50,7 +50,7 @@ export const userAPI = {
    * Удаление Пользователя
    * @param id - ID Пользователя
    */
-  async delete(id: number): Promise<void> {
+  async deleteUser(id: number): Promise<void> {
     await handleRequest(
       () => authInstance.delete(`users/${id}`),
       "User/Delete"

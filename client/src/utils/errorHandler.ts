@@ -19,11 +19,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
   if (error instanceof AxiosError) {
     // ошб.сетевые (нет ответа)
     if (!error.response) {
-      return {
-        status: 503,
-        message: "Сервер недоступен",
-        code: "NETWORK_ERROR",
-      } as ApiError;
+      return new ApiError("Сервер недоступен", 503, "NETWORK_ERROR", { error });
     }
 
     // ошб.от БД
