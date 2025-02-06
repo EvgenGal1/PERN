@@ -4,6 +4,11 @@ export interface CategoryData {
   name: string;
 }
 
+export interface BrandData {
+  id: number;
+  name: string;
+}
+
 // Товары и их Свойства
 export interface ProductsData {
   id: number;
