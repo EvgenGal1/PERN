@@ -4,13 +4,14 @@ import { handleRequest } from "../handleRequest";
 
 export const userAPI = {
   /**
-   * Создание Пользователя (Admin)
+   * Создание Нового Пользователя (Admin)
+   * @param userData - данные Нового Пользователя
    */
   async createUser(userData: Partial<IUser>): Promise<IUser> {
     return handleRequest(
       () => authInstance.post<IUser>("users/create", userData),
       "User/Create"
-    ).then((response) => response);
+    );
   },
 
   /**
@@ -21,7 +22,7 @@ export const userAPI = {
     return handleRequest(
       () => authInstance.get<IUser>(`users/${id}`),
       "User/GetOne"
-    ).then((response) => response);
+    );
   },
 
   /**
@@ -31,19 +32,19 @@ export const userAPI = {
     return handleRequest(
       () => authInstance.get<IUser[]>("users"),
       "User/GetAll"
-    ).then((response) => response);
+    );
   },
 
   /**
    * Обновление данных Пользователя
    * @param id - ID Пользователя
-   * @param userData - новые данные
+   * @param userData - Обновляемые данные Пользователя
    */
   async updateUser(id: number, userData: Partial<IUser>): Promise<IUser> {
     return handleRequest(
       () => authInstance.put<IUser>(`users/${id}`, userData),
       "User/Update"
-    ).then((response) => response);
+    );
   },
 
   /**

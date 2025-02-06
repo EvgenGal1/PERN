@@ -4,52 +4,52 @@ import { authInstance, guestInstance } from "../axiosInstances";
 
 export const brandsAPI = {
   /**
-   * Создание нового бренда
-   * @param brand - Данные нового бренда
+   * Создание Нового Бренда
+   * @param brand - данные Нового Бренда
    */
-  async createBrand(brand: string): Promise<BrandData> {
+  async createBrand(name: string): Promise<BrandData> {
     return handleRequest(
-      () => authInstance.post("brands/create", { name: brand }),
+      () => authInstance.post<BrandData>("brands/create", { name }),
       "Brands/Create"
     );
   },
 
   /**
-   * Получение одного бренда по ID
-   * @param id - ID бренда
+   * Получение Одного Бренда по ID
+   * @param id - ID Бренда
    */
   async getOneBrand(id: number): Promise<BrandData> {
     return handleRequest(
-      () => guestInstance.get(`brands/getone/${id}`),
+      () => guestInstance.get<BrandData>(`brands/getone/${id}`),
       "Brands/GetOne"
     );
   },
 
   /**
-   * Получение всех брендов
+   * Получение Всех Брендов
    */
   async getAllBrands(): Promise<BrandData[]> {
     return handleRequest(
-      () => guestInstance.get("brands/getall"),
+      () => guestInstance.get<BrandData[]>("brands/getall"),
       "Brands/GetAll"
     );
   },
 
   /**
-   * Обновление бренда
-   * @param id - ID бренда
-   * @param brand - Новые данные бренда
+   * Обновление Бренда
+   * @param id - ID Бренда
+   * @param brand - Обновляемые данные Бренда
    */
-  async updateBrand(id: number, brand: string): Promise<BrandData> {
+  async updateBrand(id: number, name: string): Promise<BrandData> {
     return handleRequest(
-      () => authInstance.put(`brands/update/${id}`, { name: brand }),
+      () => authInstance.put<BrandData>(`brands/update/${id}`, { name }),
       "Brands/Update"
     );
   },
 
   /**
-   * Удаление бренда
-   * @param id - ID бренда
+   * Удаление Бренда
+   * @param id - ID Бренда
    */
   async deleteBrand(id: number): Promise<void> {
     return handleRequest(

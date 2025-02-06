@@ -11,18 +11,18 @@ export interface BrandData {
 
 // Товары и их Свойства
 export interface ProductsData {
-  id: number;
+  id?: number;
   name: string;
   price: number;
-  rating: number;
+  rating?: number;
   image?: string;
-  category?: { name: string };
-  brand?: { name: string };
+  category?: CategoryData;
+  brand?: BrandData;
   ratings?: RatingData;
-  properties: Property[];
+  properties: PropertyData[];
 }
 
-export interface Property {
+export interface PropertyData {
   id: number;
   name: string;
   value: string;

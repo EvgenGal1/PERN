@@ -4,12 +4,12 @@ import { authInstance, guestInstance } from "../axiosInstances";
 
 export const categoryAPI = {
   /**
-   * Создание новой Категории
-   * @param category - данные новой Категории
+   * Создание Новой Категории
+   * @param category - данные Новой Категории
    */
   async createCategory(name: string): Promise<CategoryData> {
     return handleRequest(
-      () => authInstance.post("categories/create", { name }),
+      () => authInstance.post<CategoryData>("categories/create", { name }),
       "Categories/Create"
     );
   },
@@ -20,7 +20,7 @@ export const categoryAPI = {
    */
   async getOneCategory(id: number): Promise<CategoryData> {
     return handleRequest(
-      () => guestInstance.get(`categories/getone/${id}`),
+      () => guestInstance.get<CategoryData>(`categories/getone/${id}`),
       "Categories/GetOne"
     );
   },
@@ -30,7 +30,7 @@ export const categoryAPI = {
    */
   async getAllCategories(): Promise<CategoryData[]> {
     return handleRequest(
-      () => guestInstance.get("categories/getall"),
+      () => guestInstance.get<CategoryData[]>("categories/getall"),
       "Categories/GetAll"
     );
   },
@@ -38,11 +38,11 @@ export const categoryAPI = {
   /**
    * Обновление Категории
    * @param id - ID Категории
-   * @param category - новые данные Категории
+   * @param category - Обновляемые данные Категории
    */
   async updateCategory(id: number, name: string): Promise<CategoryData> {
     return handleRequest(
-      () => authInstance.put(`categories/update/${id}`, { name }),
+      () => authInstance.put<CategoryData>(`categories/update/${id}`, { name }),
       "Categories/Update"
     );
   },
