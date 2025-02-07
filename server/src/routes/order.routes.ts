@@ -17,21 +17,20 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: Orders
- *   description: API для управления заказами
+ *   description: API для управления Заказами
  */
 
-// создать новый заказ
-
+// создать новый Заказ
 /**
  * @swagger
  * /orders/create:
  *   post:
- *     summary: Создание нового заказа администратором
+ *     summary: Создание Нового Заказа Администратором
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для создания заказа
+ *       description: данные для Создания Заказа
  *       required: true
  *       content:
  *         application/json:
@@ -57,18 +56,18 @@ const router = express.Router();
  *                       type: number
  *     responses:
  *       201:
- *         description: Заказ успешно создан
+ *         description: Заказ успешно Создан
  *       400:
  *         description: Ошибка валидации данных
  */
 router.post('/create', authMW, adminMW, OrderController.createOrder);
 
-// получить заказ по id
+// получить Заказ по id
 /**
  * @swagger
  * /orders/getone/{id}:
  *   get:
- *     summary: Получить заказ по ID
+ *     summary: Получить Один Заказ по ID
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -77,45 +76,45 @@ router.post('/create', authMW, adminMW, OrderController.createOrder);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Информация о заказе
+ *         description: Информация о Заказе
  *       404:
  *         description: Заказ не найден
  */
 router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
 
-// получить список всех заказов магазина
+// получить список всех Заказов магазина
 /**
  * @swagger
  * /orders/getall:
  *   get:
- *     summary: Получить список всех заказов
+ *     summary: Получить список Всех Заказов
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Список всех заказов
+ *         description: Список Всех Заказов
  */
 router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
 
-// получить список заказов Пользователя
+// получить список Заказов Пользователя
 // router.get(
 //   '/getall/user/:id([0-9]+)',
 //   authMW,
 //   adminMW,
 //   OrderController.getOrder,
 // );
-// обновить заказ
+// обновить Заказ
 /**
  * @swagger
  * /orders/update/{id}:
  *   put:
- *     summary: Обновить заказ по ID
+ *     summary: Обновить Заказ по ID
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -124,11 +123,11 @@ router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для обновления заказа
+ *       description: данные для Обновления Заказа
  *       required: true
  *       content:
  *         application/json:
@@ -145,7 +144,7 @@ router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
  *                 type: string
  *     responses:
  *       200:
- *         description: Заказ обновлен
+ *         description: Заказ Обновлен
  *       400:
  *         description: Ошибка валидации данных
  *       404:
@@ -153,12 +152,12 @@ router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
  */
 router.put('/update/:id([0-9]+)', authMW, adminMW, OrderController.updateOrder);
 
-// удалить заказ по id
+// удалить Заказ по id
 /**
  * @swagger
  * /orders/delete/{id}:
  *   delete:
- *     summary: Удалить заказ по ID
+ *     summary: Удалить Заказ по ID
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -167,12 +166,12 @@ router.put('/update/:id([0-9]+)', authMW, adminMW, OrderController.updateOrder);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Заказ удален
+ *         description: Заказ Удален
  *       404:
  *         description: Заказ не найден
  */
@@ -191,15 +190,15 @@ router.delete(
  * @swagger
  * tags:
  *   name: OrderItems
- *   description: API для управления позициями заказов
+ *   description: API для управления Позициями Заказов
  */
 
-// создать позицию заказа
+// создать Позицию Заказа
 /**
  * @swagger
  * /orders/{orderId}/item/create:
  *   post:
- *     summary: Создание позиции заказа
+ *     summary: Создание Позиции Заказа
  *     tags: [OrderItems]
  *     parameters:
  *       - in: path
@@ -208,11 +207,11 @@ router.delete(
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для создания позиции заказа
+ *       description: данные для Создания Позиции Заказа
  *       required: true
  *       content:
  *         application/json:
@@ -225,7 +224,7 @@ router.delete(
  *                 type: integer
  *     responses:
  *       201:
- *         description: Позиция заказа успешно создана
+ *         description: Позиция Заказа успешно Создана
  *       400:
  *         description: Ошибка валидации данных
  */
@@ -236,12 +235,12 @@ router.post(
   OrderItemsController.createOrderItems,
 );
 
-// одна позиция заказа
+// Одна Позиция Заказа
 /**
  * @swagger
  * /orders/{orderId}/item/getone/{id}:
  *   get:
- *     summary: Получить позицию заказа
+ *     summary: Получить Одну Позицию Заказа
  *     tags: [OrderItems]
  *     parameters:
  *       - in: path
@@ -250,17 +249,17 @@ router.post(
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID позиции заказа
+ *         description: ID Позиции Заказа
  *     responses:
  *       200:
- *         description: Информация о позиции заказа
+ *         description: Информация о Позиции Заказа
  *       404:
  *         description: Позиция не найдена
  */
@@ -269,12 +268,12 @@ router.get(
   OrderItemsController.getOneOrderItems,
 );
 
-// список позицый заказа
+// список Позицый Заказа
 /**
  * @swagger
  * /orders/{orderId}/item/getall:
  *   get:
- *     summary: Получить список позиций заказа
+ *     summary: Получить список Всех Позиций Заказа
  *     tags: [OrderItems]
  *     parameters:
  *       - in: path
@@ -283,22 +282,22 @@ router.get(
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *     responses:
  *       200:
- *         description: Список позиций заказа
+ *         description: Список Позиций Заказа
  */
 router.get(
   '/:orderId([0-9]+)/item/getall',
   OrderItemsController.getAllOrderItems,
 );
 
-// обновить позицию заказа
+// обновить Позицию Заказа
 /**
  * @swagger
  * /orders/{orderId}/item/update/{id}:
  *   put:
- *     summary: Обновить позицию заказа
+ *     summary: Обновить Позицию Заказа
  *     tags: [OrderItems]
  *     parameters:
  *       - in: path
@@ -307,18 +306,18 @@ router.get(
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID позиции заказа
+ *         description: ID Позиции Заказа
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для обновления позиции заказа
+ *       description: данные для Обновления Позиции Заказа
  *       required: true
  *       content:
  *         application/json:
@@ -331,7 +330,7 @@ router.get(
  *                 type: integer
  *     responses:
  *       200:
- *         description: Позиция заказа обновлена
+ *         description: Позиция Заказа Обновлена
  *       400:
  *         description: Ошибка валидации данных
  *       404:
@@ -344,12 +343,12 @@ router.put(
   OrderItemsController.updateOrderItems,
 );
 
-// удалить позицию заказа
+// удалить Позицию Заказа
 /**
  * @swagger
  * /orders/{orderId}/item/delete/{id}:
  *   delete:
- *     summary: Удалить позицию заказа
+ *     summary: Удалить Позицию Заказа
  *     tags: [OrderItems]
  *     parameters:
  *       - in: path
@@ -358,19 +357,19 @@ router.put(
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID позиции заказа
+ *         description: ID Позиции Заказа
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Позиция заказа удалена
+ *         description: Позиция Заказа Удалена
  *       404:
  *         description: Позиция не найдена
  */
@@ -385,17 +384,17 @@ router.delete(
  * для авторизованного Пользователя
  */
 
-// создать новый заказ
+// Создать Новый Заказ
 /**
  * @swagger
  * /orders/user/create:
  *   post:
- *     summary: Создать новый заказ для авторизованного Пользователя
+ *     summary: Создать Новый Заказ для авторизованного Пользователя
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для создания заказа
+ *       description: данные для Создания Заказа
  *       required: true
  *       content:
  *         application/json:
@@ -412,18 +411,18 @@ router.delete(
  *                 type: string
  *     responses:
  *       201:
- *         description: Заказ успешно создан
+ *         description: Заказ успешно Создан
  *       400:
  *         description: Ошибка валидации данных
  */
 router.post('/user/create', authMW, OrderController.createOrder);
 
-// получить один заказ Пользователя
+// получить один Заказ Пользователя
 /**
  * @swagger
  * /orders/user/getone/{id}:
  *   get:
- *     summary: Получить один заказ Пользователя
+ *     summary: Получить Один Заказ Пользователя
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -432,29 +431,29 @@ router.post('/user/create', authMW, OrderController.createOrder);
  *         schema:
  *           type: integer
  *           example: 1
- *         description: ID заказа
+ *         description: ID Заказа
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Информация о заказе
+ *         description: Информация о Заказе
  *       404:
  *         description: Заказ не найден
  */
 router.get('/user/getone/:id([0-9]+)', authMW, OrderController.getOneOrder);
 
-// получить все заказы Пользователя
+// получить все Заказы Пользователя
 /**
  * @swagger
  * /orders/user/getall:
  *   get:
- *     summary: Получить все заказы Пользователя
+ *     summary: Получить Все Заказы Пользователя
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Список всех заказов Пользователя
+ *         description: Список Всех Заказов Пользователя
  */
 router.get('/user/getall', authMW, OrderController.getAllOrders);
 
@@ -462,15 +461,15 @@ router.get('/user/getall', authMW, OrderController.getAllOrders);
  * для неавторизованного Пользователя
  */
 
-// создать новый заказ
+// создать новый Заказ
 /**
  * @swagger
  * /orders/guest/create:
  *   post:
- *     summary: Создать новый заказ для неавторизованного Пользователя
+ *     summary: Создать новый Заказ для неавторизованного Пользователя
  *     tags: [Orders]
  *     requestBody:
- *       description: Данные для создания заказа
+ *       description: Данные для Создания Заказа
  *       required: true
  *       content:
  *         application/json:
@@ -487,7 +486,7 @@ router.get('/user/getall', authMW, OrderController.getAllOrders);
  *                 type: string
  *     responses:
  *       201:
- *         description: Заказ успешно создан
+ *         description: Заказ успешно Создан
  *       400:
  *         description: Ошибка валидации данных
  */

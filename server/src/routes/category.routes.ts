@@ -33,16 +33,17 @@ const router = express.Router();
  *                 example: Новая Категория
  *     responses:
  *       201:
- *         description: Категория успешно создана
+ *         description: Категория успешно Создана
  *       400:
  *         description: Ошибка валидации или другая ошибка
  */
 router.post('/create', authMW, adminMW, CategoryController.createCategory);
+
 /**
  * @swagger
  * /categories/getone/{id}:
  *   get:
- *     summary: Получить одну Категорию по ID
+ *     summary: Получить Одну Категорию по ID
  *     tags: [Categories]
  *     parameters:
  *       - in: path
@@ -59,17 +60,19 @@ router.post('/create', authMW, adminMW, CategoryController.createCategory);
  *         description: Категория не найдена
  */
 router.get('/getone/:id([0-9]+)', CategoryController.getOneCategory);
+
 /**
  * @swagger
  * /categories/getall:
  *   get:
- *     summary: Получить все Категории
+ *     summary: Получить Все Категории
  *     tags: [Categories]
  *     responses:
  *       200:
- *         description: Список всех Категорий
+ *         description: Список Всех Категорий
  */
 router.get('/getall', CategoryController.getAllCategory);
+
 /**
  * @swagger
  * /categories/update/{id}:
@@ -97,7 +100,7 @@ router.get('/getall', CategoryController.getAllCategory);
  *                 example: Обновленное имя Категории
  *     responses:
  *       200:
- *         description: Категория успешно обновлена
+ *         description: Категория успешно Обновлена
  *       404:
  *         description: Категория не найдена
  */
@@ -107,6 +110,7 @@ router.put(
   adminMW,
   CategoryController.updateCategory,
 );
+
 /**
  * @swagger
  * /categories/delete/{id}:
@@ -125,7 +129,7 @@ router.put(
  *         description: ID Категории
  *     responses:
  *       200:
- *         description: Категория успешно удалена
+ *         description: Категория успешно Удалена
  *       404:
  *         description: Категория не найдена
  */

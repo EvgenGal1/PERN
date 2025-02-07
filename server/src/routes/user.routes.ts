@@ -19,7 +19,7 @@ const router = express.Router();
  * @swagger
  * /users/create:
  *   post:
- *     summary: Создать нового Пользователя
+ *     summary: Создать Нового Пользователя
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -42,7 +42,7 @@ const router = express.Router();
  *                 example: strong@Password123!
  *     responses:
  *       201:
- *         description: Пользователь успешно создан
+ *         description: Пользователь успешно Создан
  *       400:
  *         description: Некорректные данные
  *       500:
@@ -81,7 +81,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, UserController.getOneUser);
  * @swagger
  * /users/users:
  *   get:
- *     summary: Получить список всех Пользователей
+ *     summary: Получить список Всех Пользователей
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -127,7 +127,7 @@ router.get('/getall', authMW, adminMW, UserController.getAllUser);
  *                 example: newPassword123!
  *     responses:
  *       200:
- *         description: Пользователь обновлен
+ *         description: Пользователь Обновлен
  *       400:
  *         description: Некорректные данные
  *       500:
@@ -153,7 +153,7 @@ router.put('/update/:id([0-9]+)', authMW, adminMW, UserController.updateUser);
  *           example: 1
  *     responses:
  *       200:
- *         description: Пользователь удален
+ *         description: Пользователь Удален
  *       404:
  *         description: Пользователь не найден
  *       500:

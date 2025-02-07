@@ -33,16 +33,17 @@ const router = express.Router();
  *                 description: Название Бренда
  *     responses:
  *       200:
- *         description: Бренд успешно создан
+ *         description: Бренд успешно Создан
  *       400:
  *         description: Ошибка валидации данных
  */
 router.post('/create', authMW, adminMW, BrandController.createBrand);
+
 /**
  * @swagger
  * /brands/getone/{id}:
  *   get:
- *     summary: Получить один Бренд по ID
+ *     summary: Получить Один Бренд по ID
  *     tags: [Brands]
  *     parameters:
  *       - name: id
@@ -58,11 +59,12 @@ router.post('/create', authMW, adminMW, BrandController.createBrand);
  *         description: Бренд не найден
  */
 router.get('/getone/:id([0-9]+)', BrandController.getOneBrand);
+
 /**
  * @swagger
  * /brands/getall:
  *   get:
- *     summary: Получить все Бренды
+ *     summary: Получить Все Бренды
  *     tags: [Brands]
  *     responses:
  *       200:
@@ -70,6 +72,7 @@ router.get('/getone/:id([0-9]+)', BrandController.getOneBrand);
  */
 
 router.get('/getall', BrandController.getAllBrand);
+
 /**
  * @swagger
  * /brands/update/{id}:
@@ -101,6 +104,7 @@ router.get('/getall', BrandController.getAllBrand);
  *         description: Бренд не найден
  */
 router.put('/update/:id([0-9]+)', authMW, adminMW, BrandController.updateBrand);
+
 /**
  * @swagger
  * /brands/delete/{id}:
@@ -118,7 +122,7 @@ router.put('/update/:id([0-9]+)', authMW, adminMW, BrandController.updateBrand);
  *         description: ID Бренда
  *     responses:
  *       200:
- *         description: Бренд удален
+ *         description: Бренд Удален
  *       404:
  *         description: Бренд не найден
  */

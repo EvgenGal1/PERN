@@ -19,17 +19,17 @@ const router = express.Router();
  */
 
 // ^ Стандартные
-// создать Продукт каталога — нужны права администратора
+// создать Продукт Каталога (Админ)
 /**
  * @swagger
  * /products/create:
  *   post:
- *     summary: Создать Продукт каталога
+ *     summary: Создать Продукт Каталога
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для создания Продукта
+ *       description: данные для Создания Продукта
  *       required: true
  *       content:
  *         application/json:
@@ -46,18 +46,18 @@ const router = express.Router();
  *                 type: integer
  *     responses:
  *       201:
- *         description: Продукт успешно создан
+ *         description: Продукт успешно Создан
  *       400:
  *         description: Ошибка валидации данных
  */
 router.post('/create', authMW, adminMW, ProductController.createProduct);
 
-// получить один Продукт каталога
+// получить Один Продукт Каталога
 /**
  * @swagger
  * /products/getone/{id}:
  *   get:
- *     summary: Получить один Продукт каталога
+ *     summary: Получить Один Продукт Каталога
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -75,25 +75,25 @@ router.post('/create', authMW, adminMW, ProductController.createProduct);
  */
 router.get('/getone/:id([0-9]+)', ProductController.getOneProduct);
 
-// список всех Продуктов каталога
+// список Всех Продуктов Каталога
 /**
  * @swagger
  * /products/getall:
  *   get:
- *     summary: Получить список всех Продуктов каталога
+ *     summary: Получить список Всех Продуктов Каталога
  *     tags: [Products]
  *     responses:
  *       200:
- *         description: Список всех Продуктов
+ *         description: Список Всех Продуктов
  */
 router.get('/getall', ProductController.getAllProducts);
 
-// обновить Продукт каталога  — нужны права администратора
+// обновить Продукт Каталога (Админ)
 /**
  * @swagger
  * /products/update/{id}:
  *   put:
- *     summary: Обновить Продукт каталога
+ *     summary: Обновить Продукт Каталога
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -106,7 +106,7 @@ router.get('/getall', ProductController.getAllProducts);
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для обновления Продукта
+ *       description: данные для Обновления Продукта
  *       required: true
  *       content:
  *         application/json:
@@ -119,7 +119,7 @@ router.get('/getall', ProductController.getAllProducts);
  *                 type: number
  *     responses:
  *       200:
- *         description: Продукт успешно обновлен
+ *         description: Продукт успешно Обновлен
  *       404:
  *         description: Продукт не найден
  */
@@ -130,12 +130,12 @@ router.put(
   ProductController.updateProduct,
 );
 
-// удалить Продукт каталога  — нужны права администратора
+// удалить Продукт Каталога (Админ)
 /**
  * @swagger
  * /products/delete/{id}:
  *   delete:
- *     summary: Удалить Продукт каталога
+ *     summary: Удалить Продукт Каталога
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -149,7 +149,7 @@ router.put(
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Продукт успешно удален
+ *         description: Продукт успешно Удален
  *       404:
  *         description: Продукт не найден
  */
@@ -161,12 +161,12 @@ router.delete(
 );
 
 // ^ Расширенные под фильтрацию. тесты GET для категорий и брендов - http://localhost:5050/api/products/getall/categoryId/3/brandId/4
-// список Продуктов выбранной категории и выбранного бренда
+// список Продуктов выбранной Категории и выбранного Бренда
 /**
  * @swagger
  * /products/getall/categoryId/{categoryId}/brandId/{brandId}:
  *   get:
- *     summary: Получить список Продуктов по категории и бренду
+ *     summary: Получить список Продуктов по Категории и Бренду
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -174,13 +174,13 @@ router.delete(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID категории
+ *         description: ID Категории
  *       - in: path
  *         name: brandId
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID бренда
+ *         description: ID Бренда
  *     responses:
  *       200:
  *         description: Список Продуктов
@@ -192,12 +192,12 @@ router.get(
   ProductController.getAllProducts,
 );
 
-// список Продуктов выбранной категории
+// список Продуктов выбранной Категории
 /**
  * @swagger
  * /products/getall/categoryId/{categoryId}:
  *   get:
- *     summary: Получить список Продуктов выбранной категории
+ *     summary: Получить список Всех Продуктов выбранной Категории
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -205,7 +205,7 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID категории
+ *         description: ID Категории
  *     responses:
  *       200:
  *         description: Список Продуктов
@@ -221,7 +221,7 @@ router.get(
  * @swagger
  * /products/getall/brandId/{brandId}:
  *   get:
- *     summary: Получить список Продуктов выбранного бренда
+ *     summary: Получить список Всех Продуктов выбранного Бренда
  *     tags: [Products]
  *     parameters:
  *       - in: path
@@ -229,7 +229,7 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID бренда
+ *         description: ID Бренда
  *     responses:
  *       200:
  *         description: Список Продуктов
@@ -251,12 +251,12 @@ router.get(
  *   description: API для управления Свойствами Продукта
  */
 
-// создать свойство Продукта
+// создать Свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/create:
  *   post:
- *     summary: Создать свойство Продукта
+ *     summary: Создать Свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -268,7 +268,7 @@ router.get(
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для создания свойства
+ *       description: данные для Создания Свойства
  *       required: true
  *       content:
  *         application/json:
@@ -281,7 +281,7 @@ router.get(
  *                 type: string
  *     responses:
  *       201:
- *         description: Свойство успешно создано
+ *         description: Свойство успешно Создано
  */
 router.post(
   '/:productId([0-9]+)/property/create',
@@ -290,12 +290,12 @@ router.post(
   ProductPropController.createProdProp,
 );
 
-// одно свойство Продукта
+// одно Свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/getone/{id}:
  *   get:
- *     summary: Получить одно свойство Продукта
+ *     summary: Получить Одно Свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -309,10 +309,10 @@ router.post(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID свойства
+ *         description: ID Свойства
  *     responses:
  *       200:
- *         description: Информация о свойстве
+ *         description: Информация о Свойстве
  *       404:
  *         description: Свойство не найдено
  */
@@ -321,12 +321,12 @@ router.get(
   ProductPropController.getOneProdProp,
 );
 
-// список свойств Продукта
+// список Свойств Продукта
 /**
  * @swagger
  * /products/{productId}/property/getall:
  *   get:
- *     summary: Получить список всех свойств Продукта
+ *     summary: Получить список Всех Свойств Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -337,19 +337,19 @@ router.get(
  *         description: ID Продукта
  *     responses:
  *       200:
- *         description: Список свойств Продукта
+ *         description: Список Свойств Продукта
  */
 router.get(
   '/:productId([0-9]+)/property/getall',
   ProductPropController.getAllProdProp,
 );
 
-// обновить свойство Продукта
+// обновить Свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/update/{id}:
  *   put:
- *     summary: Обновить свойство Продукта
+ *     summary: Обновить Свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -363,11 +363,11 @@ router.get(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID свойства
+ *         description: ID Свойства
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Данные для обновления свойства
+ *       description: Данные для Обновления Свойства
  *       required: true
  *       content:
  *         application/json:
@@ -380,7 +380,7 @@ router.get(
  *                 type: string
  *     responses:
  *       200:
- *         description: Свойство обновлено
+ *         description: Свойство Обновлено
  */
 router.put(
   '/:productId([0-9]+)/property/update/:id([0-9]+)',
@@ -389,12 +389,12 @@ router.put(
   ProductPropController.updateProdProp,
 );
 
-// удалить свойство Продукта
+// удалить Свойство Продукта
 /**
  * @swagger
  * /products/{productId}/property/delete/{id}:
  *   delete:
- *     summary: Удалить свойство Продукта
+ *     summary: Удалить Свойство Продукта
  *     tags: [Product Properties]
  *     parameters:
  *       - in: path
@@ -408,12 +408,12 @@ router.put(
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID свойства
+ *         description: ID Свойства
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Свойство удалено
+ *         description: Свойство Удалено
  *       404:
  *         description: Свойство не найдено
  */
