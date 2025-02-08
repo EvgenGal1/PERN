@@ -314,7 +314,7 @@ img.card-img-top {
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  // Товар/Описание
+  // Продукт/Описание
   &__product {
     white-space: nowrap;
     overflow: hidden;
@@ -536,7 +536,7 @@ img.card-img-top {
     left: 50% !important;
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
-    // для доп.ФормДаты добав.Товара
+    // для доп.ФормДаты добав.Продукта
     top: 0% !important;
     transform: translate(-50%, 0%) !important;
     // ! врем.стиль для расшир.отражения

@@ -1,4 +1,4 @@
-// Сущности каталога
+// Сущности Каталога
 export interface CategoryData {
   id: number;
   name: string;
@@ -9,7 +9,7 @@ export interface BrandData {
   name: string;
 }
 
-// Товары и их Свойства
+// Продукт и их Свойства
 export interface ProductsData {
   id?: number;
   name: string;
@@ -23,7 +23,7 @@ export interface ProductsData {
 }
 
 export interface PropertyData {
-  id: number;
+  id?: number;
   name: string;
   value: string;
 }
