@@ -1,11 +1,12 @@
-import { ProductsData } from "../../types/api/catalog.types";
+import { ProductsData, PropertyData } from "../../types/api/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 
-export const productsAPI = {
+// CRUD > Продукта и его Свойств
+export const productAPI = {
   /**
-   * Создание нового Продкта
-   * @param product - Данные нового Продкта
+   * Создание Нового Продукта
+   * @param product - Данные Нового Продукта
    */
   async createProduct(product: ProductsData): Promise<ProductsData> {
     return handleRequest(
@@ -15,8 +16,8 @@ export const productsAPI = {
   },
 
   /**
-   * Получение Одного Продкта по ID
-   * @param id - ID Продкта
+   * Получение Одного Продукта по ID
+   * @param id - ID Продукта
    */
   async getOneProduct(id: number): Promise<ProductsData> {
     return handleRequest(
@@ -47,7 +48,7 @@ export const productsAPI = {
     // сортировка по порядку и полю (назв.,цена,рейтинг)
     if (sortOrd) params.sortOrd = sortOrd;
     if (sortField) params.sortField = sortField;
-    // базовый URL получ.всех Товаров
+    // базовый URL получ.всех Продуктов
     let url = "products/getall";
     // дополнение URL парам.из props (для 1го знач. и мн.знач.ч/з разделитель(_))
     if (categoryId) url += `/categoryId/${categoryId}`;
@@ -60,9 +61,9 @@ export const productsAPI = {
   },
 
   /**
-   * Обновление Продкта
-   * @param id - ID Продкта
-   * @param product - Обновляемые данные Продкта
+   * Обновление Продукта
+   * @param id - ID Продукта
+   * @param product - Обновляемые данные Продукта
    */
   async updateProduct(
     id: number,
@@ -75,13 +76,65 @@ export const productsAPI = {
   },
 
   /**
-   * Удаление Продкта
-   * @param id - ID Продкта
+   * Удаление Продукта
+   * @param id - ID Продукта
    */
   async deleteProduct(id: number): Promise<void> {
     return handleRequest(
       () => authInstance.delete(`products/delete/${id}`),
       "Products/Delete"
+    );
+  },
+
+  /**
+   * Создание Свойства Продукта
+   * @param productId - ID Продукта
+   * @param property - Данные Свойства
+   */
+  async createProperty(
+    productId: number,
+    property: PropertyData
+  ): Promise<PropertyData> {
+    return handleRequest(
+      () =>
+        authInstance.post<PropertyData>(
+          `products/${productId}/property/create`,
+          property
+        ),
+      "Properties/Create"
+    );
+  },
+
+  /**
+   * Обновление Свойства Продукта
+   * @param productId - ID Продукта
+   * @param id - ID Свойства
+   * @param property - Новые данные Свойства
+   */
+  async updateProperty(
+    productId: number,
+    id: number,
+    property: PropertyData
+  ): Promise<PropertyData> {
+    return handleRequest(
+      () =>
+        authInstance.put<PropertyData>(
+          `products/${productId}/property/update/${id}`,
+          property
+        ),
+      "Properties/Update"
+    );
+  },
+
+  /**
+   * Удаление Свойства Продукта
+   * @param productId - ID Продукта
+   * @param id - ID Свойства
+   */
+  async deleteProperty(productId: number, id: number): Promise<void> {
+    return handleRequest(
+      () => authInstance.delete(`products/${productId}/property/delete/${id}`),
+      "Properties/Delete"
     );
   },
 };
