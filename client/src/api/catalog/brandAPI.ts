@@ -2,7 +2,7 @@ import { BrandData } from "../../types/api/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 
-export const brandsAPI = {
+export const brandAPI = {
   /**
    * Создание Нового Бренда
    * @param brand - данные Нового Бренда
