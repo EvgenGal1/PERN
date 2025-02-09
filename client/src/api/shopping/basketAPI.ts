@@ -14,7 +14,7 @@ export const basketAPI = {
   },
 
   /**
-   * Добавление Продукта в Корзину
+   * Добавить Продукты в Корзину
    */
   async appendBasket(productId: number): Promise<BasketData> {
     return handleRequest(
@@ -25,7 +25,7 @@ export const basketAPI = {
   },
 
   /**
-   * Увеличение Количества Продукта в Корзине
+   * Увеличить количество Продуктов в Корзине
    */
   async incrementBasket(productId: number): Promise<BasketData> {
     return handleRequest(
@@ -38,7 +38,7 @@ export const basketAPI = {
   },
 
   /**
-   * Уменьшение Количества Продукта в Корзине
+   * Уменьшить количество Продуктов в Корзине
    */
   async decrementBasket(productId: number): Promise<BasketData> {
     return handleRequest(
@@ -51,9 +51,9 @@ export const basketAPI = {
   },
 
   /**
-   * Удаление Продукта из Корзины
+   * Удалить Продукт из Корзины
    */
-  async removeBasket(productId: number): Promise<any> {
+  async removeBasket(productId: number): Promise<BasketData> {
     return handleRequest(
       () => guestInstance.put(`baskets/product/${productId}/remove`),
       "Basket/RemoveBasket"
@@ -61,9 +61,9 @@ export const basketAPI = {
   },
 
   /**
-   * Очистка Корзины
+   * Очистить Корзину от Всех Продуктов
    */
-  async clearBasket(): Promise<any> {
+  async clearBasket(): Promise<void> {
     return handleRequest(
       () => guestInstance.put(`baskets/clear`),
       "Basket/ClearBasket"
@@ -71,15 +71,12 @@ export const basketAPI = {
   },
 
   /**
-   * Создание нового заказа из Корзины
+   * Удалить Корзину и Все Продукты
    */
-  async guestCreate(body: {
-    productId: number;
-    quantity: number;
-  }): Promise<any> {
+  async deleteBasket(): Promise<BasketData> {
     return handleRequest(
-      () => guestInstance.post("orders/guest/create", body),
-      "Basket/GuestCreate"
+      () => guestInstance.put(`baskets/delete`),
+      "Basket/DeleteBasket"
     );
   },
 };

@@ -4,6 +4,10 @@ import { authInstance, guestInstance } from "../axiosInstances";
 
 // CRUD > Продукта и его Свойств
 export const productAPI = {
+  /*
+   * ПРОДУКТ
+   */
+
   /**
    * Создание Нового Продукта
    * @param product - Данные Нового Продукта
@@ -85,6 +89,10 @@ export const productAPI = {
       "Products/Delete"
     );
   },
+
+  /*
+   * СВОЙСТВА ПРОДУКТА
+   */
 
   /**
    * Создание Свойства Продукта
