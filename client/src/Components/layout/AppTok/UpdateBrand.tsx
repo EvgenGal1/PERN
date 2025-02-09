@@ -1,8 +1,7 @@
 // ^ Редактирование Бренда
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
-
-import { fetchBrand, updateBrand } from "../../../http/Tok/catalogAPI_Tok";
+import { brandAPI } from "../../../api/catalog/brandAPI";
 
 const UpdateBrand = (props: any) => {
   const { id, show, setShow, setChange } = props;
@@ -12,7 +11,8 @@ const UpdateBrand = (props: any) => {
 
   useEffect(() => {
     if (id) {
-      fetchBrand(id)
+      brandAPI
+        .getOneBrand(id)
         .then((data) => setName(data.name))
         .catch((error) => alert(error.response.data.message));
     }
@@ -31,14 +31,12 @@ const UpdateBrand = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
-      updateBrand(id, data)
+      brandAPI
+        .updateBrand(id, name.trim())
         // ! ошб. - Не удается найти имя "change". Вы имели в виду "onchange"?
         // .then((data) => setChange(!change))
         // из UpdateCategory
-        .then((data) => {
+        .then((/* data */) => {
           // закрываем модальное окно редактирования категории
           setShow(false);
           // изменяем состояние компонента списка категорий

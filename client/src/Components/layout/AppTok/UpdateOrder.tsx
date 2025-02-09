@@ -3,11 +3,7 @@
 import { useState } from "react";
 import uuid from "react-uuid";
 
-import {
-  createItem,
-  updateItem,
-  deleteItem,
-} from "../../../http/Tok/orderAPI_Tok";
+import { orderAPI } from "../../../api/shopping/orderAPI";
 import UpdateItems from "./UpdateItems";
 import Modal__eg from "../../ui/Modal/Modal__eg";
 import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
@@ -44,7 +40,7 @@ const isValid = (value: any) => {
   return result;
 };
 
-// функция updateItem, которая проходит по всему массиву Items и для каждой хар-ки выполняет подходящий http-запрос. Причем, для каждого http-запроса мы ждем ответ, так что к моменту возврата из функции все хар-ки уже обновились на сервере. И когда мы выполним еще один запрос, чтобы обновить название, цену, категорию и бренд товара — то в ответе получим уже обновленные хар-ки.
+// функция updateItem, которая проходит по всему массиву Items и для каждой хар-ки выполняет подходящий http-запрос. Причем, для каждого http-запроса мы ждем ответ, так что к моменту возврата из функции все хар-ки уже обновились на сервере. И когда мы выполним еще один запрос, чтобы обновить название, цену, категорию и бренд Продукта — то в ответе получим уже обновленные хар-ки.
 const updateItems = async (items: any, orderId: any) => {
   for (const item of items) {
     const empty =
@@ -52,7 +48,7 @@ const updateItems = async (items: any, orderId: any) => {
     // если вдруг старая хар-ка оказалась пустая — удалим ее на сервере
     if (empty && item.id) {
       try {
-        await deleteItem(orderId, item);
+        await orderAPI.deleteItem(orderId, item);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -65,7 +61,7 @@ const updateItems = async (items: any, orderId: any) => {
      */
     if (item.append && !empty) {
       try {
-        await createItem(orderId, item);
+        await orderAPI.createItem(orderId, item);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -73,7 +69,7 @@ const updateItems = async (items: any, orderId: any) => {
     }
     if (item.change && !item.remove) {
       try {
-        await updateItem(orderId, item.id, item);
+        await orderAPI.updateItem(orderId, item.id, item);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -81,7 +77,7 @@ const updateItems = async (items: any, orderId: any) => {
     }
     if (item.remove) {
       try {
-        await deleteItem(orderId, item.id);
+        await orderAPI.deleteItem(orderId, item.id);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -140,8 +136,8 @@ const UpdateOrder: React.FC<Props> = (props) => {
 
   // ^ пока не нужнй код. пробы обн.данн.ч/з Род.Комп.Order
   // useEffect(() => {
-  //   // if (id) {  adminGetOne(id).then((data) => {получ.данн.Товара с БД}) } // ^ упразднено
-  //   //     // получ.данн.Товара с БД
+  //   // if (id) {  adminGetOne(id).then((data) => {получ.данн.Продукта с БД}) } // ^ упразднено
+  //   //     // получ.данн.Продукта с БД
   //   const order = {
   //     name: orders.name.toString(),
   //     email: orders.email.toString(),

@@ -2,10 +2,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 
-import {
-  fetchCategory,
-  updateCategory,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
 
 const UpdateCategory = (props: any) => {
   const { id, show, setShow, setChange } = props;
@@ -15,7 +12,8 @@ const UpdateCategory = (props: any) => {
 
   useEffect(() => {
     if (id) {
-      fetchCategory(id)
+      categoryAPI
+        .getOneCategory(id)
         .then((data) => setName(data.name))
         .catch((error) => alert(error.response.data.message));
     }
@@ -34,11 +32,9 @@ const UpdateCategory = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
-      updateCategory(id, data)
-        .then((data) => {
+      categoryAPI
+        .updateCategory(id, name.trim())
+        .then((/* data */) => {
           // закрываем модальное окно редактирования категории
           setShow(false);
           // изменяем состояние компонента списка категорий

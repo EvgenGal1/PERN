@@ -1,18 +1,13 @@
-// ^ модальн.окно редактирование Товара
+// ^ модальн.окно редактирование Продукта
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 
-import {
-  fetchOneProduct,
-  updateProduct,
-  fetchCategories,
-  fetchBrands,
-  createProperty,
-  updateProperty,
-  deleteProperty,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
+import { brandAPI } from "../../../api/catalog/brandAPI";
+import { productAPI } from "../../../api/catalog/productAPI";
 import UpdateProperties from "./UpdateProperties";
+import { PropertyData } from "../../../types/api/catalog.types";
 
 const defaultValue = { name: "", price: "", category: "", brand: "" };
 const defaultValid = { name: null, price: null, category: null, brand: null };
@@ -29,14 +24,14 @@ const isValid = (value: any) => {
   return result;
 };
 
-// функция updateProperties, которая проходит по всему массиву properties и для каждой хар-ки выполняет подходящий http-запрос. Причем, для каждого http-запроса мы ждем ответ, так что к моменту возврата из функции все хар-ки уже обновились на сервере. И когда мы выполним еще один запрос, чтобы обновить название, цену, категорию и бренд товара — то в ответе получим уже обновленные хар-ки.
+// функция updateProperties, которая проходит по всему массиву properties и для каждой хар-ки выполняет подходящий http-запрос. Причем, для каждого http-запроса мы ждем ответ, так что к моменту возврата из функции все хар-ки уже обновились на сервере. И когда мы выполним еще один запрос, чтобы обновить название, цену, категорию и бренд Продукта — то в ответе получим уже обновленные хар-ки.
 const updateProperties = async (properties: any, productId: any) => {
   for (const prop of properties) {
     const empty = prop.name.trim() === "" || prop.value.trim() === "";
     // если вдруг старая хар-ка оказалась пустая — удалим ее на сервере
     if (empty && prop.id) {
       try {
-        await deleteProperty(productId, prop);
+        await productAPI.deleteProperty(productId, prop);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -49,7 +44,7 @@ const updateProperties = async (properties: any, productId: any) => {
      */
     if (prop.append && !empty) {
       try {
-        await createProperty(productId, prop);
+        await productAPI.createProperty(productId, prop);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -57,7 +52,7 @@ const updateProperties = async (properties: any, productId: any) => {
     }
     if (prop.change && !prop.remove) {
       try {
-        await updateProperty(productId, prop.id, prop);
+        await productAPI.updateProperty(productId, prop.id, prop);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -65,7 +60,7 @@ const updateProperties = async (properties: any, productId: any) => {
     }
     if (prop.remove) {
       try {
-        await deleteProperty(productId, prop.id);
+        await productAPI.deleteProperty(productId, prop.id);
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -84,30 +79,31 @@ const UpdateProduct = (props: any) => {
   const [categories, setCategories]: any = useState(null);
   const [brands, setBrands]: any = useState(null);
 
-  // выбранное для загрузки изображение товара
+  // выбранное для загрузки изображение Продукта
   const [image, setImage]: any = useState(null);
 
-  // список характеристик товара
-  const [properties, setProperties] = useState([]);
+  // список характеристик Продукта
+  const [properties, setProperties] = useState<PropertyData[]>([]);
 
   useEffect(() => {
     if (id) {
       console.log("id ", id);
-      // нужно получить с сервера данные товара для редактирования
-      fetchOneProduct(id)
+      // нужно получить с сервера данные Продукта для редактирования
+      productAPI
+        .getOneProduct(id)
         .then((data) => {
           const prod = {
             name: data.name,
             price: data.price.toString(),
-            category: data.categoryId.toString(),
-            brand: data.brandId.toString(),
+            category: data.category!.name.toString(),
+            brand: data.brand!.name.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
           // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
           // setProperties(data.props);
           setProperties(
-            data.props.map((item: any) => {
+            data.properties!.map((item: any) => {
               // при добавлении новой хар-ки свойство append принимает значение true
               // при изменении старой хар-ки свойство change принимает значение true
               // при удалении старой хар-ки свойство remove принимает значение true
@@ -123,8 +119,8 @@ const UpdateProduct = (props: any) => {
         })
         .catch((error) => alert(error.response.data.message));
       // нужно получить с сервера список категорий и список брендов
-      fetchCategories().then((data) => setCategories(data));
-      fetchBrands().then((data) => setBrands(data));
+      categoryAPI.getAllCategories().then((data) => setCategories(data));
+      brandAPI.getAllBrands().then((data) => setBrands(data));
     }
   }, [id]);
 
@@ -161,22 +157,30 @@ const UpdateProduct = (props: any) => {
         await updateProperties(properties, id);
       }
 
-      updateProduct(id, data)
+      productAPI
+        .updateProduct(
+          id,
+          // ! ошб.типа, логики и передачи
+          data as any
+        )
         .then((data) => {
-          // сбрасываем поле загрузки изображения, чтобы при сохранении товара (без очистки полей при рендер), когда новое изображение не выбрано, не загружать старое повтороно
+          // сбрасываем поле загрузки изображения, чтобы при сохранении Продукта (без очистки полей при рендер), когда новое изображение не выбрано, не загружать старое повтороно
           event.target.image.value = "";
-          // в принципе, мы могли бы сбросить все поля формы на дефолтные значения, но если пользователь решит отредатировать тот же товар повтороно, то увидит пустые поля формы — http-запрос на получение данных для редактирования мы выполняем только тогда, когда выбран новый товар (изменился id товара)
+          // в принципе, мы могли бы сбросить все поля формы на дефолтные значения, но если пользователь решит отредатировать тот же Продукт повтороно, то увидит пустые поля формы — http-запрос на получение данных для редактирования мы выполняем только тогда, когда выбран новый Продукт (изменился id Продукта)
           const prod = {
             name: data.name,
             price: data.price.toString(),
-            category: data.categoryId.toString(),
-            brand: data.brandId.toString(),
+            // ! ошб.типа, логики и передачи
+            category: data.category!.toString(),
+            // ! ошб.типа, логики и передачи
+            brand: data.brand!.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
           // мы получим актуальные значения хар-тик с сервера, потому что обновление хар-тик завершилось еще до момента отправки этого http-запроса на сервер
           setProperties(
-            data.props.map((item: any) => {
+            // ! ошб.типа, логики и передачи
+            data.properties!.map((item: any) => {
               return {
                 ...item,
                 unique: uuid(),
@@ -186,9 +190,9 @@ const UpdateProduct = (props: any) => {
               };
             })
           );
-          // закрываем модальное окно редактирования товара
+          // закрываем модальное окно редактирования Продукта
           setShow(false);
-          // изменяем состояние компонента списка товаров
+          // изменяем состояние компонента списка Продуктов
           setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));
@@ -203,7 +207,7 @@ const UpdateProduct = (props: any) => {
       className="modal--eg-bootstr"
     >
       <Modal.Header closeButton>
-        <Modal.Title>Редактирование товара</Modal.Title>
+        <Modal.Title>Редактирование Продукта</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -214,7 +218,7 @@ const UpdateProduct = (props: any) => {
             onChange={(e) => handleInputChange(e)}
             isValid={valid.name === true}
             isInvalid={valid.name === false}
-            placeholder="Название товара..."
+            placeholder="Название Продукта..."
             className="mb-3"
           />
           {/* Категория и Бренд */}
@@ -262,7 +266,7 @@ const UpdateProduct = (props: any) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.price === true}
                 isInvalid={valid.price === false}
-                placeholder="Цена товара..."
+                placeholder="Цена Продукта..."
               />
             </div>
             <div className="df df-col">
@@ -270,7 +274,7 @@ const UpdateProduct = (props: any) => {
                 name="image"
                 type="file"
                 onChange={(e) => handleImageChange(e)}
-                placeholder="Фото товара..."
+                placeholder="Фото Продукта..."
               />
             </div>
           </div>
