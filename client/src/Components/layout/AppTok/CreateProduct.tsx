@@ -1,12 +1,10 @@
-// ^ Модальное окно с формой добавления Товара
+// ^ Модальное окно с формой добавления Продукта
 import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 
-import {
-  createProduct,
-  fetchCategories,
-  fetchBrands,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { productAPI } from "../../../api/catalog/productAPI";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
+import { brandAPI } from "../../../api/catalog/brandAPI";
 import CreateProperties from "./CreateProperties";
 
 // перем.Валидации/Значений по умолч.
@@ -92,23 +90,23 @@ const CreateProduct = (props: any) => {
 
   // валидация // ! врем.откл.
   const [valid, setValid] = useState(defaultValid);
-  // доп.ФормДаты для неск.Товаров
+  // доп.ФормДаты для неск.Продуктов
   // ^ для render|state|загрузки на ОБЪЕКТЕ
   const [valueBulk, setValueBulk] = useState(defaultValueBulk);
   // console.log("valueBulk ", valueBulk);
 
   // ^ для render|state|загрузки на МАССИВЕ
-  // шаблон и state Товаров
+  // шаблон и state Продуктов
   const [valueBulkArr, setValueBulkArr]: any = useState([templateValueArr]);
   // console.log("valueBulkArr ", valueBulkArr);
 
-  // список характеристик товара
+  // список характеристик Продукта
   // ^ для render|state|загрузки на ОБЪЕКТЕ
   // const [properties, setProperties] = useState(defaultValueBulkProps);
   // console.log("CrePRD properties ", properties);
 
   // ^ для render|state|загрузки на МАССИВЕ
-  // state Характеристик Товаров
+  // state Характеристик Продуктов
   const [propertiesArr, setPropertiesArr]: any = useState([[]]);
   // console.log("CrePRD propertiesArr ", propertiesArr);
 
@@ -155,8 +153,8 @@ const CreateProduct = (props: any) => {
 
   // изначально получить с сервера списки Категорий/Брендов
   useEffect(() => {
-    fetchCategories().then((data) => setCategories(data));
-    fetchBrands().then((data) => setBrands(data));
+    categoryAPI.getAllCategories().then((data) => setCategories(data));
+    brandAPI.getAllBrands().then((data) => setBrands(data));
   }, []);
 
   // сохр.данн в state для масс.запроса от доп.ФормДат
@@ -213,9 +211,9 @@ const CreateProduct = (props: any) => {
   // ^ для render|state|загрузки на МАССИВЕ
   // ^ ДОБАВЛЕНИЕ // ? нужно ли ? может сразу в btn изменять ?
   const handlerAddBulkValue = () => {
-    // добав.в state Товаров шаблон Товара на кажд.нов.ФормДату
+    // добав.в state Продуктов шаблон Продукта на кажд.нов.ФормДату
     setValueBulkArr([...valueBulkArr, templateValueArr]);
-    // добав.в state Хар-ик Товаров шаблон Хар-ик на кажд.нов.ФормДату
+    // добав.в state Хар-ик Продуктов шаблон Хар-ик на кажд.нов.ФормДату
     setPropertiesArr([...propertiesArr, []]);
   };
 
@@ -229,7 +227,7 @@ const CreateProduct = (props: any) => {
       event.target.parentElement.parentElement.parentElement.id
     );
 
-    // ^ Товар. Удал.эл.м/у эл-ми масс.(копир данные до и после indexa(idParentPropsNum))
+    // ^ Продукт. Удал.эл.м/у эл-ми масс.(копир данные до и после indexa(idParentPropsNum))
     setValueBulkArr((existingItems: any) => {
       // для 0 indexa
       if (idParentPropsNum === 0) {
@@ -250,7 +248,7 @@ const CreateProduct = (props: any) => {
       // );
     });
 
-    // Характеристики Товара. Удал.эл.м/у эл-ми масс.
+    // Характеристики Продукта. Удал.эл.м/у эл-ми масс.
     setPropertiesArr((existingItems: any) => {
       // для 0 indexa
       if (idParentPropsNum === 0) {
@@ -317,15 +315,15 @@ const CreateProduct = (props: any) => {
       event.target.parentElement.parentElement.parentElement.id
     );
 
-    // выбор.в statах объ.Товара/масс.Хар-ик по id блока ФормДаты
+    // выбор.в statах объ.Продукта/масс.Хар-ик по id блока ФормДаты
     const idDataProduct = dataProduct[idParentPropsNum];
     const idDataProps = dataProps[idParentPropsNum];
 
-    // клоны Товара/Хар-ик
+    // клоны Продукта/Хар-ик
     const cloneProduct = Object.assign({}, idDataProduct); // альтерн. { ...idDataProduct } | JSON.parse(JSON.stringify(idDataProduct))
     const cloneProps = JSON.parse(JSON.stringify(idDataProps)); // slice() | [...spread] копир.по ссылке т.к. в масс.объ (не подходят - измен.оба эл.)
 
-    // убир.Имя и Изо из копии Товара для уник.знач.
+    // убир.Имя и Изо из копии Продукта для уник.знач.
     for (const key in cloneProduct) {
       if (key === "name" || key === "image") cloneProduct[key] = "";
     }
@@ -434,9 +432,9 @@ const CreateProduct = (props: any) => {
       // вывод объ.со значениями
       console.log(Object.fromEntries(pairs_2));
 
-      // характеристики нового товара
+      // характеристики нового Продукта
       // if (properties.length) {
-      // ! врем.откл. проверку для отраб.масс.загр.Хар-ик Товара
+      // ! врем.откл. проверку для отраб.масс.загр.Хар-ик Продукта
       // const props = properties.filter(
       //   (prop: any) => prop.name.trim() !== "" && prop.value.trim() !== ""
       // );
@@ -447,15 +445,16 @@ const CreateProduct = (props: any) => {
 
       // отправка/получение data на/с Сервера
       // createProduct(formData)
-      createProduct(formDataArr)
+      productAPI
+        .createProduct(formDataArr as any)
         .then((data) => {
           console.log("SBM CrePPP data ", data);
           // приводим форму в изначальное состояние
           event.target.image.value = "";
           resetValueAndValidAndVBulk();
-          // закрываем модальное окно создания товара
+          // закрываем модальное окно создания Продукта
           setShow(false);
-          // изменяем состояние компонента списка товаров, чтобы в этом списке появился и новый товар
+          // изменяем состояние компонента списка Продуктов, чтобы в этом списке появился и новый Продукт
           setChange((state: any) => !state);
         })
         .catch((error) => alert(error.response.data.message));
@@ -477,7 +476,7 @@ const CreateProduct = (props: any) => {
     >
       <Modal.Header closeButton style={{ padding: "5px" }}>
         <Modal.Title style={{ position: "relative" }}>
-          {valueBulkArr.length > 1 ? <>Новые товары</> : <>Новый товар</>}
+          {valueBulkArr.length > 1 ? <>Новые Продукты</> : <>Новый Продукт</>}
         </Modal.Title>
       </Modal.Header>
 
@@ -488,9 +487,9 @@ const CreateProduct = (props: any) => {
           // ! врем.стиль для расшир.отражения
           style={{ minWidth: "800px", border: "none", padding: "0" }}
         >
-          {/* ФормДата для загр.1го Товара */}
+          {/* ФормДата для загр.1го Продукта */}
           {/* <div id="0">{FormsParam}</div> */}
-          {/* доп.ФормДаты для масс.загр.Товаров */}
+          {/* доп.ФормДаты для масс.загр.Продуктов */}
           {/* // ^ для render|state|загрузки на ОБЪЕКТЕ (ч/з доп.state кол-ва эл. showBulkFormData) */}
           {/* {Array(showBulkFormData)
             .fill(0)
@@ -539,7 +538,7 @@ const CreateProduct = (props: any) => {
                     }}
                     isValid={valid.name === true}
                     isInvalid={valid.name === false}
-                    placeholder="Название товара..."
+                    placeholder="Название Продукта..."
                     className="mb-3"
                   />
                 </div>
@@ -597,7 +596,7 @@ const CreateProduct = (props: any) => {
                     }}
                     isValid={valid.price === true}
                     isInvalid={valid.price === false}
-                    placeholder="Цена товара..."
+                    placeholder="Цена Продукта..."
                   />
                 </div>
                 <div className="df df-col">
@@ -607,7 +606,7 @@ const CreateProduct = (props: any) => {
                     onChange={(e) => {
                       handlerChangeBulkValue(e);
                     }}
-                    placeholder="Фото товара..."
+                    placeholder="Фото Продукта..."
                   />
                 </div>
               </div>
@@ -625,7 +624,7 @@ const CreateProduct = (props: any) => {
                   className="df df-row mt-3"
                   style={{ marginBottom: "0rem !important" }}
                 >
-                  {/* е/и Товаров больше 1го */}
+                  {/* е/и Продуктов больше 1го */}
                   {valueBulkArr.length > 1 && (
                     <div className="df df-col">
                       <button
@@ -635,12 +634,12 @@ const CreateProduct = (props: any) => {
                           handlerDeleteBulkValue(e);
                         }}
                       >
-                        Убрать Товар
+                        Убрать Продукт
                       </button>
                     </div>
                   )}
                   {
-                    // е/и в Товаре есть значения то можно копир блок
+                    // е/и в Продукте есть значения то можно копир блок
                     (product.category || product.brand) && (
                       /* || propertiesArr[index][0]["name"] || propertiesArr[index][0]["value"] // ! не раб. чёт не отрабатывает  */
                       //
@@ -652,7 +651,7 @@ const CreateProduct = (props: any) => {
                             handlerCloneBulkValue(e);
                           }}
                         >
-                          Копировать Товар
+                          Копировать Продукт
                         </button>
                       </div>
                     )
@@ -662,7 +661,7 @@ const CreateProduct = (props: any) => {
             </div>
           ))}
           <div className="mt-2" style={{ display: "block" }}>
-            {/* кнп.Добавить/Убрать Товар */}
+            {/* кнп.Добавить/Убрать Продукт */}
             <div className="df df-col mb-3 m0">
               <button
                 type="submit"
@@ -671,7 +670,7 @@ const CreateProduct = (props: any) => {
                   handlerAddBulkValue();
                 }}
               >
-                Добавить Товар
+                Добавить Продукт
               </button>
             </div>
             <hr

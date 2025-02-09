@@ -1,8 +1,7 @@
 // ^ Модальное окно с формой добавления Бренда
 import { useState } from "react";
 import { Modal, Form } from "react-bootstrap";
-
-import { createBrand } from "../../../http/Tok/catalogAPI_Tok";
+import { brandAPI } from "../../../api/catalog/brandAPI";
 
 const CreateBrand = (props: any) => {
   const { show, setShow, setChange } = props;
@@ -23,11 +22,9 @@ const CreateBrand = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
-      createBrand(data)
-        .then((data) => {
+      brandAPI
+        .createBrand(name.trim())
+        .then((/* data */) => {
           // изменяем состояние компонента списка брендов
           setChange((state: any) => !state);
           // готовим форму к созданию еще одной категории

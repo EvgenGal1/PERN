@@ -1,8 +1,7 @@
 // ^ Модальное окно с формой добавления Категории
 import { useState } from "react";
 import { Modal, Form } from "react-bootstrap";
-
-import { createCategory } from "../../../http/Tok/catalogAPI_Tok";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
 
 const CreateCategory = (props: any) => {
   const { show, setShow, setChange } = props;
@@ -27,11 +26,9 @@ const CreateCategory = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
-      createCategory(data)
-        .then((data) => {
+      categoryAPI
+        .createCategory(name.trim())
+        .then((/* data */) => {
           // изменяем состояние компонента списка категорий
           setChange((state: any) => !state);
           // готовим форму к созданию еще одной категории

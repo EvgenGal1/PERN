@@ -1,10 +1,10 @@
-// ^ Модальное окно с формой добавления Характеристик Товара
+// ^ Модальное окно с формой добавления Характеристик Продукта
 import { Form } from "react-bootstrap";
 
 const CreateProperties = (props: any) => {
   const { index, propertiesArr, setPropertiesArr } = props;
 
-  // шаблон Характеристик Товаров
+  // шаблон Характеристик Продуктов
   const templateProp = { name: "", value: "" };
 
   // ^ для render|state|загрузки на МАССИВЕ
@@ -81,7 +81,7 @@ const CreateProperties = (props: any) => {
         }}
         className="btn--eg btn-primary--eg mb-3 df df-jcc w-100"
       >
-        Добавить Характеристики Товара
+        Добавить Характеристики Продукта
       </button>
       {/* // ^ для render|state|загрузки на МАССИВЕ */}
       {propertiesArr[index].map((prop: any, index: any) => (
