@@ -4,14 +4,16 @@ import { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { AppContext } from "./AppContext";
-import { fetchBasket } from "../../../http/Tok/basketAPI_Tok";
+import { basketAPI } from "../../../api/shopping/basketAPI";
+// import { BasketData } from "../../../types/api/shopping.types";
 
-const FetchBasket = (props: any) => {
+const FetchBasket = (props: any /* BasketData */) => {
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    fetchBasket()
+    basketAPI
+      .getOneBasket()
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
   }, []);

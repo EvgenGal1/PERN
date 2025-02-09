@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 
-import {
-  adminGetOne,
-  adminDelete,
-  userGetOne,
-} from "../../../http/Tok/orderAPI_Tok";
+import { orderAPI } from "../../../api/shopping/orderAPI";
 import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
 
@@ -44,7 +40,8 @@ const Order = (props: any) => {
     // eslint-disable-next-line no-restricted-globals
     const confirmDel = confirm(`Удалить Заказ - «${id}»`);
     if (confirmDel) {
-      adminDelete(id)
+      orderAPI
+        .deleteOrder(id)
         .then((data: any) => {
           setChange(!change);
           setDelOrd(!delOrd);
@@ -65,9 +62,9 @@ const Order = (props: any) => {
   useEffect(() => {
     let authPers: any;
     if (admin) {
-      authPers = adminGetOne(id);
+      authPers = orderAPI.getOneOrder(id);
     } else {
-      authPers = userGetOne(id);
+      authPers = orderAPI.getOneOrder(id);
     }
     authPers
       .then((data: any) => {
