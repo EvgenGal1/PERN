@@ -8,14 +8,12 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
-import { fetchCategories } from "../../../../http/Tok/catalogAPI_Tok";
+import { categoryAPI } from "../../../../api/catalog/categoryAPI";
 import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
-// import { generateParams } from "../../../allFn/ganerateURLParams";
-// import { Spinner } from "react-bootstrap";
 
-const CategoryBar = observer(() => {
+const CategoryBar: React.FC = observer(() => {
   // console.log("CATbar 0 ", 0);
-  const { catalog }: any = useContext(AppContext);
+  const { catalog } = useContext(AppContext);
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -28,35 +26,36 @@ const CategoryBar = observer(() => {
   // ^^ пробы в отд.fn
   // const params = async function generateParams(catalog: any);
 
-  if (category || category === null) {
-    // console.log("CATbar category ~~ ", category);
-    useEffect(() => {
-      // console.log("CATbar usEf 000 ", 0);
-      // setCategoriesFetching(true);
+  // console.log("CATbar category ~~ ", category);
+  useEffect(() => {
+    // if (category || category === null) {
+    // console.log("CATbar usEf 000 ", 0);
+    // setCategoriesFetching(true);
 
-      // fetchCategories().then((data: any) => {
-      //   console.log("CATbar usEf CAT data ", data);
-      //   catalog.categories = data;
-      // });
-      // .finally(() => setCategoriesFetching(false));
-      // console.log("CATbar location.search ", location.search);
+    // getAllCategories().then((data: any) => {
+    //   console.log("CATbar usEf CAT data ", data);
+    //   catalog.categories = data;
+    // });
+    // .finally(() => setCategoriesFetching(false));
+    // console.log("CATbar location.search ", location.search);
 
-      const fetchData = async () => {
-        try {
-          const data = await fetchCategories();
-          // console.log("CATbar usEf CAT data ", data);
-          catalog.categories = data;
-        } catch (error) {
-          console.error("Ошибка загрузки Категорий:", error);
-        } finally {
-          // setCategoriesFetching(false);
-        }
-      };
+    const fetchData = async () => {
+      try {
+        const data = await categoryAPI.getAllCategories();
+        // console.log("CATbar usEf CAT data ", data);
+        catalog.categories = data;
+      } catch (error) {
+        console.error("Ошибка загрузки Категорий:", error);
+      }
+      // finally {
+      // setCategoriesFetching(false);
+      // }
+    };
 
-      fetchData();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-  }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }
+  }, [category /* , catalog */]);
 
   // при клике перенаправление на URL маршрут по параметрам поиска
   const redirectToSearchParams = (id: number) => {
@@ -115,31 +114,31 @@ const CategoryBar = observer(() => {
     }
     // е/и category пуст, то добавляем id
     else {
-      catalog.category = id;
+      catalog.category = String(id);
     }
 
     // запись в перем.параметров из catalog
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (catalog.category) params.category = catalog.category;
     if (catalog.brand) params.brand = catalog.brand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== 20 || catalog.limit !== 0)
+    if (catalog.limit !== 20 && catalog.limit !== 0)
       params.limit = catalog.limit;
     if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-      params.sortOrd = catalog.sortOrd;
+      params.sortOrd = catalog.sortOrd!;
     if (catalog.sortField !== "name" || catalog.sortField !== null)
-      params.sortField = catalog.sortField;
+      params.sortField = catalog.sortField!;
 
     // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
     if (/* catalog.brand || */ catalog.category) {
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
-        search: "?" + createSearchParams(params),
+        search: "?" + createSearchParams(params.toString()),
       });
     } else {
       navigate({
         pathname: SHOP_ROUTE,
-        search: "?" + createSearchParams(params),
+        search: "?" + createSearchParams(params.toString()),
       });
     }
   };

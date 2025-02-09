@@ -8,10 +8,10 @@ import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
-import { fetchBrands } from "../../../../http/Tok/catalogAPI_Tok";
+import { brandAPI } from "../../../../api/catalog/brandAPI";
 import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
 
-const BrandBar = observer(() => {
+const BrandBar: React.FC = observer(() => {
   // console.log("BrandBar 0 ", 0);
   const { catalog } = useContext(AppContext);
 
@@ -23,15 +23,15 @@ const BrandBar = observer(() => {
 
   const { brand } = getSearchParams(searchParams);
 
-  if (brand || brand === null) {
-    // console.log("BRANDbar brand ~~ ", brand);
-    useEffect(() => {
+  // console.log("BRANDbar brand ~~ ", brand);
+  useEffect(() => {
+    if (brand || brand === null) {
       // console.log("BRANDbar usEf 000 ", 0);
       // setBrandsFetching(true);
 
       const fetchData = async () => {
         try {
-          const data = await fetchBrands();
+          const data = await brandAPI.getAllBrands();
           // console.log("BRANDbar usEf BRD data ", data);
           catalog.brands = data;
         } catch (error) {
@@ -43,47 +43,46 @@ const BrandBar = observer(() => {
 
       fetchData();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-  }
+    }
+  }, [brand /* , catalog */]);
 
   // при клике перенаправление на URL маршрут по параметрам поиска
   const redirectToSearchParams = (id: number) => {
     // проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения
-    if (catalog.brand !== null)
-      if (!String(catalog.brand).includes("_"))
-        catalog.brand =
-          id === Number(catalog.brand) ? null : catalog.brand + "_" + id;
-      else if (catalog.brand.includes(String(id)))
-        catalog.brand = catalog.brand.match(`(?<=_)${id}`)
-          ? catalog.brand.replace("_" + id, "")
-          : catalog.brand.replace(id + "_", "");
-      else catalog.brand = catalog.brand + "_" + id;
-    else catalog.brand = id;
+    let newBrand = "";
+    if (catalog.brand !== null) {
+      if (!String(catalog.brand).includes("_")) {
+        newBrand = id === Number(catalog.brand) ? "" : catalog.brand + "_" + id;
+      } else {
+        if (catalog.brand.includes(String(id))) {
+          newBrand = catalog.brand.replace("_" + id, "");
+        } else {
+          newBrand = catalog.brand + "_" + id;
+        }
+      }
+    } else {
+      newBrand = String(id);
+    }
 
     // запись в перем.параметров из catalog
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (catalog.category) params.category = catalog.category;
-    if (catalog.brand) params.brand = catalog.brand;
+    // if (catalog.brand) params.brand = catalog.brand;
+    if (newBrand) params.brand = newBrand;
     if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== 20 || catalog.limit !== 0)
+    if (catalog.limit !== 20 && catalog.limit !== 0)
       params.limit = catalog.limit;
     if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-      params.sortOrd = catalog.sortOrd;
+      params.sortOrd = catalog.sortOrd!;
     if (catalog.sortField !== "name" || catalog.sortField !== null)
-      params.sortField = catalog.sortField;
+      params.sortField = catalog.sortField!;
 
     // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
-    if (catalog.brand /* || catalog.category */) {
-      navigate({
-        pathname: SHOP_CATALOG_ROUTE,
-        search: "?" + createSearchParams(params),
-      });
-    } else {
-      navigate({
-        pathname: SHOP_ROUTE,
-        search: "?" + createSearchParams(params),
-      });
-    }
+    navigate({
+      pathname: newBrand ? SHOP_CATALOG_ROUTE : SHOP_ROUTE,
+      search: "?" + createSearchParams(params.toString()),
+    });
+    catalog.brand = newBrand;
   };
 
   // показ блока с Параметрами
@@ -98,7 +97,7 @@ const BrandBar = observer(() => {
           Бренды
         </button>
         <div className="choice-param__item">
-          {catalog.brands.map((item: any) => (
+          {catalog.brands.map((item) => (
             <label key={item.id}>
               <input
                 type="checkbox"
