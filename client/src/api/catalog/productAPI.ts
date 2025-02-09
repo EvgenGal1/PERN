@@ -1,4 +1,8 @@
-import { ProductData, PropertyData } from "../../types/api/catalog.types";
+import {
+  ProductData,
+  ProductRes,
+  PropertyData,
+} from "../../types/api/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 
@@ -46,7 +50,7 @@ export const productAPI = {
     limit: number = 20,
     sortOrd?: string,
     sortField?: string
-  ): Promise<ProductData[]> {
+  ): Promise<ProductRes> {
     // параметры для постраничной навигации
     const params: any = { page, limit };
     // сортировка по порядку и полю (назв.,цена,рейтинг)
@@ -59,7 +63,7 @@ export const productAPI = {
     if (brandId) url += `/brandId/${brandId}`;
     // req/res
     return handleRequest(
-      () => guestInstance.get<ProductData[]>(url, { params }),
+      () => guestInstance.get<ProductRes>(url, { params }),
       "Products/GetAll"
     );
   },

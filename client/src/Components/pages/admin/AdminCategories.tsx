@@ -2,10 +2,7 @@
 import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
-import {
-  fetchCategories,
-  deleteCategory,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
 import EditCategory from "../../layout/AppTok/EditCategory";
 
 const AdminCategories = () => {
@@ -34,17 +31,20 @@ const AdminCategories = () => {
     // eslint-disable-next-line no-restricted-globals
     const confirmDel = confirm(`Удалить Категорию - «${name}»`);
     if (confirmDel) {
-      deleteCategory(id)
-        .then((data) => {
+      categoryAPI
+        .deleteCategory(id)
+        .then((/* data */) => {
           setChange(!change);
-          alert(`Категория «${data.name}» удалена`);
+          alert(`Категория «» удалена`);
         })
         .catch((error) => alert(error.response.data.message));
     }
   };
 
   useEffect(() => {
-    fetchCategories()
+    console.log("AdminCategories нужен ли fetchCategories ");
+    categoryAPI
+      .getAllCategories()
       .then((data) => setCategories(data))
       .finally(() => setFetching(false));
   }, [change]);

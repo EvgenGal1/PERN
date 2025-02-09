@@ -1,12 +1,9 @@
-// ^ Список Товаров
+// ^ Список Продуктов
 import { useContext, useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
-import {
-  fetchAllProducts,
-  deleteProduct,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { productAPI } from "../../../api/catalog/productAPI";
 import CreateProduct from "../../layout/AppTok/CreateProduct";
 import UpdateProduct from "../../layout/AppTok/UpdateProduct";
 import { PaginSortLimit } from "../../layout/AppTok/PaginSortLimit";
@@ -14,17 +11,17 @@ import { PaginSortLimit } from "../../layout/AppTok/PaginSortLimit";
 const AdminProducts = () => {
   const { catalog }: any = useContext(AppContext);
 
-  // массив загруженных товаров
+  // массив загруженных Продуктов
   const [products, setProducts]: any = useState([]);
-  // загрузка списка товаров с сервера
+  // загрузка списка Продуктов с сервера
   const [fetching, setFetching] = useState(true);
-  // модальное окно создания товара
+  // модальное окно создания Продукта
   const [createShow, setCreateShow] = useState(false);
   // модальное окно редактирования
   const [updateShow, setUpdateShow] = useState(false);
   // обнов.списка/сост.после добав., редактир., удал.
   const [change, setChange] = useState(false);
-  // id радактир-го товара, для UpdateProduct id
+  // id радактир-го Продукта, для UpdateProduct id
   const [product, setProduct]: any = useState(null);
 
   // скрытие/показ от ширины экрана
@@ -46,11 +43,12 @@ const AdminProducts = () => {
   // удал.эл.
   const handleDeleteClick = (id: number, name?: string) => {
     // eslint-disable-next-line no-restricted-globals
-    const confirmDel = confirm(`Удалить Товар - «${name}»`);
+    const confirmDel = confirm(`Удалить Продукт - «${name}»`);
     if (confirmDel) {
-      deleteProduct(id)
+      productAPI
+        .deleteProduct(id)
         .then((/* data */) => {
-          // если это последняя страница и мы удаляем на ней единственный оставшийся товар — то надо перейти к предыдущей странице
+          // если это последняя страница и мы удаляем на ней единственный оставшийся Продукт — то надо перейти к предыдущей странице
           if (
             catalog.count > 1 &&
             products?.length === 1 &&
@@ -60,21 +58,22 @@ const AdminProducts = () => {
           } else {
             setChange(!change);
           }
-          alert(`Товар «${name}» удален`);
+          alert(`Продукт «${name}» удален`);
         })
         .catch((error) => alert(error.response.data.message));
     }
   };
 
   useEffect(() => {
-    fetchAllProducts(
-      null,
-      null,
-      catalog.page,
-      catalog.limit,
-      catalog.sortOrd,
-      catalog.sortField
-    )
+    productAPI
+      .getAllProducts(
+        "",
+        "",
+        catalog.page,
+        catalog.limit,
+        catalog.sortOrd,
+        catalog.sortField
+      )
       .then((data) => {
         setProducts(data.rows);
         catalog.limit = Math.ceil(data.limit);
@@ -96,27 +95,27 @@ const AdminProducts = () => {
 
   return (
     <div className="container">
-      <h1>Товары</h1>
-      {/* Создание Товара (btn|Комп.Modal) */}
+      <h1>Продукты</h1>
+      {/* Создание Продукта (btn|Комп.Modal) */}
       <button
         onClick={() => setCreateShow(true)}
         className="btn--eg btn-primary--eg"
       >
-        Создать товар
+        Создать Продукт
       </button>
       <CreateProduct
         show={createShow}
         setShow={setCreateShow}
         setChange={setChange}
       />
-      {/* Обновление Товара (Комп.Modal) */}
+      {/* Обновление Продукта (Комп.Modal) */}
       <UpdateProduct
         id={product}
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
       />
-      {/* Табл.Товаров */}
+      {/* Табл.Продуктов */}
       {products.length > 0 ? (
         <>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
@@ -203,7 +202,7 @@ const AdminProducts = () => {
           </div>
         </>
       ) : (
-        <p>Список товаров пустой</p>
+        <p>Список Продуктов пустой</p>
       )}
     </div>
   );

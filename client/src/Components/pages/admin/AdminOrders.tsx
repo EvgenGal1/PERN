@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { adminGetAll as getAllOrders } from "../../../http/Tok/orderAPI_Tok";
+import { orderAPI } from "../../../api/shopping/orderAPI";
 import Orders from "../../layout/AppTok/Orders";
 
 const AdminOrders = () => {
@@ -10,7 +10,8 @@ const AdminOrders = () => {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    getAllOrders()
+    orderAPI
+      .getAllOrders()
       .then((data: any) => setOrders(data))
       .finally(() => setFetching(false));
   }, []);

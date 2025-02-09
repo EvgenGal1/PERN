@@ -5,20 +5,9 @@ import { useParams } from "react-router-dom";
 import { AppContext } from "../../layout/AppTok/AppContext";
 import Order from "../../layout/AppTok/Order";
 
-// ^ упразднено(--)
-// import { useState, useEffect } from "react";
-// import { Spinner } from "react-bootstrap";
-// import { adminGetOne as getOneOrder } from "../../../http/Tok/orderAPI_Tok";
-
 const AdminOrder = () => {
   const { id } = useParams();
   const { user }: any = useContext(AppContext);
-
-  // ^ упразднено(--)
-  // const [order, setOrder]: any = useState(null);
-  // const [fetching, setFetching] = useState(true);
-  // const [error, setError] = useState(null);
-  // useEffect(() => { getOneOrder(id))}); & if (fetching | error)
 
   return (
     <div className="container">

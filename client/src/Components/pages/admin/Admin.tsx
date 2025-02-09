@@ -9,14 +9,14 @@ import {
   ADMINBRANDS_ROUTE,
   ADMINPRODUCTS_ROUTE,
 } from "../../../utils/consts";
-import { logoutUser } from "../http/../../../http/Tok/userAPI_Tok";
+import { authAPI } from "../../../api/auth/authAPI";
 
 const Admin = () => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logoutUser();
+    authAPI.logout();
     user.logout();
     navigate(LOGIN_ROUTE, { replace: true });
   };
@@ -36,7 +36,7 @@ const Admin = () => {
           <Link to={ADMINBRANDS_ROUTE}>Бренды каталога</Link>
         </li>
         <li>
-          <Link to={ADMINPRODUCTS_ROUTE}>Товары каталога</Link>
+          <Link to={ADMINPRODUCTS_ROUTE}>Продукты каталога</Link>
         </li>
       </ul>
       <button onClick={handleLogout} className="btn--eg btn-primary--eg">

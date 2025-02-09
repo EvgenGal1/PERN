@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { fetchBrands, deleteBrand } from "../../../http/Tok/catalogAPI_Tok";
+import { brandAPI } from "../../../api/catalog/brandAPI";
 import EditBrand from "../../layout/AppTok/EditBrand";
 
 const AdminBrands = () => {
@@ -30,17 +30,19 @@ const AdminBrands = () => {
   const handleDeleteClick = (id: number, name?: string) => {
     const confirmDel = confirm(`Удалить Бренд - «${name}»`);
     if (confirmDel) {
-      deleteBrand(id)
-        .then((data) => {
+      brandAPI
+        .deleteBrand(id)
+        .then((/* data */) => {
           setChange(!change);
-          alert(`Бренд «${data.name}» удален`);
+          alert(`Бренд «» удален`);
         })
         .catch((error) => alert(error.response.data.message));
     }
   };
 
   useEffect(() => {
-    fetchBrands()
+    brandAPI
+      .getAllBrands()
       .then((data) => setBrands(data))
       .finally(() => setFetching(false));
   }, [change]);
