@@ -10,7 +10,7 @@ export interface BrandData {
 }
 
 // Продукт и их Свойства
-export interface ProductsData {
+export interface ProductData {
   id?: number;
   name: string;
   price: number;
@@ -19,7 +19,7 @@ export interface ProductsData {
   category?: CategoryData;
   brand?: BrandData;
   ratings?: RatingData;
-  properties: PropertyData[];
+  properties?: PropertyData[];
 }
 
 export interface PropertyData {
@@ -31,7 +31,7 @@ export interface PropertyData {
 export interface ProductRes {
   count: number;
   limit: number;
-  rows: ProductsData[];
+  rows: ProductData[];
 }
 
 // Рейтинг

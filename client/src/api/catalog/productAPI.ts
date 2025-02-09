@@ -1,4 +1,4 @@
-import { ProductsData, PropertyData } from "../../types/api/catalog.types";
+import { ProductData, PropertyData } from "../../types/api/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 
@@ -12,9 +12,9 @@ export const productAPI = {
    * Создание Нового Продукта
    * @param product - Данные Нового Продукта
    */
-  async createProduct(product: ProductsData): Promise<ProductsData> {
+  async createProduct(product: ProductData): Promise<ProductData> {
     return handleRequest(
-      () => authInstance.post<ProductsData>("products/create", product),
+      () => authInstance.post<ProductData>("products/create", product),
       "Products/Create"
     );
   },
@@ -23,9 +23,9 @@ export const productAPI = {
    * Получение Одного Продукта по ID
    * @param id - ID Продукта
    */
-  async getOneProduct(id: number): Promise<ProductsData> {
+  async getOneProduct(id: number): Promise<ProductData> {
     return handleRequest(
-      () => guestInstance.get<ProductsData>(`products/getone/${id}`),
+      () => guestInstance.get<ProductData>(`products/getone/${id}`),
       "Products/GetOne"
     );
   },
@@ -46,7 +46,7 @@ export const productAPI = {
     limit: number = 20,
     sortOrd?: string,
     sortField?: string
-  ): Promise<ProductsData[]> {
+  ): Promise<ProductData[]> {
     // параметры для постраничной навигации
     const params: any = { page, limit };
     // сортировка по порядку и полю (назв.,цена,рейтинг)
@@ -59,7 +59,7 @@ export const productAPI = {
     if (brandId) url += `/brandId/${brandId}`;
     // req/res
     return handleRequest(
-      () => guestInstance.get<ProductsData[]>(url, { params }),
+      () => guestInstance.get<ProductData[]>(url, { params }),
       "Products/GetAll"
     );
   },
@@ -69,12 +69,9 @@ export const productAPI = {
    * @param id - ID Продукта
    * @param product - Обновляемые данные Продукта
    */
-  async updateProduct(
-    id: number,
-    product: ProductsData
-  ): Promise<ProductsData> {
+  async updateProduct(id: number, product: ProductData): Promise<ProductData> {
     return handleRequest(
-      () => authInstance.put<ProductsData>(`products/update/${id}`, product),
+      () => authInstance.put<ProductData>(`products/update/${id}`, product),
       "Products/Update"
     );
   },
