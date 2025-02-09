@@ -3,17 +3,18 @@ import { useContext, useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
-import { userGetAll as getAllOrders } from "../../../http/Tok/orderAPI_Tok";
+import { orderAPI } from "../../../api/shopping/orderAPI";
 import Orders from "../../layout/AppTok/Orders";
 
 const UserOrders = () => {
   const { user }: any = useContext(AppContext);
 
-  const [orders, setOrders] = useState(null);
+  const [orders, setOrders]: any = useState(null);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    getAllOrders()
+    orderAPI
+      .getAllOrders()
       .then((data) => {
         console.log("UserOrderS data ", data);
         setOrders(data);

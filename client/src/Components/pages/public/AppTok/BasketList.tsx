@@ -4,12 +4,7 @@ import { Spinner } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import {
-  fetchBasket,
-  incrementBasket,
-  decrementBasket,
-  removeBasket,
-} from "../../../../http/Tok/basketAPI_Tok";
+import { basketAPI } from "../../../../api/shopping/basketAPI";
 import { CHECKOUT_ROUTE } from "../../../../utils/consts";
 import BasketItem from "./BasketItem";
 
@@ -23,7 +18,8 @@ const BasketList = observer(() => {
   // ! заглушка/загрузка данн.корзины. Мигает пустая корзина
   // ^ решил - использ.доп.условн.рендер (fetching)
   useEffect(() => {
-    fetchBasket()
+    basketAPI
+      .getOneBasket()
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
     //  eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +31,8 @@ const BasketList = observer(() => {
 
   const handleIncrement = (id: number) => {
     setFetching(true);
-    incrementBasket(id)
+    basketAPI
+      .incrementBasket(id)
       .then((data) => {
         // console.log("BL incrementBasket data ", data);
         basket.products = data.products;
@@ -45,7 +42,8 @@ const BasketList = observer(() => {
 
   const handleDecrement = (id: number) => {
     setFetching(true);
-    decrementBasket(id)
+    basketAPI
+      .decrementBasket(id)
       .then((data) => {
         // console.log("BL decrementBasket data ", data);
         basket.products = data.products;
@@ -58,7 +56,8 @@ const BasketList = observer(() => {
     const confirmDel = confirm(`Удалить Позицию - «${name}»`);
     if (confirmDel) {
       setFetching(true);
-      removeBasket(id)
+      basketAPI
+        .removeBasket(id)
         .then((data) => {
           // console.log("BL removeBasket data ", data);
           basket.products = data.products;

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../layout/AppTok/AppContext";
 import { USERORDERS_ROUTE } from "../../../utils/consts";
-import { logoutUser } from "../../../http/Tok/userAPI_Tok";
+import { authAPI } from "../../../api/auth/authAPI";
 import { LOGIN_ROUTE } from "../../../utils/consts";
 
 const User = () => {
@@ -11,7 +11,7 @@ const User = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logoutUser();
+    authAPI.logout();
     user.logout();
     navigate(LOGIN_ROUTE, { replace: true });
   };

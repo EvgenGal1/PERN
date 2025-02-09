@@ -4,9 +4,9 @@ import { Link, Navigate } from "react-router-dom";
 import { Form, Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { fetchBasket } from "../../../../http/Tok/basketAPI_Tok";
-import { checkUser as checkAuth } from "../../../../http/Tok/userAPI_Tok";
-import { userCreate, guestCreate } from "../../../../http/Tok/orderAPI_Tok";
+import { authAPI } from "../../../../api/auth/authAPI";
+import { basketAPI } from "../../../../api/shopping/basketAPI";
+import { orderAPI } from "../../../../api/shopping/orderAPI";
 import { BASKET_ROUTE, USERORDERS_ROUTE } from "../../../../utils/consts";
 import FormField__eg from "../../../ui/Form/FormField__eg";
 import FormFieldRecursive__EG from "../../../ui/Form/FormFieldRecursive__EG";
@@ -46,14 +46,14 @@ const isValid = (input: HTMLInputElement) => {
 };
 
 const Checkout = () => {
-  // Авториз.Корзин. Логика проверки авторизован ли пользователь и есть ли товары в корзине
+  // Авториз.Корзин. Логика проверки авторизован ли пользователь и есть ли Продукты в корзине
   // ! врем.получ. и в NavBar и в Checkout. Позже перепишется на получ.в App
-  const { user, basket } /* : any */ = useContext(AppContext);
+  const { user, basket } = useContext(AppContext);
   // loader, пока получаем корзину
   const [fetching, setFetching] = useState(true);
 
   // Заказ. Логика заказа
-  const [order, setOrder] = useState(null);
+  const [order, setOrder]: any = useState(null);
 
   const [value, setValue] = useState<CheckoutFormValues>({
     name: "",
@@ -73,18 +73,19 @@ const Checkout = () => {
   // Авториз.Корзин.
   useEffect(() => {
     // если корзина пуста, здесь делать нечего
-    fetchBasket()
-      .then((data) => {
-        // console.log("Checkout fetchBasket data ", data);
+    basketAPI
+      .getOneBasket()
+      .then((data: any) => {
         basket.products = data.products;
       })
       .finally(() => setFetching(false));
     // нужно знать, авторизован ли пользователь
-    checkAuth()
+    authAPI
+      .check()
       .then((data) => {
         // console.log("Checkout checkAuth data ", data);
         if (data) {
-          user.login(data);
+          user.login(data.userData);
         }
       })
       .catch((/* error */) => user.logout());
@@ -171,7 +172,7 @@ const Checkout = () => {
       ).value.trim();
       comment = comment ? comment : "";
       // форма заполнена правильно, можно отправлять данные
-      const body = {
+      const body: any = {
         ...value,
         comment,
         productId: basket.products.map(
@@ -181,7 +182,7 @@ const Checkout = () => {
           (product: { id: number; quantity: number }) => product.quantity
         ),
       };
-      const create = user.isAuth ? userCreate : guestCreate;
+      const create = user.isAuth ? orderAPI.createOrder : orderAPI.createOrder;
       create(body).then((data) => {
         console.log("Checkout data ", data);
         setOrder(data);
