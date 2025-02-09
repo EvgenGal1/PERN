@@ -3,14 +3,17 @@ import { observer } from "mobx-react-lite";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 
-import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
+import { productAPI } from "../../../../api/catalog/productAPI";
 import { AppContext } from "../../../layout/AppTok/AppContext";
 import { PaginSortLimit } from "../../../layout/AppTok/PaginSortLimit";
 import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
 import ProductItem from "./ProductItem";
+import { ProductData } from "../../../../types/api/catalog.types";
 
-const ProductList = observer(() => {
-  const { catalog }: any = useContext(AppContext);
+// interface ProductListProps {}
+
+const ProductList: React.FC /* <ProductListProps> */ = observer(() => {
+  const { catalog } = useContext(AppContext);
 
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -34,26 +37,32 @@ const ProductList = observer(() => {
     catalog.category = category;
     catalog.brand = brand;
     catalog.page = page ?? 1;
-    catalog.limit = limit ?? 0;
+    catalog.limit = limit ?? 20;
     catalog.sortOrd = sortOrd ?? "ASC";
     catalog.sortField = sortField ?? "name";
 
     const fetchData = async () => {
+      setProductsFetching(true);
       try {
-        const data = await fetchAllProducts(
-          catalog.category,
-          catalog.brand,
+        const data = await productAPI.getAllProducts(
+          // ! ошб.типа, логики и передачи
+          catalog.category!,
+          catalog.brand!,
           catalog.page,
           catalog.limit,
-          catalog.sortOrd,
-          catalog.sortField
+          catalog.sortOrd!,
+          catalog.sortField!
         );
         // ! ошб.е/и пропис.true выше - Недостаточно памятидля загрюстр.
-        setProductsFetching(true);
-        console.log("ProdLs usEf PRD data ", data);
+        // setProductsFetching(true);
+        // console.log("ProdLs usEf PRD data ", data);
         catalog.products = data.rows;
-        catalog.limit = Math.ceil(data.limit);
+        // catalog.limit = Math.ceil(data.limit);
         catalog.count = data.count;
+        // ?
+        // catalog.setProducts(data.rows);
+        // catalog.setLimit(Math.ceil(data.limit));
+        // catalog.setCount(data.count);
       } catch (error) {
         console.error("Ошибка загрузки Продуктов:", error);
       } finally {
@@ -62,18 +71,15 @@ const ProductList = observer(() => {
     };
 
     fetchData();
-
     // eslint-disable-next-line
-  }, [location.search]);
+  }, [location.search, catalog]);
 
   return (
     <>
       {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
       {catalog.products.length ? (
         <PaginSortLimit setFetching={setFetching} setChange={setChange} />
-      ) : (
-        ""
-      )}
+      ) : null}
       <div className="row-mlr--eg mb-3">
         {/* СПИСОК ПРОДУКТОВ */}
         {/* {searchInput.length > 0 ? (
@@ -97,12 +103,14 @@ const ProductList = observer(() => {
         <>
           {productsFetching ? (
             <div style={{ textAlign: "center" }}>
-              <Spinner animation="border" variant="danger" />
+              <Spinner animation="border" variant="danger" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
             </div>
           ) : (
             <>
               {catalog.products.length ? (
-                catalog.products.map((item: any) => (
+                catalog.products.map((item: ProductData) => (
                   <ProductItem key={item.id} data={item} />
                 ))
               ) : (
@@ -115,9 +123,7 @@ const ProductList = observer(() => {
       {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
       {catalog.products.length ? (
         <PaginSortLimit setFetching={setFetching} setChange={setChange} />
-      ) : (
-        ""
-      )}
+      ) : null}
     </>
   );
 });

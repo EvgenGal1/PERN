@@ -3,12 +3,9 @@ import { useParams } from "react-router-dom";
 import { Image, Spinner } from "react-bootstrap";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import {
-  createProdRating,
-  fetchOneProduct,
-  fetchProdRating,
-} from "../../../../http/Tok/catalogAPI_Tok";
-import { appendBasket } from "../../../../http/Tok/basketAPI_Tok";
+import { productAPI } from "../../../../api/catalog/productAPI";
+import { basketAPI } from "../../../../api/shopping/basketAPI";
+import { ratingAPI } from "../../../../api/catalog/ratingAPI";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
 import { StarFill } from "../../../layout/AppTok/StarFill";
 import { StarOutline } from "../../../layout/AppTok/StarOutline";
@@ -36,7 +33,7 @@ const Product = (/* props: any */) => {
     setIsPressed(false);
   };
 
-  // id Товара, Context, state Товара
+  // id Продукта, Context, state Продукта
   const { id }: any = useParams();
   const { basket, catalog, user }: any = useContext(AppContext);
   const [product, setProduct]: any = useState(null);
@@ -46,13 +43,13 @@ const Product = (/* props: any */) => {
   const [hoverStar, setHoverStar] = useState(0);
   const [votes, setVotes] = useState(0);
 
-  // изнач.загр.Товара/Хар-ик + Рейтинг/Голоса
+  // изнач.загр.Продукта/Хар-ик + Рейтинг/Голоса
   useEffect(() => {
-    fetchOneProduct(id).then((data: any) => {
+    productAPI.getOneProduct(id).then((data: any) => {
       console.log("Prod prod data ", data);
       setProduct(data);
     });
-    fetchProdRating(id).then((data: any) => {
+    ratingAPI.getProductRating(id).then((data: any) => {
       console.log("Prod rating data ", data);
       // setRating(data);
       setNuberStar(data.rating);
@@ -63,20 +60,23 @@ const Product = (/* props: any */) => {
   // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
     if (user.isAuth) {
-      await createProdRating(user.id, product.id, rating).then((data) => {
-        console.log("ProdItm CRE data ", data);
-        // setRating(data);
-        setNuberStar(data.ratingAll);
-        setVotes(data.votes);
-        catalog.rating = data.ratingAll;
-      });
+      await ratingAPI
+        .createProductRating(user.id, product.id, rating)
+        .then((data) => {
+          console.log("ProdItm CRE data ", data);
+          // setRating(data);
+          // ! ошб.типа, логики и передачи
+          setNuberStar(data.ratingAll!);
+          setVotes(data.votes);
+          catalog.rating = data.ratingAll;
+        });
     }
   };
 
   // обраб.клк по кнп. «Добавить в корзину»:
   const handleClick = (productId: any) => {
     console.log("Prod productId ", productId);
-    appendBasket(productId).then((data: any) => {
+    basketAPI.appendBasket(productId).then((data: any) => {
       console.log("Product appendBasket data ", data);
       basket.products = data.products;
       console.log("Product basket.products ", basket.products);
@@ -95,7 +95,7 @@ const Product = (/* props: any */) => {
             <Image
               width={300}
               height={300}
-              src={`${process.env.REACT_APP_IMG_URL_PERN}${process.env.REACT_APP_PUB_DIR}/img/shop/product/${product.image}`}
+              src={`${process.env.REACT_APP_IMG_URL_PERN}/img/shop/product/${product.image}`}
             />
           ) : (
             <Image
