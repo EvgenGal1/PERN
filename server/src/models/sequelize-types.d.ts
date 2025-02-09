@@ -199,7 +199,7 @@ export interface OrderItemAttributes {
   name: string;
   price: number;
   quantity: number;
-  orderId: number;
+  orderId?: number;
 }
 
 export interface OrderItemCreationAttributes

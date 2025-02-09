@@ -114,6 +114,20 @@ class BasketService {
     return this.getOneBasket(basketId);
   }
 
+  // удаление Продукта из Корзины
+  async removeBasket(
+    basketId: number,
+    productId: number,
+  ): Promise<BasketResponse> {
+    const item = await BasketProductModel.findOne({
+      where: { basketId, productId },
+    });
+    if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
+    // удал.Продукта
+    await item.destroy();
+    return this.getOneBasket(basketId);
+  }
+
   // очистка Корзины от Продуктов
   async clearBasket(basketId: number): Promise<BasketResponse> {
     const basket = await BasketModel.findByPk(basketId);
@@ -123,8 +137,8 @@ class BasketService {
     return this.getOneBasket(basketId);
   }
 
-  // удаление Корзины с Продуктами
-  async removeBasket(basketId: number): Promise<{ message: string }> {
+  // удаление Корзины (с Продуктами как в removeBasket но без проверок)
+  async deleteBasket(basketId: number): Promise<void | { message: string }> {
     const basket = await BasketModel.findByPk(basketId, {
       include: [BasketProductModel],
     });
@@ -132,20 +146,11 @@ class BasketService {
       throw ApiError.notFound(`Корзина с ID '${basketId}' не найдена`);
     // удал., возврат смс
     const productCount = basket.products?.length ?? 0;
+    // связь CASCADE удаляет и Продукты и Корзину
     await basket.destroy();
     return {
       message: `Корзина с ID '${basketId}' ${productCount ? `с ${productCount} товарами` : 'без товаров'} удалена`,
     };
-  }
-
-  // удаление Корзины (с Продуктами как в removeBasket но без проверок)
-  async deleteBasket(basketId: number): Promise<void | { message: string }> {
-    const basket = await BasketModel.findByPk(basketId);
-    if (!basket)
-      throw ApiError.notFound(`Корзина с ID '${basketId}' не найдена`);
-    // связь CASCADE удаляет и Продукты и Корзину
-    await basket.destroy();
-    return { message: `Корзина с ID '${basket.id}' удалена` };
   }
 }
 

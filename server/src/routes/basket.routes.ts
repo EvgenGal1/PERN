@@ -30,7 +30,7 @@ router.get('/getone', BasketController.getOneBasket);
  * @swagger
  * /baskets/product/{productId}/append/{quantity}:
  *   put:
- *     summary: Добавить Продукт в Корзину
+ *     summary: Добавить Продукты в Корзину
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -62,7 +62,7 @@ router.put(
  * @swagger
  * /baskets/product/{productId}/increment/{quantity}:
  *   put:
- *     summary: Увеличить количество Продукта в Корзине
+ *     summary: Увеличить количество Продуктов в Корзине
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -94,7 +94,7 @@ router.put(
  * @swagger
  * /baskets/product/{productId}/decrement/{quantity}:
  *   put:
- *     summary: Уменьшить количество Продукта в Корзине
+ *     summary: Уменьшить количество Продуктов в Корзине
  *     tags: [Basket]
  *     security:
  *       - bearerAuth: []
@@ -160,5 +160,28 @@ router.put('/product/:productId([0-9]+)/remove', BasketController.removeBasket);
  *         description: Ошибка Запроса
  */
 router.put('/clear', BasketController.clearBasket);
+
+/**
+ * @swagger
+ * /baskets/product/{productId}/remove:
+ *   put:
+ *     summary: Удалить Корзину и Все Продукты
+ *     tags: [Basket]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID Продукта
+ *     responses:
+ *       200:
+ *         description: Продукт Удалён
+ *       400:
+ *         description: Ошибка Запроса
+ */
+router.put('/delete', BasketController.deleteBasket);
 
 export default router;

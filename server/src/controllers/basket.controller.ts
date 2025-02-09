@@ -108,11 +108,14 @@ class BasketController {
     }
   }
 
-  // удал.Корзины с Продуктами
+  // удал.Продукта из Корзины
   async removeBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
-      const basket = await BasketService.removeBasket(basketId);
+      const basket = await BasketService.removeBasket(
+        basketId,
+        +req.params.productId,
+      );
       res
         .cookie('basketId', basketId, COOKIE_OPTIONS.basketId)
         .status(200)
@@ -122,10 +125,10 @@ class BasketController {
     }
   }
 
-  // удал.Корзины с Продуктами (как в removeBasket но без проверок)
+  // удал.Корзины с Продуктами
   async deleteBasket(req: Request, res: Response, next: NextFunction) {
     try {
-      const basketId = parseInt(req.params.basketId);
+      const basketId = await this.getBasketId(req);
       const basket = await BasketService.deleteBasket(basketId);
       res.status(200).json(basket);
     } catch (error: unknown) {
