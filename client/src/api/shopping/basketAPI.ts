@@ -73,7 +73,7 @@ export const basketAPI = {
   /**
    * Удалить Корзину и Все Продукты
    */
-  async deleteBasket(): Promise<BasketData> {
+  async deleteBasket(): Promise<void> {
     return handleRequest(
       () => guestInstance.put(`baskets/delete`),
       "Basket/DeleteBasket"
