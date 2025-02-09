@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
-
-import {
-  createBrand,
-  fetchBrand,
-  updateBrand,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { brandAPI } from "../../../api/catalog/brandAPI";
 
 const EditBrand = (props: any) => {
   const { id, show, setShow, setChange } = props;
@@ -15,7 +10,8 @@ const EditBrand = (props: any) => {
 
   useEffect(() => {
     if (id) {
-      fetchBrand(id)
+      brandAPI
+        .getOneBrand(id)
         .then((data) => {
           setName(data.name);
           setValid(data.name !== "");
@@ -40,9 +36,6 @@ const EditBrand = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
       const success = () => {
         // закрываем модальное окно создания-редактирования бренда
         setShow(false);
@@ -51,9 +44,9 @@ const EditBrand = (props: any) => {
       };
       const error = (error: any) => alert(error.response.data.message);
       if (id) {
-        updateBrand(id, data).then(success).catch(error);
+        brandAPI.updateBrand(id, name.trim()).then(success).catch(error);
       } else {
-        createBrand(data).then(success).catch(error);
+        brandAPI.createBrand(name.trim()).then(success).catch(error);
       }
     }
   };
@@ -75,7 +68,7 @@ const EditBrand = (props: any) => {
             onChange={(e) => handleChange(e)}
             isValid={valid === true}
             isInvalid={valid === false}
-            placeholder="Название бренда..."
+            placeholder="Название Бренда..."
             className="mb-3"
           />
           <button type="submit" className="btn--eg btn-success--eg">

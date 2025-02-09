@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
-
-import { createProduct, updateProduct } from "../../../http/Tok/catalogAPI_Tok";
+import { productAPI } from "../../../api/catalog/productAPI";
 
 const EditProduct = (props: any) => {
   const { id, show, setShow, setChange } = props;
@@ -36,19 +35,26 @@ const EditProduct = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
-      const success = (data: any) => {
+      const success = (/* data: any */) => {
         // закрываем модальное окно создания-редактирования бренда
         setShow(false);
         // изменяем состояние родителя, чтобы обновить список брендов
         setChange((state: any) => !state);
       };
       const error = (error: any) => alert(error.response.data.message);
-      id
-        ? updateProduct(id, data).then(success).catch(error)
-        : createProduct(data).then(success).catch(error);
+      if (id) {
+        productAPI
+          // ! ошб.типа, логики и передачи
+          .updateProduct(id, name.trim() as any)
+          .then(success)
+          .catch(error);
+      } else {
+        productAPI
+          // ! ошб.типа, логики и передачи
+          .createProduct(name as any)
+          .then(success)
+          .catch(error);
+      }
     }
   };
 
@@ -69,7 +75,7 @@ const EditProduct = (props: any) => {
             onChange={(e) => handleChange(e)}
             isValid={valid === true}
             isInvalid={valid === false}
-            placeholder="Название бренда..."
+            placeholder="Название Продукта..."
             className="mb-3"
           />
           <button type="submit" className="btn--eg btn-success--eg">

@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 
-import {
-  createCategory,
-  fetchCategory,
-  updateCategory,
-} from "../../../http/Tok/catalogAPI_Tok";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
 
 const EditCategory = (props: any) => {
   const { id, show, setShow, setChange } = props;
@@ -15,7 +11,8 @@ const EditCategory = (props: any) => {
 
   useEffect(() => {
     if (id) {
-      fetchCategory(id)
+      categoryAPI
+        .getOneCategory(id)
         .then((data) => {
           setName(data.name);
           setValid(data.name !== "");
@@ -40,9 +37,6 @@ const EditCategory = (props: any) => {
     const correct = name.trim() !== "";
     setValid(correct);
     if (correct) {
-      const data = {
-        name: name.trim(),
-      };
       const success = () => {
         // закрываем модальное окно создания-редактирования категории
         setShow(false);
@@ -51,9 +45,9 @@ const EditCategory = (props: any) => {
       };
       const error = (error: any) => alert(error.response.data.message);
       if (id) {
-        updateCategory(id, data).then(success).catch(error);
+        categoryAPI.updateCategory(id, name.trim()).then(success).catch(error);
       } else {
-        createCategory(data).then(success).catch(error);
+        categoryAPI.createCategory(name.trim()).then(success).catch(error);
       }
     }
   };
@@ -77,7 +71,7 @@ const EditCategory = (props: any) => {
             onChange={(e) => handleChange(e)}
             isValid={valid === true}
             isInvalid={valid === false}
-            placeholder="Название категории..."
+            placeholder="Название Категории..."
             className="mb-3"
           />
           <button type="submit" className="btn--eg btn-success--eg">
