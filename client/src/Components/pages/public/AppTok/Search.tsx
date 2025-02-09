@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import {
   useNavigate,
   createSearchParams /* , Navigate */,
@@ -6,76 +6,60 @@ import {
 import { observer } from "mobx-react-lite";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
+import { productAPI } from "../../../../api/catalog/productAPI";
+import { ProductData } from "../../../../types/api/catalog.types";
 import { FILTER_ROUTE } from "../../../../utils/consts";
 
 const Search = observer(() => {
-  const { catalog }: any = useContext(AppContext);
+  const { catalog } = useContext(AppContext);
   const navigate = useNavigate();
 
   // ^ ПОИСК на FRONT (данн.из БД в отд.стат)
   // все данн.с сервера
-  const [searchAll, setSearchAll] = useState([]);
+  const [searchAll, setSearchAll]: any = useState<ProductData>();
   // inp.поиска
   const [searchInput, setSearchInput] = useState("");
   // результ.поиска
   // const [filteredResults, setFilteredResults] = useState([]);
 
-  // по измен.searchAll,searchInput,catalog начин.фильтр.из searchAll
-  useEffect(() => {
-    const filteredData = searchAll.filter(({ name, price, rating }: any) => {
-      // const filteredData = catalog.products.filter(({ name, price, rating }: any) => {
-      if (
-        name.toLowerCase().includes(searchInput.toLowerCase()) ||
-        String(price).includes(searchInput) ||
-        String(rating).includes(searchInput)
-      ) {
-        return name;
-      }
-    });
-    catalog.products = filteredData;
-  }, [searchAll, searchInput, catalog]);
+  // Fn загр.всех Продуктов
+  const loadProducts = useCallback(
+    async (limit: number): Promise<void> => {
+      const data = await productAPI.getAllProducts(
+        // ! ошб.типа, логики и передачи
+        catalog.category!,
+        catalog.brand!,
+        catalog.page,
+        /* catalog.limit || 10000 */ limit,
+        catalog.sortOrd!,
+        catalog.sortField!
+        // additionalParams
+      );
 
-  // `Поиск элементов`. Загр.ВСЕХ Товаров в searchAll
-  const searchItems = async (searchValue: any) => {
-    // console.log("SEH searchValue : ", searchValue);
-    if (searchValue !== "") {
-      await fetchAllProducts(
-        catalog.category,
-        catalog.brand,
-        catalog.page,
-        // catalog.limit,
-        10000,
-        catalog.sortOrd,
-        catalog.sortField
-      ).then((data: any) => {
-        // console.log("SEH IF data : ", data);
-        setSearchAll(data.rows);
-        // catalog.products = data.rows;
-        // catalog.limit = Math.ceil(data.limit);
-        // console.log("catalog.limit IF > ", catalog.limit);
-        catalog.limit = Math.ceil(catalog.limit);
-        // console.log("catalog.limit IF = ", catalog.limit);
-        // catalog.count = Math.ceil(data.count / data.limit);
-      });
-    } else {
-      fetchAllProducts(
-        catalog.category,
-        catalog.brand,
-        catalog.page,
-        catalog.limit,
-        catalog.sortOrd,
-        catalog.sortField
-      ).then((data: any) => {
-        // console.log("SEH ELSE data : ", data);
-        catalog.products = data.rows;
-        // catalog.limit = Math.ceil(data.limit);
-        // catalog.count = Math.ceil(data.count / data.limit);
-        catalog.count = data.count;
-      });
-    }
-    // console.log("catalog.limit === ", catalog.limit);
-  };
+      setSearchAll(data.rows);
+      catalog.products = data.rows;
+      catalog.count = data.count;
+    },
+    [catalog]
+  );
+
+  useEffect(() => {
+    loadProducts(/* 10000 */ 20); // Загружаем минимум /* все */ продукты при первом рендере
+  }, [loadProducts]);
+
+  // по измен.searchAll,searchInput,catalog начин.фильтр.из searchAll
+  // ?
+  useEffect(() => {
+    catalog.products /* const filteredData */ = /* return */ searchAll.filter(
+      ({ name, price, rating }: ProductData) => {
+        return (
+          name.toLowerCase().includes(searchInput.toLowerCase()) ||
+          String(price).includes(searchInput) ||
+          String(rating).includes(searchInput)
+        );
+      }
+    );
+  }, [searchAll, searchInput, catalog]);
 
   // ^ РАСШИР.ПОИСК на FRONT (данн.из БД в отд.стат)
   // блок показа Расшир.Поиска
@@ -84,88 +68,44 @@ const Search = observer(() => {
   //   setShowExtendedSearch((prevState) => !prevState);
   // };
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
+
   // ^ ПОИСК на FRONT (данн.из БД в Общ.стат)
   const handleClick = (/* id: number */) => {
-    // if (id === catalog.category) {
-    //   catalog.category = null;
-    // } else {
-    //   catalog.category = id;
-    // }
-    // при каждом клике добавляем в историю браузера новый элемент
-    const params: any = {};
-    if (catalog.category) params.category = catalog.category;
-    if (catalog.brand) params.brand = catalog.brand;
-    if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== 20 || catalog.limit !== 0)
-      params.limit = catalog.limit;
-    if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-      params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField !== "name" || catalog.sortField !== null)
-      params.sortField = catalog.sortField;
-
     navigate({
       pathname: FILTER_ROUTE,
-      search: "?" + createSearchParams(params),
+      search:
+        /* "?" + */
+        createSearchParams({
+          category: catalog.category || "",
+          brand: catalog.brand || "",
+          page: String(catalog.page),
+          limit: String(catalog.limit),
+          sortOrd: catalog.sortOrd || "",
+          sortField: catalog.sortField || "",
+        }).toString(),
     });
   };
 
   return (
     <>
-      {/* РАСШИР.ПОИСК */}
-      {/* {showExtendedSearch && (
-        <SearchFilter
-          show={showExtendedSearch}
-          setShow={setShowExtendedSearch}
-        />
-      )} */}
       {/* ПОИСК */}
       <div className="search--eg">
         {/* INP.ПОИСКА */}
         <input
+          type="text"
+          value={searchInput}
           className="search--eg__inp bbb-1"
           placeholder="Поиск (название, цена)"
-          onChange={(e) => {
-            searchItems(e.target.value);
-            // ~ асинхр.usSt не даёт нов.знач. Запись напрямую
-            setSearchInput(e.target.value);
-          }}
+          onChange={handleSearchInputChange}
         />
         {/* КНП.РАСШИРЕН/ПОИСКА */}
-        <button
-          onClick={() => {
-            // handleBtnClick();
-            handleClick();
-          }}
-          className="search--eg__btn btn--eg"
-        >
+        <button onClick={handleClick} className="search--eg__btn btn--eg">
           [расширенный поиск]
         </button>
-        {/* <button
-            onClick={() => navigate(FILTER_ROUTE)}
-            className="btn--eg btn-primary--eg"
-          >
-            [расширенный поиск]
-          </button> */}
       </div>
-      {/* СПИСОК ПРОДУКТОВ */}
-      {/* {searchInput.length > 0 ? (
-        // ПО ПОИСКУ
-        filteredResults.length !== 0 ? (
-          filteredResults.map((item: any) => {
-            return <p></p>; // <ProductItem key={item.id} data={item} />;
-          })
-        ) : (
-          <p className="m-3">По вашему запросу ничего не найдено</p>
-        )
-      ) : catalog.products.length ? (
-        // ПО УМОЛЧАНИЮ
-        catalog.products.map((item: any) => (
-          // <ProductItem key={item.id} data={item} />
-          <p>{item}</p>
-        ))
-      ) : (
-        <p className="m-3">По вашему запросу ничего не найдено</p>
-      )} */}
     </>
   );
 });

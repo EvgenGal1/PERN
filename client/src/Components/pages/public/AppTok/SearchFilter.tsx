@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 
 import { AppContext } from "../../../layout/AppTok/AppContext";
-import { fetchAllProducts } from "../../../../http/Tok/catalogAPI_Tok";
+import { productAPI } from "../../../../api/catalog/productAPI";
 import {
   SHOP_ROUTE,
   SHOP_CATALOG_ROUTE,
@@ -10,7 +10,7 @@ import {
 } from "../../../../utils/consts";
 import { findValueFromStringInArray } from "../../../../scripts/helpers/findValueFromStringInArray";
 
-// перем. Имён, Id, фильтров из Каталога, кол-ва Товаров
+// перем. Имён, Id, фильтров из Каталога, кол-ва Продуктов
 let defaultValueName: any = { category: "", brand: "", name: "", price: "" };
 let defaultItemId: any = { category: "", brand: "", name: "", price: "" };
 let defaultIdCatalog: any = {
@@ -181,7 +181,7 @@ const SearchFilter = () => {
       if (catalog.category) params.category = catalog.category;
       if (catalog.brand) params.brand = catalog.brand;
       if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== 20 || catalog.limit !== 0)
+      if (catalog.limit !== 20 && catalog.limit !== 0)
         params.limit = catalog.limit;
       if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
         params.sortOrd = catalog.sortOrd;
@@ -198,7 +198,7 @@ const SearchFilter = () => {
       if (itemIdStat.category) params.category = itemIdStat.category;
       if (itemIdStat.brand) params.brand = itemIdStat.brand;
       if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== 20 || catalog.limit !== 0)
+      if (catalog.limit !== 20 && catalog.limit !== 0)
         params.limit = catalog.limit;
       if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
         params.sortOrd = catalog.sortOrd;
@@ -215,16 +215,18 @@ const SearchFilter = () => {
     }
   };
 
-  // получение кол-ва Товаров ч/з usEf
+  // получение кол-ва Продуктов ч/з usEf
   useEffect(() => {
-    fetchAllProducts(
-      itemIdStat.category,
-      itemIdStat.brand,
-      catalog.page,
-      10000,
-      catalog.sortOrd,
-      catalog.sortField
-    )
+    productAPI
+      .getAllProducts(
+        itemIdStat.category,
+        itemIdStat.brand,
+        catalog.page,
+        10000,
+        // ! ошб.типа, логики и передачи
+        catalog.sortOrd!,
+        catalog.sortField!
+      )
       .then((data) => {
         // console.log("FLT usEf 000 data ", data);
         // eslint-disable-next-line react-hooks/exhaustive-deps
