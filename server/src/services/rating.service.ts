@@ -55,25 +55,23 @@ class RatingService {
     // запросы для вычисления средн.Рейтинга (ставки, голоса)
     const votes = await RatingModel.count({ where: { productId } });
     const rates = await RatingModel.sum('rate', { where: { productId } });
-    const ratingAll = rates / votes;
+    const ratings = rates / votes;
 
     // перем./запрос для обнов.Продукта
     const { name, price, image, categoryId, brandId } =
       product.get() as ProductAttributes;
-    if (ratingAll) {
+    if (ratings) {
       await product.update({
         name: name,
         price: price,
-        rating: ratingAll,
+        rating: ratings,
         image: image,
         categoryId: categoryId,
         brandId: brandId,
       });
     }
 
-    // return rating;
-    // return { ...rating, ratingAll };
-    return { ...rating.dataValues, ratingAll, votes /* , rates */ };
+    return { ...rating.dataValues, ratings, votes /* , rates */ };
   }
 }
 
