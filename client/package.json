@@ -10,15 +10,17 @@
     "React",
     "TypeScript"
   ],
+  "type": "module",
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write .",
-    "clear-eslint-cache": "rm -rf .eslintcache",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write 'src/**/*.{js,js,ts,tsx,css,scss}'",
+    "clear-eslint-cache": "npm cache clean --force",
     "type-check": "tsc --noEmit",
     "lint-staged": "lint-staged"
   },
@@ -39,7 +41,6 @@
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.1.5",
-    "react-uuid": "^2.0.0",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
@@ -47,11 +48,8 @@
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
-    "concurrently": "^9.1.2",
-    "eslint": "^8.0.0",
+    "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
