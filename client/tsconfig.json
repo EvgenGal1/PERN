@@ -8,8 +8,9 @@
       "DOM.Iterable",
       "ESNext.AsyncIterable" // асинхр.итерации
     ],
-    "module": "ESNext", // сборка ESM-модулей
-    "moduleResolution": "node", // алгоритм разрешения модулей
+    "module": "ESNext", // сборка ES модулей
+    "moduleResolution": "Node", // алгоритм разрешения модулей
+    "esModuleInterop": true, // совместимость с CommonJS
     "baseUrl": "./", // базов.путь абсолют.импортов
     // "outDir": "./dist", // п.скомпил.ф.
     // алиасы для импортов. > раб.алиасов настр.CRA с WebPack ($ react-app-rewired или craco)
@@ -26,17 +27,16 @@
     "strictNullChecks": true, // строгая проверка null и undefined
     "noImplicitAny": false, // запрет типа any // ^ true
     // "strictBindCallApply": false, // проверка примен. bind, call, apply
-    "esModuleInterop": true, // совместимость с CommonJS
     "forceConsistentCasingInFileNames": true, // один регистр /путь/ф.имя 
     "noFallthroughCasesInSwitch": true, // запрет "проваливания" в switch
     "resolveJsonModule": true, // импорт ф.JSON как модулей
     "isolatedModules": true, // безопасная транспиляция
     "noEmit": true, // не генерировать файлы (только проверка типов)
     "jsx": "react-jsx", // режим JSX для React 17+
-    "allowJs": true // разрешение смешивать ф. JS и TS
+    "allowJs": true, // разрешение смешивать ф. JS и TS
     // "checkJs": false, // пров.ф.JS на ошб.
     // "removeComments": true,  // откл.коммент
-    // "allowSyntheticDefaultImports": true, // разрешить импортир без экспорта по умолчанию
+    "allowSyntheticDefaultImports": true, // разрешить импортир без экспорта по умолчанию
     // "incremental": true // ускорение компиляции, сбор ток.измен.ф.
   },
   // список конкретных ф.> компиляции

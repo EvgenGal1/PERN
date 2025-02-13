@@ -12,9 +12,12 @@
   ],
   "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start_0": "react-scripts start",
+    "build_0": "react-scripts build",
+    "test_0": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "test:coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint .",
@@ -25,6 +28,7 @@
     "ts-check": "tsc --noEmit",
     "ts-cc": "tsc --build --clean",
     "ci-check": "npm run lint & npm run ts-check & npm test",
+    "ci-ff": "npm run lint:fix & npm run format",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
@@ -47,6 +51,8 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@craco/craco": "^7.1.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
@@ -55,6 +61,7 @@
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
+    "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
@@ -62,10 +69,11 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.15.0",
     "prettier": "^3.1.1",
     "prettier-plugin-organize-imports": "^4.1.0",
     "react-scripts": "5.0.1",
-    "sass": "^1.69.5",
+    "sass": "^1.84.0",
     "sass-loader": "^16.0.4",
     "typescript": "^4.9.5"
   },

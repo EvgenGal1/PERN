@@ -13,9 +13,13 @@ export default [
   reactRecommended,
   {
     // форматы ф.> поверки
-    files: ["./src/*.{js,jsx,ts,tsx}"],
+    files: ["./src/*.{js,jsx,ts,tsx}", "./craco.config.cjs"],
     // пути игнора
     ignores: ["**/vr/**", "**/dist/**", "**/node_modules/**", "*.config.*"],
+    env: {
+      node: true, // вкл.поддержку NodeJS
+      browser: true, // вкл.браузер.глобал.перемен.
+    },
     // настр.язык.окружения
     languageOptions: {
       // парсер TypeScript (обязательно для TS)
@@ -31,8 +35,13 @@ export default [
       globals: {
         ...globals.browser, // браузер (window, document,)
         ...globals.node, // NodeJS (module, process,)
-        JSX: "readonly", // тип JSX для TS
+        // разреш.как.глобал.перем.
+        __dirname: "readonly",
+        process: "readonly",
+        module: "readonly",
+        require: "readonly",
         console: "readonly", // разрешение console.log
+        JSX: "readonly", // тип JSX для TS
       },
     },
     // плагины (React, TypeScript, Prettier)
@@ -51,7 +60,10 @@ export default [
       // TypeScript
       "@typescript-eslint/no-unused-vars": "warn", // неиспользуемые переменные
       "@typescript-eslint/no-explicit-any": "warn", // тип any
+      "@typescript-eslint/no-var-requires": "off", // использ.require
       // JavaScript
+      "import/no-commonjs": "off", // использ.CommonJS
+      "no-undef": "off", // неопред.переменные
       "no-console": "off", // запрет console.log
       // Prettier
       "prettier/prettier": "error", // автоопред.переносов строк
