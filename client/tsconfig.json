@@ -1,32 +1,58 @@
 {
   "compilerOptions": {
-    "downlevelIteration": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "target": "es5",
+    "target": "ES2022", // фикс.v.ECMAScript от ошб.TS про обнов.
+    // базовые библ.
     "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext",
-      "es2015"
+      "ES2022", // фикс.v.ECMAScript.
+      "DOM", // типы/итерации > браузер.API
+      "DOM.Iterable",
+      "ESNext.AsyncIterable" // асинхр.итерации
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "module": "ESNext", // сборка ESM-модулей
+    "moduleResolution": "node", // алгоритм разрешения модулей
+    "baseUrl": "./", // базов.путь абсолют.импортов
+    // "outDir": "./dist", // п.скомпил.ф.
+    // алиасы для импортов. > раб.алиасов настр.CRA с WebPack ($ react-app-rewired или craco)
+    "paths": {
+      "@/*": [
+        "src/*" // базов.п.ф.проекта
+      ],
+      "@Comp/*": [
+        "src/Components/*" // п.ф.Компонентов. 
+      ]
+    },
+    "strict": true, // строгость проверки типов
+    "skipLibCheck": true, // откл.проверки типов в .d.ts.(встр.библ.)
+    "strictNullChecks": true, // строгая проверка null и undefined
+    "noImplicitAny": false, // запрет типа any // ^ true
+    // "strictBindCallApply": false, // проверка примен. bind, call, apply
+    "esModuleInterop": true, // совместимость с CommonJS
+    "forceConsistentCasingInFileNames": true, // один регистр /путь/ф.имя 
+    "noFallthroughCasesInSwitch": true, // запрет "проваливания" в switch
+    "resolveJsonModule": true, // импорт ф.JSON как модулей
+    "isolatedModules": true, // безопасная транспиляция
+    "noEmit": true, // не генерировать файлы (только проверка типов)
+    "jsx": "react-jsx", // режим JSX для React 17+
+    "allowJs": true // разрешение смешивать ф. JS и TS
+    // "checkJs": false, // пров.ф.JS на ошб.
+    // "removeComments": true,  // откл.коммент
+    // "allowSyntheticDefaultImports": true, // разрешить импортир без экспорта по умолчанию
+    // "incremental": true // ускорение компиляции, сбор ток.измен.ф.
   },
+  // список конкретных ф.> компиляции
+  // "files": [ "core.ts", "app.ts" ],
+  // спк.п./ф.> компил.
   "include": [
-    "src",
-    "index.tsx",
+    "./src/*", // только п.src
+  ],
+  // исключение п./ф.из компил.
+  "exclude": [
+    "node_modules",
+    "**/vr/**",
+    "build",
+    "dist",
+    "coverage",
+    "**.test.*",
+    "*.spec.*"
   ]
 }

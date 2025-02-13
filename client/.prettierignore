@@ -1,0 +1,11 @@
+# Игнорируемые файлы
+**/vr/**
+node_modules/
+dist/
+build/
+coverage/
+.next/
+out/
+*.md
+*.yml
+*.html
