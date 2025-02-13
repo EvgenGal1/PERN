@@ -1,5 +1,5 @@
 // ^ Модальное окно с формой добавления Категории
-import { useState } from "react";
+import React, { useState } from "react";
 import { Modal, Form } from "react-bootstrap";
 
 import { categoryAPI } from "../../../api/catalog/categoryAPI";

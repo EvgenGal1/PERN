@@ -1,5 +1,5 @@
 // ^ Модальное окно с формой добавления Продукта
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 
 import { productAPI } from "../../../api/catalog/productAPI";

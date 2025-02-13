@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  ChangeEvent,
-  FormEvent,
-} from "react";
+import { useState, useContext, useEffect, ChangeEvent, FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
@@ -308,8 +302,8 @@ const Auth = observer(() => {
                   formValues.email !== "" && formErrors.email
                     ? "err-inpt"
                     : formValues.email !== "" && !formErrors.email
-                    ? "err-inpt-suces"
-                    : ""
+                      ? "err-inpt-suces"
+                      : ""
                 }  
                   `}
                 placeholder="Введите ваш email..."
@@ -331,8 +325,8 @@ const Auth = observer(() => {
                   formValues.password !== "" && formErrors.password
                     ? "err-inpt"
                     : formValues.password !== "" && !formErrors.password
-                    ? "err-inpt-suces"
-                    : ""
+                      ? "err-inpt-suces"
+                      : ""
                 } `}
                 placeholder="Введите ваш пароль..."
               />

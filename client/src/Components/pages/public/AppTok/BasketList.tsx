@@ -22,7 +22,7 @@ const BasketList = observer(() => {
       .getOneBasket()
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (fetching) {
@@ -52,7 +52,6 @@ const BasketList = observer(() => {
   };
 
   const handleRemove = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
     const confirmDel = confirm(`Удалить Позицию - «${name}»`);
     if (confirmDel) {
       setFetching(true);

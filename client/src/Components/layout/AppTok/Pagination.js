@@ -1,6 +1,6 @@
 // ! https://www.digitalocean.com/community/tutorials/how-to-build-custom-pagination-with-react-ru
 
-import React, { Component, Fragment } from "react";
+import { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 const LEFT_PAGE = "LEFT";
@@ -214,9 +214,7 @@ class Pagination extends Component {
               return (
                 <li
                   key={index}
-                  className={`page-item${
-                    currentPage === page ? " active" : ""
-                  }`}
+                  className={`page-item${currentPage === page ? " active" : ""}`}
                 >
                   <a
                     className="page-link"

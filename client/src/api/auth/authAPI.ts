@@ -1,6 +1,6 @@
 // ^ HTTP-запросы для работы с определёнными Пользователями (аутентификация, регистрация, авторизация, проверка токена и пр.)
 
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 // перехватчики
 import { guestInstance, authInstance } from "../axiosInstances";
@@ -30,7 +30,7 @@ export const authAPI = {
    */
   parseToken(token: string): TokenPayload {
     try {
-      return jwt_decode<TokenPayload>(token);
+      return jwtDecode<TokenPayload>(token);
     } catch (error: unknown) {
       throw new ApiError("Невалидный токен", 401, "INVALID_TOKEN", { error });
     }

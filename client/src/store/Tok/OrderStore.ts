@@ -2,7 +2,7 @@
 import { makeAutoObservable } from "mobx";
 
 class OrderStore {
-  _orders = [];
+  _orders: any[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -16,12 +16,12 @@ class OrderStore {
     this._orders = orders;
   }
 
-  // всего позиций в корзине
+  // Всего позиций в Корзине
   get count() {
     return this._orders.length;
   }
 
-  // стоимость всех товаров корзины
+  // стоимость всех Продуктов в Корзины
   get sum() {
     return this._orders.reduce(
       (sum, item: { price: number; quantity: number }) =>

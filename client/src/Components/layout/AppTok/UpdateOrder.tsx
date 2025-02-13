@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-pascal-case */
 // ^ модальн.окно редактирование Заказа
 import { useState } from "react";
-import uuid from "react-uuid";
+import { v4 as uuid } from "uuid";
 
 import { orderAPI } from "../../../api/shopping/orderAPI";
 import UpdateItems from "./UpdateItems";
@@ -35,7 +34,7 @@ const isValid = (value: any) => {
     if (key === "comment")
       result.comment =
         // pattern.test(value.comment);
-        value?.comment /* ?.trim() */ /* || " " */;
+        value?.comment; /* ?.trim() */ /* || " " */
   }
   return result;
 };
@@ -245,7 +244,6 @@ const UpdateOrder: React.FC<Props> = (props) => {
   const header = <>Редактирование Заказа №</>;
 
   return (
-    //eslint-disable-next-line react/jsx-pascal-case
     <Modal__eg
       // closureBoundary={true}
       isOpen={show}
@@ -274,7 +272,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
           </>
           {/* // ^ Комп.FF (масс.(1ый)(не управ.inpt в > влож.)/объ.(2ой)(раздел.renrder на не/объедин.блоки)) */}
           {/* <div className="uniteddiv df df-row"> */}
-          {/*  eslint-disable-next-line react/jsx-pascal-case */}
+          {}
           {/* <FormField__eg
             // handleSubmit={handleSubmit}
             handleChange={handleInputChange}
@@ -292,7 +290,6 @@ const UpdateOrder: React.FC<Props> = (props) => {
             legend={"на массиве -  Пользователь"}
             clForm={"mt-3"}
           /> */}
-          {/*  eslint-disable-next-line react/jsx-pascal-case */}
           {/* <FormField__eg
             // handleSubmit={handleSubmit}
             handleChange={handleInputChange}

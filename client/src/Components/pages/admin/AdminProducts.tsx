@@ -42,7 +42,6 @@ const AdminProducts = () => {
   };
   // удал.эл.
   const handleDeleteClick = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
     const confirmDel = confirm(`Удалить Продукт - «${name}»`);
     if (confirmDel) {
       productAPI

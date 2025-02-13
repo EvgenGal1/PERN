@@ -43,7 +43,9 @@ span {
     height: 100%;
     width: 100%;
     border-radius: 25px;
-    box-shadow: 0 0 3px #555555 inset, 0 0 10px black;
+    box-shadow:
+      0 0 3px #555555 inset,
+      0 0 10px black;
     transition: background-color 0.2s linear 0s;
     transition: all 0.3s ease 0s;
     display: flex;

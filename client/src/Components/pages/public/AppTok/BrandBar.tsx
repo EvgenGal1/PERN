@@ -42,7 +42,6 @@ const BrandBar: React.FC = observer(() => {
       };
 
       fetchData();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
   }, [brand /* , catalog */]);
 

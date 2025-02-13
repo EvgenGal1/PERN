@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 import { AppContext } from "./AppTok/AppContext";
 
@@ -70,8 +70,6 @@ export function Header() {
       setPressCombine(false);
       localStorage.setItem("--dopMenu", JSON.stringify(false));
     } */
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combinePress /* , pressCombine */]);
 
   useEffect(() => {

@@ -28,7 +28,6 @@ const AdminCategories = () => {
   };
 
   const handleDeleteClick = (id: number, name?: string) => {
-    // eslint-disable-next-line no-restricted-globals
     const confirmDel = confirm(`Удалить Категорию - «${name}»`);
     if (confirmDel) {
       categoryAPI

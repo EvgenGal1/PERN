@@ -544,8 +544,8 @@ br {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 // .font ----------------------------------------------------------------------------------
@@ -720,7 +720,9 @@ select.select--eg {
   border: 1px solid #bd0000;
   border-radius: var(--sz1);
   line-height: 1.5;
-  transition: background-color 200ms, transform 100ms linear;
+  transition:
+    background-color 200ms,
+    transform 100ms linear;
   user-select: none;
 }
 input.inpt--eg {

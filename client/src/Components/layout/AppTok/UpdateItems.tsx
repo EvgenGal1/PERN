@@ -40,7 +40,7 @@ const UpdateItems = (props: any) => {
 
           return (
             <>
-              {/* eslint-disable-next-line react/jsx-pascal-case */}
+              {}
               <FormFieldRecursive__EG
                 key={item[0][1]}
                 handleSubmit={change}

@@ -1,5 +1,3 @@
-import React from "react";
-
 import App from "../../layout/AppTok/App";
 
 const Delivery = () => {

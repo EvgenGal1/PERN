@@ -1,6 +1,6 @@
 import { OrderData, OrderItemData } from "../../types/api/shopping.types";
-import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
+import { handleRequest } from "../handleRequest";
 
 export const orderAPI = {
   /*

@@ -1,4 +1,4 @@
-import { useContext, useEffect /* , useState */ } from "react";
+import { useContext, useEffect } from "react";
 import {
   useNavigate,
   createSearchParams,
@@ -53,7 +53,6 @@ const CategoryBar: React.FC = observer(() => {
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     // }
   }, [category /* , catalog */]);
 

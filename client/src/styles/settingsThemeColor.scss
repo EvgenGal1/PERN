@@ -140,12 +140,16 @@ body[data-theme="light"] {
         &.active {
           color: var(--act-dark);
           background-color: var(--act-bg);
-          transition: background-color 500ms linear, color 200ms linear;
+          transition:
+            background-color 500ms linear,
+            color 200ms linear;
         }
         &:hover {
           color: var(--act-light);
           background-color: var(--act-bg);
-          transition: background-color 500ms linear, color 200ms linear;
+          transition:
+            background-color 500ms linear,
+            color 200ms linear;
         }
         & + ul {
           background-color: var(--act-bg) !important;

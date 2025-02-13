@@ -1,6 +1,7 @@
 // ^ Редактирование Бренда
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
+
 import { brandAPI } from "../../../api/catalog/brandAPI";
 
 const UpdateBrand = (props: any) => {

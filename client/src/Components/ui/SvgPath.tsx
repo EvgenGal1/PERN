@@ -1,7 +1,5 @@
 // шаблон подгрузки svg изо. Осн.props - title(вид svg), col(цвет изо)
 
-import React from "react";
-
 interface SvgType {
   box?: number | string | undefined;
   size?: string;

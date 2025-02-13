@@ -279,7 +279,9 @@
     opacity: 1;
     transform: scale(1);
     /* transform: translateX(0); */
-    transition: opacity 500ms, transform 500ms;
+    transition:
+      opacity 500ms,
+      transform 500ms;
   }
   .page-exit {
     opacity: 1;
@@ -290,7 +292,9 @@
     opacity: 0;
     transform: scale(0.9);
     /* transform: translateX(100%); */
-    transition: opacity 500ms, transform 500ms;
+    transition:
+      opacity 500ms,
+      transform 500ms;
   }
 
   /* 2 способ прописать анимацию (.pages - на два дейтвие. всего 4шт) */

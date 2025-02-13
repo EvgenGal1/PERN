@@ -198,7 +198,7 @@ const Checkout = () => {
       {/*  */}
       <h1 className="mb-4 mt-4">Оформление заказа</h1>
       {/* <Form__Bootstrap /> */}
-      {/* eslint-disable-next-line react/jsx-pascal-case  */}
+      {}
       <FormFieldRecursive__EG
         handleSubmit={handleSubmit}
         MsgBtn="Отправить"
@@ -217,7 +217,7 @@ const Checkout = () => {
         label={true}
         legend={"Введите данные __EG"}
       />
-      {/* eslint-disable-next-line react/jsx-pascal-case  */}
+      {}
       <FormField__eg
         // handleSubmit={handleSubmit}
         handleSubmitBtnField={handleSubmit}

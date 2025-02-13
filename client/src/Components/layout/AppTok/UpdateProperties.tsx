@@ -1,6 +1,6 @@
 // ^ доп.модальн.окно редактирование Характеристик Продукта
 import { Form } from "react-bootstrap";
-import uuid from "react-uuid";
+import { v4 as uuid } from "uuid";
 
 const UpdateProperties = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.

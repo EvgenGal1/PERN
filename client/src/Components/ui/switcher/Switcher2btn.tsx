@@ -1,5 +1,3 @@
-import React /* , { useState, useEffect } */ from "react";
-
 import "./Switcher2btn.scss";
 
 export const Switcher2btn = () => {

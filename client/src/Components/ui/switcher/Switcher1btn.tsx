@@ -1,5 +1,3 @@
-import React from "react";
-
 import { SvgPath } from "../SvgPath";
 import "./Switcher1btn.scss";
 

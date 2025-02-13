@@ -1,8 +1,8 @@
 // ^ панель навигации
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { Navbar, Nav } from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
 import { useAllKeysPress } from "../../../scripts/hooks/useAllKeysPress";
@@ -12,14 +12,14 @@ import { useTheme } from "../../../scripts/hooks/useTheme";
 import { useSize } from "../../../scripts/hooks/useSize";
 
 import {
-  SHOP_ROUTE,
-  DELIVERY_ROUTE,
+  ADMIN_ROUTE,
+  BASKET_ROUTE,
   CONTACTS_ROUTE,
+  DELIVERY_ROUTE,
   LOGIN_ROUTE,
   REGISTER_ROUTE,
-  BASKET_ROUTE,
+  SHOP_ROUTE,
   USER_ROUTE,
-  ADMIN_ROUTE,
 } from "../../../utils/consts";
 import { AppContext } from "./AppContext";
 
@@ -51,8 +51,6 @@ const NavBar = observer(() => {
       localStorage.setItem("--dopMenu", JSON.stringify(true));
       if (pressCombine) localStorage.removeItem("--dopMenu");
     }
-
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combinePress /* , pressCombine */]);
 
   useEffect(() => {

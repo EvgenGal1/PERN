@@ -1,7 +1,7 @@
 // ^ модальн.окно редактирование Продукта
 import { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
-import uuid from "react-uuid";
+import { v4 as uuid } from "uuid";
 
 import { categoryAPI } from "../../../api/catalog/categoryAPI";
 import { brandAPI } from "../../../api/catalog/brandAPI";

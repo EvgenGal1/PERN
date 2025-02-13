@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Image, Spinner } from "react-bootstrap";
 
@@ -66,9 +66,9 @@ const Product = (/* props: any */) => {
           console.log("ProdItm CRE data ", data);
           // setRating(data);
           // ! ошб.типа, логики и передачи
-          setNuberStar(data.ratingAll!);
+          setNuberStar(data.rating);
           setVotes(data.votes);
-          catalog.rating = data.ratingAll;
+          catalog.rating = data.rating;
         });
     }
   };
@@ -184,7 +184,7 @@ const Product = (/* props: any */) => {
                   >
                     <StarOutline />
                   </span>
-                )
+                ),
               )}
           </div>
           <button

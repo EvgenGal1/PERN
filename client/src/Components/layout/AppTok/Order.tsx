@@ -37,7 +37,6 @@ const Order = (props: any) => {
 
   // Удаления Заказа
   const handleDeleteClick = (id: number) => {
-    // eslint-disable-next-line no-restricted-globals
     const confirmDel = confirm(`Удалить Заказ - «${id}»`);
     if (confirmDel) {
       orderAPI

@@ -1,6 +1,6 @@
 import { BasketData } from "../../types/api/shopping.types";
-import { handleRequest } from "../handleRequest";
 import { guestInstance } from "../axiosInstances";
+import { handleRequest } from "../handleRequest";
 
 export const basketAPI = {
   /**
