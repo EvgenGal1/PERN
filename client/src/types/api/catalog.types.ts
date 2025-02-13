@@ -39,5 +39,4 @@ export interface RatingData {
   rates: number; // ставки
   votes: number; // голоса
   rating: number; // рейтинг
-  ratingAll?: number;
 }
