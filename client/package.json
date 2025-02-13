@@ -20,11 +20,11 @@
     "lint": "eslint .",
     "lint:cl": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write 'src/**/*.{js,js,ts,tsx,css,scss}'",
     "lint-cc": "powershell -Command \"if (Test-Path .eslintcache) { Remove-Item .eslintcache -Force }\"",
+    "format": "prettier --write 'src/**/*.{js,js,ts,tsx,css,scss}'",
     "ts-check": "tsc --noEmit",
     "ts-cc": "tsc --build --clean",
-    "ci-check": "concurrently \"npm run lint\" \"npm run ts-check\" \"npm test\"",
+    "ci-check": "npm run lint & npm run ts-check & npm test",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
