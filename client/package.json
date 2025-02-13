@@ -18,10 +18,12 @@
     "test:coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint .",
+    "lint:cl": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write 'src/**/*.{js,js,ts,tsx,css,scss}'",
-    "clear-eslint-cache": "npm cache clean --force",
-    "type-check": "tsc --noEmit",
+    "lint-сс": "Remove-Item -Path ./.eslintcache -Force",
+    "lint-cc": "powershell -Command \"if (Test-Path .eslintcache) { Remove-Item .eslintcache -Force }\"",
+    "ts-check": "tsc --noEmit",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
