@@ -11,13 +11,20 @@ module.exports = {
     // "prettier-plugin-tailwindcss", // плагин Tailwind
   ],
   overrides: [
+    // настр.ф.TSX
+    {
+      files: "*.tsx",
+      options: {
+        parser: "typescript", // указ.парсер > TS
+      },
+    },
     // настр.ф.CSS/SCSS
     {
       files: "*.{css,scss}",
       options: {
         singleQuote: false, // двойные кавычки
-        tabWidth: 2,
-        parser: "scss", // указ.парсер > SCSS
+        tabWidth: 2, // размер табуляции
+        parser: "scss",
       },
     },
     {

@@ -1,14 +1,14 @@
-import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { Image, Spinner } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 
-import { AppContext } from "../../../layout/AppTok/AppContext";
-import { productAPI } from "../../../../api/catalog/productAPI";
-import { basketAPI } from "../../../../api/shopping/basketAPI";
-import { ratingAPI } from "../../../../api/catalog/ratingAPI";
+import { productAPI } from "@/api/catalog/productAPI";
+import { ratingAPI } from "@/api/catalog/ratingAPI";
+import { basketAPI } from "@/api/shopping/basketAPI";
+import { AppContext } from "@Comp/layout/AppTok/AppContext";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
-import { StarFill } from "../../../layout/AppTok/StarFill";
-import { StarOutline } from "../../../layout/AppTok/StarOutline";
+import { StarFill } from "@Comp/layout/AppTok/StarFill";
+import { StarOutline } from "@Comp/layout/AppTok/StarOutline";
 
 const Product = (/* props: any */) => {
   // е/и есть передача props ч/з navigate/useNavigate/react-router-dom
@@ -184,7 +184,7 @@ const Product = (/* props: any */) => {
                   >
                     <StarOutline />
                   </span>
-                ),
+                )
               )}
           </div>
           <button

@@ -245,8 +245,8 @@ const renderValue = (
                   ? "df-col axis++lb w-100 ml-5 df df-jcsb"
                   : "df-col axis--lb w-100 ml-5"
                 : label
-                ? "ununited w-100 mt-3"
-                : "ununited w-100 mt-3"
+                  ? "ununited w-100 mt-3"
+                  : "ununited w-100 mt-3"
             } ${fieldClass ? fieldClass : ""}`}
           >
             <div
@@ -268,8 +268,8 @@ const renderValue = (
                         ? "row--eg 9+lab mr-3 tal"
                         : "row--eg 9-lab "
                       : label
-                      ? "col--eg 9+lab w-5 tal mr-3"
-                      : "col--eg 9-lab "
+                        ? "col--eg 9+lab w-5 tal mr-3"
+                        : "col--eg 9-lab "
                   }`}
                 >
                   {value[0]}
@@ -295,14 +295,14 @@ const renderValue = (
                       ? "row--eg 9+lab w-100 ml-3"
                       : "row--eg 9+lab w-100"
                     : label
-                    ? "w-100 ml-3"
-                    : "w-100"
+                      ? "w-100 ml-3"
+                      : "w-100"
                 } ${
                   formErrors[value[0]]
                     ? "err-inpt"
                     : value[1] !== "" && !formErrors[value[0]]
-                    ? "err-inpt-suces"
-                    : ""
+                      ? "err-inpt-suces"
+                      : ""
                 } 
                 `}
                 placeholder={`Отсутствуете ${value[0]}`}

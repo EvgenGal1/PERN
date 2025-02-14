@@ -23,7 +23,7 @@ export type MyContextTypeProduct = {
       image: string;
       categoryId: number;
       brandId: number;
-    }
+    },
   ];
 };
 export type MyContextTypeCategories = {
@@ -31,7 +31,7 @@ export type MyContextTypeCategories = {
     {
       id: number;
       name: string;
-    }
+    },
   ];
 };
 export type MyContextTypeBrands = {
@@ -39,7 +39,7 @@ export type MyContextTypeBrands = {
     {
       id: number;
       name: string;
-    }
+    },
   ];
 };
 export type MyContextTypeBasket = {
@@ -49,7 +49,7 @@ export type MyContextTypeBasket = {
       name: string;
       price: number;
       quantity: number;
-    }
+    },
   ];
 };
 

@@ -1,15 +1,15 @@
-import React, { useContext, useEffect /* , useState */ } from "react";
+import { observer } from "mobx-react-lite";
+import { useContext, useEffect } from "react";
 import {
-  useNavigate,
   createSearchParams,
+  useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { observer } from "mobx-react-lite";
 
-import { AppContext } from "../../../layout/AppTok/AppContext";
-import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../../utils/consts";
-import { brandAPI } from "../../../../api/catalog/brandAPI";
-import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
+import { brandAPI } from "@/api/catalog/brandAPI";
+import { getSearchParams } from "@/scripts/helpers/getSearchParams";
+import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
+import { AppContext } from "@Comp/layout/AppTok/AppContext";
 
 const BrandBar: React.FC = observer(() => {
   // console.log("BrandBar 0 ", 0);

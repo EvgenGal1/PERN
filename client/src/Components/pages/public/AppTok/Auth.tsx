@@ -1,15 +1,15 @@
-import { useState, useContext, useEffect, ChangeEvent, FormEvent } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { AppContext } from "../../../layout/AppTok/AppContext";
-import { authAPI } from "../../../../api/auth/authAPI";
+import { authAPI } from "@/api/auth/authAPI";
 import {
+  ADMIN_ROUTE,
   LOGIN_ROUTE,
   REGISTER_ROUTE,
   USER_ROUTE,
-  ADMIN_ROUTE,
-} from "../../../../utils/consts";
+} from "@/utils/consts";
+import { AppContext } from "@Comp/layout/AppTok/AppContext";
 
 interface FormValues {
   sms: "";

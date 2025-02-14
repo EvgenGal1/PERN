@@ -1,14 +1,10 @@
-import { useState, useEffect, useContext } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
-import { AppContext } from "../../../layout/AppTok/AppContext";
-import { productAPI } from "../../../../api/catalog/productAPI";
-import {
-  SHOP_ROUTE,
-  SHOP_CATALOG_ROUTE,
-  FILTER_ROUTE,
-} from "../../../../utils/consts";
-import { findValueFromStringInArray } from "../../../../scripts/helpers/findValueFromStringInArray";
+import { productAPI } from "@/api/catalog/productAPI";
+import { findValueFromStringInArray } from "@/scripts/helpers/findValueFromStringInArray";
+import { FILTER_ROUTE, SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
+import { AppContext } from "@Comp/layout/AppTok/AppContext";
 
 // перем. Имён, Id, фильтров из Каталога, кол-ва Продуктов
 let defaultValueName: any = { category: "", brand: "", name: "", price: "" };
@@ -229,11 +225,9 @@ const SearchFilter = () => {
       )
       .then((data) => {
         // console.log("FLT usEf 000 data ", data);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         countProduct = data.count;
       })
       .finally(/* () => console.log("countProduct ", countProduct) */);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemIdStat]);
 
   return (
