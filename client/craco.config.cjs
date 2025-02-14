@@ -4,13 +4,13 @@ const autoprefixer = require("autoprefixer");
 module.exports = {
   webpack: {
     configure: (webpackConfig) => {
-      // добав.алиасы импортов (базов.п.проекта, п.ф.Компонентов)
+      // алиасы импортов (базов.п.проекта, п.ф.Компонентов)
       webpackConfig.resolve.alias = {
         ...webpackConfig.resolve.alias,
         // eslint-disable-next-line no-undef
-        "@": path.resolve(process.cwd(), "src"), // Алиас для src/
+        "@": path.resolve(process.cwd(), "src"),
         // eslint-disable-next-line no-undef
-        "@Comp": path.resolve(__dirname, "src/Components"), // Алиас для Components/
+        "@Comp": path.resolve(__dirname, "src/Components"),
       };
 
       // от.ошб.SCSS в терминале - Deprecation The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0. // ! не раб. - ошб.осталась

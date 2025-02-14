@@ -7,12 +7,12 @@ module.exports = {
   endOfLine: "lf", // стиль переноса. lf по Git
   arrowParens: "always", // синтакс стрел.fn. `всегда` есть скобки
   plugins: [
-    // "prettier-plugin-organize-imports", // автоорганизация импортов
     // "prettier-plugin-tailwindcss", плагин Tailwind
   ],
   overrides: [
+    // настр.ф.CSS/SCSS
     {
-      files: "*.{css,scss}", // настр.ф.CSS/SCSS
+      files: "*.{css,scss}",
       options: {
         singleQuote: false, // двойные кавычки
         tabWidth: 2,

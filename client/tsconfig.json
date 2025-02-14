@@ -36,7 +36,7 @@
     "allowJs": true, // разрешение смешивать ф. JS и TS
     // "checkJs": false, // пров.ф.JS на ошб.
     // "removeComments": true,  // откл.коммент
-    "allowSyntheticDefaultImports": true, // разрешить импортир без экспорта по умолчанию
+    "allowSyntheticDefaultImports": false, // разрешить импорт без экспорта по умолчанию
     // "incremental": true // ускорение компиляции, сбор ток.измен.ф.
   },
   // список конкретных ф.> компиляции
