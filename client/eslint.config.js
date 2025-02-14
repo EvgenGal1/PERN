@@ -8,7 +8,7 @@ import jsxA11yPlugin from "eslint-plugin-jsx-a11y"; // плагин доступ
 import eslintPluginPrettier from "eslint-plugin-prettier"; // плагин Prettier
 
 export default [
-  // рекомендации/правила ESLint/React
+  // рекоменд.правила ESLint/React
   js.configs.recommended,
   reactRecommended,
   {
@@ -44,7 +44,7 @@ export default [
         JSX: "readonly", // тип JSX для TS
       },
     },
-    // плагины (React, TypeScript, Prettier)
+    // плагины (React, TypeScript, Prettier, доступа)
     plugins: {
       react: reactPlugin,
       "@typescript-eslint": tsPlugin,
@@ -58,9 +58,13 @@ export default [
       "react-hooks/rules-of-hooks": "warn", // проверка хуков // ^ error
       "react-hooks/exhaustive-deps": "warn", // проверка зависимостей эффектов
       // TypeScript
-      "@typescript-eslint/no-unused-vars": "warn", // неиспользуемые переменные
       "@typescript-eslint/no-explicit-any": "warn", // тип any
       "@typescript-eslint/no-var-requires": "off", // использ.require
+      "@typescript-eslint/no-unused-vars": /* "warn" */ [
+        "warn",
+        { ignoreTypeValueDeclarations: true }, // игнор типов/джейнер.от удал.при не использ.
+      ], // неиспользуемые переменные
+      "@typescript-eslint/explicit-module-boundary-types": "error", // требовать явные типы
       // JavaScript
       "import/no-commonjs": "off", // использ.CommonJS
       "no-undef": "off", // неопред.переменные

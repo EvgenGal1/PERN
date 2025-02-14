@@ -23,9 +23,9 @@
       ]
     },
     "strict": true, // строгость проверки типов
+    "noImplicitAny": false, // запрет типа any // ^ true
     "skipLibCheck": true, // откл.проверки типов в .d.ts.(встр.библ.)
     "strictNullChecks": true, // строгая проверка null и undefined
-    "noImplicitAny": false, // запрет типа any // ^ true
     // "strictBindCallApply": false, // проверка примен. bind, call, apply
     "forceConsistentCasingInFileNames": true, // один регистр /путь/ф.имя 
     "noFallthroughCasesInSwitch": true, // запрет "проваливания" в switch
@@ -36,14 +36,14 @@
     "allowJs": true, // разрешение смешивать ф. JS и TS
     // "checkJs": false, // пров.ф.JS на ошб.
     // "removeComments": true,  // откл.коммент
-    "allowSyntheticDefaultImports": false, // разрешить импорт без экспорта по умолчанию
+    "allowSyntheticDefaultImports": true, // разрешить импорт без экспорта по умолчанию
     // "incremental": true // ускорение компиляции, сбор ток.измен.ф.
   },
   // список конкретных ф.> компиляции
   // "files": [ "core.ts", "app.ts" ],
   // спк.п./ф.> компил.
   "include": [
-    "./src/*", // только п.src
+    "src/*", // только п.src
   ],
   // исключение п./ф.из компил.
   "exclude": [
@@ -52,7 +52,7 @@
     "build",
     "dist",
     "coverage",
-    "**.test.*",
+    "*.test.*",
     "*.spec.*"
   ]
 }

@@ -7,7 +7,8 @@ module.exports = {
   endOfLine: "lf", // стиль переноса. lf по Git
   arrowParens: "always", // синтакс стрел.fn. `всегда` есть скобки
   plugins: [
-    // "prettier-plugin-tailwindcss", плагин Tailwind
+    // "prettier-plugin-organize-imports" // откл - удаляет React/'react'
+    // "prettier-plugin-tailwindcss", // плагин Tailwind
   ],
   overrides: [
     // настр.ф.CSS/SCSS
