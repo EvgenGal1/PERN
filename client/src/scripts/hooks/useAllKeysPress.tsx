@@ -1,5 +1,5 @@
 // !!! https://codesandbox.io/s/multiple-keys-in-order-vpovi?file=/src/App.js
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Options {
   userKeys: string | string[];

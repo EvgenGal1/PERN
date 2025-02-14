@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Form, Modal } from "react-bootstrap";
 
 import { productAPI } from "../../../api/catalog/productAPI";
 

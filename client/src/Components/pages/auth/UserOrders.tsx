@@ -1,9 +1,9 @@
 // ^ Список Заказов Usera
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { AppContext } from "../../layout/AppTok/AppContext";
 import { orderAPI } from "../../../api/shopping/orderAPI";
+import { AppContext } from "../../layout/AppTok/AppContext";
 import Orders from "../../layout/AppTok/Orders";
 
 const UserOrders = () => {

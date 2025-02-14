@@ -1,9 +1,9 @@
 // ^ настр.логики перехватов axios/req/res
 
 import axios, {
+  AxiosError,
   AxiosResponse,
   InternalAxiosRequestConfig,
-  AxiosError,
 } from "axios";
 
 import { AuthRes } from "../types/api/auth.types";

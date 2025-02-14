@@ -1,13 +1,13 @@
 // ^ модальн.окно редактирование Продукта
-import { useState, useEffect } from "react";
-import { Modal, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form, Modal } from "react-bootstrap";
 import { v4 as uuid } from "uuid";
 
-import { categoryAPI } from "../../../api/catalog/categoryAPI";
 import { brandAPI } from "../../../api/catalog/brandAPI";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
 import { productAPI } from "../../../api/catalog/productAPI";
-import UpdateProperties from "./UpdateProperties";
 import { PropertyData } from "../../../types/api/catalog.types";
+import UpdateProperties from "./UpdateProperties";
 
 const defaultValue = { name: "", price: "", category: "", brand: "" };
 const defaultValid = { name: null, price: null, category: null, brand: null };

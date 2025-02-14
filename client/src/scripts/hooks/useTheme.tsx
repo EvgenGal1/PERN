@@ -1,5 +1,5 @@
 // ! по видео https://www.youtube.com/watch?v=2-Iex4XG_Zg
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // проверка настроек системы для темы
 const isThemeSistem = window?.matchMedia(

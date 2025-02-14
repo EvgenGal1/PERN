@@ -1,8 +1,8 @@
 // ^ панель навигации
-import { useContext, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
+import { useContext, useEffect, useState } from "react";
 import { Nav, Navbar } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
 import { useAllKeysPress } from "../../../scripts/hooks/useAllKeysPress";

@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
 import { useSize } from "../../../scripts/hooks/useSize";

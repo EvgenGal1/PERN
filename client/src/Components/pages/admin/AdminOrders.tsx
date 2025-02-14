@@ -1,5 +1,5 @@
 // ^ Список Заказов для Admina
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { orderAPI } from "../../../api/shopping/orderAPI";

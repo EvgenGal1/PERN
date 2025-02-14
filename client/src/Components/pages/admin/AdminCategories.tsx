@@ -1,5 +1,5 @@
 // ^ Список Категорий
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { categoryAPI } from "../../../api/catalog/categoryAPI";

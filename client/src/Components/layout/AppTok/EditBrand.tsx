@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Modal, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form, Modal } from "react-bootstrap";
 import { brandAPI } from "../../../api/catalog/brandAPI";
 
 const EditBrand = (props: any) => {

@@ -1,11 +1,11 @@
 // ^ Многраз.Комп.Заказа
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 import { orderAPI } from "../../../api/shopping/orderAPI";
-import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
+import UpdateOrder from "../../layout/AppTok/UpdateOrder";
 
 const Order = (props: any) => {
   const navigate = useNavigate();

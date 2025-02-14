@@ -4,8 +4,8 @@ import { AxiosError } from "axios";
 // логгирование
 // import * as Sentry from "@sentry/react";
 
-import { ApiError } from "./errorClasses";
 import { authAPI } from "../api/auth/authAPI";
+import { ApiError } from "./errorClasses";
 
 export const errorHandler = (error: unknown, context?: string): ApiError => {
   // баз.объ.ошб.

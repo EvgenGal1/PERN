@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { AppContext } from "../../layout/AppTok/AppContext";
-import {
-  LOGIN_ROUTE,
-  ADMINORDERS_ROUTE,
-  ADMINCATEGORIES_ROUTE,
-  ADMINBRANDS_ROUTE,
-  ADMINPRODUCTS_ROUTE,
-} from "../../../utils/consts";
 import { authAPI } from "../../../api/auth/authAPI";
+import {
+  ADMINBRANDS_ROUTE,
+  ADMINCATEGORIES_ROUTE,
+  ADMINORDERS_ROUTE,
+  ADMINPRODUCTS_ROUTE,
+  LOGIN_ROUTE,
+} from "../../../utils/consts";
+import { AppContext } from "../../layout/AppTok/AppContext";
 
 const Admin = () => {
   const { user }: any = useContext(AppContext);

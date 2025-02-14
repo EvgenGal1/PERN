@@ -1,5 +1,5 @@
 // ^ Список Брендов
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { brandAPI } from "../../../api/catalog/brandAPI";

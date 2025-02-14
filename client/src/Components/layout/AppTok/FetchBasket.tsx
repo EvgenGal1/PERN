@@ -3,8 +3,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { AppContext } from "./AppContext";
 import { basketAPI } from "../../../api/shopping/basketAPI";
+import { AppContext } from "./AppContext";
 // import { BasketData } from "../../../types/api/shopping.types";
 
 const FetchBasket = (props: any /* BasketData */) => {

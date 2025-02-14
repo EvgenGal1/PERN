@@ -1,10 +1,10 @@
 // ^ Модальное окно с формой добавления Продукта
-import { useState, useEffect } from "react";
-import { Modal, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form, Modal } from "react-bootstrap";
 
-import { productAPI } from "../../../api/catalog/productAPI";
-import { categoryAPI } from "../../../api/catalog/categoryAPI";
 import { brandAPI } from "../../../api/catalog/brandAPI";
+import { categoryAPI } from "../../../api/catalog/categoryAPI";
+import { productAPI } from "../../../api/catalog/productAPI";
 import CreateProperties from "./CreateProperties";
 
 // перем.Валидации/Значений по умолч.

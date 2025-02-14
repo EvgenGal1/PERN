@@ -3,9 +3,9 @@ import { useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import { orderAPI } from "../../../api/shopping/orderAPI";
-import UpdateItems from "./UpdateItems";
-import Modal__eg from "../../ui/Modal/Modal__eg";
 import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
+import Modal__eg from "../../ui/Modal/Modal__eg";
+import UpdateItems from "./UpdateItems";
 
 // fn валид.
 const isValid = (value: any) => {

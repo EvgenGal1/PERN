@@ -1,12 +1,12 @@
 // ^ Список Продуктов
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { AppContext } from "../../layout/AppTok/AppContext";
 import { productAPI } from "../../../api/catalog/productAPI";
+import { AppContext } from "../../layout/AppTok/AppContext";
 import CreateProduct from "../../layout/AppTok/CreateProduct";
-import UpdateProduct from "../../layout/AppTok/UpdateProduct";
 import { PaginSortLimit } from "../../layout/AppTok/PaginSortLimit";
+import UpdateProduct from "../../layout/AppTok/UpdateProduct";
 
 const AdminProducts = () => {
   const { catalog }: any = useContext(AppContext);
