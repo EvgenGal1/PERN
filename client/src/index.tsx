@@ -2,16 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // основ.прилож.
-import App from "./App";
+import App from "@/App";
 // контекст приложения (умолчание/настройка/доп.)
-import { AppContextProvider } from "./context/AppContext";
+import { AppContextProvider } from "@/context/AppContext";
 // перехватчик ошб.в дочер.Комп.
 import ErrorBoundary, {
   FallbackComp,
-} from "./Components/ErrorBoundary/ErrorBoundary";
-import { ApiError } from "./utils/errorClasses";
+} from "@/Components/ErrorBoundary/ErrorBoundary";
+import { ApiError } from "@/utils/errorClasses";
 
-import "./index.css";
+import "@/index.css";
 
 // подкл.логг. Sentry ()
 // Sentry.init({

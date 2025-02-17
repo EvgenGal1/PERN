@@ -15,7 +15,7 @@ import { Header } from "@Comp/layout/Header";
 import Loader from "@Comp/ui/loader/Loader";
 // стили
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles/styles.scss";
+import "@/styles/styles.scss";
 
 const App: React.FC = observer(() => {
   const { user } = useContext(AppContext);
