@@ -1,23 +1,23 @@
 // использ.зависимости/пакеты
-import React, { useState, useContext, useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
 import { observer } from "mobx-react-lite";
+import { useContext, useEffect, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
 
 // окружение/API
-import { AppContext } from "./Components/layout/AppTok/AppContext";
+import { AppContext } from "@Comp/layout/App/AppContext";
 import { authAPI } from "./api/auth/authAPI";
 // гл.Компоненты
-import { Header } from "./Components/layout/Header";
-import NavBar from "./Components/layout/AppTok/NavBar";
-import AppRouterTok from "./Components/layout/AppTok/AppRouterTok";
-import { Footer } from "./Components/layout/Footer";
+import AppRouter from "@Comp/layout/App/AppRouter";
+import NavBar from "@Comp/layout/App/NavBar";
+import { Footer } from "@Comp/layout/Footer";
+import { Header } from "@Comp/layout/Header";
 // доп.Комп.
-import Loader from "./Components/layout/AppTok/Loader";
+import Loader from "@Comp/layout/App/Loader";
 // стили
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/styles.scss";
 
-const AppTok: React.FC = observer(() => {
+const App: React.FC = observer(() => {
   const { user } = useContext(AppContext);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -43,10 +43,10 @@ const AppTok: React.FC = observer(() => {
     <BrowserRouter>
       <Header />
       <NavBar />
-      <AppRouterTok />
+      <AppRouter />
       <Footer />
     </BrowserRouter>
   );
 });
 
-export default AppTok;
+export default App;
