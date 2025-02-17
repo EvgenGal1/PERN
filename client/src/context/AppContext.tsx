@@ -1,9 +1,9 @@
 // ^ Контекст. По умолч.и передаваемый
-import React from "react";
+import { createContext, FC, ReactNode } from "react";
 
-import UserStore from "../../../store/Tok/UserStore";
-import CatalogStore from "../../../store/Tok/CatalogStore";
-import BasketStore from "../../../store/Tok/BasketStore";
+import UserStore from "../store/UserStore";
+import CatalogStore from "../store/CatalogStore";
+import BasketStore from "../store/BasketStore";
 
 // Типы ------------------------------------------------------------------------
 export type MyContextTypeUser = {
@@ -53,20 +53,6 @@ export type MyContextTypeBasket = {
   ];
 };
 
-// ! ошб. ------------------------------------------------------------------------
-// ! ошб. - Ожидалось аргументов: 1, получено: 0.ts(2554); index.d.ts(387, 9): Не указан аргумент для "defaultValue".
-// const AppContext = React.createContext({} as any); //
-// const AppContext = React.createContext(defaultValue); // ! Не удается найти имя "defaultValue"
-// const AppContext = React.createContext();
-// const AppContext = React.createContext(
-/* {} as
-    | MyContextTypeUser
-    | MyContextTypeProduct
-    | MyContextTypeCategories
-    | MyContextTypeBrands
-    | MyContextTypeBasket */
-// );
-
 type ContextType = {
   user: any;
   catalog: any;
@@ -80,12 +66,10 @@ const context: ContextType = {
   basket: new BasketStore(),
 };
 
-const AppContext = React.createContext<ContextType>(context);
+const AppContext = createContext<ContextType>(context);
 
-const AppContextProvider = (props: any) => {
-  return (
-    <AppContext.Provider value={context}>{props.children}</AppContext.Provider>
-  );
+const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
 };
 
 export { AppContext, AppContextProvider };

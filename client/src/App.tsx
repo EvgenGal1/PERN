@@ -4,15 +4,15 @@ import { useContext, useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 // окружение/API
-import { AppContext } from "@Comp/layout/App/AppContext";
-import { authAPI } from "./api/auth/authAPI";
+import AppRouter from "@Comp/layout/AppRouter";
+import { AppContext } from "@/context/AppContext";
+import { authAPI } from "@/api/auth/authAPI";
 // гл.Компоненты
-import AppRouter from "@Comp/layout/App/AppRouter";
-import NavBar from "@Comp/layout/App/NavBar";
+import NavBar from "@Comp/layout/NavBar";
 import { Footer } from "@Comp/layout/Footer";
 import { Header } from "@Comp/layout/Header";
 // доп.Комп.
-import Loader from "@Comp/layout/App/Loader";
+import Loader from "@Comp/ui/loader/Loader";
 // стили
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/styles.scss";

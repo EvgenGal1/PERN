@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 // основ.прилож.
 import App from "./App";
 // контекст приложения (умолчание/настройка/доп.)
-import { AppContextProvider } from "./Components/layout/AppTok/AppContext";
+import { AppContextProvider } from "./context/AppContext";
 // перехватчик ошб.в дочер.Комп.
 import ErrorBoundary, {
   FallbackComp,
