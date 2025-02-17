@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { authAPI } from "../../../api/auth/authAPI";
+import { authAPI } from "@/api/auth/authAPI";
 import {
   ADMINBRANDS_ROUTE,
   ADMINCATEGORIES_ROUTE,
   ADMINORDERS_ROUTE,
   ADMINPRODUCTS_ROUTE,
   LOGIN_ROUTE,
-} from "../../../utils/consts";
-import { AppContext } from "../../layout/AppTok/AppContext";
+} from "@/utils/consts";
+import { AppContext } from "@/context/AppContext";
 
 const Admin = () => {
   const { user }: any = useContext(AppContext);

@@ -2,11 +2,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { productAPI } from "../../../api/catalog/productAPI";
-import { AppContext } from "../../layout/AppTok/AppContext";
-import CreateProduct from "../../layout/AppTok/CreateProduct";
-import { PaginSortLimit } from "../../layout/AppTok/PaginSortLimit";
-import UpdateProduct from "../../layout/AppTok/UpdateProduct";
+import { productAPI } from "@/api/catalog/productAPI";
+import { AppContext } from "@/context/AppContext";
+import CreateProduct from "@Comp/layout/AppTok/CreateProduct";
+import { PaginSortLimit } from "@Comp/common/PaginSortLimit";
+import UpdateProduct from "@Comp/layout/AppTok/UpdateProduct";
 
 const AdminProducts = () => {
   const { catalog }: any = useContext(AppContext);

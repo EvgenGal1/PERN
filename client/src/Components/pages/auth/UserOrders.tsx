@@ -2,9 +2,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { orderAPI } from "../../../api/shopping/orderAPI";
-import { AppContext } from "../../layout/AppTok/AppContext";
-import Orders from "../../layout/AppTok/Orders";
+import { orderAPI } from "@/api/shopping/orderAPI";
+import { AppContext } from "@/context/AppContext";
+import Orders from "@Comp/layout/AppTok/Orders";
 
 const UserOrders = () => {
   const { user }: any = useContext(AppContext);

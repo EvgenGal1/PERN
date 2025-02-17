@@ -3,9 +3,9 @@ import { useContext, useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { basketAPI } from "../../../../api/shopping/basketAPI";
-import { CHECKOUT_ROUTE } from "../../../../utils/consts";
-import { AppContext } from "../../../layout/AppTok/AppContext";
+import { basketAPI } from "@/api/shopping/basketAPI";
+import { CHECKOUT_ROUTE } from "@/utils/consts";
+import { AppContext } from "@/context/AppContext";
 import BasketItem from "./BasketItem";
 
 const BasketList = observer(() => {

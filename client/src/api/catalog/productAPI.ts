@@ -2,7 +2,7 @@ import {
   ProductData,
   ProductRes,
   PropertyData,
-} from "../../types/api/catalog.types";
+} from "@/types/api/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 
@@ -44,10 +44,10 @@ export const productAPI = {
    * @param sortField - Поле Сортировки ("name", "price", "rating")
    */
   async getAllProducts(
-    categoryId?: string,
-    brandId?: string,
+    categoryId?: string | null,
+    brandId?: string | null,
     page: number = 1,
-    limit: number = 20,
+    limit: number = 10,
     sortOrd?: string,
     sortField?: string
   ): Promise<ProductRes> {

@@ -1,4 +1,4 @@
-// ^ `Проверить`
+// ^ Проверка Пользователя
 import { useContext, useEffect, useState } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
@@ -7,10 +7,9 @@ import { authAPI } from "@/api/auth/authAPI";
 import { basketAPI } from "@/api/shopping/basketAPI";
 import { orderAPI } from "@/api/shopping/orderAPI";
 import { BASKET_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
-import { AppContext } from "@Comp/layout/AppTok/AppContext";
-import FormFieldRecursive__EG from "../../../ui/Form/FormFieldRecursive__EG";
+import { AppContext } from "@/context/AppContext";
+import FormFieldRecursive__EG from "@Comp/ui/Form/FormFieldRecursive__EG";
 import FormField__eg from "@Comp/ui/Form/FormField__eg";
-// import Form__Bootstrap from "../../../ui/Form/Form__Bootstrap";
 
 interface CheckoutFormValues {
   name: string;

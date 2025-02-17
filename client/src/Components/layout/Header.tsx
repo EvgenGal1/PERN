@@ -1,31 +1,31 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-import { AppContext } from "./AppTok/AppContext";
+import { AppContext } from "@/context/AppContext";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
-import { useAllKeysPress } from "../../scripts/hooks/useAllKeysPress";
+import { useAllKeysPress } from "@/scripts/hooks/useAllKeysPress";
 // переключатель видимости Доп.Меню
-import { Switcher1btn } from "../ui/switcher/Switcher1btn";
+import { Switcher1btn } from "@Comp/ui/switcher/Switcher1btn";
 
 // переключатель черно-белый
-import { Switcher2btn } from "../ui/switcher/Switcher2btn";
+import { Switcher2btn } from "@Comp/ui/switcher/Switcher2btn";
 
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
-import { useTheme } from "../../scripts/hooks/useTheme";
+import { useTheme } from "@/scripts/hooks/useTheme";
 // переключатель для Цв.Тем
-import { Switcher3btn } from "../ui/switcher/Switcher3btn";
+import { Switcher3btn } from "@Comp/ui/switcher/Switcher3btn";
 
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
-import { useSize } from "../../scripts/hooks/useSize";
+import { useSize } from "@/scripts/hooks/useSize";
 // переключатель для размеров
-import { Switcher4btn } from "../ui/switcher/Switcher4btn";
+import { Switcher4btn } from "@Comp/ui/switcher/Switcher4btn";
 
 // подсказка по наведению мыши
-import { TitleEl } from "../ui/hintTemplates/TitleEl";
+import { TitleEl } from "@Comp/ui/hintTemplates/TitleEl";
 
 // изо
-import logoImage from "../../img/logo/PERN.png";
+import logoImage from "@/img/logo/PERN.png";
 
 export function Header() {
   const { user }: any = useContext(AppContext);

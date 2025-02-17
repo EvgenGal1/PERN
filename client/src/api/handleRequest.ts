@@ -3,7 +3,7 @@
 // кэш
 // import { queryCache } from "../utils/cache";
 // обраб.ошб.
-import { errorHandler } from "../utils/errorHandler";
+import { errorHandler } from "@/utils/errorHandler";
 
 type ApiMethod<T> = () => Promise<{ data: T }>;
 
@@ -30,6 +30,7 @@ export const handleRequest = async <T>(
     const result = response.data;
     // кэш запись
     // if (cacheKey) queryCache.set(cacheKey, result, ttl);
+    console.debug(`^ [${context}] RES: `, result);
     // возврат данн.
     return result;
   } catch (error) {
@@ -39,7 +40,7 @@ export const handleRequest = async <T>(
     const processedError = errorHandler(error, context);
     // логг.ошб.с контекстом
     // logger.error(error);
-    console.error(`handleRequest [${context}] ОШБ: `, processedError);
+    console.error(`! [${context}] ОШБ: `, processedError);
     // выброс.ошб.
     throw processedError;
   }

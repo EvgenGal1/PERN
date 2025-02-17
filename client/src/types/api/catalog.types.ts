@@ -14,7 +14,7 @@ export interface ProductData {
   id?: number;
   name: string;
   price: number;
-  rating?: number;
+  rating: number;
   image?: string;
   category?: CategoryData;
   brand?: BrandData;

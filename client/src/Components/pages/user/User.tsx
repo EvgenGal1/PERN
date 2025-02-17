@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { authAPI } from "../../../api/auth/authAPI";
 import { LOGIN_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
-import { AppContext } from "../../layout/AppTok/AppContext";
+import { AppContext } from "../../../context/AppContext";
 
 const User = () => {
   const { user }: any = useContext(AppContext);

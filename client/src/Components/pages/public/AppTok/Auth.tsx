@@ -9,7 +9,7 @@ import {
   REGISTER_ROUTE,
   USER_ROUTE,
 } from "@/utils/consts";
-import { AppContext } from "@Comp/layout/AppTok/AppContext";
+import { AppContext } from "@/context/AppContext";
 
 interface FormValues {
   sms: "";
