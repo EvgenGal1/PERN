@@ -4,7 +4,7 @@ import { createSearchParams, useNavigate } from "react-router-dom";
 import { productAPI } from "@/api/catalog/productAPI";
 import { findValueFromStringInArray } from "@/scripts/helpers/findValueFromStringInArray";
 import { FILTER_ROUTE, SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
-import { AppContext } from "@Comp/layout/AppTok/AppContext";
+import { AppContext } from "@/context/AppContext";
 
 // перем. Имён, Id, фильтров из Каталога, кол-ва Продуктов
 let defaultValueName: any = { category: "", brand: "", name: "", price: "" };
@@ -17,7 +17,7 @@ let defaultIdCatalog: any = {
 };
 let countProduct: number | string = "";
 
-const SearchFilter = () => {
+const SearchFilter: React.FC = () => {
   const { catalog } = useContext(AppContext);
 
   const navigate = useNavigate();
@@ -177,7 +177,7 @@ const SearchFilter = () => {
       if (catalog.category) params.category = catalog.category;
       if (catalog.brand) params.brand = catalog.brand;
       if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== 20 && catalog.limit !== 0)
+      if (catalog.limit !== 10 && catalog.limit !== 0)
         params.limit = catalog.limit;
       if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
         params.sortOrd = catalog.sortOrd;
@@ -194,7 +194,7 @@ const SearchFilter = () => {
       if (itemIdStat.category) params.category = itemIdStat.category;
       if (itemIdStat.brand) params.brand = itemIdStat.brand;
       if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== 20 && catalog.limit !== 0)
+      if (catalog.limit !== 10 && catalog.limit !== 0)
         params.limit = catalog.limit;
       if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
         params.sortOrd = catalog.sortOrd;

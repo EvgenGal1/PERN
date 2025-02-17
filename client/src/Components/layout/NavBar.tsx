@@ -5,12 +5,12 @@ import { Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
-import { useAllKeysPress } from "../../../scripts/hooks/useAllKeysPress";
+import { useAllKeysPress } from "@/scripts/hooks/useAllKeysPress";
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
-import { useTheme } from "../../../scripts/hooks/useTheme";
+import { useTheme } from "@/scripts/hooks/useTheme";
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
-import { useSize } from "../../../scripts/hooks/useSize";
-
+import { useSize } from "@/scripts/hooks/useSize";
+// константы/контекст
 import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
@@ -20,8 +20,8 @@ import {
   REGISTER_ROUTE,
   SHOP_ROUTE,
   USER_ROUTE,
-} from "../../../utils/consts";
-import { AppContext } from "./AppContext";
+} from "@/utils/consts";
+import { AppContext } from "@/context/AppContext";
 
 const NavBar = observer(() => {
   const { user, basket }: any = useContext(AppContext);

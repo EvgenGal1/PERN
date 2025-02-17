@@ -1,6 +1,6 @@
 // ! https://www.digitalocean.com/community/tutorials/how-to-build-custom-pagination-with-react-ru
 
-import { Component, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 const LEFT_PAGE = "LEFT";

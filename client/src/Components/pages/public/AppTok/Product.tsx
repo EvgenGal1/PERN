@@ -5,12 +5,11 @@ import { useParams } from "react-router-dom";
 import { productAPI } from "@/api/catalog/productAPI";
 import { ratingAPI } from "@/api/catalog/ratingAPI";
 import { basketAPI } from "@/api/shopping/basketAPI";
-import { AppContext } from "@Comp/layout/AppTok/AppContext";
+import { AppContext } from "@/context/AppContext";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
 import { StarFill } from "@Comp/layout/AppTok/StarFill";
 import { StarOutline } from "@Comp/layout/AppTok/StarOutline";
-
-const Product = (/* props: any */) => {
+const Product: React.FC = (/* props: any */) => {
   // е/и есть передача props ч/з navigate/useNavigate/react-router-dom
   // const location = useLocation();
   // const locationState = location.state as { userId?: number };
@@ -35,7 +34,7 @@ const Product = (/* props: any */) => {
 
   // id Продукта, Context, state Продукта
   const { id }: any = useParams();
-  const { basket, catalog, user }: any = useContext(AppContext);
+  const { basket, catalog, user } = useContext(AppContext);
   const [product, setProduct]: any = useState(null);
 
   // сост.Рейтинга, наведения на него, кол-во головов из БД

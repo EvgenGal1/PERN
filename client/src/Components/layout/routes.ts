@@ -1,3 +1,6 @@
+// ^ маршруты с доступами
+
+// константы путей
 import {
   ADMINBRANDS_ROUTE,
   ADMINCATEGORIES_ROUTE,
@@ -20,36 +23,31 @@ import {
   USERORDERS_ROUTE,
   USERORDER_ROUTE,
   USER_ROUTE,
-} from "../../../utils/consts";
-
+} from "@/utils/consts";
 // общ.эл.
-import Contacts from "../../pages/public/Contacts";
-import Delivery from "../../pages/public/Delivery";
-import DevicePage from "../../pages/public/DevicePage";
-import NotFound from "../../pages/public/NotFound";
-// ^ tokmakov
+import Contacts from "@Comp/pages/public/Contacts";
+import Delivery from "@Comp/pages/public/Delivery";
+import DevicePage from "@Comp/pages/public/DevicePage";
+import NotFound from "@Comp/pages/public/NotFound";
 // import Login from "../../pages/public/AppTok/Login";
 // import Register from "../../pages/public/AppTok/Register";
-import Admin from "../../pages/admin/Admin";
-import AdminBrands from "../../pages/admin/AdminBrands";
-import AdminCategories from "../../pages/admin/AdminCategories";
-import AdminOrder from "../../pages/admin/AdminOrder";
-import AdminOrders from "../../pages/admin/AdminOrders";
-import AdminProducts from "../../pages/admin/AdminProducts";
-import User from "../../pages/auth/User";
-import UserOrder from "../../pages/auth/UserOrder";
-import UserOrders from "../../pages/auth/UserOrders";
-import Auth from "../../pages/public/AppTok/Auth";
-import Basket from "../../pages/public/AppTok/Basket";
-import Checkout from "../../pages/public/AppTok/Checkout";
-import Product from "../../pages/public/AppTok/Product";
-import SearchFilter from "../../pages/public/AppTok/SearchFilter";
-import Shop from "../../pages/public/AppTok/Shop";
+import Admin from "@Comp/pages/admin/Admin";
+import AdminBrands from "@Comp/pages/admin/AdminBrands";
+import AdminCategories from "@Comp/pages/admin/AdminCategories";
+import AdminOrder from "@Comp/pages/admin/AdminOrder";
+import AdminOrders from "@Comp/pages/admin/AdminOrders";
+import AdminProducts from "@Comp/pages/admin/AdminProducts";
+import User from "@Comp/pages/auth/User";
+import UserOrder from "@Comp/pages/auth/UserOrder";
+import UserOrders from "@Comp/pages/auth/UserOrders";
+import Auth from "@Comp/pages/public/AppTok/Auth";
+import Basket from "@Comp/pages/public/AppTok/Basket";
+import Checkout from "@Comp/pages/public/AppTok/Checkout";
+import Product from "@Comp/pages/public/AppTok/Product";
+import SearchFilter from "@Comp/common/SearchFilter";
+import Shop from "@Comp/pages/public/AppTok/Shop";
 
-// ! https://tokmakov.blog.msk.ru/blog/item/673 разобрать примеры и 677
-// 2 МАРШРУТА ++
-
-// Доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
+// доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
 export const publicRoutes = [
   // ^ {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
   // путь Магазина, Каталога(+доп.к URL), Поиска(+доп.к URL)
@@ -68,14 +66,14 @@ export const publicRoutes = [
   { path: CHECKOUT_ROUTE, Component: Checkout },
 ];
 
-// Доступ для Авториз.польз.(Польз.)
+// доступ для Авториз.польз.(Польз.)
 export const authRoutes = [
   { path: USER_ROUTE, Component: User },
   { path: USERORDERS_ROUTE, Component: UserOrders },
   { path: USERORDER_ROUTE, Component: UserOrder },
 ];
 
-// Доступ для Админа (Админ панель)
+// доступ для Админа (Админ панель)
 export const adminRoutes = [
   { path: ADMIN_ROUTE, Component: Admin },
   { path: ADMINORDERS_ROUTE, Component: AdminOrders },
