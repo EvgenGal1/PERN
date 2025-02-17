@@ -10,6 +10,8 @@ module.exports = {
         // eslint-disable-next-line no-undef
         "@": path.resolve(process.cwd(), "src"),
         // eslint-disable-next-line no-undef
+        "@api": path.resolve(__dirname, "src/api"),
+        // eslint-disable-next-line no-undef
         "@Comp": path.resolve(__dirname, "src/Components"),
       };
 
