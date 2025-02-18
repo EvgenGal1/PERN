@@ -1,4 +1,5 @@
-// ^ хранилище корзины
+// ^ хранилище Заказов и их Позиция
+
 import { makeAutoObservable } from "mobx";
 
 class OrderStore {

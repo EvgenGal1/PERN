@@ -1,4 +1,5 @@
-// ^ хранилище корзины
+// ^ хранилище Корзины
+
 import { makeAutoObservable } from "mobx";
 
 class BasketStore {

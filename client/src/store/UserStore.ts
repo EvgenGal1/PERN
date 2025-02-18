@@ -1,6 +1,7 @@
-// ^ хранилище состояний пользователей сайта
+// ^ хранилище Пользователей
+
 import { makeAutoObservable } from "mobx";
-import { TokenPayload } from "../../types/api/auth.types";
+import { TokenPayload } from "@/types/api/auth.types";
 
 export default class UserStore {
   id: number | null = null;
