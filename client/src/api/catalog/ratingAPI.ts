@@ -21,7 +21,7 @@ export const ratingAPI = {
    * @param rate - Оценка (1-5)
    */
   async createProductRating(
-    userId: number,
+    userId: number | null,
     productId: number,
     rate: number
   ): Promise<RatingData> {

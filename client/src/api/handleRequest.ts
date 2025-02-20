@@ -1,11 +1,11 @@
 // ^ обработчик API запросов к БД
 
+import { AxiosResponse } from "axios";
+
 // кэш
 // import { queryCache } from "../utils/cache";
 // обраб.ошб.
 import { errorHandler } from "@/utils/errorHandler";
-
-type ApiMethod<T> = () => Promise<{ data: T }>;
 
 /**
  * Обрабатывает API-запросы, автоматически обрабатывая ошибки
@@ -13,7 +13,7 @@ type ApiMethod<T> = () => Promise<{ data: T }>;
  * @param context - Контекст для логирования (название метода)
  */
 export const handleRequest = async <T>(
-  method: ApiMethod<T>,
+  method: () => Promise<AxiosResponse<T>>,
   context: string = "Unknown"
   // cacheKey?: string,
   // ttl: number = 60_000

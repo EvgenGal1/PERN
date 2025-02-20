@@ -30,7 +30,7 @@
     "skipLibCheck": true, // откл.проверки типов в .d.ts.(встр.библ.)
     "strictNullChecks": true, // строгая проверка null и undefined
     // "strictBindCallApply": false, // проверка примен. bind, call, apply
-    "forceConsistentCasingInFileNames": true, // один регистр /путь/ф.имя 
+    "forceConsistentCasingInFileNames": true, // один регистр /путь/ф.имя
     "noFallthroughCasesInSwitch": true, // запрет "проваливания" в switch
     "resolveJsonModule": true, // импорт ф.JSON как модулей
     "isolatedModules": true, // безопасная транспиляция
