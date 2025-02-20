@@ -24,8 +24,8 @@ class ProductService {
       brandId,
       limit = 20,
       page = 1,
-      sortOrd = 'ASC',
-      sortField = 'name',
+      order = 'ASC',
+      field = 'name',
     } = options;
 
     // перем.для уточнения запроса к др.Табл.
@@ -52,7 +52,7 @@ class ProductService {
     );
 
     // ^ сорт.по голосу (врем.откл.)
-    // const order = sortField === 'votes' ? [[ {  model: RatingModel, as: 'ratings',getAttributes: ['rate', 'productId', 'userId'], }, 'rates', sortOrd || 'ASC', ], ]   :   [[sortField || 'name', sortOrd || 'ASC']];
+    // const order = field === 'votes' ? [[ {  model: RatingModel, as: 'ratings',getAttributes: ['rate', 'productId', 'userId'], }, 'rates', order || 'ASC', ], ]   :   [[field || 'name', order || 'ASC']];
 
     const products = await ProductModel.findAndCountAll({
       where,
@@ -97,7 +97,7 @@ class ProductService {
         'ProductModel.price',
         'ProductModel.image',
       ],
-      order: [[sortField || 'name', sortOrd || 'ASC']],
+      order: [[field || 'name', order || 'ASC']],
       // order as RatingModel | ProductModel | any // ^ сорт.по голосу (врем.откл.)
     });
 

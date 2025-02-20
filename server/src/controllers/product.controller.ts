@@ -35,17 +35,17 @@ class ProductController {
   ): Promise<void> {
     try {
       const { categoryId, brandId } = req.params;
-      const { limit, page, sortOrd, sortField } = req.query;
+      const { limit, page, order, field } = req.query;
       const options = {
         categoryId: categoryId ? String(categoryId) : undefined,
         brandId: brandId ? String(brandId) : undefined,
         limit: parseQueryParam(limit, 20, 'limit'),
         page: parseQueryParam(page, 1, 'page'),
-        sortOrd:
-          sortOrd === 'ASC' || sortOrd === 'DESC'
-            ? (sortOrd as 'ASC' | 'DESC')
+        order:
+          order === 'ASC' || order === 'DESC'
+            ? (order as 'ASC' | 'DESC')
             : undefined,
-        sortField: sortField ? String(sortField) : undefined,
+        field: field ? String(field) : undefined,
       };
       const products = await ProductService.getAllProducts(options);
 

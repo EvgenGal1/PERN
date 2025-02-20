@@ -40,22 +40,22 @@ export const productAPI = {
    * @param brandId - ID Бренда (необязательно)
    * @param page - Номер Страницы
    * @param limit - Лимит Продктов на страницу
-   * @param sortOrd - Порядок Сортировки ("ASC" или "DESC")
-   * @param sortField - Поле Сортировки ("name", "price", "rating")
+   * @param order - Порядок Сортировки ("ASC" или "DESC")
+   * @param field - Поле Сортировки ("name", "price", "rating")
    */
   async getAllProducts(
     categoryId?: string | null,
     brandId?: string | null,
     page: number = 1,
     limit: number = 10,
-    sortOrd?: string,
-    sortField?: string
+    order?: string,
+    field?: string
   ): Promise<ProductRes> {
     // параметры для постраничной навигации
     const params: any = { page, limit };
     // сортировка по порядку и полю (назв.,цена,рейтинг)
-    if (sortOrd) params.sortOrd = sortOrd;
-    if (sortField) params.sortField = sortField;
+    if (order) params.order = order;
+    if (field) params.field = field;
     // базовый URL получ.всех Продуктов
     let url = "products/getall";
     // дополнение URL парам.из props (для 1го знач. и мн.знач.ч/з разделитель(_))
