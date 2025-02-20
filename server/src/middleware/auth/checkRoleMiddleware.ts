@@ -38,7 +38,9 @@ export default function roleMW(roles: string[]) {
       if (!userRoles.length)
         throw ApiError.unauthorized('У Пользователя нет Ролей');
       // проверка разрешенных Ролей
-      const hasRoles = userRoles.some((userRole) => roles.includes(userRole));
+      const hasRoles = userRoles.some((userRole) =>
+        roles.includes(userRole.role),
+      );
       if (!hasRoles) {
         throw ApiError.forbidden(
           `Нет доступа для одной из Ролей: ${userRoles.join(', ')}`,

@@ -58,7 +58,7 @@ export function requestLoggingMiddleware(
         refreshToken: `${req.cookies.refreshToken.slice(0, 3)}...${req.cookies.refreshToken.slice(-3)}`,
       };
     }
-    if (req.signedCookies) {
+    if (req.signedCookies.basketId || req.signedCookies.refreshToken) {
       requestData.signedCookies = {
         basketId: req.signedCookies.basketId,
         refreshToken: req.signedCookies.refreshToken
