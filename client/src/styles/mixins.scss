@@ -87,3 +87,83 @@
   );
   // ??? не раб - попытка неск. условий в ошб. -  @if $startSizeHBott {} @else {} - отсутствует аргументы
 }
+
+// цв.шаблон + актив/наведение
+@mixin color-scheme(
+  $bg-color,
+  $hover-bg-color,
+  $border-color,
+  $hover-border-color,
+  $text-color,
+  $hover-text-color
+) {
+  border-color: $border-color;
+  background-color: $bg-color;
+  color: $text-color;
+  &:hover,
+  &.active {
+    border-color: $hover-border-color;
+    background-color: $hover-bg-color;
+    color: $hover-text-color;
+  }
+}
+// карта цв.схем
+$color-schemes: (
+  primary: (
+    bg: var(--Blue_1),
+    hover-bg: var(--Blue_2),
+    border: var(--BlackAmber),
+    hover-border: var(--BlackBrown),
+    text: var(--DeepYellow),
+    hover-text: var(--MelonYellow),
+  ),
+  success: (
+    bg: var(--Green_1),
+    hover-bg: var(--Green_2),
+    border: var(--BlackAmber),
+    hover-border: var(--BlackBrown),
+    text: var(--DeepYellow),
+    hover-text: var(--MelonYellow),
+  ),
+  danger: (
+    bg: var(--CrimsonBrown),
+    hover-bg: var(--PinkForest),
+    border: var(--BlackAmber),
+    hover-border: var(--BlackBrown),
+    text: var(--DeepYellow),
+    hover-text: var(--MelonYellow),
+  ),
+);
+
+// общ.базовые стили > всех эл.
+%color-scheme-base {
+  border: 1px solid #bd0000;
+  border-radius: var(--sz1);
+  transition:
+    background-color 200ms linear,
+    border-color 200ms linear,
+    transform 100ms linear,
+    color 200ms linear;
+  padding: var(--sz1) var(--sz2);
+  line-height: 1.5;
+  font-size: 16px;
+  user-select: none;
+  cursor: pointer;
+}
+
+// примен.цв.схемы ч/з цикл
+@each $type, $colors in $color-schemes {
+  .#{"colsch-" + $type}--eg {
+    // примен.общ.базовые стили
+    @extend %color-scheme-base;
+    // вкл.цв.шаблона/карты
+    @include color-scheme(
+      map-get($colors, bg),
+      map-get($colors, hover-bg),
+      map-get($colors, border),
+      map-get($colors, hover-border),
+      map-get($colors, text),
+      map-get($colors, hover-text)
+    );
+  }
+}

@@ -663,7 +663,7 @@ img.card-img-top {
   }
 
   .select--eg {
-    width: 15%;
+    // width: 15%;
   }
   // .limit--eg {}
   button {
@@ -746,7 +746,7 @@ img.card-img-top {
   }
 }
 
-// media
+// media медиа
 :root body #root {
   .main,
   .navbar {
@@ -853,6 +853,45 @@ img.card-img-top {
         flex: 0 0 auto;
         width: 80%;
       }
+    }
+  }
+
+  // сортировка
+  .sort-field-container {
+    display: flex;
+    gap: 10px;
+  }
+  /* огромные экраны (xl) */
+  @media (min-width: 1400px) {
+    .sort-field-container button.btn--eg.btn-primary--eg {
+      display: block;
+    }
+    .sort-field-container select {
+      display: none;
+    }
+  }
+  /* большие экраны (lg) */
+  @media (min-width: 992px) and (max-width: 1399px) {
+    .sort-field-container button.btn-primary--eg {
+      display: none;
+    }
+    .sort-field-container select.text-mode {
+      display: block;
+    }
+    .sort-field-container select.symbol-mode {
+      display: none;
+    }
+  }
+  /* средние и маленькие экраны (md/sm) */
+  @media (max-width: 991px) {
+    .sort-field-container button.btn-primary--eg {
+      display: none;
+    }
+    .sort-field-container select.text-mode {
+      display: none;
+    }
+    .sort-field-container select.symbol-mode {
+      display: block;
     }
   }
 }
