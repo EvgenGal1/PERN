@@ -1,5 +1,5 @@
 // ^ хранилище Каталога (Категории, Бренды, Продукты, фильтры/пагинация/сортировка, загрузка)
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   ProductData,
@@ -34,44 +34,79 @@ class CatalogStore {
   };
   // состояние загрузки
   isLoading = false;
+  // отдел.флаги загр.от повтор.загр.
+  isFetchingCategories = false;
+  isFetchingBrands = false;
 
   constructor() {
     // автообраб.измен.в.ф.с обёрткой в декораторы - observable/`наблюдаемый` и action/`действие`
     makeAutoObservable(this);
-    // this, {}, { autoBind: true, deep: false } // мжн.доп. автопривязка контекста this к мтд., оптимиз.> больших объ.
+    // автопривязка контекста this к мтд., оптимиз.> больших объ.
+    this, {}, { autoBind: true, deep: false };
     // > автоотслеж.зависимости и автовыполн.кода при измен.наблюдаемых данных
     // autorun(() => { if (this.shouldFetch) { this.fetchProducts(); } });
   }
 
   // мтд.получ.данн.с БД (получ.Все Категории ч/з внутр.API с настр. загр./обраб./ошб./логг.)
   async fetchCategories(): Promise<void> {
-    this.isLoading = true;
+    // проверка на пустой массив и флаг загр.Категории
+    if (this.isFetchingCategories || this.categories.length > 0) return;
+    // загр.вкл.
+    this.isFetchingCategories = true;
     try {
+      //  ч/з внутр.мтд.API req к БД
       const data = await categoryAPI.getAllCategories();
-      // запись даннс БД в хранилище
-      this.categories = data;
-      // runInAction(() => { this.categories = data; }); // runInAction - групп.асинхр.обнов.сост.в одном атомарное изменение > сложн.req от лишних обновлений
+      // групп.асинхр.обнов.сост.в одном атомарное изменение > сложн.req от лишних обновлений | от ошб./предупреждения [MobX] о строг.режиме
+      runInAction(() => {
+        // запись данн.БД в хранилище
+        this.categories = data;
+      });
     } catch (error) {
+      // лог.ошб.
       console.error("Ошибка загрузки Категорий:", error);
     } finally {
-      this.isLoading = false;
+      runInAction(() => {
+        // загр.выкл.
+        this.isFetchingCategories = false;
+      });
     }
   }
 
   async fetchBrands(): Promise<void> {
-    this.isLoading = true;
+    if (this.isFetchingBrands || this.brands.length > 0) return;
+    this.isFetchingBrands = true;
     try {
       const data = await brandAPI.getAllBrands();
-      this.brands = data;
+      runInAction(() => {
+        this.brands = data;
+      });
     } catch (error) {
       console.error("Ошибка загрузки Брендов:", error);
     } finally {
-      this.isLoading = false;
+      runInAction(() => {
+        this.isFetchingBrands = false;
+      });
+    }
+  }
+
+  // Объединённый метод для загрузки категорий и брендов
+  async fetchInitialCatalog(): Promise<void> {
+    if (this.isLoading || (this.categories.length && this.brands.length))
+      return;
+    this.isLoading = true;
+    try {
+      await Promise.all([this.fetchCategories(), this.fetchBrands()]);
+    } catch (error) {
+      console.error("Ошибка загрузки данных Каталога:", error);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
     }
   }
 
   async fetchProducts(): Promise<void> {
-    this.isLoading = true;
+    if (this.isLoading || this.products.length) this.isLoading = true;
     try {
       const { rows, count } = await productAPI.getAllProducts(
         this.filters.category?.toString(),
@@ -81,12 +116,16 @@ class CatalogStore {
         this.sortSettings.order,
         this.sortSettings.field
       );
-      this.products = rows;
-      this.pagination.totalCount = count;
+      runInAction(() => {
+        this.products = rows;
+        this.pagination.totalCount = count;
+      });
     } catch (error) {
       console.error("Ошибка загрузки продуктов:", error);
     } finally {
-      this.isLoading = false;
+      runInAction(() => {
+        this.isLoading = false;
+      });
     }
   }
 
