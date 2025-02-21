@@ -51,9 +51,9 @@ const AdminProducts = () => {
           if (
             catalog.count > 1 &&
             products?.length === 1 &&
-            catalog.page === catalog.count
+            catalog.pagination.page === catalog.count
           ) {
-            catalog.page = catalog.count - 1;
+            catalog.pagination.page = catalog.count - 1;
           } else {
             setChange(!change);
           }
@@ -68,24 +68,24 @@ const AdminProducts = () => {
       .getAllProducts(
         "",
         "",
-        catalog.page,
-        catalog.limit,
-        catalog.sortOrd,
-        catalog.sortField
+        catalog.pagination.page,
+        catalog.pagination.limit,
+        catalog.sortSettings.order,
+        catalog.sortSettings.field
       )
       .then((data) => {
         setProducts(data.rows);
-        catalog.limit = Math.ceil(data.limit);
+        catalog.pagination.limit = Math.ceil(data.limit);
         catalog.count = data.count;
       })
       .finally(() => setFetching(false));
   }, [
     change,
     catalog,
-    catalog.page,
-    catalog.limit,
-    catalog.sortOrd,
-    catalog.sortField,
+    catalog.pagination.page,
+    catalog.pagination.limit,
+    catalog.sortSettings.order,
+    catalog.sortSettings.field,
   ]);
 
   // if (fetching) {

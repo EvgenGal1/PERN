@@ -38,27 +38,33 @@ const SearchFilter: React.FC = () => {
   // );
 
   // е/и в cataloge что-то есть (str|id параметры)
-  if (catalog.category || catalog.brand) {
+  if (catalog.filters.category || catalog.filters.brand) {
     // category есть и не записанные
-    if (catalog.category && overwrittenСatalogParamsFromStore.category) {
+    if (
+      catalog.filters.category &&
+      overwrittenСatalogParamsFromStore.category
+    ) {
       // запись str|id из парам.catalog Магазина в state itemIdStat один раз от повтор.перезаписи
-      itemIdStat.category = catalog.category;
+      itemIdStat.category = catalog.filters.category;
       setOverwrittenCatalogParamsFromStore(
         (overwrittenСatalogParamsFromStore.category = false)
       );
       // нахожд.name по id из строки и запись в state
       const result = findValueFromStringInArray(
-        catalog.category,
+        catalog.filters.category,
         catalog.categories
       );
       valueNameStat.category = result;
     }
-    if (catalog.brand && overwrittenСatalogParamsFromStore.brand) {
-      itemIdStat.brand = catalog.brand;
+    if (catalog.filters.brand && overwrittenСatalogParamsFromStore.brand) {
+      itemIdStat.brand = catalog.filters.brand;
       setOverwrittenCatalogParamsFromStore(
         (overwrittenСatalogParamsFromStore.brand = false)
       );
-      const result = findValueFromStringInArray(catalog.brand, catalog.brands);
+      const result = findValueFromStringInArray(
+        catalog.filters.brand,
+        catalog.brands
+      );
       valueNameStat.brand = result;
     }
   }
@@ -122,11 +128,11 @@ const SearchFilter: React.FC = () => {
     if (dataValueName.category) params.category = dataValueName.category;
     if (dataValueName.brand) params.brand = dataValueName.brand;
     // ? нужно ли ? это в Filtre
-    // if (catalog.page > 1) params.page = catalog.page;
-    // if (catalog.limit !== (20 || 0)) params.limit = catalog.limit;
-    // if (catalog.sortOrd !== ("ASC" || null)) params.sortOrd = catalog.sortOrd;
-    // if (catalog.sortField !== ("name" || null))
-    // params.sortField = catalog.sortField;
+    // if (catalog.pagination.page > 1) params.page = catalog.pagination.page;
+    // if (catalog.pagination.limit !== (20 || 0)) params.limit = catalog.pagination.limit;
+    // if (catalog.sortSettings.order !== ("ASC" || null)) params.order = catalog.sortSettings.order;
+    // if (catalog.sortSettings.field !== ("name" || null))
+    // params.field = catalog.sortSettings.field;
 
     navigate({ search: "?" + createSearchParams(params) });
   };
@@ -174,32 +180,45 @@ const SearchFilter: React.FC = () => {
     // в Магаз по Стар.парам.поиска
     if (param === "returnHowWasToStore") {
       const params: any = {};
-      if (catalog.category) params.category = catalog.category;
-      if (catalog.brand) params.brand = catalog.brand;
-      if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== 10 && catalog.limit !== 0)
-        params.limit = catalog.limit;
-      if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-        params.sortOrd = catalog.sortOrd;
-      if (catalog.sortField !== "name" || catalog.sortField !== null)
-        params.sortField = catalog.sortField;
+      if (catalog.filters.category) params.category = catalog.filters.category;
+      if (catalog.filters.brand) params.brand = catalog.filters.brand;
+      if (catalog.pagination.page > 1) params.page = catalog.pagination.page;
+      if (catalog.pagination.limit !== 10 && catalog.pagination.limit !== 0)
+        params.limit = catalog.pagination.limit;
+      if (
+        catalog.sortSettings.order !== "ASC" ||
+        catalog.sortSettings.order !== null
+      )
+        params.order = catalog.sortSettings.order;
+      if (
+        catalog.sortSettings.field !== "name" ||
+        catalog.sortSettings.field !== null
+      )
+        params.field = catalog.sortSettings.field;
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
       });
     }
+
     // в Магаз по Нов.парам.поиска
     else if (param === "searchParams") {
       const params: any = {};
       if (itemIdStat.category) params.category = itemIdStat.category;
       if (itemIdStat.brand) params.brand = itemIdStat.brand;
-      if (catalog.page > 1) params.page = catalog.page;
-      if (catalog.limit !== 10 && catalog.limit !== 0)
-        params.limit = catalog.limit;
-      if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-        params.sortOrd = catalog.sortOrd;
-      if (catalog.sortField !== "name" || catalog.sortField !== null)
-        params.sortField = catalog.sortField;
+      if (catalog.pagination.page > 1) params.page = catalog.pagination.page;
+      if (catalog.pagination.limit !== 10 && catalog.pagination.limit !== 0)
+        params.limit = catalog.pagination.limit;
+      if (
+        catalog.sortSettings.order !== "ASC" ||
+        catalog.sortSettings.order !== null
+      )
+        params.order = catalog.sortSettings.order;
+      if (
+        catalog.sortSettings.field !== "name" ||
+        catalog.sortSettings.field !== null
+      )
+        params.field = catalog.sortSettings.field;
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
@@ -217,11 +236,12 @@ const SearchFilter: React.FC = () => {
       .getAllProducts(
         itemIdStat.category,
         itemIdStat.brand,
-        catalog.page,
-        10000,
+        catalog.pagination.page,
+        // 10000,
+        catalog.pagination.limit,
         // ! ошб.типа, логики и передачи
-        catalog.sortOrd!,
-        catalog.sortField!
+        catalog.sortSettings.order!,
+        catalog.sortSettings.field!
       )
       .then((data) => {
         // console.log("FLT usEf 000 data ", data);
@@ -354,7 +374,8 @@ const SearchFilter: React.FC = () => {
                 returnToShop("searchParams");
               }}
             >
-              Показать {countProduct}
+              {/* // ! отражен результат ч/з usEf с отставанием в 1 шаг */}
+              Показать {countProduct /* data.count */}
             </button>
             <button
               className="btn--eg btn-danger--eg"
