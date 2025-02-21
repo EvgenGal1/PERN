@@ -173,16 +173,13 @@ class CatalogStore {
     field: "name" | "price" | "rating" | "votes",
     order: "ASC" | "DESC"
   ) {
-    if (
-      this.sortSettings.field !== field ||
-      this.sortSettings.order !== order
-    ) {
-      this.sortSettings.field = field;
-      this.sortSettings.order = order;
-      this.resetPagination();
-      this.fetchProducts();
-      this.updateUrlParams();
-    }
+    if (this.sortSettings.field === field && this.sortSettings.order === order)
+      return;
+    this.sortSettings.field = field;
+    this.sortSettings.order = order;
+    this.resetPagination();
+    this.fetchProducts();
+    this.updateUrlParams();
   }
 
   // обнуления стр.при измен.фильтров
