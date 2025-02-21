@@ -7,7 +7,6 @@ import { AppContext } from "@/context/AppContext";
 
 const BrandBar: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
-
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
@@ -20,7 +19,6 @@ const BrandBar: React.FC = observer(() => {
     if (catalog.filters.brand) {
       const currentBrands = catalog.filters.brand.split("_");
       const index = currentBrands.indexOf(id.toString());
-
       if (index !== -1) {
         currentBrands.splice(index, 1);
         newBrand = currentBrands.join("_") || null;
@@ -28,18 +26,13 @@ const BrandBar: React.FC = observer(() => {
         currentBrands.push(id.toString());
         newBrand = currentBrands.join("_");
       }
-    } else {
-      newBrand = id.toString();
-    }
-    console.log("1 ", 1);
+    } else newBrand = id.toString();
     catalog.setBrand(newBrand);
-    console.log("2 ", 2);
 
     const pathname = newBrand ? SHOP_CATALOG_ROUTE : SHOP_ROUTE;
     catalog.updateUrlParams(pathname);
   };
 
-  // показ блока с Параметрами
   const handleClickChoiceParam = (event: any) => {
     event.currentTarget.classList.toggle("choice-param-show");
   };

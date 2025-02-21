@@ -6,17 +6,17 @@ import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
 
 const CategoryBar: React.FC = observer(() => {
+  // стор Каталога и парам.URL
   const { catalog } = useContext(AppContext);
-
   const [searchParams] = useSearchParams();
 
+  // получ.парам.из URL и сохр.в стор с зависим.от парам.URL
   useEffect(() => {
     const { category } = Object.fromEntries(searchParams);
     if (category) catalog.setCategory(category || null);
   }, [searchParams]);
 
   // обраб.клик > сохр.нов.знач.эл.фильтра и обнов.парам.URL
-  // при клике перенаправление на URL маршрут по параметрам поиска
   const handleCategoryChange = (id: number) => {
     // нов.знач.
     let newCategory: string | null = null;
@@ -37,9 +37,7 @@ const CategoryBar: React.FC = observer(() => {
       }
     }
     // нет выбранных + перв.эл.
-    else {
-      newCategory = id.toString();
-    }
+    else newCategory = id.toString();
     // запись знач.в стор
     catalog.setCategory(newCategory);
     // опред.путь > catalog или shop и обнов.парам.URL
