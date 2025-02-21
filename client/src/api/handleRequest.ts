@@ -2,10 +2,9 @@
 
 import { AxiosResponse } from "axios";
 
-// кэш
-// import { queryCache } from "../utils/cache";
 // обраб.ошб.
 import { errorHandler } from "@/utils/errorHandler";
+// кэш // import { queryCache } from "../utils/cache"; | const requestCache = new Map<string, any>();
 
 /**
  * Обрабатывает API-запросы, автоматически обрабатывая ошибки
@@ -20,22 +19,22 @@ export const handleRequest = async <T>(
 ): Promise<T> => {
   // обраб.req/ошб.
   try {
-    // кэш проверка/возврат
+    // кэш проверка/возврат закешир.результат
     // if (cacheKey) {
-    //   const cached = queryCache.get<T>(cacheKey);
-    //   if (cached) return cached;
+    //   const cached =   queryCache.get<T>(cacheKey) | requestCache.has(cacheKey)
+    //   if (cached)   return cached | requestCache.get(cacheKey)
     // }
     // вызов мтд.
     const response = await method();
     const result = response.data;
-    // кэш запись
-    // if (cacheKey) queryCache.set(cacheKey, result, ttl);
+    // кэш сохр.данн.
+    // if (cacheKey)   queryCache.set(cacheKey, result, ttl) | requestCache.set(cacheKey, result)
     console.debug(`^ [${context}] RES: `, result);
     // возврат данн.
     return result;
   } catch (error) {
-    // кэш удал.запись по регул.выраж.ключей
-    // if (cacheKey) queryCache.invalidate(new RegExp(cacheKey));
+    // кэш удал.данн.
+    // if (cacheKey)   queryCache.invalidate(new RegExp(cacheKey)) | requestCache.delete(cacheKey)
     // обраб.ошб.
     const processedError = errorHandler(error, context);
     // логг.ошб.с контекстом

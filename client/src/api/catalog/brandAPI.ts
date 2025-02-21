@@ -32,6 +32,7 @@ export const brandAPI = {
     return handleRequest(
       () => guestInstance.get<BrandData[]>("brands/getall"),
       "Brands/GetAll"
+      // "brands" // кеш ключ
     );
   },
 
