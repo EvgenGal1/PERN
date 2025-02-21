@@ -1,87 +1,42 @@
 import { observer } from "mobx-react-lite";
-import { useContext, useEffect } from "react";
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import { brandAPI } from "@/api/catalog/brandAPI";
-import { getSearchParams } from "@/scripts/helpers/getSearchParams";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
-import { AppContext } from "@Comp/layout/AppTok/AppContext";
+import { AppContext } from "@/context/AppContext";
 
 const BrandBar: React.FC = observer(() => {
-  // console.log("BrandBar 0 ", 0);
   const { catalog } = useContext(AppContext);
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // признак загрузки данных. // ! врем.откл.
-  // const [brandsFetching, setBrandsFetching] = useState(true);
-
-  const { brand } = getSearchParams(searchParams);
-
-  // console.log("BRANDbar brand ~~ ", brand);
   useEffect(() => {
-    if (brand || brand === null) {
-      // console.log("BRANDbar usEf 000 ", 0);
-      // setBrandsFetching(true);
+    const { brand } = Object.fromEntries(searchParams);
+    if (brand) catalog.setBrand(brand || null);
+  }, [searchParams]);
 
-      const fetchData = async () => {
-        try {
-          const data = await brandAPI.getAllBrands();
-          // console.log("BRANDbar usEf BRD data ", data);
-          catalog.brands = data;
-        } catch (error) {
-          console.error("Ошибка загрузки Брендов>:", error);
-        } finally {
-          // setBrandsFetching(false);
-        }
-      };
+  const handleBrandChange = (id: number) => {
+    let newBrand: string | null = null;
+    if (catalog.filters.brand) {
+      const currentBrands = catalog.filters.brand.split("_");
+      const index = currentBrands.indexOf(id.toString());
 
-      fetchData();
-    }
-  }, [brand /* , catalog */]);
-
-  // при клике перенаправление на URL маршрут по параметрам поиска
-  const redirectToSearchParams = (id: number) => {
-    // проверка/вставка/замена id/разделителя(_)значений ч/з регулярные выражения
-    let newBrand = "";
-    if (catalog.brand !== null) {
-      if (!String(catalog.brand).includes("_")) {
-        newBrand = id === Number(catalog.brand) ? "" : catalog.brand + "_" + id;
+      if (index !== -1) {
+        currentBrands.splice(index, 1);
+        newBrand = currentBrands.join("_") || null;
       } else {
-        if (catalog.brand.includes(String(id))) {
-          newBrand = catalog.brand.replace("_" + id, "");
-        } else {
-          newBrand = catalog.brand + "_" + id;
-        }
+        currentBrands.push(id.toString());
+        newBrand = currentBrands.join("_");
       }
     } else {
-      newBrand = String(id);
+      newBrand = id.toString();
     }
+    console.log("1 ", 1);
+    catalog.setBrand(newBrand);
+    console.log("2 ", 2);
 
-    // запись в перем.параметров из catalog
-    const params: Record<string, string | number> = {};
-    if (catalog.category) params.category = catalog.category;
-    // if (catalog.brand) params.brand = catalog.brand;
-    if (newBrand) params.brand = newBrand;
-    if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== 20 && catalog.limit !== 0)
-      params.limit = catalog.limit;
-    if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-      params.sortOrd = catalog.sortOrd!;
-    if (catalog.sortField !== "name" || catalog.sortField !== null)
-      params.sortField = catalog.sortField!;
-
-    // при наличии (category,brand) отправка на URL /catalog/list + params иначе главная
-    navigate({
-      pathname: newBrand ? SHOP_CATALOG_ROUTE : SHOP_ROUTE,
-      search: "?" + createSearchParams(params.toString()),
-    });
-    catalog.brand = newBrand;
+    const pathname = newBrand ? SHOP_CATALOG_ROUTE : SHOP_ROUTE;
+    catalog.updateUrlParams(pathname);
   };
 
   // показ блока с Параметрами
@@ -102,8 +57,14 @@ const BrandBar: React.FC = observer(() => {
                 type="checkbox"
                 name={`brand.${item.name}`}
                 value={item.name}
-                onChange={() => redirectToSearchParams(item.id)}
-                checked={String(catalog.brand)?.includes(String(item.id))}
+                checked={
+                  catalog.filters.brand
+                    ? catalog.filters.brand
+                        .split("_")
+                        .includes(item.id.toString())
+                    : false
+                }
+                onChange={() => handleBrandChange(item.id)}
               />
               <span>{item.name}</span>
             </label>
@@ -114,4 +75,4 @@ const BrandBar: React.FC = observer(() => {
   );
 });
 
-export default BrandBar;
+export default React.memo(BrandBar);
