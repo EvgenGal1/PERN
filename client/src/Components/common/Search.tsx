@@ -1,16 +1,13 @@
-import { useState, useEffect, useContext, useCallback } from "react";
-import {
-  useNavigate,
-  createSearchParams /* , Navigate */,
-} from "react-router-dom";
+import React, { useContext, useEffect, useState, useCallback } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
-import { AppContext } from "../../../layout/AppTok/AppContext";
-import { productAPI } from "../../../../api/catalog/productAPI";
-import { ProductData } from "../../../../types/api/catalog.types";
-import { FILTER_ROUTE } from "../../../../utils/consts";
+import { AppContext } from "@/context/AppContext";
+import { productAPI } from "@/api/catalog/productAPI";
+import { ProductData } from "@/types/api/catalog.types";
+import { FILTER_ROUTE } from "@/utils/consts";
 
-const Search = observer(() => {
+const Search: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -27,18 +24,18 @@ const Search = observer(() => {
     async (limit: number): Promise<void> => {
       const data = await productAPI.getAllProducts(
         // ! ошб.типа, логики и передачи
-        catalog.category!,
-        catalog.brand!,
-        catalog.page,
+        catalog.filters.category!,
+        catalog.filters.brand!,
+        catalog.pagination.page,
         /* catalog.limit || 10000 */ limit,
-        catalog.sortOrd!,
-        catalog.sortField!
+        catalog.sortSettings.order!,
+        catalog.sortSettings.field!
         // additionalParams
       );
 
       setSearchAll(data.rows);
       catalog.products = data.rows;
-      catalog.count = data.count;
+      catalog.pagination.totalCount = data.count;
     },
     [catalog]
   );
@@ -79,12 +76,12 @@ const Search = observer(() => {
       search:
         /* "?" + */
         createSearchParams({
-          category: catalog.category || "",
-          brand: catalog.brand || "",
-          page: String(catalog.page),
-          limit: String(catalog.limit),
-          sortOrd: catalog.sortOrd || "",
-          sortField: catalog.sortField || "",
+          category: catalog.filters.category || "",
+          brand: catalog.filters.brand || "",
+          page: catalog.pagination.page.toString(),
+          limit: catalog.pagination.limit.toString(),
+          order: catalog.sortSettings.order || "",
+          field: catalog.sortSettings.field || "",
         }).toString(),
     });
   };
