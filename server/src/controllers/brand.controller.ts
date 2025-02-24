@@ -1,7 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+// import { createHash } from 'crypto';
 
 import BrandService from '../services/brand.service';
 import { parseId, validateName } from '../utils/validators';
+
+// // генер. ETag для кэширования
+// function generateETag(data: any): string {
+//   const str = JSON.stringify(data);
+//   return createHash('md5').update(str).digest('hex');
+// }
 
 class BrandController {
   constructor() {
@@ -19,7 +26,14 @@ class BrandController {
     try {
       const id = parseId(req.params.id, this.name);
       const brand = await BrandService.getOneBrand(id);
-      res.status(200).json(brand);
+      // // кэширование с использованием ETag
+      // const etag = generateETag(brand);
+      // // проверка совпадения ETag с заголовком If-None-Match
+      // if (req.headers['if-none-match'] === etag) {
+      //   console.log('Данные КЭШ не изменились');
+      //   return res.status(304).end();
+      // }
+      res./* set('ETag', etag). */ status(200).json(brand);
     } catch (error: unknown) {
       next(error);
     }
