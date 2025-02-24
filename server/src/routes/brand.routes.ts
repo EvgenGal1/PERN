@@ -15,32 +15,6 @@ const router = express.Router();
 
 /**
  * @swagger
- * /brands/create:
- *   post:
- *     summary: Создать новый Бренд
- *     tags: [Brands]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Название Бренда
- *     responses:
- *       200:
- *         description: Бренд успешно Создан
- *       400:
- *         description: Ошибка валидации данных
- */
-router.post('/create', authMW, adminMW, BrandController.createBrand);
-
-/**
- * @swagger
  * /brands/getone/{id}:
  *   get:
  *     summary: Получить Один Бренд по ID
@@ -72,6 +46,32 @@ router.get('/getone/:id([0-9]+)', BrandController.getOneBrand);
  */
 
 router.get('/getall', BrandController.getAllBrand);
+
+/**
+ * @swagger
+ * /brands/create:
+ *   post:
+ *     summary: Создать новый Бренд
+ *     tags: [Brands]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Название Бренда
+ *     responses:
+ *       200:
+ *         description: Бренд успешно Создан
+ *       400:
+ *         description: Ошибка валидации данных
+ */
+router.post('/create', authMW, adminMW, BrandController.createBrand);
 
 /**
  * @swagger

@@ -20,6 +20,46 @@ const router = express.Router();
  *   description: API для управления Заказами
  */
 
+// получить Заказ по id
+/**
+ * @swagger
+ * /orders/getone/{id}:
+ *   get:
+ *     summary: Получить Один Заказ по ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: ID Заказа
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Информация о Заказе
+ *       404:
+ *         description: Заказ не найден
+ */
+router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
+
+// получить список всех Заказов магазина
+/**
+ * @swagger
+ * /orders/getall:
+ *   get:
+ *     summary: Получить список Всех Заказов
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Список Всех Заказов
+ */
+router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
+
 // создать новый Заказ
 /**
  * @swagger
@@ -61,46 +101,6 @@ const router = express.Router();
  *         description: Ошибка валидации данных
  */
 router.post('/create', authMW, adminMW, OrderController.createOrder);
-
-// получить Заказ по id
-/**
- * @swagger
- * /orders/getone/{id}:
- *   get:
- *     summary: Получить Один Заказ по ID
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *           example: 1
- *         description: ID Заказа
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Информация о Заказе
- *       404:
- *         description: Заказ не найден
- */
-router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
-
-// получить список всех Заказов магазина
-/**
- * @swagger
- * /orders/getall:
- *   get:
- *     summary: Получить список Всех Заказов
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Список Всех Заказов
- */
-router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
 
 // получить список Заказов Пользователя
 // router.get(

@@ -15,41 +15,6 @@ const router = express.Router();
  */
 
 // ADMIN Пользователь
-/**
- * @swagger
- * /users/create:
- *   post:
- *     summary: Создать Нового Пользователя
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: user@example.com
- *               password:
- *                 type: string
- *                 example: strong@Password123!
- *     responses:
- *       201:
- *         description: Пользователь успешно Создан
- *       400:
- *         description: Некорректные данные
- *       500:
- *         description: Внутренняя ошибка сервера
- */
-router.post('/create', authMW, adminMW, UserController.createUser);
-
 // получить по id
 /**
  * @swagger
@@ -94,6 +59,41 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, UserController.getOneUser);
  *         description: Внутренняя ошибка сервера
  */
 router.get('/getall', authMW, adminMW, UserController.getAllUser);
+
+/**
+ * @swagger
+ * /users/create:
+ *   post:
+ *     summary: Создать Нового Пользователя
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: strong@Password123!
+ *     responses:
+ *       201:
+ *         description: Пользователь успешно Создан
+ *       400:
+ *         description: Некорректные данные
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
+router.post('/create', authMW, adminMW, UserController.createUser);
 
 // обновить по id
 /**

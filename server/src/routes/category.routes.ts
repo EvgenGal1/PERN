@@ -15,32 +15,6 @@ const router = express.Router();
 
 /**
  * @swagger
- * /categories/create:
- *   post:
- *     summary: Создать Категорию
- *     tags: [Categories]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: Новая Категория
- *     responses:
- *       201:
- *         description: Категория успешно Создана
- *       400:
- *         description: Ошибка валидации или другая ошибка
- */
-router.post('/create', authMW, adminMW, CategoryController.createCategory);
-
-/**
- * @swagger
  * /categories/getone/{id}:
  *   get:
  *     summary: Получить Одну Категорию по ID
@@ -72,6 +46,32 @@ router.get('/getone/:id([0-9]+)', CategoryController.getOneCategory);
  *         description: Список Всех Категорий
  */
 router.get('/getall', CategoryController.getAllCategory);
+
+/**
+ * @swagger
+ * /categories/create:
+ *   post:
+ *     summary: Создать Категорию
+ *     tags: [Categories]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Новая Категория
+ *     responses:
+ *       201:
+ *         description: Категория успешно Создана
+ *       400:
+ *         description: Ошибка валидации или другая ошибка
+ */
+router.post('/create', authMW, adminMW, CategoryController.createCategory);
 
 /**
  * @swagger

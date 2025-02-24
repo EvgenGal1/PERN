@@ -19,39 +19,6 @@ const router = express.Router();
  */
 
 // ^ Стандартные
-// создать Продукт Каталога (Админ)
-/**
- * @swagger
- * /products/create:
- *   post:
- *     summary: Создать Продукт Каталога
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       description: данные для Создания Продукта
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               price:
- *                 type: number
- *               categoryId:
- *                 type: integer
- *               brandId:
- *                 type: integer
- *     responses:
- *       201:
- *         description: Продукт успешно Создан
- *       400:
- *         description: Ошибка валидации данных
- */
-router.post('/create', authMW, adminMW, ProductController.createProduct);
-
 // получить Один Продукт Каталога
 /**
  * @swagger
@@ -87,6 +54,39 @@ router.get('/getone/:id([0-9]+)', ProductController.getOneProduct);
  *         description: Список Всех Продуктов
  */
 router.get('/getall', ProductController.getAllProducts);
+
+// создать Продукт Каталога (Админ)
+/**
+ * @swagger
+ * /products/create:
+ *   post:
+ *     summary: Создать Продукт Каталога
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: данные для Создания Продукта
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               categoryId:
+ *                 type: integer
+ *               brandId:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Продукт успешно Создан
+ *       400:
+ *         description: Ошибка валидации данных
+ */
+router.post('/create', authMW, adminMW, ProductController.createProduct);
 
 // обновить Продукт Каталога (Админ)
 /**
