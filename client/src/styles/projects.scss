@@ -683,12 +683,12 @@ img.card-img-top {
   font-weight: inherit;
 }
 .mini-1--eg {
-  @media (max-width: 992px) {
+  @media (max-width: 1200px) {
     display: none;
   }
 }
 .mini-2--eg {
-  @media (max-width: 990px) {
+  @media (max-width: 992px) {
     display: none;
   }
 }
@@ -872,8 +872,11 @@ img.card-img-top {
   }
   /* большие экраны (lg) */
   @media (min-width: 992px) and (max-width: 1399px) {
-    .sort-field-container button.btn-primary--eg {
-      display: none;
+    .sort-field-container {
+      display: block;
+      button.btn-primary--eg {
+        display: none;
+      }
     }
     .sort-field-container select.text-mode {
       display: block;
@@ -884,8 +887,11 @@ img.card-img-top {
   }
   /* средние и маленькие экраны (md/sm) */
   @media (max-width: 991px) {
-    .sort-field-container button.btn-primary--eg {
-      display: none;
+    .sort-field-container {
+      display: block;
+      button.btn-primary--eg {
+        display: none;
+      }
     }
     .sort-field-container select.text-mode {
       display: none;

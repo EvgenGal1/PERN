@@ -46,6 +46,10 @@ body {
     var(--off, 90px);
   --width-btn: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
     var(--off, 25px);
+  --height: var(--big, 120px) var(--mid, 100px) var(--small, 80px)
+    var(--off, 80px);
+  --height-swit: var(--big, 100px) var(--mid, 95px) var(--small, 90px)
+    var(--off, 90px);
   --height-btn: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
     var(--off, 25px);
   --head-pad: var(--big, 0.7%) var(--mid, 0.5%) var(--small, 0.3%)
@@ -103,6 +107,7 @@ body {
     var(--off, 10px);
   --bot-it-las-mar-lef: var(--big, 44px) var(--mid, 37px) var(--small, 30px)
     var(--off, 30px);
+  --load-atom: var(--big, 9px) var(--mid, 7px) var(--small, 5px) var(--off, 3px);
 }
 
 // ОБЩИЕ СТИЛИ
