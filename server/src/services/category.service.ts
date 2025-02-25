@@ -1,38 +1,48 @@
-import AppError from '../middleware/errors/ApiError';
-import { CategoryModel } from '../models/model';
-import type { CategoryAttributes } from '../models/sequelize-types';
+import CategoryModel from '../models/CategoryModel';
+import { CategoryData } from '../types/catalog.interface';
+import ApiError from '../middleware/errors/ApiError';
 
 class CategoryService {
-  async getAllCategory() {
-    return await CategoryModel.findAll();
-  }
-
-  async getOneCategory(id: number) {
-    const category = await CategoryModel.findByPk(id);
-    if (!category) {
-      throw new AppError(404, 'Категория не найдена');
-    }
+  async getOneCategory(id: number): Promise<CategoryModel> {
+    const category = await CategoryModel.findByPk(id, {
+      attributes: ['id', 'name'],
+    });
+    if (!category) throw ApiError.notFound('Категория не найдена');
     return category;
   }
 
-  async createCategory(data: { name: string }) {
+  async getAllCategory(): Promise<CategoryData[]> {
+    const categories = await CategoryModel.findAll({
+      attributes: ['id', 'name'],
+    });
+    if (!categories) throw ApiError.notFound('Категории не найдены');
+    return categories;
+  }
+
+  async createCategory(data: { name: string }): Promise<CategoryData> {
     const { name } = data;
-    const exist = await CategoryModel.findOne({ where: { name } });
-    if (exist) throw new AppError(400, 'Категория уже есть');
-    return await CategoryModel.create({ name });
+    const exist = await CategoryModel.findOne({
+      where: { name },
+      attributes: ['id', 'name'],
+    });
+    if (exist) throw ApiError.conflict('Категория уже есть');
+    const category = await CategoryModel.create({ name });
+    if (!category) throw ApiError.notFound('Категория не создана');
+    return this.getOneCategory(category.id);
   }
 
-  async updateCategory(id: number, data: Partial<CategoryAttributes>) {
-    const category = await CategoryModel.findByPk(id);
-    if (!category) throw new AppError(404, 'Категория не найдена');
-    return await category.update(data);
+  async updateCategory(
+    id: number,
+    data: Partial<CategoryData>,
+  ): Promise<CategoryData> {
+    const category = await this.getOneCategory(id);
+    await category.update(data);
+    return this.getOneCategory(id);
   }
 
-  async deleteCategory(id: number) {
-    const category = await CategoryModel.findByPk(id);
-    if (!category) throw new AppError(404, 'Категория не найдена');
+  async deleteCategory(id: number): Promise<void> {
+    const category = await this.getOneCategory(id);
     await category.destroy();
-    return { message: `Категория '${category.get('name')}' удалена` };
   }
 }
 
