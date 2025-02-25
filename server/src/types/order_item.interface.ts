@@ -47,3 +47,11 @@ export interface OrderUpdateData {
   comment?: string;
   items?: OrderItemCreateDto[];
 }
+
+// статусы заказа
+export enum OrderStatus {
+  NEW = 2001,
+  IN_PROGRESS = 2002,
+  COMPLETED = 2010,
+  CANCELLED = 9999,
+}

@@ -4,6 +4,7 @@ import {
   OrderCreateDto,
   OrderData,
   OrderUpdateData,
+  OrderStatus,
 } from '../types/order_item.interface';
 import ApiError from '../middleware/errors/ApiError';
 
@@ -70,7 +71,7 @@ class OrderService {
     const order = await OrderModel.create({
       ...orderData,
       amount,
-      status: 2001,
+      status: OrderStatus.NEW,
     });
 
     // стар.подход
@@ -79,6 +80,9 @@ class OrderService {
     // const created = await OrderModel.findByPk(order.getDataValue('id'), { include: [ { model: OrderItemModel, as: 'items', attributes: ['name', 'price', 'quantity'], }, ] });
     // if (!created) throw ApiError.badRequest('Созданный заказ не найден');
     // return created.get({ plain: true }) as OrderModel;
+    if (!Array.isArray(items) || items.length === 0) {
+      throw ApiError.badRequest('Список продуктов не может быть пустым');
+    }
     // параллельно созд.Позиции входящие в Заказ
     await Promise.all(
       items.map((item) =>
@@ -113,10 +117,20 @@ class OrderService {
 
     // нов.статус Заказа (продвиж.до 2010, конечный 9999 и обратка)
     let status: number = order.status;
-    if (!order.updatedAt) status = 2002;
-    else if (order.status === 2010) status = 9999;
-    else if (order.status >= 9999) status = order.status - 1;
-    else status = order.status + 1;
+    if (!order.updatedAt || OrderStatus.NEW) status = OrderStatus.IN_PROGRESS;
+    else if (
+      order.status >= OrderStatus.IN_PROGRESS &&
+      order.status < OrderStatus.COMPLETED
+    ) {
+      status = order.status + 1;
+    } else if (order.status === OrderStatus.COMPLETED) {
+      status = OrderStatus.CANCELLED;
+    } else if (
+      order.status > OrderStatus.COMPLETED &&
+      order.status <= OrderStatus.CANCELLED
+    ) {
+      status = order.status - 1;
+    }
 
     // обнов.данн.Заказа
     await order.update({ ...updateData, amount, status });
