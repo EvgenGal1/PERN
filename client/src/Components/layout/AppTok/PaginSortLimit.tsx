@@ -1,8 +1,8 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { Pagination } from "react-bootstrap";
 
-import { AppContext } from "../../layout/AppTok/AppContext";
+import { AppContext } from "../../../context/AppContext";
 import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../utils/consts";
 
 export const PaginSortLimit = (props: any) => {
@@ -13,18 +13,24 @@ export const PaginSortLimit = (props: any) => {
   // созд.парам.поиска в строку URL
   const fnCreateSearchParams = () => {
     const params: any = {};
-    if (catalog.category) params.category = catalog.category;
-    if (catalog.brand) params.brand = catalog.brand;
-    if (catalog.page > 1) params.page = catalog.page;
-    if (catalog.limit !== 20 || catalog.limit !== 0)
-      params.limit = catalog.limit;
-    if (catalog.sortOrd !== "ASC" || catalog.sortOrd !== null)
-      params.sortOrd = catalog.sortOrd;
-    if (catalog.sortField !== "name" || catalog.sortField !== null)
-      params.sortField = catalog.sortField;
+    if (catalog.filters.category) params.category = catalog.filters.category;
+    if (catalog.filters.brand) params.brand = catalog.filters.brand;
+    if (catalog.pagination.page > 1) params.page = catalog.pagination.page;
+    if (catalog.pagination.limit !== 20 || catalog.pagination.limit !== 0)
+      params.limit = catalog.pagination.limit;
+    if (
+      catalog.sortSettings.order !== "ASC" ||
+      catalog.sortSettings.order !== null
+    )
+      params.order = catalog.sortSettings.order;
+    if (
+      catalog.sortSettings.field !== "name" ||
+      catalog.sortSettings.field !== null
+    )
+      params.field = catalog.sortSettings.field;
 
     // при наличии (category,brand) отправка на URL /catalog/list иначе главная
-    if (catalog.brand || catalog.category) {
+    if (catalog.filters.brand || catalog.filters.category) {
       navigate({
         pathname: SHOP_CATALOG_ROUTE,
         search: "?" + createSearchParams(params),
@@ -39,8 +45,8 @@ export const PaginSortLimit = (props: any) => {
 
   // обраб.КЛИК по № СТР.
   const handlePageClick = (page: number) => {
-    if (page !== catalog.page) {
-      catalog.page = page;
+    if (page !== catalog.pagination.page) {
+      catalog.pagination.page = page;
       setFetching(true);
     }
     if (!props.admin) {
@@ -49,11 +55,15 @@ export const PaginSortLimit = (props: any) => {
   };
   // содер.Комп.`Страница`
   const pages: any = [];
-  for (let page = 1; page <= Math.ceil(catalog.count / catalog.limit); page++) {
+  for (
+    let page = 1;
+    page <= Math.ceil(catalog.count / catalog.pagination.limit);
+    page++
+  ) {
     pages.push(
       <Pagination.Item
         key={page}
-        active={page === catalog.page}
+        active={page === catalog.pagination.page}
         activeLabel=""
         onClick={() => handlePageClick(page)}
       >
@@ -64,11 +74,11 @@ export const PaginSortLimit = (props: any) => {
 
   // СОРТИРОВКА ПО ПОЛЮ. изменен.сост.параметра
   const changeSortField = (e: string) => {
-    if (e === "name") catalog.sortField = e;
-    if (e === "price") catalog.sortField = e;
-    if (e === "rating") catalog.sortField = e;
+    if (e === "name") catalog.sortSettings.field = e;
+    if (e === "price") catalog.sortSettings.field = e;
+    if (e === "rating") catalog.sortSettings.field = e;
     // ! не раб.сорт.с БД
-    if (e === "votes") catalog.sortField = e;
+    if (e === "votes") catalog.sortSettings.field = e;
     if (!props.admin) {
       fnCreateSearchParams();
     }
@@ -76,9 +86,12 @@ export const PaginSortLimit = (props: any) => {
   };
   // СОРТИРОВКА ПО ПОРЯДКА. изменен.сост.порядка
   const changeSortOrder = () => {
-    if (catalog.sortOrd === "ASC" || catalog.sortOrd === null)
-      catalog.sortOrd = "DESC";
-    else catalog.sortOrd = "ASC";
+    if (
+      catalog.sortSettings.order === "ASC" ||
+      catalog.sortSettings.order === null
+    )
+      catalog.sortSettings.order = "DESC";
+    else catalog.sortSettings.order = "ASC";
     if (!props.admin) {
       fnCreateSearchParams();
     }
@@ -87,9 +100,9 @@ export const PaginSortLimit = (props: any) => {
 
   // ЛИМИТ. изменен.сост.ограничения
   const changeLimitState = (limit: number) => {
-    if (limit !== catalog.limit) {
-      catalog.limit = limit;
-    } else catalog.limit = 20;
+    if (limit !== catalog.pagination.limit) {
+      catalog.pagination.limit = limit;
+    } else catalog.pagination.limit = 20;
     if (!props.admin) {
       fnCreateSearchParams();
     }
@@ -99,13 +112,14 @@ export const PaginSortLimit = (props: any) => {
   return (
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
-      {catalog.count > catalog.limit && (
+      {catalog.count}
+      {catalog.count > catalog.pagination.limit && (
         <Pagination className="pagination--eg">{pages}</Pagination>
       )}
       {/* СОРТИРОВКА ПО ПОЛЮ */}
       <select
         className="select--eg" /* ef-bs */
-        defaultValue={catalog.sortField}
+        defaultValue={catalog.sortSettings.field}
         onChange={(e) => changeSortField(e.target.value)}
       >
         <option value="name">Название</option>
@@ -114,6 +128,7 @@ export const PaginSortLimit = (props: any) => {
         {/* // ! не раб.сорт.с БД */}
         <option value="votes">Голоса</option>
       </select>
+
       {/* СОРТИРОВКА ПО ПОРЯДКУ */}
       <button
         onClick={() => changeSortOrder()}
@@ -125,7 +140,8 @@ export const PaginSortLimit = (props: any) => {
           {/* Узкий пробел */}
           &ensp;
         </span>
-        {catalog.sortOrd === "ASC" || catalog.sortOrd === null ? (
+        {catalog.sortSettings.order === "ASC" ||
+        catalog.sortSettings.order === null ? (
           <span>
             <span className="mini-2--eg">А-Я | 1-9 </span>▲
           </span>
@@ -143,7 +159,7 @@ export const PaginSortLimit = (props: any) => {
               type="button"
               onClick={() => changeLimitState(10)}
               className={`btn--eg btn-primary--eg${
-                catalog.limit === 10 ? " active" : ""
+                catalog.pagination.limit === 10 ? " active" : ""
               }`}
             >
               10
@@ -156,7 +172,7 @@ export const PaginSortLimit = (props: any) => {
               type="button"
               onClick={() => changeLimitState(25)}
               className={`btn--eg btn-primary--eg${
-                catalog.limit === 25 ? " active" : ""
+                catalog.pagination.limit === 25 ? " active" : ""
               }`}
             >
               25
@@ -169,7 +185,7 @@ export const PaginSortLimit = (props: any) => {
               type="button"
               onClick={() => changeLimitState(50)}
               className={`btn--eg btn-primary--eg${
-                catalog.limit === 50 ? " active" : ""
+                catalog.pagination.limit === 50 ? " active" : ""
               }`}
             >
               50
@@ -182,7 +198,7 @@ export const PaginSortLimit = (props: any) => {
               type="button"
               onClick={() => changeLimitState(100)}
               className={`btn--eg btn-primary--eg${
-                catalog.limit === 100 ? " active" : ""
+                catalog.pagination.limit === 100 ? " active" : ""
               }`}
             >
               100
@@ -195,7 +211,7 @@ export const PaginSortLimit = (props: any) => {
               type="button"
               onClick={() => changeLimitState(500)}
               className={`btn--eg btn-primary--eg${
-                catalog.limit === 500 ? " active" : ""
+                catalog.pagination.limit === 500 ? " active" : ""
               }`}
             >
               500
