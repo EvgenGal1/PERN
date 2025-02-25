@@ -4,13 +4,33 @@ import UserModel from '../models/UserModel';
 import RoleService from './role.service';
 import BasketService from './basket.service';
 // type/dto
-import { UserCreateDto, UserUpdateDto } from '../types/user.interface';
+import {
+  UserCreateDto,
+  UserUpdateDto,
+  UserData,
+} from '../types/user.interface';
 import { NameUserRoles } from '../types/role.interface';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
 class UserService {
-  async createUser(data: UserCreateDto): Promise<UserModel> {
+  async getOneUser(id: number): Promise<UserModel> {
+    const user = await UserModel.findByPk(id, {
+      attributes: ['id', 'username', 'email', 'isActivated', 'activationLink'],
+    });
+    if (!user) throw ApiError.notFound(`Пользователь с ID '${id}' не найден`);
+    return user;
+  }
+
+  async getAllUsers(): Promise<UserData[]> {
+    const users = await UserModel.findAll({
+      attributes: ['id', 'username', 'email', 'isActivated', 'activationLink'],
+    });
+    if (!users.length) throw ApiError.notFound('Пользователи не найдены');
+    return users;
+  }
+
+  async createUser(data: UserCreateDto): Promise<UserData> {
     const { email, password, username = '', role = NameUserRoles.USER } = data;
 
     const existingUser = await UserModel.findOne({ where: { email } });
@@ -32,20 +52,10 @@ class UserService {
     return user;
   }
 
-  async getOneUser(id: number): Promise<UserModel> {
-    const user = await UserModel.findByPk(id);
-    if (!user) throw ApiError.notFound(`Пользователь с ID '${id}' не найден`);
-    return user;
-  }
-
-  async getAllUsers(): Promise<UserModel[]> {
-    return UserModel.findAll();
-  }
-
-  async updateUser(id: number, data: UserUpdateDto): Promise<UserModel> {
+  async updateUser(id: number, data: UserUpdateDto): Promise<UserData> {
     const user = await this.getOneUser(id);
     // опцион.св-ва по модели
-    const updatePayload: Partial<UserModel> = {};
+    const updatePayload: Partial<UserCreateDto> = {};
     // наполн.объ.обнов.
     if (data.email) updatePayload.email = data.email;
     if (data.password) updatePayload.password = data.password;
@@ -56,13 +66,14 @@ class UserService {
       data.role && RoleService.assignUserRole(id, data.role as NameUserRoles),
     ]);
 
-    return user;
+    return this.getOneUser(id);
   }
 
   async deleteUser(id: number): Promise<void> {
     const user = await this.getOneUser(id);
     await user.destroy();
   }
+
   // поиск по email
   async getByEmail(email: string): Promise<UserModel> {
     const user = await UserModel.findOne({ where: { email } });
