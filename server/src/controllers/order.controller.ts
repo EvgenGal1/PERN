@@ -22,8 +22,6 @@ class OrderController {
 
   async getOneOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      // if (!req.auth?.id) throw ApiError.badRequest('Не указан ID Пользователя');
-      // const authId = parseId(req.auth?.id!, this.user);
       const id = parseId(+req.params.id, this.name);
       const isAdmin = req.auth?.role === NameUserRoles.ADMIN;
       const userId = isAdmin ? undefined : req.auth?.id;
@@ -37,7 +35,6 @@ class OrderController {
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
     try {
-      // if (!req.auth) throw ApiError.badRequest('Не указан ID Пользователя');
       const isAdmin = req.auth?.role === NameUserRoles.ADMIN;
       const userId = isAdmin ? undefined : req.auth?.id;
       // все Заказы для Admin или по ID User
@@ -81,7 +78,6 @@ class OrderController {
         address,
         comment,
         items: orderItems,
-        userId,
       });
       if (role !== NameUserRoles.ADMIN)
         await BasketService.clearBasket(+req.signedCookies.basketId);
