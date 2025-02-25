@@ -1,16 +1,13 @@
-import React, { useState, useContext, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { useLocation, useSearchParams } from "react-router-dom";
-import { Spinner } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
 
-import { productAPI } from "../../../../api/catalog/productAPI";
-import { AppContext } from "../../../layout/AppTok/AppContext";
-import { PaginSortLimit } from "../../../layout/AppTok/PaginSortLimit";
-import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
+import { AppContext } from "@/context/AppContext";
+import { PaginSortLimit } from "@Comp/common/PaginSortLimit";
 import ProductItem from "./ProductItem";
-import { ProductData } from "../../../../types/api/catalog.types";
-
-// interface ProductListProps {}
+import { ProductData } from "@/types/api/catalog.types";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { productAPI } from "@/api/catalog/productAPI";
+import { getSearchParams } from "../../../../scripts/helpers/getSearchParams";
 
 const ProductList: React.FC /* <ProductListProps> */ = observer(() => {
   const { catalog } = useContext(AppContext);
@@ -34,31 +31,32 @@ const ProductList: React.FC /* <ProductListProps> */ = observer(() => {
 
     console.log("ProdLs usEf location ", location);
 
-    catalog.category = category;
-    catalog.brand = brand;
-    catalog.page = page ?? 1;
-    catalog.limit = limit ?? 20;
-    catalog.sortOrd = sortOrd ?? "ASC";
-    catalog.sortField = sortField ?? "name";
+    catalog.filters.category = category;
+    catalog.filters.brand = brand;
+    catalog.pagination.page = Number(page) ?? 1;
+    catalog.pagination.limit = Number(limit) ?? 20;
+    catalog.sortSettings.order = (sortOrd as "ASC" | "DESC") ?? "ASC";
+    catalog.sortSettings.field =
+      (sortField! as "name" | "price" | "rating" | "votes") ?? "name";
 
     const fetchData = async () => {
       setProductsFetching(true);
       try {
         const data = await productAPI.getAllProducts(
           // ! ошб.типа, логики и передачи
-          catalog.category!,
-          catalog.brand!,
-          catalog.page,
-          catalog.limit,
-          catalog.sortOrd!,
-          catalog.sortField!
+          catalog.filters.category!,
+          catalog.filters.brand!,
+          catalog.pagination.page,
+          catalog.pagination.limit,
+          catalog.sortSettings.order,
+          catalog.sortSettings.field
         );
         // ! ошб.е/и пропис.true выше - Недостаточно памятидля загрюстр.
         // setProductsFetching(true);
         // console.log("ProdLs usEf PRD data ", data);
         catalog.products = data.rows;
         // catalog.limit = Math.ceil(data.limit);
-        catalog.count = data.count;
+        catalog.pagination.totalCount = data.count;
         // ?
         // catalog.setProducts(data.rows);
         // catalog.setLimit(Math.ceil(data.limit));
@@ -103,9 +101,7 @@ const ProductList: React.FC /* <ProductListProps> */ = observer(() => {
         <>
           {productsFetching ? (
             <div style={{ textAlign: "center" }}>
-              <Spinner animation="border" variant="danger" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+              <span className="visually-hidden">Loading...</span>
             </div>
           ) : (
             <>

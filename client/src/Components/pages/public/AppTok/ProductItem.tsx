@@ -1,67 +1,42 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "react-bootstrap";
 
-import { AppContext } from "../../../layout/AppTok/AppContext";
+import { AppContext } from "@/context/AppContext";
 // API/типы
-import { ratingAPI } from "../../../../api/catalog/ratingAPI";
-import { CategoryData } from "../../../../types/api/catalog.types";
+import { ratingAPI } from "@/api/catalog/ratingAPI";
+// import { CategoryData, ProductData } from "@/types/api/catalog.types";
+import { CategoryData, ProductData } from "../../../../types/api/catalog.types";
 // конст.
-import { PRODUCT_ROUTE } from "../../../../utils/consts";
+import { PRODUCT_ROUTE } from "@/utils/consts";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
-import { StarFill } from "../../../layout/AppTok/StarFill";
-import { StarOutline } from "../../../layout/AppTok/StarOutline";
+import { StarFill } from "@Comp/layout/AppTok/StarFill";
+import { StarOutline } from "@Comp/layout/AppTok/StarOutline";
 
-// ! ошб.типа, логики и передачи
-const ProductItem = (data: any) => {
-  // console.log("data ", data);
-  const { catalog, user } = useContext(AppContext);
+const ProductItem: React.FC<ProductData> = (data) => {
+  const { user } = useContext(AppContext);
   const navigate = useNavigate();
-
-  const [numberStar, setNumberStar] = useState(data.rating);
+  const [numberStar, setNumberStar] = useState(data.ratings?.rating);
   const [hoverStar, setHoverStar] = useState(0);
-  const [votes, setVotes] = useState(data.ratings!.votes || 0); // Обеспечивает правильную инициализацию
-  // const [cachedRatings, setCachedRatings] = useState<
-  //   Record<number, { votes: number; rating: number }>
-  // >({});
 
-  // useEffect(() => {
-  //   const fetchRating = async () => {
-  //     const ratingData = await fetchProdRating(data.id);
-  //     setVotes(ratingData.votes);
-  //   };
-  //   fetchRating();
-  // }, [data.id]);
-  // useEffect(() => {
-  //   const fetchRating = async () => {
-  //     console.log("cachedRatings[data.id] ", cachedRatings[data.id]);
-  //     if (!cachedRatings[data.id]) {
-  //       const ratingData = await fetchProdRating(data.id);
-  //       setVotes(ratingData.votes);
-  //       setCachedRatings((prev) => ({ ...prev, [data.id]: ratingData }));
-  //     } else {
-  //       setVotes(cachedRatings[data.id].votes);
-  //     }
-  //   };
-  //   fetchRating();
-  // }, [data.id, cachedRatings]);
+  const [votes, setVotes] = useState(data.ratings?.votes || 0); // Обеспечивает правильную инициализацию
 
   const handleSubmit = async (rating: number) => {
     if (user.isAuth) {
-      const ratingData = await ratingAPI.createProductRating(
-        user.id!,
-        data.id!,
-        rating
-      );
-      setNumberStar(ratingData.ratingAll);
-      setVotes(ratingData.votes);
-      // ?
-      // catalog./* r */ setRating(/*  =  */ ratingData.ratingAll); // Убедитесь, что это обновляет состояние с помощью useState или useReducer, если catalogs - это состояние
-      catalog.rating = ratingData.rating /* All */; // Убедитесь, что это обновляет состояние
+      try {
+        const ratingData = await ratingAPI.createProductRating(
+          user.id!,
+          data.id!,
+          rating
+        );
+        setNumberStar(ratingData.rating);
+        setVotes(ratingData.votes);
+      } catch (error) {
+        console.error("Ошибка при создании рейтинга:", error);
+      }
     }
   };
 
-  const formatCategory = (category: CategoryData) /* : JSX.Element */ => {
+  const formatCategory = (category: CategoryData): JSX.Element | string => {
     // Определим возможные замены категорий
     const replacements: { [key: string]: JSX.Element | string } = {
       Букв: "Буква",
@@ -124,25 +99,27 @@ const ProductItem = (data: any) => {
 
   return (
     <div className="df df-col col-lg-4 col-md-3 col-sm-6">
-      <Card style={{ cursor: "pointer" }} className="mt-3 card--eg">
-        <Card.Img
-          variant="top"
+      <div style={{ cursor: "pointer" }} className="mt-3 card--eg">
+        <img
+          onClick={() => navigate(`${PRODUCT_ROUTE}/${data.id}`)}
           src={
             data.image
-              ? `${process.env.REACT_APP_IMG_URL_PERN}/img/shop/product/${data.image}`
+              ? `${process.env.REACT_APP_IMG_URL_PERN}img/shop/product/${data.image}`
               : "http://via.placeholder.com/200"
           }
-          onClick={() => navigate(PRODUCT_ROUTE + `/${data.id}`)}
+          alt={data.name}
         />
-        <Card.Body
-          style={{ height: "100%", overflow: "hidden", padding: "10px" }}
-        >
+        <div style={{ height: "100%", overflow: "hidden", padding: "10px" }}>
           <div className="card--eg__price">
             <span style={{ fontSize: "30px" }}>{formatPrice(data.price)}</span>
           </div>
           <div
             className="card--eg__rating"
-            style={{ display: "flex", alignItems: "center" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
             <div style={{ display: "flex", marginRight: "10px" }}>
               {Array.from({ length: 5 }, (_, index) => {
@@ -151,7 +128,6 @@ const ProductItem = (data: any) => {
                 return (
                   <span
                     key={index}
-                    // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
                     onMouseOver={() => handleStarMouseEnter(index)}
                     onMouseLeave={handleStarMouseLeave}
                     onClick={() => handleSubmit(index + 1)}
@@ -173,7 +149,7 @@ const ProductItem = (data: any) => {
               })}
             </div>
             <span style={{ fontSize: "25px" }}>
-              {numberStar} {votes ? ` / {votes}` : ""}
+              {numberStar} {votes ? ` / ${votes}` : ""}
             </span>
           </div>
           <div className="card--eg__product" style={{ marginTop: "5px" }}>
@@ -186,8 +162,8 @@ const ProductItem = (data: any) => {
               <span>{formatName(data.name)}</span>
             </strong>
           </div>
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
