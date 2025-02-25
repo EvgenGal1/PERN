@@ -119,11 +119,7 @@ const AdminProducts = () => {
         <>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
           <div className="mt-3">
-            <PaginSortLimit
-              admin={true}
-              setFetching={setFetching}
-              setChange={setChange}
-            />
+            <PaginSortLimit />
           </div>
           <table className="mt-3 table--eg">
             <thead>
@@ -193,11 +189,7 @@ const AdminProducts = () => {
           </table>
           {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
           <div className="mt-3">
-            <PaginSortLimit
-              admin={true}
-              setFetching={setFetching}
-              setChange={setChange}
-            />
+            <PaginSortLimit />
           </div>
         </>
       ) : (

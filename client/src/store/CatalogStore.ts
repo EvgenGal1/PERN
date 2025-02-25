@@ -107,6 +107,7 @@ class CatalogStore {
 
   async fetchProducts(): Promise<void> {
     if (this.isLoading || this.products.length) this.isLoading = true;
+    this.isLoading = true;
     try {
       const { rows, count } = await productAPI.getAllProducts(
         this.filters.category?.toString(),
