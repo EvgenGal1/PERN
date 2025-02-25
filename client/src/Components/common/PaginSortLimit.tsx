@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import { useContext } from "react";
 import { Pagination } from "react-bootstrap";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
-import { AppContext } from "../../../context/AppContext";
-import { SHOP_ROUTE, SHOP_CATALOG_ROUTE } from "../../../utils/consts";
+import { AppContext } from "@/context/AppContext";
+import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 
 export const PaginSortLimit = (props: any) => {
-  const { catalog }: any = useContext(AppContext);
+  const { catalog } = useContext(AppContext);
   const navigate = useNavigate();
   const { setFetching, setChange }: any = props;
 
@@ -16,7 +16,7 @@ export const PaginSortLimit = (props: any) => {
     if (catalog.filters.category) params.category = catalog.filters.category;
     if (catalog.filters.brand) params.brand = catalog.filters.brand;
     if (catalog.pagination.page > 1) params.page = catalog.pagination.page;
-    if (catalog.pagination.limit !== 20 || catalog.pagination.limit !== 0)
+    if (catalog.pagination.limit !== 20 && catalog.pagination.limit !== 0)
       params.limit = catalog.pagination.limit;
     if (
       catalog.sortSettings.order !== "ASC" ||
@@ -57,7 +57,7 @@ export const PaginSortLimit = (props: any) => {
   const pages: any = [];
   for (
     let page = 1;
-    page <= Math.ceil(catalog.count / catalog.pagination.limit);
+    page <= Math.ceil(catalog.pagination.totalCount / catalog.pagination.limit);
     page++
   ) {
     pages.push(
@@ -112,8 +112,8 @@ export const PaginSortLimit = (props: any) => {
   return (
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
-      {catalog.count}
-      {catalog.count > catalog.pagination.limit && (
+      {catalog.pagination.totalCount}
+      {catalog.pagination.totalCount > catalog.pagination.limit && (
         <Pagination className="pagination--eg">{pages}</Pagination>
       )}
       {/* СОРТИРОВКА ПО ПОЛЮ */}
@@ -152,9 +152,9 @@ export const PaginSortLimit = (props: any) => {
         )}
       </button>
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
-      {catalog.count > 10 ? (
+      {catalog.pagination.totalCount > 10 ? (
         <div className="limit--eg" style={{ display: "flex" }}>
-          {catalog.count > 10 ? (
+          {catalog.pagination.totalCount > 10 ? (
             <button
               type="button"
               onClick={() => changeLimitState(10)}
@@ -167,7 +167,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 10 ? (
+          {catalog.pagination.totalCount > 10 ? (
             <button
               type="button"
               onClick={() => changeLimitState(25)}
@@ -180,7 +180,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 25 ? (
+          {catalog.pagination.totalCount > 25 ? (
             <button
               type="button"
               onClick={() => changeLimitState(50)}
@@ -193,7 +193,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 50 ? (
+          {catalog.pagination.totalCount > 50 ? (
             <button
               type="button"
               onClick={() => changeLimitState(100)}
@@ -206,7 +206,7 @@ export const PaginSortLimit = (props: any) => {
           ) : (
             ""
           )}
-          {catalog.count > 100 ? (
+          {catalog.pagination.totalCount > 100 ? (
             <button
               type="button"
               onClick={() => changeLimitState(500)}
