@@ -4,7 +4,6 @@ import ApiError from '../middleware/errors/ApiError';
 
 // валидация ID
 export function parseId(id: number | string, entityName: string): number {
-  console.log('id : ', id, typeof id);
   if (id === undefined) {
     throw ApiError.badRequest(`ID '${entityName}' не передан`);
   }

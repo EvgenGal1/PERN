@@ -1,5 +1,3 @@
-import ProductModel from '../models/ProductModel';
-import ProductPropModel from '../models/ProductPropModel';
 import { BrandData, CategoryData, RatingData } from './catalog.interface';
 
 // Продукт и их Свойства
@@ -25,7 +23,7 @@ export interface ProductData {
   id?: number | null;
   name: string;
   price: number;
-  rating?: number | null;
+  rating?: RatingData | null;
   image?: string | null;
   category?: CategoryData | null;
   brand?: BrandData | null;
@@ -33,17 +31,13 @@ export interface ProductData {
   properties?: PropertyData[] | [];
 }
 
-export interface ProductAttributes extends Omit<ProductModel, 'props'> {
-  props?: ProductPropModel[];
-}
-
 export interface ProductOptions {
   categoryId?: string;
   brandId?: string;
   limit?: number;
   page?: number;
-  sortOrd?: 'ASC' | 'DESC';
-  sortField?: string;
+  order?: 'ASC' | 'DESC';
+  field?: string;
 }
 
 export interface ProductPropAttributes {

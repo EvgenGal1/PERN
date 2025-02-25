@@ -19,3 +19,11 @@ export interface UserProfile {
   email: string;
   username: string | null;
 }
+
+export interface UserData {
+  id: number;
+  username: string;
+  email: string;
+  isActivated: boolean;
+  activationLink: string;
+}
