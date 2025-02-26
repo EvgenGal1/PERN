@@ -682,14 +682,21 @@ img.card-img-top {
 .mini-2--eg {
   font-weight: inherit;
 }
-.mini-1--eg {
-  @media (max-width: 1200px) {
+@media (min-width: 992px) and (max-width: 1799px) {
+  .mini-2--eg {
     display: none;
   }
 }
-.mini-2--eg {
-  @media (max-width: 992px) {
+@media (max-width: 991px) {
+  .mini-1--eg,
+  .mini-3--eg {
     display: none;
+  }
+  @media (max-width: 576px) {
+    .mini-2--eg,
+    .mini-3--eg {
+      display: none;
+    }
   }
 }
 
@@ -758,20 +765,28 @@ img.card-img-top {
     }
 
     // MINI
-    @media (min-width: 576px) {
+    @media (min-width: 576px) and (max-width: 991px) {
       .col-sm-6 {
         flex: 0 0 auto;
         width: 50%;
       }
+      .row-mlr--eg.mt-3 > .col-md-3 {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        & > div {
+          width: 49%;
+        }
+        & > div:nth-child(2) {
+          margin-top: 0rem !important;
+        }
+      }
     }
     @media (min-width: 768px) {
-      .col-md-3 {
-        flex: 0 0 auto;
-        width: 25%;
-      }
       .col-md-9 {
         flex: 0 0 auto;
-        width: 75%;
+        width: 100%;
+        margin-top: 1rem;
       }
       .col-lg-4 {
         flex: 0 0 auto;
@@ -783,6 +798,15 @@ img.card-img-top {
       }
     }
     @media (min-width: 992px) {
+      .col-md-3 {
+        flex: 0 0 auto;
+        width: 25% !important;
+      }
+      .col-md-9 {
+        flex: 0 0 auto;
+        width: 75%;
+        margin-top: 0rem;
+      }
       .col-lg-4 {
         flex: 0 0 auto;
         width: 33.33333333%;
@@ -803,7 +827,7 @@ img.card-img-top {
       }
       .col-md-3 {
         flex: 0 0 auto;
-        width: 20%;
+        width: 20% !important;
       }
       .col-md-9 {
         flex: 0 0 auto;
@@ -839,7 +863,7 @@ img.card-img-top {
       }
       .col-md-3 {
         flex: 0 0 auto;
-        width: 15%;
+        width: 15% !important;
       }
       .col-md-9 {
         flex: 0 0 auto;
@@ -852,6 +876,16 @@ img.card-img-top {
       .col-lg-8 {
         flex: 0 0 auto;
         width: 80%;
+      }
+    }
+    @media (min-width: 1800px) {
+      .container,
+      .container-lg,
+      .container-md,
+      .container-sm,
+      .container-xl,
+      .container-xxl {
+        max-width: 100%;
       }
     }
   }
