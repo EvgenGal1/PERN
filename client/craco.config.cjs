@@ -15,33 +15,35 @@ module.exports = {
         "@Comp": path.resolve(__dirname, "src/Components"),
       };
 
-      // от.ошб.SCSS в терминале - Deprecation The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0. // ! не раб. - ошб.осталась
+      // настр. sass-loader > использ. dart-sass от.ошб.SCSS в терминале - Deprecation The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0. // ! не раб. - ошб.осталась
       const sassRule = webpackConfig.module.rules.find(
         (rule) => rule.test && rule.test.toString().includes("scss")
       );
 
       if (sassRule) {
-        sassRule.use = sassRule.use.map((loader) => {
-          if (loader.loader && loader.loader.includes("sass-loader")) {
-            return {
-              ...loader,
-              options: {
-                implementation: require("sass"), // использ.modern Dart Sass
-                fiber: false, // откл.Fiber
+        sassRule.use.forEach((loader) => {
+          if (
+            typeof loader === "object" &&
+            loader.loader &&
+            loader.loader.includes("sass-loader")
+          ) {
+            loader.options = {
+              implementation: require("sass"), // использ.modern Dart Sass
+              sassOptions: {
+                fiber: false, // откл.Fiber (необязательно)
               },
             };
           }
-          return loader;
         });
       }
 
-      return webpackConfig; // возврат конфигурации
+      return webpackConfig; // возврат обнов.конфигурации
     },
   },
 
   style: {
     postcss: {
-      plugins: [autoprefixer], // авто.добав.prefixes
+      plugins: [autoprefixer], // авто.добав.vendor prefixes
     },
   },
 };
