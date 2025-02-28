@@ -1,7 +1,9 @@
 // миксин - комплект свойств, с разными префиксами(для разных браузеров), в которые можно передаватть переменные (МНОГО mixinов удалил за невостребованостью)
 
-// ^ отдел.подкл.перем. после подкл.ч/з @use
-@use "./variables" as *;
+// ^ отдел.подкл.перем. после подкл.ч/з @use с указ.пространства имён vars
+@use "./variables" as vars;
+// раб.с картами
+@use "sass:map";
 
 // ФриПоЖизн ==================================================================================
 // АДАПТИВНЫЕ СВОЙСТВА ----------------------------------------------------------------------------------
@@ -25,7 +27,7 @@
 // Адаптивный шрифт. @include adaptiv-font(24, 12);
 @mixin adaptiv-font($pcSize, $mobSize) {
   $addSize: $pcSize - $mobSize;
-  $maxWidth: $maxWidth - 320;
+  $maxWidth: vars.$maxWidth - 320;
   font-size: calc(
     #{$mobSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth})
   );
@@ -40,11 +42,6 @@
   @if (unitless($context)) {
     $context: $context * 1px;
   }
-  // ??? не раб - устар метод. переписать на math.div
-  // ! переписал - не проверял
-  // @return math.div(($pixels, $context) * 1rem);
-  // @return $pixels / $context * 1rem;
-  // @return math.div($pixels, $context * 1rem);
   @return math($pixels, $context * 1);
 }
 
@@ -53,7 +50,7 @@
 @mixin adaptiv-val($property, $startSize, $minSize) {
   $addSize: $startSize - $minSize;
   #{$property}: calc(
-    #{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth - 320})
+    #{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
 }
 // Адаптивное свойство для неск значений. @include adaptiv-value-all("padding", 10, 5, 30, 10, 60, 25);
@@ -73,17 +70,20 @@
   $addSizeHBott: $startSizeHBott - $minSizeHBott;
 
   #{$property}-top: calc(
-    #{$minSizeH + px} + #{$addSizeHTop} * ((100vw - 320px) / #{$maxWidth - 320})
+    #{$minSizeH + px} + #{$addSizeHTop} *
+      ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   #{$property}-bottom: calc(
     #{$minSizeHBott + px} + #{$addSizeHBott} *
-      ((100vw - 320px) / #{$maxWidth - 320})
+      ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   #{$property}-left: calc(
-    #{$minSizeW + px} + #{$addSizeW} * ((100vw - 320px) / #{$maxWidth - 320})
+    #{$minSizeW + px} + #{$addSizeW} *
+      ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   #{$property}-right: calc(
-    #{$minSizeW + px} + #{$addSizeW} * ((100vw - 320px) / #{$maxWidth - 320})
+    #{$minSizeW + px} + #{$addSizeW} *
+      ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   // ??? не раб - попытка неск. условий в ошб. -  @if $startSizeHBott {} @else {} - отсутствует аргументы
 }
@@ -158,12 +158,12 @@ $color-schemes: (
     @extend %color-scheme-base;
     // вкл.цв.шаблона/карты
     @include color-scheme(
-      map-get($colors, bg),
-      map-get($colors, hover-bg),
-      map-get($colors, border),
-      map-get($colors, hover-border),
-      map-get($colors, text),
-      map-get($colors, hover-text)
+      map.get($colors, bg),
+      map.get($colors, hover-bg),
+      map.get($colors, border),
+      map.get($colors, hover-border),
+      map.get($colors, text),
+      map.get($colors, hover-text)
     );
   }
 }

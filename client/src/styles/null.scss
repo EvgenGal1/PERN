@@ -68,13 +68,6 @@ a {
   color: var(--DeepYellow) !important;
   text-decoration: none !important;
 }
-a,
-a:visited {
-  // text-decoration: none;
-}
-a:hover {
-  // text-decoration: none;
-}
 a:focus,
 a:active {
   outline: none;
@@ -119,14 +112,8 @@ h6 {
 }
 
 // дл.бл
-p {
-  // letter-spacing: normal;
-}
 span.bd {
   font-weight: bold;
-  // background: #cccccc;
-  // letter-spacing: 3px;
-  // line-height: 1.3;
 }
 
 .tac {
@@ -147,8 +134,6 @@ span.bd {
 .modal--eg {
   z-index: 3;
   width: 70%;
-  // max-width: 500px;
-  // max-height: 300px;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -162,7 +147,6 @@ span.bd {
 
   img {
     border-radius: var(--sz1);
-    // width: 100%;
   }
 
   svg {
@@ -207,21 +191,14 @@ span.bd {
     overflow-y: auto;
     .modal-content--eg {
       background-color: var(--ui-bg);
-      // padding: 20px;
       text-align: center;
-      // box-shadow: 0 3px 5px black;
-      // border-radius: 10px;
-      // transition: all 0.5s ease-in-out;
       border: 2px solid var(--bord-hr) !important;
       .modal-header--eg {
         position: relative;
         font-size: 24px;
         font-weight: bold;
-        // margin-bottom: 20px;
         padding: 10px 0px;
         border-bottom: 2px solid var(--bord-hr);
-        .modal-title--eg {
-        }
         .btn-cloce--eg {
           position: absolute;
           top: calc(50% - 15px);
@@ -243,10 +220,6 @@ span.bd {
         font-size: 16px;
         line-height: 1.5;
         overflow-y: auto;
-        // form {
-        //   display: flex;
-        //   flex-direction: column;
-        // }
       }
     }
   }
@@ -516,18 +489,6 @@ span.bd {
 
 // hr ----------------------------------------------------------------------------------
 hr.hr {
-  // display: block;
-  // unicode-bidi: -webkit-isolate;
-  // unicode-bidi: -moz-isolate;
-  // unicode-bidi: isolate;
-  // -webkit-margin-before: 7px;
-  // margin-block-start: 7px;
-  // -webkit-margin-after: 7px;
-  // margin-block-end: 7px;
-  // -webkit-margin-start: auto;
-  // margin-inline-start: auto;
-  // -webkit-margin-end: auto;
-  // margin-inline-end: auto;
   width: 100%;
   overflow: hidden;
   border-style: groove;
@@ -536,11 +497,6 @@ hr.hr {
   border-width: var(--sz1);
   opacity: 1;
   clear: both;
-  // margin: 0 -62px;
-}
-br {
-  // width: 0;
-  // height: 0;
 }
 
 code {
@@ -612,8 +568,6 @@ code {
     flex-direction: column;
 
     .item {
-      // width: 100%;
-      // height: 100%;
       padding: var(--sz2);
       margin: 5px 0px;
       text-align: center;
@@ -624,9 +578,6 @@ code {
       border: 2px solid darkred;
       box-shadow: 3px 3px 7px 0px #555;
       box-shadow: 3px 3px 7px 0px #000;
-      &:last-child {
-        // margin: 5px 0px 0px;
-      }
 
       &:hover {
         font-weight: bold;
@@ -672,12 +623,6 @@ code {
 }
 
 // КНП ----------------------------------------------------------------------------------
-input,
-button,
-textarea {
-  // ??? не раб - SassError: Undefined variable. - ont-family: $fontfamily;
-  // font-family: $fontfamily;
-}
 input::-ms-clear {
   display: none;
 }
@@ -686,26 +631,14 @@ input::placeholder {
 }
 input.search--eg {
   width: 100%;
-  // margin: 10px 0px 0px 0px;
-  // @media (min-width: 768px) {
-  //   flex: 0 0 auto;
-  //   width: 25%;
-  // }
-  // @media (min-width: 576px) {
-  //   flex: 0 0 auto;
-  //   width: 50%;
-  // }
 }
 button,
 input {
-  // margin: 5px 0px;
   padding: var(--sz1);
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
-  // border: 1px solid #bd0000;
-  // border-radius: var(--sz1);
   cursor: pointer;
   // transition: background-color 200ms, transform 100ms linear;
   &:disabled {
@@ -740,23 +673,11 @@ button.btn-danger--eg {
   display: flex;
   justify-content: center;
   align-items: center;
-  // padding: 10px 15px;
   font-size: 16px;
-  // font-weight: 900;
-  // letter-spacing: var(--sz2);
   border: 1px solid #bd0000;
-  // box-shadow: 0 3px 5px black;
-  // text-transform: uppercase;
   line-height: 1.5;
 
-  &:hover {
-    // transition: transform 100ms linear;
-    // box-shadow: 0 8px 10px #000000;
-  }
   &:active {
-    // transition: transform 0.2s linear;
-    // box-shadow: 0 1px 1px black;
-    // transform: scale(1) translateY(0);
     opacity: 0.8;
   }
 
@@ -794,11 +715,6 @@ input.btn-primary--eg {
 button[type="submit"]:active,
 input[type="button"]:active,
 input[type="submit"]:active {
-  // transition: transform 0.3s linear;
-  // transform: translateY(3px);
-  // border: 1px solid transparent;
-  // opacity: 0.8;
-  //
   transform: translateY(0);
 }
 button::-moz-focus-inner {
@@ -812,11 +728,9 @@ button::-moz-focus-inner {
   &-bs {
     box-shadow: 0 3px 5px black;
     &:hover {
-      // transition: transform 100ms linear;
       box-shadow: 0 8px 10px #000000;
     }
     &:active {
-      // transition: transform 0.2s linear;
       box-shadow: 0 1px 1px black;
     }
   }
@@ -825,10 +739,7 @@ button::-moz-focus-inner {
 // FORM ----------------------------------------------------------------------------------
 .form {
   width: 100%;
-  // max-width: 500px;
   height: 100%;
-  // margin: 0 auto;
-  // padding: 0;
   &--eg {
     border-radius: var(--sz2);
     border: 1px solid var(--DeepRedBrown);
@@ -844,9 +755,7 @@ button::-moz-focus-inner {
 
 // .fieldset (`набор полей`) ----------------------------------------------------------------------------------
 .fieldset--eg {
-  /* Чтобы подстраивался под контент */
   display: block;
-  // margin: 20px;
   border: 1px solid var(--DeepRedBrown);
   border-radius: var(--sz2);
   font-size: inherit;
@@ -879,38 +788,23 @@ button::-moz-focus-inner {
         }
       }
     }
-    // div:first-child label.w-a {
-    //   width: calc(10% + var(--sz1));
-    // }
-    // отступ для след.label
-    div:not(:first-child) label {
-      // margin-left: var(--sz5);
-    }
-  }
-  // ! не раб - отступ для след.label при горизон.виде
-  div:not(:first-child):has(> .w-a) /* label.w-5.tal */ >  .w-a {
-    // margin-left: var(--sz5);
   }
 }
 // для внешне объединёных form (из Modal, )
 .uniteddiv .fieldset--eg {
   // уровнивание отступа у первого label
-  .ununited /* div:first-child */ label {
+  .ununited label {
     width: calc(11%);
   }
-  .united div/* div:first-child */ label {
+  .united div label {
     width: calc(26%);
   }
 }
 
 // ОШИБКИ .err, err-msg ----------------------------------------------------------------------------------
 input.err {
-  // color: darkred;
-  // margin-top: var(--sz2);
-  // padding: var(--sz2);
   // смс
   &-msg {
-    // color: var(--DeepRedBrown);
     padding: var(--sz1);
     // больше стилей
     &_b {
@@ -937,12 +831,6 @@ input.err {
       background-color: var(--Gray);
       box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
     }
-    // padding-right: calc(1.5em + 0.75rem);
-    // &::after {
-    //   color: var(--DeepRedBrown);
-    //   display: inline;
-    //   content: "⚠";
-    // }
     &-suces {
       border-color: #198754 !important;
       &:focus {
@@ -968,8 +856,6 @@ input.err {
         black 10px
       )
       1 1;
-    /* background: linear-gradient(to right, red, purple); */
-    /* background: repeating-linear-gradient(45deg, yellow, orange 10px, darkred 10px, black 20px); */
     &::after {
       display: inline;
       content: "⚠ ";
@@ -996,9 +882,6 @@ div:has(> .inpt--eg) {
       top: 9px;
       right: 25px;
       color: red;
-      // top: 4px;
-      // font-size: 22px;
-      // font-weight: 900;
     }
   }
   &:has(.err-inpt-suces) {
@@ -1058,13 +941,6 @@ div:has(> .inpt--eg) {
       }
       td {
         vertical-align: initial;
-      }
-      &:hover,
-      &:hover > * {
-      }
-      &#th--eg:hover {
-        & > * {
-        }
       }
     }
   }
