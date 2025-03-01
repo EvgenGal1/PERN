@@ -26,10 +26,9 @@
 }
 // Адаптивный шрифт. @include adaptiv-font(24, 12);
 @mixin adaptiv-font($pcSize, $mobSize) {
-  $addSize: $pcSize - $mobSize;
-  $maxWidth: vars.$maxWidth - 320;
   font-size: calc(
-    #{$mobSize + px} + #{$addSize} * ((100vw - 320px) / #{$maxWidth})
+    #{$mobSize}px + (#{$pcSize} - #{$mobSize}) *
+      ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
 }
 
@@ -46,13 +45,15 @@
 }
 
 //  СВОЁ ===================================================================================
+
 // Адаптивное свойство(сво-во, нач,сер,конеч значн). @include adaptiv-val("padding-right", 32, 15);
 @mixin adaptiv-val($property, $startSize, $minSize) {
-  $addSize: $startSize - $minSize;
   #{$property}: calc(
-    #{$minSize + px} + #{$addSize} * ((100vw - 320px) / #{vars.$maxWidth - 320})
+    #{$minSize}px + (#{$startSize} - #{$minSize}) *
+      ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
 }
+
 // Адаптивное свойство для неск значений. @include adaptiv-value-all("padding", 10, 5, 30, 10, 60, 25);
 // 1ое - сво-во, две первые цифры - начальное и конечное значение для верхн.парам., 2е по середине - нач./конеч.знач. для горинт.парам, 2е послед.цифры - нач./конеч.знач. для низа
 @mixin adaptiv-value-all(
@@ -165,5 +166,34 @@ $color-schemes: (
       map.get($colors, text),
       map.get($colors, hover-text)
     );
+  }
+}
+
+// расширение экранов
+@mixin media-all($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: 479px) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (min-width: 480px) and (max-width: 767px) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (min-width: 768px) and (max-width: 991px) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (min-width: 992px) and (max-width: 1199px) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (min-width: 1200px) and (max-width: 1399px) {
+      @content;
+    }
+  } @else if $breakpoint == xxl {
+    @media (min-width: 1400px) {
+      @content;
+    }
   }
 }

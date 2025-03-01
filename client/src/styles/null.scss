@@ -1,17 +1,15 @@
 // обнуляющий стиль для стандартизации по всем свойствам, брайзерам и пр.
-* {
-  margin: 0px;
-  border: 0px;
-}
-*:not(ul, ol, li) {
-  padding: 0px;
-}
-*,
-*:before,
-*:after {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
+
+@use "./mixins" as *;
+
+@mixin reset {
+  margin: 0;
+  padding: 0;
+  border: 0;
   box-sizing: border-box;
+}
+* {
+  @include reset;
 }
 :focus,
 :active {
@@ -21,31 +19,20 @@
 html,
 body {
   height: 100%;
-  margin: 0;
-  padding: 0;
-  // ??? не раб - SassError: Undefined variable. - min-width: $minwidth;
-  // min-width: $minwidth;
-  position: relative;
   width: 100%;
-  color: #000;
+  color: var(--txt-col);
+  background-color: var(--fon-dark);
 }
 body {
-  font-size: 100%;
-  line-height: 1;
+  font-size: var(--sz3);
   font-size: 18px;
-  // ??? не раб - SassError: Undefined variable. - font-family: $fontfamily;
-  // font-family: $fontfamily;
-  -ms-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
+  line-height: 1;
+  font-family: var(--fontfamily);
   &.lock {
     overflow: hidden;
-    @media (max-width: 768px) {
-      // ??? не раб - SassError: Undefined variable. - @media (max-width: $md3+px) {
-      // @media (max-width: $md3+px) {
+    @include media-all(xs) {
       width: 100%;
       position: fixed;
-      overflow: hidden;
     }
   }
 }
@@ -64,10 +51,6 @@ a {
   color: inherit;
   text-decoration: inherit !important;
 }
-.a0 {
-  color: var(--DeepYellow) !important;
-  text-decoration: none !important;
-}
 a:focus,
 a:active {
   outline: none;
@@ -79,19 +62,6 @@ header a {
 // СПИСКИ
 ul li {
   list-style: none;
-}
-.list-param--eg {
-  // display: table-cell;
-  // margin: 0 0 1rem 0;
-  li {
-    list-style: square;
-    // &:first-child {
-    p {
-      min-width: 150px;
-      margin: 0 10px 0 0;
-      display: inline-block;
-    }
-  }
 }
 
 // изо
@@ -106,7 +76,7 @@ h3,
 h4,
 h5,
 h6 {
-  // font-weight: inherit;
+  font-weight: inherit;
   font-size: inherit;
   text-align: center;
 }
@@ -596,6 +566,11 @@ code {
 // flex ----------------------------------------------------------------------------------
 .df {
   display: flex !important;
+  &-cc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   &-aic {
     align-items: center;
   }
@@ -612,17 +587,17 @@ code {
     justify-content: space-evenly;
   }
   &-row {
-    flex-direction: row !important;
+    flex-direction: row;
   }
   &-col {
-    flex-direction: column !important;
+    flex-direction: column;
   }
   &-110 {
     flex: 1 1 0;
   }
 }
 
-// КНП ----------------------------------------------------------------------------------
+// КНП | ВВОД | ВЫБОР ----------------------------------------------------------------------------------
 input::-ms-clear {
   display: none;
 }

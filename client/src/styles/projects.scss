@@ -4,7 +4,7 @@
 @use "./mixins" as *;
 
 main {
-  padding: 0px 3%;
+  padding: var(--sz0) var(--szp3);
 }
 div {
   hr {
@@ -12,6 +12,7 @@ div {
     margin: 10px 0%;
   }
   h1 {
+    @include adaptiv-font(24, 14);
     font-size: 20px;
     font-weight: 900;
     text-align: center;
@@ -19,28 +20,21 @@ div {
   }
   // отступ е/и рядом в h1 есть эл.(братские P, UL)
   h1:has(+ p, + ul, + div, + section, + span) {
-    margin-bottom: 10px;
+    margin-bottom: var(--sz2);
   }
   h2 {
+    @include adaptiv-font(24, 12);
     font-weight: 800;
-    font-size: 18px;
-    margin: 10px 0px;
+    margin: var(--sz2) 0;
   }
   > div[class$="header"] {
-    // margin: 10px 0px;
-    padding: 10px 0px;
+    padding: var(--sz2) 0;
     line-height: 22px;
-    @media (max-width: $md1) {
-      padding: 8px 0px;
-      // line-height: 20px;
+    @include media-all(sm) {
+      padding: var(--sz1) 0;
     }
-    @media (max-width: $md2) {
-      padding: 6px 0px;
-      line-height: 20px;
-    }
-    @media (max-width: $md3) {
-      padding: 4px 0px;
-      // line-height: 16px;
+    @include media-all(xs) {
+      padding: var(--sz0) 0;
     }
   }
   nav {
@@ -126,14 +120,14 @@ div {
         background-color: #dfbd2e;
         font-weight: bold;
       }
-      @media (max-width: $md1) {
+      @media (max-width: $mdaxxl) {
         // button {
         width: 125px;
         padding: 12.5px 0px;
         margin-right: 5px;
         // }
       }
-      @media (max-width: $md2) {
+      @media (max-width: $mdaxl) {
         // button {
         width: 100px;
         padding: 10px 0px;
@@ -160,6 +154,19 @@ div {
 :root body #root .bavbar,
 :root body #root .main {
   color: #000;
+}
+
+// списки
+
+ul.list-param--eg {
+  li {
+    list-style: square;
+    p {
+      min-width: 150px;
+      margin: 0 10px 0 0;
+      display: inline-block;
+    }
+  }
 }
 
 // img с прозрачным фоном
@@ -659,6 +666,20 @@ img.card-img-top {
     border-bottom-right-radius: 5px !important;
     border-left-width: 0 !important;
   }
+  // первый span: показан <> скрыт е/и экран > xs (480px)
+  span.mda:first-child {
+    display: inline;
+    @include media-all(xs) {
+      display: none;
+    }
+  }
+  // второй span: скрыт <> показан е/и экран < xs
+  span.mda:last-child {
+    display: none;
+    @include media-all(xs) {
+      display: inline;
+    }
+  }
 }
 
 // row/col (строки/колонки)
@@ -729,7 +750,7 @@ img.card-img-top {
     @media (min-width: 992px) {
       .col-md-3 {
         flex: 0 0 auto;
-        width: 25% !important;
+        width: 25%;
       }
       .col-md-9 {
         flex: 0 0 auto;
@@ -756,7 +777,7 @@ img.card-img-top {
       }
       .col-md-3 {
         flex: 0 0 auto;
-        width: 20% !important;
+        width: 20%;
       }
       .col-md-9 {
         flex: 0 0 auto;
@@ -792,7 +813,7 @@ img.card-img-top {
       }
       .col-md-3 {
         flex: 0 0 auto;
-        width: 15% !important;
+        width: 15%;
       }
       .col-md-9 {
         flex: 0 0 auto;

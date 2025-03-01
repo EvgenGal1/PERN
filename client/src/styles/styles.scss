@@ -70,34 +70,35 @@ $fontfamilyCurs: "cursive";
 // mw0 - изначальная ширина контейниера
 .container {
   max-width: vars.$mw0;
-  margin: 0 auto;
   width: 100%;
-  // при ширине экрана md0(1530), макс ширина контейнера станет 1400px.
-  @media (max-width: vars.$md0) {
+  margin: 0 auto;
+  padding: 0 5%;
+  // при ширине экрана mda(1530), макс ширина контейнера станет 1400px.
+  @media (max-width: vars.$mda) {
     max-width: 1400px;
     // ^^^ для скрытия краёв .container от фона #root.(React.Prob)
     // min-width: 1400px;
     // width: 1400px;
   }
-  // $md1: 1400;
-  @media (max-width: vars.$md1) {
+  $mdaxxl: 1400;
+  @media (max-width: vars.$mdaxxl) {
     max-width: 1200px;
   }
-  // $md2: 1200;
-  @media (max-width: vars.$md2) {
+  // $mdaxl: 1200;
+  @media (max-width: vars.$mdaxl) {
     max-width: 992px;
   }
-  // $md3: 992;
-  @media (max-width: vars.$md3) {
+  // $mdalg: 992;
+  @media (max-width: vars.$mdalg) {
     max-width: 768px;
   }
-  // $md4: 768;
-  @media (max-width: vars.$md4) {
+  // $mdamd: 768;
+  @media (max-width: vars.$mdamd) {
     max-width: 576px;
     max-width: none !important;
   }
-  // $md5: 576;
-  @media (max-width: vars.$md5) {
+  // $mdaxc: 576;
+  @media (max-width: vars.$mdaxc) {
     max-width: none;
   }
 }
