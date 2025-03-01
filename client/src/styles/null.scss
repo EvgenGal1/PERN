@@ -621,12 +621,16 @@ input {
   margin: 0;
   font-family: inherit;
   font-size: inherit;
-  line-height: inherit;
+  line-height: 1;
   cursor: pointer;
   // transition: background-color 200ms, transform 100ms linear;
   &:disabled {
     opacity: 0.4;
   }
+}
+select {
+  // откл.стандарт.стрелку (добавляет высоту)
+  appearance: none;
 }
 input.inpt--eg,
 button.btn--eg,
@@ -635,7 +639,6 @@ select.select--eg {
   padding: var(--sz1) var(--sz2);
   border: 1px solid #bd0000;
   border-radius: var(--sz1);
-  line-height: 1.5;
   transition:
     background-color 200ms,
     transform 100ms linear;
@@ -658,7 +661,6 @@ button.btn-danger--eg {
   align-items: center;
   font-size: 16px;
   border: 1px solid #bd0000;
-  line-height: 1.5;
 
   &:active {
     opacity: 0.8;

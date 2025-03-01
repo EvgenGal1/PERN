@@ -136,6 +136,8 @@ $color-schemes: (
 
 // общ.базовые стили > всех эл.
 %color-scheme-base {
+  @include adaptiv-val("padding", 10, 3);
+  @include adaptiv-font(24, 10);
   border: 1px solid #bd0000;
   border-radius: var(--sz1);
   transition:
@@ -143,9 +145,6 @@ $color-schemes: (
     border-color 200ms linear,
     transform 100ms linear,
     color 200ms linear;
-  padding: var(--sz1) var(--sz2);
-  line-height: 1.5;
-  font-size: 16px;
   user-select: none;
   cursor: pointer;
 }
@@ -191,6 +190,16 @@ $color-schemes: (
     }
   } @else if $breakpoint == xxl {
     @media (min-width: 1400px) {
+      @content;
+    }
+  }
+  // доп. (до 991, 991-1399)
+  @else if $breakpoint == xsmd {
+    @media (max-width: 991px) {
+      @content;
+    }
+  } @else if $breakpoint == lgxl {
+    @media (min-width: 992px) and (max-width: 1399px) {
       @content;
     }
   }

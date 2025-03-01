@@ -141,11 +141,10 @@ div {
   }
 }
 
-// правки bootstrap
-:root body .main .card {
-  @media (min-width: 992px) {
-    // background-color: #474747;
-  }
+// кнп, inp ----------------------------------------------------------------------------------
+button.btn--eg.btn-primary--eg {
+  @include adaptiv-font(24, 10);
+  @include adaptiv-val("padding", 10, 3);
 }
 
 // текст ----------------------------------------------------------------------------------
@@ -190,7 +189,8 @@ img.card-img-top {
 .pagination--eg {
   li.page-item {
     .page-link {
-      padding: var(--sz2) var(--sz3);
+      @include adaptiv-font(24, 10);
+      @include adaptiv-val("padding", 10, 3);
       color: #000;
       border: 1px solid var(--bord-hr);
       background-color: var(--act-bg);
@@ -615,6 +615,10 @@ img.card-img-top {
 
 // row/col (строки/колонки) ----------------------------------------------------------------------------------
 :root body #root .main {
+  // отступ от верхней пагинации е/и есть
+  .pagin-sort-limit + div.row-mlr--eg {
+    margin-top: var(--sz3);
+  }
   .row-mlr--eg {
     display: flex;
     flex-wrap: wrap;
@@ -759,48 +763,78 @@ img.card-img-top {
     }
   }
 
-  // сортировка
+  // сортировка ----------------------------------------------------------------------------------
   .sort-field-container {
     display: flex;
     gap: 10px;
-  }
-  /* огромные экраны (xl) */
-  @media (min-width: 1400px) {
-    .sort-field-container button.btn--eg.btn-primary--eg {
-      display: block;
-    }
-    .sort-field-container select {
+    @include adaptiv-font(24, 10);
+    span.mda {
       display: none;
     }
-  }
-  /* большие экраны (lg) */
-  @media (min-width: 992px) and (max-width: 1399px) {
-    .sort-field-container {
-      display: block;
-      button.btn-primary--eg {
+
+    // обёртка select > кастомной стрелки
+    .select-wrapper {
+      position: relative;
+      select {
+        @include adaptiv-font(24, 10);
+        @include adaptiv-val("padding", 10, 3);
+        padding-right: 25px;
+      }
+      &:hover {
+        select,
+        &::after {
+          color: var(--MelonYellow);
+        }
+      }
+      // кастомная стрелка (открытое состояние)
+      &::after {
+        content: "^";
+        position: absolute;
+        right: var(--sz1);
+        top: 50%;
+        transform: translateY(-50%) rotate(180deg);
+        font-size: var(--sz4);
+        color: var(--DeepYellow);
+        pointer-events: none;
+      }
+    }
+
+    /* огромные экраны (xxl) */
+    @media (min-width: 1400px) {
+    }
+    @include media-all(xxl) {
+      span.mda,
+      button.btn--eg.btn-primary--eg {
+        display: block;
+      }
+      select,
+      .select-wrapper {
         display: none;
       }
     }
-    .sort-field-container select.text-mode {
-      display: block;
-    }
-    .sort-field-container select.symbol-mode {
-      display: none;
-    }
-  }
-  /* средние и маленькие экраны (md/sm) */
-  @media (max-width: 991px) {
-    .sort-field-container {
-      display: block;
+    // большие/средние экраны, компьютеры/ноутбуки (lg/xl)
+    @include media-all(lgxl) {
       button.btn-primary--eg {
         display: none;
       }
+      .text-mode {
+        display: block;
+      }
+      .symbol-mode {
+        display: none;
+      }
     }
-    .sort-field-container select.text-mode {
-      display: none;
-    }
-    .sort-field-container select.symbol-mode {
-      display: block;
+    // маленькие экраны, планшеты, мобильные (xs/sm/md)
+    @include media-all(xsmd) {
+      button.btn-primary--eg {
+        display: none;
+      }
+      .text-mode {
+        display: none;
+      }
+      .symbol-mode {
+        display: block;
+      }
     }
   }
 }
