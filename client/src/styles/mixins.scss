@@ -71,20 +71,18 @@
   $addSizeHBott: $startSizeHBott - $minSizeHBott;
 
   #{$property}-top: calc(
-    #{$minSizeH + px} + #{$addSizeHTop} *
+    #{$minSizeH}px + #{$addSizeHTop} *
       ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   #{$property}-bottom: calc(
-    #{$minSizeHBott + px} + #{$addSizeHBott} *
+    #{$minSizeHBott}px + #{$addSizeHBott} *
       ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   #{$property}-left: calc(
-    #{$minSizeW + px} + #{$addSizeW} *
-      ((100vw - 320px) / #{vars.$maxWidth - 320})
+    #{$minSizeW}px + #{$addSizeW} * ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   #{$property}-right: calc(
-    #{$minSizeW + px} + #{$addSizeW} *
-      ((100vw - 320px) / #{vars.$maxWidth - 320})
+    #{$minSizeW}px + #{$addSizeW} * ((100vw - 320px) / #{vars.$maxWidth - 320})
   );
   // ??? не раб - попытка неск. условий в ошб. -  @if $startSizeHBott {} @else {} - отсутствует аргументы
 }

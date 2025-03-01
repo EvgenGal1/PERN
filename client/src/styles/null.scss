@@ -81,6 +81,15 @@ h6 {
   text-align: center;
 }
 
+// показать/скрыть
+.visible {
+  display: block !important;
+  // visibility: visible;
+}
+.hidden {
+  display: none !important;
+}
+
 // дл.бл
 span.bd {
   font-weight: bold;
@@ -502,7 +511,6 @@ code {
 }
 
 // DIV | SELECTOR | SPAN ----------------------------------------------------------------------------------
-// .board ----------------------------------------------------------------------------------
 .boards {
   display: flex;
   flex-direction: column;

@@ -69,36 +69,36 @@ $fontfamilyCurs: "cursive";
 // основная сетка. подстройка под расширение экрана с учётом переменных из сетки адаптива
 // mw0 - изначальная ширина контейниера
 .container {
-  max-width: vars.$mw0;
+  // max-width: vars.$mw0;
   width: 100%;
   margin: 0 auto;
   padding: 0 5%;
-  // при ширине экрана mda(1530), макс ширина контейнера станет 1400px.
-  @media (max-width: vars.$mda) {
-    max-width: 1400px;
-    // ^^^ для скрытия краёв .container от фона #root.(React.Prob)
-    // min-width: 1400px;
-    // width: 1400px;
-  }
-  $mdaxxl: 1400;
-  @media (max-width: vars.$mdaxxl) {
-    max-width: 1200px;
-  }
-  // $mdaxl: 1200;
-  @media (max-width: vars.$mdaxl) {
-    max-width: 992px;
-  }
-  // $mdalg: 992;
-  @media (max-width: vars.$mdalg) {
-    max-width: 768px;
-  }
-  // $mdamd: 768;
-  @media (max-width: vars.$mdamd) {
-    max-width: 576px;
-    max-width: none !important;
-  }
-  // $mdaxc: 576;
-  @media (max-width: vars.$mdaxc) {
-    max-width: none;
-  }
+  // // при ширине экрана mda(1530), макс ширина контейнера станет 1400px.
+  // @media (max-width: vars.$mda) {
+  //   max-width: 1400px;
+  //   // ^^^ для скрытия краёв .container от фона #root.(React.Prob)
+  //   // min-width: 1400px;
+  //   // width: 1400px;
+  // }
+  // $mdaxxl: 1400;
+  // @media (max-width: vars.$mdaxxl) {
+  //   max-width: 1200px;
+  // }
+  // // $mdaxl: 1200;
+  // @media (max-width: vars.$mdaxl) {
+  //   max-width: 992px;
+  // }
+  // // $mdalg: 992;
+  // @media (max-width: vars.$mdalg) {
+  //   max-width: 768px;
+  // }
+  // // $mdamd: 768;
+  // @media (max-width: vars.$mdamd) {
+  //   max-width: 576px;
+  //   max-width: none !important;
+  // }
+  // // $mdaxc: 576;
+  // @media (max-width: vars.$mdaxc) {
+  //   max-width: none;
+  // }
 }
