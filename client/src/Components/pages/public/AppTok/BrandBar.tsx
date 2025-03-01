@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
@@ -8,6 +8,7 @@ import { AppContext } from "@/context/AppContext";
 const BrandBar: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
   const [searchParams] = useSearchParams();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const { brand } = Object.fromEntries(searchParams);
@@ -33,17 +34,20 @@ const BrandBar: React.FC = observer(() => {
     catalog.updateUrlParams(pathname);
   };
 
-  const handleClickChoiceParam = (event: any) => {
-    event.currentTarget.classList.toggle("choice-param-show");
+  const handleClickChoiceParam = () => {
+    setIsOpen((prev) => !prev);
   };
 
   return (
     <>
       <div className="choice-param bbb-2" /* ef-bs */>
-        <button className="choice-param__btn" onClick={handleClickChoiceParam}>
+        <button
+          className={`choice-param__btn ${isOpen ? "choice-param-show" : ""}`}
+          onClick={handleClickChoiceParam}
+        >
           Бренды
         </button>
-        <div className="choice-param__item">
+        <div className={`choice-param__item ${isOpen ? "visible" : "hidden"}`}>
           {catalog.brands.map((item) => (
             <label key={item.id}>
               <input
@@ -52,10 +56,8 @@ const BrandBar: React.FC = observer(() => {
                 value={item.name}
                 checked={
                   catalog.filters.brand
-                    ? catalog.filters.brand
-                        .split("_")
-                        .includes(item.id.toString())
-                    : false
+                    ?.split("_")
+                    .includes(item.id.toString()) || false
                 }
                 onChange={() => handleBrandChange(item.id)}
               />

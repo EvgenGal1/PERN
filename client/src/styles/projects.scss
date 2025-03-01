@@ -13,7 +13,6 @@ div {
   }
   h1 {
     @include adaptiv-font(24, 14);
-    font-size: 20px;
     font-weight: 900;
     text-align: center;
     letter-spacing: 3px;
@@ -149,15 +148,13 @@ div {
   }
 }
 
-// Tok ----------------------------------------------------------------------------------
-// текст
+// текст ----------------------------------------------------------------------------------
 :root body #root .bavbar,
 :root body #root .main {
   color: #000;
 }
 
-// списки
-
+// списки ----------------------------------------------------------------------------------
 ul.list-param--eg {
   li {
     list-style: square;
@@ -169,12 +166,12 @@ ul.list-param--eg {
   }
 }
 
-// img с прозрачным фоном
+// img с прозрачным фоном ----------------------------------------------------------------------------------
 img.card-img-top {
   background: radial-gradient(circle, #41464b, #000);
 }
 
-// таблица корзины
+// таблица корзины ----------------------------------------------------------------------------------
 .table--eg {
   tbody {
     tr {
@@ -189,7 +186,7 @@ img.card-img-top {
   }
 }
 
-// `нумерация страниц`
+// `нумерация страниц` ----------------------------------------------------------------------------------
 .pagination--eg {
   li.page-item {
     .page-link {
@@ -218,7 +215,7 @@ img.card-img-top {
   }
 }
 
-// модал.окно
+// модал.окно ----------------------------------------------------------------------------------
 .modal--eg {
   z-index: 3;
   width: 70%;
@@ -283,24 +280,56 @@ img.card-img-top {
   }
 }
 
-// карточки/сетка блоков
-.card--eg {
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px;
-  // Продукт/Описание
-  &__product {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    strong {
-      display: flex;
-      justify-content: space-between;
+// модал под stl bootstr ----------------------------------------------------------------------------------
+.modal--eg-bootstr {
+  box-shadow: 0 3px 5px black;
+  transition: all 0.5s ease-in-out;
+  .modal-dialog {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    // для доп.ФормДаты добав.Продукта
+    top: 0% !important;
+    transform: translate(-50%, 0%) !important;
+    // ! врем.стиль для расшир.отражения
+    max-width: 100%;
+  }
+  .modal-content {
+    background-color: var(--ui-bg);
+    text-align: center;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 01);
+    border-radius: 10px;
+    transition: all 0.5s ease-in-out;
+    border: 2px solid var(--bord-hr) !important;
+    .modal-header {
+      padding: 10px 0px;
+      border-bottom: 1px solid #000;
+      border-bottom: 2px solid var(--bord-hr) !important;
+      .btn-close {
+        margin: 0 5px;
+      }
+      .modal-title {
+        width: 100%;
+        h1 {
+          margin: 0;
+        }
+      }
+    }
+    .modal-body {
+      form {
+        border: 2px solid var(--bord-hr);
+      }
     }
   }
 }
+// убираем из потока кнп.закр.модал для ровн.текта title
+.modal-title + button.btn-close {
+  position: absolute;
+  right: 0;
+}
 
-// модал.окно Filtra
+// модал.окно Filtra ----------------------------------------------------------------------------------
 .modal--eg__filter {
   // блок наложения на весь экран
   .overlay {
@@ -360,23 +389,14 @@ img.card-img-top {
   }
 }
 
-// блоки выбора Параметров/Категорий/Брендов в модал.окне
+// блоки выбора эл. Категорий/Брендов ----------------------------------------------------------------------------------
 .choice-param {
-  // скрытие Параметров после btn
-  &__btn + div {
-    display: none;
-  }
-  // показ Параметров после btn
-  &__btn.choice-param-show + div {
-    display: flex;
-    flex-direction: column;
-  }
-
-  // КНП.
+  // КНП.выбора Категорий/Брендов
   &__btn {
     position: relative;
     width: 100%;
-    padding: 10px 15px;
+    @include adaptiv-val("padding", 10, 3);
+
     background-color: var(--act-bg);
     color: #222;
     font-weight: 500;
@@ -405,7 +425,7 @@ img.card-img-top {
     }
   }
 
-  // Параметры
+  // эл. списка
   &__item {
     background-color: var(--act-bg);
     color: #1b1b1b;
@@ -489,113 +509,24 @@ img.card-img-top {
   }
 }
 
-// модал под stl bootstr
-.modal--eg-bootstr {
-  box-shadow: 0 3px 5px black;
-  transition: all 0.5s ease-in-out;
-  .modal-dialog {
-    position: absolute !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    // для доп.ФормДаты добав.Продукта
-    top: 0% !important;
-    transform: translate(-50%, 0%) !important;
-    // ! врем.стиль для расшир.отражения
-    max-width: 100%;
-  }
-  .modal-content {
-    background-color: var(--ui-bg);
-    text-align: center;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 01);
-    border-radius: 10px;
-    transition: all 0.5s ease-in-out;
-    border: 2px solid var(--bord-hr) !important;
-    .modal-header {
-      padding: 10px 0px;
-      border-bottom: 1px solid #000;
-      border-bottom: 2px solid var(--bord-hr) !important;
-      .btn-close {
-        margin: 0 5px;
-      }
-      .modal-title {
-        width: 100%;
-        h1 {
-          margin: 0;
-        }
-      }
-    }
-    .modal-body {
-      form {
-        border: 2px solid var(--bord-hr);
-      }
-    }
-  }
-}
-// убираем из потока кнп.закр.модал для ровн текта title
-.modal-title + button.btn-close {
-  position: absolute;
-  right: 0;
-}
-
-// Список|Лист группы Категор.,Бренд
-.list-group--eg {
+// карточки/сетка блоков ----------------------------------------------------------------------------------
+.card--eg {
   display: flex;
+  flex-direction: column;
   border-radius: 5px;
-  // transition: color 0.5s; // создаёт перескок/смещение при выборе
-
-  // общие для дочек
-  .list-group-item,
-  .list-group-item--eg {
-    padding: 0.5rem 1rem;
-    color: #222;
-    font-weight: 500;
-    border: 1px solid var(--bord-hr);
-    background-color: var(--act-bg);
-    cursor: pointer;
-    // рамки вертикаль
-    &:first-child {
-      border-top-left-radius: inherit;
-      border-top-right-radius: inherit;
-    }
-    &:last-child {
-      border-bottom-right-radius: inherit;
-      border-bottom-left-radius: inherit;
-    }
-    // рамка между дочками
-    &:not(:last-child) {
-      border-bottom-width: 0px;
-    }
-    // рамки горизонталь
-    &.hrz {
-      &:first-child {
-        border-top-right-radius: 0;
-        border-bottom-left-radius: inherit;
-      }
-      &:last-child {
-        border-bottom-left-radius: 0;
-        border-top-right-radius: inherit;
-      }
-      // рамка между дочками
-      &:not(:last-child) {
-        border-right-width: 0px;
-        border-bottom-width: inherit;
-        border-bottom-width: 1px;
-      }
-    }
-    // эффекты
-    &:hover {
-      color: #000;
-      background-color: var(--act-bg-hov);
-    }
-    &.active {
-      color: var(--ui-act-col);
-      background-color: var(--act-bg-hov);
+  // Продукт/Описание
+  &__product {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    strong {
+      display: flex;
+      justify-content: space-between;
     }
   }
 }
 
-// Комп.PaginSortLimit (страницы, Сортировка, Выборка, Лимит эл.на стр.)
+// Комп.PaginSortLimit (страницы, Сортировка, Выборка, Лимит эл.на стр.) ----------------------------------------------------------------------------------
 .pagin-sort-limit {
   display: flex;
   justify-content: space-between;
@@ -618,7 +549,7 @@ img.card-img-top {
   }
 }
 
-// СОКРАШЕНИЕ
+// СОКРАШЕНИЕ ----------------------------------------------------------------------------------
 .mini-1--eg,
 .mini-2--eg {
   font-weight: inherit;
@@ -641,7 +572,7 @@ img.card-img-top {
   }
 }
 
-// ПОИСК
+// ПОИСК ----------------------------------------------------------------------------------
 .search--eg {
   width: 100%;
   display: flex;
@@ -682,7 +613,7 @@ img.card-img-top {
   }
 }
 
-// row/col (строки/колонки)
+// row/col (строки/колонки) ----------------------------------------------------------------------------------
 :root body #root .main {
   .row-mlr--eg {
     display: flex;
@@ -703,10 +634,22 @@ img.card-img-top {
   }
 }
 
-// media медиа
+// media медиа ----------------------------------------------------------------------------------
 :root body #root {
   .main,
   .navbar {
+    // откл.все брекпоинты Bootstrap
+    @media (min-width: 0px) {
+      .container,
+      .container-lg,
+      .container-md,
+      .container-sm,
+      .container-xl,
+      .container-xxl {
+        max-width: none;
+      }
+    }
+
     // MAX
     @media (max-width: 768px) {
       .col-md-9 {
@@ -767,14 +710,6 @@ img.card-img-top {
       }
     }
     @media (min-width: 1400px) {
-      .container,
-      .container-lg,
-      .container-md,
-      .container-sm,
-      .container-xl,
-      .container-xxl {
-        max-width: 1320px;
-      }
       .col-md-3 {
         flex: 0 0 auto;
         width: 20%;
@@ -793,24 +728,8 @@ img.card-img-top {
       }
     }
     @media (min-width: 1600px) {
-      .container,
-      .container-lg,
-      .container-md,
-      .container-sm,
-      .container-xl,
-      .container-xxl {
-        max-width: 1420px;
-      }
     }
     @media (min-width: 1800px) {
-      .container,
-      .container-lg,
-      .container-md,
-      .container-sm,
-      .container-xl,
-      .container-xxl {
-        max-width: 1620px;
-      }
       .col-md-3 {
         flex: 0 0 auto;
         width: 15%;

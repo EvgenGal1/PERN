@@ -1,14 +1,15 @@
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
 
 const CategoryBar: React.FC = observer(() => {
-  // стор Каталога и парам.URL
+  // стор Каталога, парам.URL, сост.списка эл.
   const { catalog } = useContext(AppContext);
   const [searchParams] = useSearchParams();
+  const [isOpen, setIsOpen] = useState(false);
 
   // получ.парам.из URL и сохр.в стор с зависим.от парам.URL
   useEffect(() => {
@@ -46,18 +47,22 @@ const CategoryBar: React.FC = observer(() => {
   };
 
   // показ блока с Параметрами
-  const handleClickChoiceParam = (event: any) => {
-    event.currentTarget.classList.toggle("choice-param-show");
+  const handleClickChoiceParam = (/* event: any */) => {
+    // event.currentTarget.classList.toggle("choice-param-show"); // стар.подход без usSt
+    setIsOpen((prev) => !prev);
   };
 
   return (
     <>
       <div className="choice-param bbb-2" /* ef-bs */>
-        <button className="choice-param__btn" onClick={handleClickChoiceParam}>
+        <button
+          className={`choice-param__btn ${isOpen ? "choice-param-show" : ""}`}
+          onClick={handleClickChoiceParam}
+        >
           Категория
         </button>
-        <div className="choice-param__item">
-          {catalog.categories.map((item: any) => (
+        <div className={`choice-param__item ${isOpen ? "visible" : "hidden"}`}>
+          {catalog.categories.map((item) => (
             <label key={item.id}>
               <input
                 type="checkbox"
@@ -65,10 +70,8 @@ const CategoryBar: React.FC = observer(() => {
                 value={item.name}
                 checked={
                   catalog.filters.category
-                    ? catalog.filters.category
-                        .split("_")
-                        .includes(item.id.toString())
-                    : false
+                    ?.split("_")
+                    .includes(item.id.toString()) || false
                 }
                 onChange={() => handleCategoryChange(item.id)}
               />
