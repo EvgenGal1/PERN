@@ -6,12 +6,9 @@ const LoadingAtom = () => {
       height: var(--height);
     }
     .loader {
-      position: absolute;
-      // top: calc(50% - var(--height-btn));
-      left: calc(50%  + (var(--width) / 2));
       width: var(--width);
       height: var(--height);
-      border-radius: 50%;
+      margin: 0 auto;
       perspective: 800px;
       border-color: var(--TrafficRed);
     }
@@ -23,20 +20,14 @@ const LoadingAtom = () => {
       border-radius: 50%;
     }
     .inner.one {
-      left: 0%;
-      top: 0%;
       animation: rotate-one 1s linear infinite;
       border-bottom: var(--load-atom) solid var(--act-dark);
     }
     .inner.two {
-      right: 0%;
-      top: 0%;
       animation: rotate-two 1s linear infinite;
       border-right: var(--load-atom) solid var(--act-dark);
     }
     .inner.three {
-      right: 0%;
-      bottom: 0%;
       animation: rotate-three 1s linear infinite;
       border-top: var(--load-atom) solid var(--act-dark);
     }
@@ -66,10 +57,9 @@ const LoadingAtom = () => {
     }
   `;
 
-  // Добавляем стили через useEffect
+  // добав.stl ч/з usEf
   useEffect(() => {
     const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
     styleSheet.innerText = styles;
     document.head.appendChild(styleSheet);
 
@@ -77,11 +67,9 @@ const LoadingAtom = () => {
       document.head.removeChild(styleSheet);
     };
   }, []);
+
   return (
-    <div
-      className="loading-atom"
-      // style={{ width: "500px", height: "500px" }}
-    >
+    <div className="loading-atom">
       <div className="loader">
         <div className="inner one"></div>
         <div className="inner two"></div>
