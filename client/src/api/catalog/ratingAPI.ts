@@ -5,7 +5,7 @@ import { authInstance, guestInstance } from "../axiosInstances";
 export const ratingAPI = {
   /**
    * Получение Рейтинга Продукта
-   * @param productId - ID продукта
+   * @param productId - ID Продукта
    */
   async getProductRating(productId: number): Promise<RatingData> {
     return handleRequest(
@@ -15,9 +15,9 @@ export const ratingAPI = {
   },
 
   /**
-   * Создание рейтинга продукта
-   * @param userId - ID пользователя
-   * @param productId - ID продукта
+   * Создание рейтинга Продукта
+   * @param userId - ID Пользователя
+   * @param productId - ID Продукта
    * @param rate - Оценка (1-5)
    */
   async createProductRating(

@@ -16,7 +16,7 @@ class CatalogStore {
   categories: CategoryData[] = [];
   brands: BrandData[] = [];
   products: ProductData[] = [];
-  // фильтры - категория/бренд
+  // фильтры - Категория/Бренд
   filters = {
     category: null as string | null,
     brand: null as string | null,
@@ -89,7 +89,7 @@ class CatalogStore {
     }
   }
 
-  // Объединённый метод для загрузки категорий и брендов
+  // объедин.мтд.загр.Категорий/Брендов
   async fetchInitialCatalog(): Promise<void> {
     if (this.isLoading || (this.categories.length && this.brands.length))
       return;
@@ -105,6 +105,7 @@ class CatalogStore {
     }
   }
 
+  // загр.Продуктов
   async fetchProducts(): Promise<void> {
     if (this.isLoading || this.products.length) this.isLoading = true;
     this.isLoading = true;

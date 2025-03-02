@@ -140,7 +140,7 @@ export const PaginSortLimit = () => {
 
       {/* LIMIT. КОЛ-ВО ЭЛ. НА СТР. */}
       {catalog.pagination.totalCount > 10 && (
-        <div className="limit--eg" style={{ display: "flex" }}>
+        <div className="limit--eg">
           {[10, 25, 50, 100, 500, 1000].map(
             (limit) =>
               catalog.pagination.totalCount > limit && (

@@ -14,11 +14,10 @@ import { StarOutline } from "@Comp/ui/Rating/StarOutline";
 const ProductItem: React.FC<ProductData> = (data) => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
-  // Рейтинг, Наведение на Звёзды
-  const [rating, setRating] = useState(data.ratings?.rating);
-  const [hoverStar, setHoverStar] = useState(0);
-  // инициализ.голосов
-  const [votes, setVotes] = useState(data.ratings?.votes || 0);
+  // Рейтинг, наведение на Звёзды, Голоса
+  const [rating, setRating] = useState<number>(data.ratings?.rating || 0);
+  const [hoverStar, setHoverStar] = useState<number>(0);
+  const [votes, setVotes] = useState<number>(data.ratings?.votes || 0);
 
   const handleSubmit = async (rating: number) => {
     if (user.isAuth) {

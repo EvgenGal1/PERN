@@ -8,7 +8,7 @@ class ProductPropService {
   async getAllProdProp(productId: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw ApiError.notFound('Товар не найден');
+      throw ApiError.notFound('Продукт не найден');
     }
     const properties = await ProductPropModel.findAll({
       where: { productId },
@@ -19,7 +19,7 @@ class ProductPropService {
   async getOneProdProp(productId: number, id: number) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw ApiError.notFound('Товар не найден');
+      throw ApiError.notFound('Продукт не найден');
     }
     const property = await ProductPropModel.findOne({
       where: { productId, id },
@@ -33,7 +33,7 @@ class ProductPropService {
   async createProdProp(productId: number, data: any) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw ApiError.notFound('Товар не найден');
+      throw ApiError.notFound('Продукт не найден');
     }
     const { name, value } = data;
     const property = await ProductPropModel.create({
@@ -47,7 +47,7 @@ class ProductPropService {
   async updateProdProp(productId: number, id: number, data: any) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw ApiError.notFound('Товар не найден');
+      throw ApiError.notFound('Продукт не найден');
     }
     const property = await ProductPropModel.findOne({
       where: { productId, id },
@@ -63,7 +63,7 @@ class ProductPropService {
   async deleteProdProp(productId: number, id: number | string) {
     const product = await ProductModel.findByPk(productId);
     if (!product) {
-      throw ApiError.notFound('Товар не найден');
+      throw ApiError.notFound('Продукт не найден');
     }
     const property = await ProductPropModel.findOne({
       where: { productId, id },

@@ -149,7 +149,7 @@ class BasketService {
     // связь CASCADE удаляет и Продукты и Корзину
     await basket.destroy();
     return {
-      message: `Корзина с ID '${basketId}' ${productCount ? `с ${productCount} товарами` : 'без товаров'} удалена`,
+      message: `Корзина с ID '${basketId}' ${productCount ? `с ${productCount} Продуктами` : 'без Продуктов'} удалена`,
     };
   }
 }

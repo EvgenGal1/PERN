@@ -8,7 +8,6 @@ import { FILTER_ROUTE } from "@/utils/consts";
 const Search: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
   const navigate = useNavigate();
-  //  ----------------------------------------------------------------------------------
   const [query, setQuery] = useState("");
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,12 +43,13 @@ const Search: React.FC = observer(() => {
           type="text"
           value={query}
           className="search--eg__inp bbb-1"
-          placeholder="Поиск (название, цена)"
+          placeholder="Поиск" // (название, цена)
           onChange={handleSearchInputChange}
         />
         {/* КНП.РАСШИРЕН/ПОИСКА */}
         <button onClick={handleClick} className="search--eg__btn btn--eg">
-          [расширенный поиск]
+          <span className="mda">[расширенный поиск]</span>
+          <span className="mda">&#128269;</span>
         </button>
       </div>
     </>
