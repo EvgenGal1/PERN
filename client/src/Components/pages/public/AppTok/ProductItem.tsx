@@ -4,21 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "@/context/AppContext";
 // API/типы
 import { ratingAPI } from "@/api/catalog/ratingAPI";
-// import { CategoryData, ProductData } from "@/types/api/catalog.types";
-import { CategoryData, ProductData } from "../../../../types/api/catalog.types";
+import { CategoryData, ProductData } from "@/types/api/catalog.types";
 // конст.
 import { PRODUCT_ROUTE } from "@/utils/consts";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
-import { StarFill } from "@Comp/layout/AppTok/StarFill";
-import { StarOutline } from "@Comp/layout/AppTok/StarOutline";
+import { StarFill } from "@Comp/ui/Rating/StarFill";
+import { StarOutline } from "@Comp/ui/Rating/StarOutline";
 
 const ProductItem: React.FC<ProductData> = (data) => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
-  const [numberStar, setNumberStar] = useState(data.ratings?.rating);
+  // Рейтинг, Наведение на Звёзды
+  const [rating, setRating] = useState(data.ratings?.rating);
   const [hoverStar, setHoverStar] = useState(0);
-
-  const [votes, setVotes] = useState(data.ratings?.votes || 0); // Обеспечивает правильную инициализацию
+  // инициализ.голосов
+  const [votes, setVotes] = useState(data.ratings?.votes || 0);
 
   const handleSubmit = async (rating: number) => {
     if (user.isAuth) {
@@ -28,7 +28,7 @@ const ProductItem: React.FC<ProductData> = (data) => {
           data.id!,
           rating
         );
-        setNumberStar(ratingData.rating);
+        setRating(ratingData.rating);
         setVotes(ratingData.votes);
       } catch (error) {
         console.error("Ошибка при создании рейтинга:", error);
@@ -99,7 +99,7 @@ const ProductItem: React.FC<ProductData> = (data) => {
 
   return (
     <div className="df df-col col-lg-4 col-md-3 col-sm-6">
-      <div style={{ cursor: "pointer" }} className="mt-3 card--eg">
+      <div style={{ cursor: "pointer" }} className="mb-3 card--eg">
         <img
           onClick={() => navigate(`${PRODUCT_ROUTE}/${data.id}`)}
           src={
@@ -110,21 +110,15 @@ const ProductItem: React.FC<ProductData> = (data) => {
           alt={data.name}
         />
         <div style={{ height: "100%", overflow: "hidden", padding: "10px" }}>
-          <div className="card--eg__price">
-            <span style={{ fontSize: "30px" }}>{formatPrice(data.price)}</span>
+          {/* Цена */}
+          <div className="card--eg__price mb-1">
+            <span>{formatPrice(data.price)}</span>
           </div>
-          <div
-            className="card--eg__rating"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+          {/* Звёзды, Рейтинг, Голоса */}
+          <div className="card--eg__rating df df-aic df-jcsb">
             <div style={{ display: "flex", marginRight: "10px" }}>
               {Array.from({ length: 5 }, (_, index) => {
-                const isFilled =
-                  numberStar! >= index + 1 || hoverStar >= index + 1;
+                const isFilled = rating! >= index + 1 || hoverStar >= index + 1;
                 return (
                   <span
                     key={index}
@@ -139,7 +133,6 @@ const ProductItem: React.FC<ProductData> = (data) => {
                     tabIndex={0}
                     style={{
                       display: "flex",
-                      fontSize: "25px",
                       color: "orange",
                     }}
                   >
@@ -148,16 +141,16 @@ const ProductItem: React.FC<ProductData> = (data) => {
                 );
               })}
             </div>
-            <span style={{ fontSize: "25px" }}>
-              {numberStar} {votes ? ` / ${votes}` : ""}
+            <span>
+              {rating} {votes ? ` / ${votes}` : ""}
             </span>
           </div>
-          <div className="card--eg__product" style={{ marginTop: "5px" }}>
+          {/* Категория, Бранд, Имя */}
+          <div className="card--eg__product mt-1">
             <strong>
               <span>
                 {data.category && formatCategory(data.category)}{" "}
                 {data.brand && data.brand.name}
-                {"  "}
               </span>
               <span>{formatName(data.name)}</span>
             </strong>
