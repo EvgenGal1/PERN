@@ -1,5 +1,3 @@
-import { RoleLevels } from './role.interface';
-
 export interface UserCreateDto {
   email: string;
   password: string;

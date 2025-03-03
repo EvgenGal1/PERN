@@ -82,7 +82,10 @@ class RoleService {
         roleId,
         level,
       },
-      { conflictFields: ['userId', 'roleId'], returning: true },
+      {
+        conflictFields: ['user_id', 'role_id'] as any, // имя стлб.без типа от ошб.не существ.userId
+        returning: true,
+      },
     );
     if (!userRole) {
       throw ApiError.badRequest(`Не удалось записать связь`);
