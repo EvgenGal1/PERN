@@ -28,7 +28,11 @@ export function requestLoggingMiddleware(
     const requestData: Record<string, any> = {};
     // добав.полей со значениями е/и есть
     if (req.headers['authorization']) {
-      requestData.headers = { authorization: req.headers['authorization'] };
+      requestData.headers = {
+        authorization: `${req.headers['authorization']}`
+          ? `${req.headers['authorization']?.split(' ')[0]} ${req.headers['authorization']?.split(' ')[1].slice(0, 4)}...${req.headers['authorization']?.split(' ')[1].slice(-4)}`
+          : undefined,
+      };
     }
     if (req.params && Object.keys(req.params).length > 0) {
       requestData.params = req.params;
