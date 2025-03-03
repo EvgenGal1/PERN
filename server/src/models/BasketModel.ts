@@ -41,7 +41,12 @@ class BasketModel extends Model<
   static initModel(sequelize: Sequelize) {
     BasketModel.init(
       {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         userId: { type: DataTypes.INTEGER, allowNull: false },
       },
       { sequelize, tableName: 'baskets' },

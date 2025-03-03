@@ -74,7 +74,12 @@ class ProductModel extends Model<
   static initModel(sequelize: Sequelize) {
     ProductModel.init(
       {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         name: { type: DataTypes.STRING, unique: true, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
         rating: { type: DataTypes.FLOAT, defaultValue: 0 },

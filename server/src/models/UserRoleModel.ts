@@ -35,11 +35,12 @@ class UserRoleModel extends Model<
   static initModel(sequelize: Sequelize) {
     UserRoleModel.init(
       {
-        id: { type: DataTypes.INTEGER, allowNull: false },
+        id: { type: DataTypes.INTEGER, autoIncrement: true, allowNull: false },
         userId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: 'user_id',
           // валид.внешн.ключа по существ.roleId
           references: {
             model: 'users',
@@ -50,6 +51,7 @@ class UserRoleModel extends Model<
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: 'role_id',
           references: {
             model: 'roles',
             key: 'id',
@@ -69,7 +71,12 @@ class UserRoleModel extends Model<
         sequelize,
         tableName: 'user_roles',
         // запрет дублей связок user+role, ускор.поиск/контроль уник.ind
-        indexes: [{ unique: true, fields: ['userId', 'roleId'] }],
+        indexes: [
+          {
+            unique: true,
+            fields: ['user_id', 'role_id' /* 'userId', 'roleId' */],
+          },
+        ],
         // валид.значения уровня роли перед сохр.
         hooks: {
           beforeSave: (instance: UserRoleModel) => {

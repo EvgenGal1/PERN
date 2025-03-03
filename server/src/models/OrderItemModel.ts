@@ -29,7 +29,12 @@ class OrderItemModel extends Model<
   static initModel(sequelize: Sequelize) {
     OrderItemModel.init(
       {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         name: { type: DataTypes.STRING, allowNull: false },
         price: { type: DataTypes.FLOAT, allowNull: false },
         quantity: { type: DataTypes.INTEGER, allowNull: false },

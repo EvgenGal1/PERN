@@ -36,7 +36,12 @@ class RoleModel extends Model<
   static initModel(sequelize: Sequelize) {
     RoleModel.init(
       {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         value: { type: DataTypes.STRING, allowNull: false, unique: true },
         description: { type: DataTypes.STRING },
       },

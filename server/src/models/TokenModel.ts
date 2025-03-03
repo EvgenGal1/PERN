@@ -32,16 +32,21 @@ class TokenModel extends Model<
   static initModel(sequelize: Sequelize) {
     TokenModel.init(
       {
-        id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         userId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
         basketId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
         },
-        refreshToken: { type: DataTypes.STRING(300), allowNull: false },
+        refreshToken: { type: DataTypes.STRING(350), allowNull: false },
         refreshTokenExpires: { type: DataTypes.DATE, allowNull: true },
-        resetToken: { type: DataTypes.STRING(300), allowNull: true },
+        resetToken: { type: DataTypes.STRING(350), allowNull: true },
         resetTokenExpires: { type: DataTypes.DATE, allowNull: true },
       },
       { sequelize, tableName: 'tokens' },

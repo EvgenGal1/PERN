@@ -27,7 +27,12 @@ class BrandModel extends Model<
   static initModel(sequelize: Sequelize) {
     BrandModel.init(
       {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         name: { type: DataTypes.STRING, unique: true, allowNull: false },
       },
       { sequelize, tableName: 'brands' },

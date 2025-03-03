@@ -28,7 +28,12 @@ class ProductPropModel extends Model<
   static initModel(sequelize: Sequelize) {
     ProductPropModel.init(
       {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
         name: { type: DataTypes.STRING, allowNull: false },
         value: { type: DataTypes.STRING, allowNull: false },
         productId: { type: DataTypes.INTEGER, allowNull: false },
