@@ -9,6 +9,7 @@ import {
 import { categoryAPI } from "@/api/catalog/categoryAPI";
 import { brandAPI } from "@/api/catalog/brandAPI";
 import { productAPI } from "@/api/catalog/productAPI";
+import { ratingAPI } from "@/api/catalog/ratingAPI";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 
 class CatalogStore {
@@ -40,11 +41,16 @@ class CatalogStore {
 
   constructor() {
     // автообраб.измен.в.ф.с обёрткой в декораторы - observable/`наблюдаемый` и action/`действие`
-    makeAutoObservable(this);
-    // автопривязка контекста this к мтд., оптимиз.> больших объ.
-    this, {}, { autoBind: true, deep: false };
-    // > автоотслеж.зависимости и автовыполн.кода при измен.наблюдаемых данных
-    // autorun(() => { if (this.shouldFetch) { this.fetchProducts(); } });
+    makeAutoObservable(
+      // объ.клс.наблюдения
+      this,
+      // опред.конкретн.св-в
+      {},
+      // автопривязка контекста this к мтд., оптимиз.с откл.глубок.реактив. > больших объ.
+      { autoBind: true, deep: false }
+      // > автоотслеж.зависимости и автовыполн.кода при измен.наблюдаемых данных
+      // autorun(() => { if (this.shouldFetch) { this.fetchProducts(); } });
+    );
   }
 
   // мтд.получ.данн.с БД (получ.Все Категории ч/з внутр.API с настр. загр./обраб./ошб./логг.)
@@ -105,7 +111,24 @@ class CatalogStore {
     }
   }
 
-  // загр.Продуктов
+  // загр.Одного Продукта
+  async fetchProductById(id: number): Promise<void> {
+    const existing = this.products.find((p) => p.id === id);
+    if (existing) return;
+    this.isLoading = true;
+    try {
+      const product = await productAPI.getOneProduct(id);
+      runInAction(() => {
+        this.products = [...this.products, product];
+      });
+    } catch (error) {
+      console.error("Ошибка загрузки Одного Продукта:", error);
+    } finally {
+      runInAction(() => (this.isLoading = false));
+    }
+  }
+
+  // загр.Всех Продуктов
   async fetchProducts(): Promise<void> {
     if (this.isLoading || this.products.length) this.isLoading = true;
     this.isLoading = true;
@@ -123,7 +146,45 @@ class CatalogStore {
         this.pagination.totalCount = count;
       });
     } catch (error) {
-      console.error("Ошибка загрузки продуктов:", error);
+      console.error("Ошибка загрузки Всех Продуктов:", error);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
+  }
+
+  // проверка Продуктов в сторе
+  getProductById(id: number): ProductData | undefined {
+    return this.products.find((p) => p.id === id);
+  }
+
+  // обнов.Рейтинга Продукта
+  async updateProductRating(
+    userId: number,
+    productId: number,
+    rating: number
+  ): Promise<any> {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    try {
+      const data = await ratingAPI.createProductRating(
+        userId,
+        productId,
+        rating
+      );
+      runInAction(() => {
+        // обнов.Рейтинг Продукта в сторе
+        const updatedProducts = this.products.map((item) =>
+          item.id === productId
+            ? { ...item, ratings: { ...item.ratings, ...data } }
+            : item
+        );
+        this.products = updatedProducts;
+      });
+      return data;
+    } catch (error) {
+      console.error("Ошибка обновления Рейтинга:", error);
     } finally {
       runInAction(() => {
         this.isLoading = false;

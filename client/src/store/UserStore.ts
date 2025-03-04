@@ -20,7 +20,8 @@ export default class UserStore {
     this.username = username;
     this.email = email;
     this.isAuth = true;
-    this.isAdmin = roles[0].role === "ADMIN";
+    this.isAdmin =
+      Array.isArray(roles) && roles.some((role) => role.role === "ADMIN");
   }
 
   isActivated(activated: boolean) {
