@@ -12,24 +12,25 @@ class TokenService {
   private handleJwtError(error: unknown): never {
     // [Сохранена оригинальная обработка ошибок]
     const message = (error as Error).message;
-    switch (message) {
-      case 'jwt malformed':
-        throw ApiError.unauthorized('Некорректный токен');
-      case 'invalid signature':
-        throw ApiError.unauthorized('Неверная подпись');
-      case 'jwt expired':
-        throw ApiError.unauthorized('Токен просрочен');
-      default:
-        throw ApiError.unauthorized('Ошибка авторизации');
+    if (message.includes('expired')) {
+      throw ApiError.unauthorized('Токен просрочен');
     }
+    if (message.includes('invalid')) {
+      throw ApiError.unauthorized('Неверная подпись');
+    }
+    if (message.includes('malformed')) {
+      throw ApiError.unauthorized('Некорректный токен');
+    }
+    throw ApiError.unauthorized('Ошибка авторизации');
   }
   // валид./проверка подделки/сроки жизни токена ACCESS и REFRESH
   async validateAccessToken(token: string): Promise<TokenDto> {
     try {
       // верифик.|раскодир.токен. `проверять` на валидность(токен, секр.ключ)
       const data = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY!);
-      if (typeof data !== 'object')
+      if (typeof data !== 'object' || !('id' in data)) {
         throw ApiError.unauthorized('Неверный формат Токена');
+      }
       return data as TokenDto;
     } catch (error: unknown) {
       this.handleJwtError(error);
@@ -38,7 +39,7 @@ class TokenService {
   async validateRefreshToken(token: string): Promise<TokenDto> {
     try {
       const data = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY!);
-      if (typeof data !== 'object')
+      if (typeof data !== 'object' || !('id' in data))
         throw ApiError.unauthorized('Неверный формат токена');
       // доп.проверка срока действия токена
       const tokenRecord = await this.findToken(token);

@@ -11,7 +11,9 @@
     "baseUrl": "./src", // базовый путь модулей
     "rootDir": "./src", // путь TS проекта
     "outDir": "./dist", // путь скомпилированных ф.
-    "resolveJsonModule": true // импорта JSON-ф
+    "resolveJsonModule": true, // импорта JSON-ф
+    "noUnusedLocals": true, // отчет о ошб.при ошб.чтения локал.перем.
+    "noImplicitReturns": true // отчет о ошб.при не возврат.в  fn кодов.путей
   },
   // вкл.в компиляцию
   "include": [

@@ -7,36 +7,42 @@ import { DecodedToken } from '../../types/DecodedToken';
 import { AuthPayload } from '../../types/AuthPayload';
 import TokenService from '../../services/token.service';
 
-const authMW = (req: Request, res: Response, next: NextFunction): void => {
+const authMW = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
   // е/и mtd OPTIONS то продолжаем (проверка GET,POST,и т.д.)
-  if (req.method === 'OPTIONS') next();
+  if (req.method === 'OPTIONS') return next();
 
   try {
-    // провер header на наличие поля authorization
+    // проверка header на наличие поля authorization
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
-      throw ApiError.unauthorized('Требуется Авторизация');
+      // ^ - throw. В MW express необход.использ. return - мгновен.заверщ., без лишнего перехода в catch, без выполн.след.кода
+      return next(ApiError.unauthorized('Требуется Авторизация'));
     }
 
     // достать токен из header (отделяя от типа `Носитель` передающегося по ind 0)
     const accessToken = authorizationHeader?.split(' ')[1]; // Bearer token (asfasnfkajsfnjk)
     if (!accessToken) {
-      throw ApiError.unauthorized('Токен отсутствует');
+      return next(ApiError.forbidden('Токен отсутствует'));
     }
 
     // раскодир.токен. `проверять` валидации ч/з services (токен)
-    const decoded = TokenService.validateAccessToken(
+    const decoded = (await TokenService.validateAccessToken(
       accessToken,
-    ) as DecodedToken;
+    )) as DecodedToken;
     if (!decoded || !decoded.id || !decoded.role) {
-      throw ApiError.forbidden('Токен не валиден');
+      return next(ApiError.unauthorized('Токен не валиден'));
     }
 
     // к req в auth добав.строг.тип.раскодир.данн и вызов след.middlware
     req.auth = decoded as AuthPayload;
     next();
   } catch (error: unknown) {
-    throw ApiError.forbidden((error as Error).message);
+    // - throw. Перехват неизвестных ошб.
+    next(error);
   }
 };
 
