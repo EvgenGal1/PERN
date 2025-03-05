@@ -30,3 +30,15 @@ export interface TokenPayload {
   roles: RoleLevels[];
   basket: number;
 }
+
+export interface UserResData {
+  id: number;
+  email: string;
+  username: string;
+  roles: RoleLevels[];
+  basket: number;
+  isActivated?: boolean;
+  status?: number;
+  message?: string;
+  errors?: string;
+}

@@ -10,9 +10,10 @@ import {
   USER_ROUTE,
 } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
+import { UserResData } from "@/types/api/auth.types";
 
 interface FormValues {
-  sms: "";
+  sms: string;
   // name: string;
   email: string;
   password: string;
@@ -20,7 +21,7 @@ interface FormValues {
 }
 
 interface FormErrors {
-  sms?: "";
+  sms?: string;
   // name: string;
   email?: string;
   password?: string;
@@ -191,7 +192,7 @@ const Auth = observer(() => {
     event.preventDefault();
 
     // ч/з опред.метод запрос к БД
-    let dataRes: any; //{ errors: any[]; message: any; };
+    let dataRes: UserResData;
     if (isLogin)
       dataRes = await authAPI.login(formValues.email, formValues.password);
     else
@@ -237,7 +238,7 @@ const Auth = observer(() => {
       }
     }
     // для смс
-    if (dataRes?.status > 400) {
+    if (dataRes?.status && dataRes?.status > 400) {
       if (dataRes?.message) {
         setFormErrors((prevState) => ({
           ...prevState,
@@ -247,14 +248,10 @@ const Auth = observer(() => {
     }
 
     // перенаправление в ЛК е/и нет ошб., прошёл Польз.
-    if (
-      !dataRes?.errors &&
-      dataRes.userTokenAcs.email &&
-      dataRes.userTokenAcs.role
-    ) {
+    if (!dataRes?.errors && dataRes.email && dataRes.roles) {
       setFormErrors({ sms: "", email: "", password: "" });
-      user.login(dataRes.userTokenAcs);
-      user.isActivated(dataRes.activated);
+      user.login(dataRes.id, dataRes.username, dataRes.email, dataRes.roles);
+      user.isActivated(dataRes.isActivated);
       if (user.isAdmin) navigate(ADMIN_ROUTE);
       if (user.isAuth) navigate(USER_ROUTE);
     }

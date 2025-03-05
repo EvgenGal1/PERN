@@ -7,10 +7,10 @@ export interface BasketProduct {
 }
 
 export interface BasketData {
-  id?: number;
+  id: number;
   products: BasketProduct[];
-  userId?: number;
-  total?: number;
+  userId: number;
+  total: number;
 }
 
 // Заказ и его Позиции (Продукты)
