@@ -42,7 +42,7 @@ authInstance.interceptors.response.use(
       initialReq._isRetry = true;
       try {
         // req обнов.Токена
-        const response = await axios.get<AuthRes>(`${API_URL}/auth/refresh`, {
+        const response = await axios.post<AuthRes>(`${API_URL}/auth/refresh`, {
           withCredentials: true,
         });
         // сохр.нов. accessToken в LS

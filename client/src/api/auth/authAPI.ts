@@ -4,33 +4,34 @@ import { jwtDecode } from "jwt-decode";
 
 // перехватчики
 import { guestInstance, authInstance } from "../axiosInstances";
-// DTO/типы/интерфейсы
-import { AuthRes, TokenPayload } from "../../types/api/auth.types";
 // обраб.req/res
 import { handleRequest } from "../handleRequest";
 // общ.клс.ошб.
-import { ApiError } from "../../utils/errorClasses";
+import { ApiError } from "@/utils/errorClasses";
+// DTO/типы/интерфейсы
+import { AuthRes, TokenPayload, UserResData } from "@/types/api/auth.types";
 
 export const authAPI = {
   /**
    * Общая обработка успешного ответа аутентификации
    */
-  processAuthResponse(response: AuthRes): TokenPayload {
+  processAuthResponse(response: AuthRes): UserResData {
     const { accessToken } = response.data;
     if (!accessToken) {
       throw new ApiError("Токен отсутствует", 401, "MISSING_TOKEN");
     }
     const userData = this.parseToken(response.data.accessToken);
     localStorage.setItem("tokenAccess", response.data.accessToken);
+    userData.isActivated = response.data.isActivated;
     return userData;
   },
 
   /**
    * Парсинг JWT токена
    */
-  parseToken(token: string): TokenPayload {
+  parseToken(token: string): UserResData {
     try {
-      return jwtDecode<TokenPayload>(token);
+      return jwtDecode<UserResData>(token);
     } catch (error: unknown) {
       throw new ApiError("Невалидный токен", 401, "INVALID_TOKEN", { error });
     }
@@ -43,7 +44,7 @@ export const authAPI = {
    */
   async register(email: string, password: string): Promise<TokenPayload> {
     const response = await handleRequest(
-      () => guestInstance.post<AuthRes>("auth/signup", { email, password }),
+      () => guestInstance.post<AuthRes>("auth/register", { email, password }),
       "Auth/Register"
     );
     return this.processAuthResponse(response);
@@ -82,7 +83,7 @@ export const authAPI = {
    */
   async refresh(): Promise<TokenPayload> {
     const response = await handleRequest(
-      () => authInstance.get<AuthRes>("auth/refresh"),
+      () => authInstance.post<AuthRes>("auth/refresh"),
       "Auth/Refresh"
     );
     return this.processAuthResponse(response);
