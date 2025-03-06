@@ -28,7 +28,7 @@
     "ts-check": "tsc --noEmit",
     "ts-cc": "tsc --build --clean",
     "ci-check": "npm run lint & npm run ts-check & npm test",
-    "ci-ff": "npm run lint:fix & npm run format",
+    "ci-tsff": "npm runts-check & npm run lint:fix & npm run format",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
@@ -53,6 +53,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@craco/craco": "^7.1.0",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
@@ -82,7 +83,8 @@
     "sass": "^1.85.1",
     "sass-loader": "^16.0.5",
     "typescript": "^4.9.5",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "^10.0.4",
+    "workbox-webpack-plugin": "^7.3.0"
   },
   "browserslist": {
     "production": [
