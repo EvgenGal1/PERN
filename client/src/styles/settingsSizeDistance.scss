@@ -136,12 +136,6 @@ header {
         width: 100%;
         height: 100%;
       }
-      &:not(:first-child) {
-      }
-      &:last-child {
-        // width: 30px;
-        // margin: 0px var(--bot-it-las-mar-rig) 0px var(--bot-it-las-mar-lef);
-      }
       // .sw4btn 4х кнп. (data-size - Размеры)
       &:has([class$="sw4btn"]) {
         // margin: 0px 14px 0px 30px;

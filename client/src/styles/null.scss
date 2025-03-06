@@ -2,14 +2,11 @@
 
 @use "./mixins" as *;
 
-@mixin reset {
+* {
   margin: 0;
   padding: 0;
   border: 0;
   box-sizing: border-box;
-}
-* {
-  @include reset;
 }
 :focus,
 :active {
@@ -22,8 +19,6 @@ body {
   width: 100%;
   color: var(--txt-col);
   background-color: var(--fon-dark);
-}
-body {
   font-size: var(--sz3);
   font-size: 18px;
   line-height: 1;
@@ -661,9 +656,11 @@ button.btn-danger--eg {
   align-items: center;
   font-size: 16px;
   border: 1px solid #bd0000;
+  transition: transform 0.2s;
 
   &:active {
     opacity: 0.8;
+    transform: scale(0.95);
   }
 
   // анимация/прыжок/увеличение

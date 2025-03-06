@@ -1,6 +1,6 @@
 // Корзина и её Продукты
 export interface BasketProduct {
-  id?: number;
+  id: number;
   name: string;
   price: number;
   quantity: number;

@@ -1,5 +1,3 @@
-// ??? не раб - SCSS перем.цвета не обрабат. в CSS. В браузер прилетают названия SCSS. Все перем на CSS
-
 // временно, для наглядности цвета
 :root {
   --Red: #ff0000;
@@ -106,9 +104,7 @@ body[data-theme="light"] {
     background-color: var(--fon-dark);
 
     // цвет рамки для всех кроме ссылок и списков
-    *:not(a):not(ul) {
-      // border-color: var(--bord-hr) !important;
-    }
+    /* *:not(a):not(ul) { border-color: var(--bord-hr) !important; } */
     hr.hr {
       border-color: var(--bord-hr);
     }
@@ -134,7 +130,7 @@ body[data-theme="light"] {
       }
     }
     div nav {
-      & a {
+      & span > a {
         color: var(--activ-col);
         // background-color: var(--act-bg) ;
         &.active {
@@ -232,9 +228,6 @@ body[data-theme="light"] {
       button {
         color: var(--act-light);
         background-color: var(--act-dark);
-        &:hover {
-          // background-color: var(--act-bg-hov);
-        }
       }
     }
 
@@ -317,13 +310,13 @@ body[data-theme="light"] {
 
     // ПЕРЕКЛЮЧАТЕЛИ ----------------------------------------------------------------------------------
     // перепись цвета КНП для Цв.Тем
-    .sw3btn-radio__light:checked ~ .sw3btn-slider {
+    span .sw3btn-radio__light:checked ~ .sw3btn-slider {
       background-color: var(--ui-act-bg);
     }
-    .sw3btn-radio__dark:checked ~ .sw3btn-slider {
+    span .sw3btn-radio__dark:checked ~ .sw3btn-slider {
       background-color: var(--act-dark);
     }
-    .sw3btn-radio__neutral:checked ~ .sw3btn-slider {
+    span .sw3btn-radio__neutral:checked ~ .sw3btn-slider {
       background-color: var(--MelonYellow);
     }
   }

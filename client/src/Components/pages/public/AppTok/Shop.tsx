@@ -26,7 +26,7 @@ const Shop: React.FC = observer(() => {
       await Promise.all([
         catalog.fetchCategories(),
         catalog.fetchBrands(),
-        catalog.fetchProducts(),
+        catalog.fetchAllProducts(),
       ]);
     };
 
@@ -66,7 +66,7 @@ const Shop: React.FC = observer(() => {
         <Search />
       </div>
       <div className="row-mlr--eg mt-3">
-        <div className="col-md-3">
+        <aside className="col-md-3">
           <div className="mt-0">
             <CategoryBar />
           </div>
@@ -84,7 +84,7 @@ const Shop: React.FC = observer(() => {
               </button>
             </div>
           )}
-        </div>
+        </aside>
         <div className="col-md-9">
           <ProductList />
         </div>
