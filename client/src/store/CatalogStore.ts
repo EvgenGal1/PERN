@@ -13,7 +13,7 @@ import { ratingAPI } from "@/api/catalog/ratingAPI";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 
 class CatalogStore {
-  // масс.ответа
+  // масс.данн.Категории/Бренды/Продукты
   categories: CategoryData[] = [];
   brands: BrandData[] = [];
   products: ProductData[] = [];
@@ -38,6 +38,8 @@ class CatalogStore {
   // отдел.флаги загр.от повтор.загр.
   isFetchingCategories = false;
   isFetchingBrands = false;
+  // флаг.загр.Хар-к Продукта
+  isLoadingProps = false;
 
   constructor() {
     // автообраб.измен.в.ф.с обёрткой в декораторы - observable/`наблюдаемый` и action/`действие`
@@ -49,7 +51,7 @@ class CatalogStore {
       // автопривязка контекста this к мтд., оптимиз.с откл.глубок.реактив. > больших объ.
       { autoBind: true, deep: false }
       // > автоотслеж.зависимости и автовыполн.кода при измен.наблюдаемых данных
-      // autorun(() => { if (this.shouldFetch) { this.fetchProducts(); } });
+      // autorun(() => { if (this.shouldFetch) { this.fetchAllProducts(); } });
     );
   }
 
@@ -114,7 +116,7 @@ class CatalogStore {
   // загр.Одного Продукта
   async fetchProductById(id: number): Promise<void> {
     const existing = this.products.find((p) => p.id === id);
-    if (existing) return;
+    if (this.isLoading || existing) return;
     this.isLoading = true;
     try {
       const product = await productAPI.getOneProduct(id);
@@ -128,8 +130,30 @@ class CatalogStore {
     }
   }
 
+  // загр.Хар-ик Продукта
+  async fetchProductProps(productId: number) {
+    const existing = this.products.find((p) => p.id === productId);
+    if (this.isLoadingProps || existing?.props?.length) return;
+    this.isLoadingProps = true;
+    try {
+      const props = await productAPI.getAllProperty(productId);
+      runInAction(() => {
+        const index = this.products.findIndex((p) => p.id === productId);
+        if (index !== -1) {
+          this.products = [{ ...this.products[index], props: [...props] }];
+        }
+      });
+    } catch (error) {
+      console.error("Ошибка загрузки Характеристик:", error);
+    } finally {
+      runInAction(() => {
+        this.isLoadingProps = false;
+      });
+    }
+  }
+
   // загр.Всех Продуктов
-  async fetchProducts(): Promise<void> {
+  async fetchAllProducts(): Promise<void> {
     if (this.isLoading || this.products.length) this.isLoading = true;
     this.isLoading = true;
     try {
@@ -155,8 +179,8 @@ class CatalogStore {
   }
 
   // проверка Продуктов в сторе
-  getProductById(id: number): ProductData | undefined {
-    return this.products.find((p) => p.id === id);
+  getProductById(id: number): ProductData | null {
+    return this.products.find((p) => p.id === id) || null;
   }
 
   // обнов.Рейтинга Продукта
@@ -175,12 +199,8 @@ class CatalogStore {
       );
       runInAction(() => {
         // обнов.Рейтинг Продукта в сторе
-        const updatedProducts = this.products.map((item) =>
-          item.id === productId
-            ? { ...item, ratings: { ...item.ratings, ...data } }
-            : item
-        );
-        this.products = updatedProducts;
+        const product = this.products.find((p) => p.id === productId);
+        if (product) product.ratings = data;
       });
       return data;
     } catch (error) {
@@ -197,7 +217,7 @@ class CatalogStore {
     if (this.filters.category !== category) {
       this.filters.category = category;
       this.resetPagination();
-      this.fetchProducts();
+      this.fetchAllProducts();
       this.updateUrlParams();
     }
   }
@@ -207,7 +227,7 @@ class CatalogStore {
     if (this.filters.brand !== brand) {
       this.filters.brand = brand;
       this.resetPagination();
-      this.fetchProducts();
+      this.fetchAllProducts();
       this.updateUrlParams();
     }
   }
@@ -216,7 +236,7 @@ class CatalogStore {
   setPage(page: number) {
     if (this.pagination.page !== page) {
       this.pagination.page = page;
-      this.fetchProducts();
+      this.fetchAllProducts();
       this.updateUrlParams();
     }
   }
@@ -226,7 +246,7 @@ class CatalogStore {
     if (this.pagination.limit !== limit) {
       this.pagination.limit = limit;
       this.resetPagination();
-      this.fetchProducts();
+      this.fetchAllProducts();
       this.updateUrlParams();
     }
   }
@@ -241,7 +261,7 @@ class CatalogStore {
     this.sortSettings.field = field;
     this.sortSettings.order = order;
     this.resetPagination();
-    this.fetchProducts();
+    this.fetchAllProducts();
     this.updateUrlParams();
   }
 

@@ -115,6 +115,20 @@ export const productAPI = {
   },
 
   /**
+   * Получить Все Свойства Продукта
+   * @param productId - ID Продукта
+   */
+  async getAllProperty(productId: number): Promise<PropertyData[]> {
+    return handleRequest(
+      () =>
+        authInstance.get<PropertyData[]>(
+          `products/${productId}/property/getall`
+        ),
+      "Properties/GetAll"
+    );
+  },
+
+  /**
    * Обновление Свойства Продукта
    * @param productId - ID Продукта
    * @param id - ID Свойства
