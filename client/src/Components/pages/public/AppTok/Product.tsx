@@ -1,224 +1,138 @@
 import { useContext, useEffect, useState } from "react";
-import { Image, Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
-import { productAPI } from "@/api/catalog/productAPI";
-import { ratingAPI } from "@/api/catalog/ratingAPI";
-import { basketAPI } from "@/api/shopping/basketAPI";
 import { AppContext } from "@/context/AppContext";
 // Звезд.Комп.Рейтинга. Пуст./Полн.
-import { StarFill } from "@Comp/layout/AppTok/StarFill";
-import { StarOutline } from "@Comp/layout/AppTok/StarOutline";
-const Product: React.FC = (/* props: any */) => {
-  // е/и есть передача props ч/з navigate/useNavigate/react-router-dom
-  // const location = useLocation();
-  // const locationState = location.state as { userId?: number };
-  // let userId = locationState.userId // || location.state.userId;
+import { StarFill } from "@Comp/ui/Rating/StarFill";
+import { StarOutline } from "@Comp/ui/Rating/StarOutline";
+import LoadingAtom from "@/Components/ui/loader/LoadingAtom";
+// помощники
+import { formatPrice } from "@/utils/format";
 
-  // эффект нажатия кнопки
-  const [isPressed, setIsPressed] = useState(false);
-  const styles = {
-    button: {
-      transition: "transform 0.2s",
-    },
-    buttonPressed: {
-      transform: "scale(0.95)",
-    },
-  };
-  const handleMouseDown = () => {
-    setIsPressed(true);
-  };
-  const handleMouseUp = () => {
-    setIsPressed(false);
-  };
+const Product: React.FC = observer(() => {
+  // ID Продукта, Context
+  const { id } = useParams();
+  const { catalog, user, basket } = useContext(AppContext);
 
-  // id Продукта, Context, state Продукта
-  const { id }: any = useParams();
-  const { basket, catalog, user } = useContext(AppContext);
-  const [product, setProduct]: any = useState(null);
+  // наведение на Звёзды
+  const [hoverStar, setHoverStar] = useState<number>(0);
 
-  // сост.Рейтинга, наведения на него, кол-во головов из БД
-  const [numberStar, setNuberStar] = useState(0);
-  const [hoverStar, setHoverStar] = useState(0);
-  const [votes, setVotes] = useState(0);
-
-  // изнач.загр.Продукта/Хар-ик + Рейтинг/Голоса
   useEffect(() => {
-    productAPI.getOneProduct(id).then((data: any) => {
-      console.log("Prod prod data ", data);
-      setProduct(data);
-    });
-    ratingAPI.getProductRating(id).then((data: any) => {
-      console.log("Prod rating data ", data);
-      // setRating(data);
-      setNuberStar(data.rating);
-      setVotes(data.votes);
-    });
-  }, [id]);
+    const loadProduct = async () => {
+      if (!id || isNaN(Number(id))) return;
+      if (!catalog.getProductById(Number(id))) {
+        await catalog.fetchProductById(Number(id));
+      }
+    };
+
+    loadProduct();
+  }, [id, catalog]);
+
+  useEffect(() => {
+    const loadProp = async () => {
+      if (!id || isNaN(Number(id))) return;
+      const existProp = catalog.getProductById(Number(id));
+      if (existProp && !existProp.props) {
+        await catalog.fetchProductProps(Number(id));
+      }
+    };
+    loadProp();
+  }, [id, catalog, catalog.products]);
+
+  if (catalog.isLoading) return <LoadingAtom />;
+  if (!id || isNaN(Number(id))) return <div>Неверный ID продукта</div>;
+
+  const product = catalog.getProductById(Number(id));
+  if (!product) return <div>Продукт не найден</div>;
 
   // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
-    if (user.isAuth) {
-      await ratingAPI
-        .createProductRating(user.id, product.id, rating)
-        .then((data) => {
-          console.log("ProdItm CRE data ", data);
-          // setRating(data);
-          // ! ошб.типа, логики и передачи
-          setNuberStar(data.rating);
-          setVotes(data.votes);
-          catalog.rating = data.rating;
-        });
+    if (!user.isAuth || !product) return;
+    try {
+      await catalog.updateProductRating(user.id!, product.id!, rating);
+    } catch (error) {
+      console.error("Ошибка при создании Рейтинга:", error);
     }
   };
 
-  // обраб.клк по кнп. «Добавить в корзину»:
-  const handleClick = (productId: any) => {
-    console.log("Prod productId ", productId);
-    basketAPI.appendBasket(productId).then((data: any) => {
-      console.log("Product appendBasket data ", data);
-      basket.products = data.products;
-      console.log("Product basket.products ", basket.products);
-    });
+  // добавить Продукт в Корзину
+  const handleClickAddToBasket = () => {
+    if (product && product.id) basket.addProduct(product.id);
   };
-
-  if (!product) {
-    return <Spinner animation="border" />;
-  }
-
   return (
-    <div className="container">
-      <div className="df df-row mt-3 mb-3">
-        <div className="col-lg-4">
-          {product.image ? (
-            <Image
-              width={300}
-              height={300}
-              src={`${process.env.REACT_APP_IMG_URL_PERN}/img/shop/product/${product.image}`}
-            />
-          ) : (
-            <Image
-              width={300}
-              height={300}
-              src="http://via.placeholder.com/300"
-            />
-          )}
+    <div className="product container" key={id}>
+      <div className="df df-row">
+        <div className="mr-3">
+          <img
+            style={{ width: "300px", height: "300px" }}
+            src={`${product?.image ? `${process.env.REACT_APP_IMG_URL_PERN}/img/shop/product/${product?.image}` : "http://via.placeholder.com/300"}`}
+          />
         </div>
-        <div className="col-lg-8">
-          <h1>{product.name}</h1>
-          <h3>
-            {product.price.toLocaleString()}
-            {/* .00 */} руб.
-          </h3>
-          <p>Бренд: {product.brand.name}</p>
-          <p>Категория: {product.category.name}</p>
-          <div>
-            {/* {rating ? (
-                <p>
-                  <p>
-                    Рейтинг: {rating.rating}, голосов {rating.votes}
-                  </p>
-                </p>
-              ) : (
-                <Spinner animation="border" />
-              )} */}
-            <p>
-              Рейтинг: {numberStar} {votes ? <> / {votes}</> : ""} Голосов
-            </p>
-          </div>
+        {/* Основная информация о продукте */}
+        <div className="product-header">
+          <h1>{product?.name}</h1>
+          <p>Цена: {formatPrice(product.price)} руб.</p>
+          <p>Бренд: {product.brand?.name}</p>
+          <p>Категория: {product.category?.name}</p>
+          {/* Рейтинг Продукта */}
+          <p>
+            Рейтинг: {product.ratings?.rating ?? 0}
+            {product.ratings?.votes
+              ? ` / ${product.ratings?.votes || 0} голосов`
+              : null}
+          </p>
           {/* Звёзды */}
-          <div style={{ display: "flex", marginRight: "10px" }}>
-            {Array(5)
-              .fill(0)
-              .map((_, index) =>
-                numberStar >= index + 1 || hoverStar >= index + 1 ? (
-                  // rating.rating >= index + 1 || hoverStar >= index + 1 ? (
-                  // product.rating >= index + 1 || hoverStar >= index + 1 ? (
-                  <span
-                    onMouseOver={() => setHoverStar(index + 1)}
-                    onMouseLeave={() => setHoverStar(0)}
-                    onFocus={() => setHoverStar(index + 1)}
-                    onBlur={() => setHoverStar(0)}
-                    onClick={() => handleSubmit(index + 1)}
-                    style={{
-                      display: "flex",
-                      fontSize: "25px",
-                      fontWeight: "100",
-                      color: "orange",
-                      cursor: "pointer",
-                    }}
-                    key={index}
-                    role="button"
-                    tabIndex={0}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleSubmit(index + 1);
-                      }
-                    }}
-                  >
-                    <StarFill />
-                  </span>
-                ) : (
-                  <span
-                    onMouseOver={() => setHoverStar(index + 1)}
-                    onMouseLeave={() => setHoverStar(0)}
-                    onFocus={() => setHoverStar(index + 1)}
-                    onBlur={() => setHoverStar(0)}
-                    onClick={() => handleSubmit(index + 1)}
-                    style={{
-                      display: "flex",
-                      fontSize: "25px",
-                      fontWeight: "100",
-                      color: "orange",
-                      cursor: "pointer",
-                    }}
-                    key={index}
-                    role="button"
-                    tabIndex={0}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        handleSubmit(index + 1);
-                      }
-                    }}
-                  >
-                    <StarOutline />
-                  </span>
-                )
-              )}
+          <div className="stars">
+            {Array.from({ length: 5 }).map((_, index) => {
+              const currentRating = product!.ratings?.rating || 0;
+              const isActive = hoverStar > index || currentRating > index;
+              return (
+                <span
+                  key={index}
+                  onMouseEnter={() => setHoverStar(index + 1)}
+                  onMouseLeave={() => setHoverStar(0)}
+                  onClick={() => handleSubmit(index + 1)}
+                  style={{
+                    fontSize: "25px",
+                    color: isActive ? "orange" : "gray",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isActive ? <StarFill /> : <StarOutline />}
+                </span>
+              );
+            })}
           </div>
+          {/* кнп.добав.в корзину */}
           <button
-            onClick={() => handleClick(product.id)}
-            style={{ ...styles.button, ...(isPressed && styles.buttonPressed) }}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onTouchStart={handleMouseDown}
-            onTouchEnd={handleMouseUp}
-            className="btn--eg btn-primary--eg mt-3"
+            className="btn--eg btn-primary--eg mt-3 press-button"
+            onClick={handleClickAddToBasket}
           >
-            Добавить в корзину
+            Добавить в Корзину
           </button>
         </div>
-      </div>
-      {/* Характеристики */}
-      {!!product.props.length && (
-        <div className="df df-row">
-          <div className="df df-col">
-            <h3>Характеристики</h3>
-            <table className="table--eg">
-              <tbody>
-                {product.props.map((item: any) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* хар-ки Продукта */}
+        {!!product.props?.length && (
+          <div className="product-props df df-row">
+            <div className="df df-col">
+              <h3>Характеристики</h3>
+              <table className="table--eg">
+                <tbody>
+                  {product?.props.map((item, index) => (
+                    <tr key={`${item.name}-${index}`}>
+                      <td>{item.name}</td>
+                      <td>{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
-};
+});
 
 export default Product;
