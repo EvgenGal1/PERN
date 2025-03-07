@@ -11,7 +11,6 @@ import BasketItem from "./BasketItem";
 const BasketList = observer(() => {
   const { basket }: any = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
-  // console.log("BasketList basket ", basket);
 
   const navigate = useNavigate();
 
@@ -22,7 +21,6 @@ const BasketList = observer(() => {
       .getOneBasket()
       .then((data) => (basket.products = data.products))
       .finally(() => setFetching(false));
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (fetching) {
@@ -34,7 +32,6 @@ const BasketList = observer(() => {
     basketAPI
       .incrementBasket(id)
       .then((data) => {
-        // console.log("BL incrementBasket data ", data);
         basket.products = data.products;
       })
       .finally(() => setFetching(false));
@@ -45,7 +42,6 @@ const BasketList = observer(() => {
     basketAPI
       .decrementBasket(id)
       .then((data) => {
-        // console.log("BL decrementBasket data ", data);
         basket.products = data.products;
       })
       .finally(() => setFetching(false));
@@ -58,7 +54,6 @@ const BasketList = observer(() => {
       basketAPI
         .removeBasket(id)
         .then((data) => {
-          // console.log("BL removeBasket data ", data);
           basket.products = data.products;
         })
         .finally(() => setFetching(false));

@@ -9,7 +9,7 @@ import axios, {
 import { AuthRes } from "../types/api/auth.types";
 
 // Базовый URL API
-const API_URL = process.env.REACT_APP_CLT_IURL;
+const API_URL = process.env.REACT_APP_SRV_IURL;
 
 // 1. `гостевой экземпляр` axios (неавториз.польз., отправ.cookie в кажд.req(refresh,basketId))
 const guestInstance = axios.create({ baseURL: API_URL, withCredentials: true });

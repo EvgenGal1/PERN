@@ -132,45 +132,6 @@ const UpdateOrder: React.FC<Props> = (props) => {
 
   // валидация/ошибки
   const [, setValid] = useState(order2);
-
-  // ^ пока не нужнй код. пробы обн.данн.ч/з Род.Комп.Order
-  // useEffect(() => {
-  //   // if (id) {  adminGetOne(id).then((data) => {получ.данн.Продукта с БД}) } // ^ упразднено
-  //   //     // получ.данн.Продукта с БД
-  //   const order = {
-  //     name: orders.name.toString(),
-  //     email: orders.email.toString(),
-  //     phone: orders.phone.toString(),
-  //     address: orders.address.toString(),
-  //     comment: orders?.comment == null ? "" : orders?.comment.toString(),
-  //   };
-  //   setValue(order);
-  //   setValid(isValid(order));
-  //   // setValid(order);
-  //   // для удобства работы с хар-ми зададим для каждой уникальный идентификатор и доп.свойства, которые подскажут нам, какой http-запрос на сервер нужно выполнить — добавления, обновления или удаления характеристики
-  //   setItems(
-  //     orders.items.map((item: any) => {
-  //       // при добавлении новой хар-ки свойство append принимает значение true
-  //       // при изменении старой хар-ки свойство change принимает значение true
-  //       // при удалении старой хар-ки свойство remove принимает значение true
-  //       return {
-  //         ...item,
-  //         unique: uuid(),
-  //         append: false,
-  //         remove: false,
-  //         change: false,
-  //       };
-  //     })
-  //   );
-  // }, [
-  //   orders.name,
-  //   orders.email,
-  //   orders.phone,
-  //   orders.address,
-  //   orders.comment,
-  //   orders.items,
-  // ]);
-
   const amount: any = orders.items.reduce(
     (sum: number, item: { price: number; quantity: number }) =>
       sum + item.price * item.quantity,
@@ -205,35 +166,6 @@ const UpdateOrder: React.FC<Props> = (props) => {
       if (items.length) {
         await updateItems(items, id);
       }
-      // adminUpdate(id, data)
-      //   .then((data) => {
-      //     const order = {
-      //       name: data.name,
-      //       email: data.email.toString(),
-      //       phone: data.phone.toString(),
-      //       address: data.address.toString(),
-      //       comment: data.comment.toString(),
-      //     };
-      //     setValue(order);
-      //     setValid(isValid(order));
-      //     // мы получим актуальные значения хар-тик с сервера, потому что обновление хар-тик завершилось еще до момента отправки этого http-запроса на сервер
-      //     setItems(
-      //       data.items.map((item: any) => {
-      //         return {
-      //           ...item,
-      //           unique: uuid(),
-      //           append: false,
-      //           remove: false,
-      //           change: false,
-      //         };
-      //       })
-      //     );
-      //     // закрываем модальное окно редактирования заказов
-      //     setShow(false);
-      //     // изменяем состояние компонента списка заказов
-      //     setChange((state: any) => !state);
-      //   })
-      //   .catch((error) => alert(error.response.data.message));
     }
   };
   console.log("handleSubmit ", handleSubmit);
@@ -253,7 +185,6 @@ const UpdateOrder: React.FC<Props> = (props) => {
         <>
           <>
             {/* // ^ Комп.FFR (ток на масс.) */}
-            {/* // eslint-disable-next-line react/jsx-pascal-case */}
             <FormFieldRecursive__EG
               valueArr={[
                 ["name", value.name],
@@ -270,42 +201,6 @@ const UpdateOrder: React.FC<Props> = (props) => {
               legend={"Recursive -  Пользователь"}
             />
           </>
-          {/* // ^ Комп.FF (масс.(1ый)(не управ.inpt в > влож.)/объ.(2ой)(раздел.renrder на не/объедин.блоки)) */}
-          {/* <div className="uniteddiv df df-row"> */}
-          {}
-          {/* <FormField__eg
-            // handleSubmit={handleSubmit}
-            handleChange={handleInputChange}
-            valueArr={[
-              [
-                ["phone", value.phone],
-                ["email", value.email],
-              ],
-              ["comment", value.comment],
-            ]}
-            valid={valid}
-            label={true}
-            unionObj={["phone", "email"]}
-            // nonField={true}
-            legend={"на массиве -  Пользователь"}
-            clForm={"mt-3"}
-          /> */}
-          {/* <FormField__eg
-            // handleSubmit={handleSubmit}
-            handleChange={handleInputChange}
-            valueObj={{ 
-              phone: value.phone,
-              email: value.email, 
-              comment: value.comment,
-            }}
-            valid={valid}
-            label={true}
-            unionObj={["phone", "email"]}
-            // nonField={true}
-            legend={"на объекте - Пользователь"}
-            clForm={"mt-3"}
-          /> */}
-          {/* </div> */}
           {/* Позиции  */}
           <div className="">
             <UpdateItems items={items} setItems={setItems} />
