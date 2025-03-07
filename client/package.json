@@ -11,12 +11,17 @@
     "TypeScript"
   ],
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "start_0": "react-scripts start",
     "build_0": "react-scripts build",
     "test_0": "react-scripts test",
     "start": "craco start",
     "build": "craco build",
+    "serve": "serve -s build",
+    "prod": "npm run build && npm run serve",
     "test": "craco test",
     "test:coverage": "react-scripts test --coverage",
     "eject": "react-scripts eject",
