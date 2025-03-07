@@ -1,34 +1,74 @@
 // ^ хранилище Корзины
 
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
+
+import { basketAPI } from "@/api/shopping/basketAPI";
+import { BasketProduct } from "@/types/api/shopping.types";
 
 class BasketStore {
-  _products: any[] = [];
+  products: BasketProduct[] = [];
+  total: number = 0;
+  isLoading = false;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true, deep: false });
   }
 
-  get products() {
-    return this._products;
+  // получить Корзину
+  async fetchBasket(): Promise<void> {
+    if (this.isLoading || this.products.length > 0) return;
+    this.isLoading = true;
+    try {
+      const data = await basketAPI.getOneBasket();
+      runInAction(() => {
+        this.products = data.products;
+        this.total = data.total;
+      });
+    } catch (error) {
+      console.error("Ошибка загрузки Брендов:", error);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
   }
 
-  set products(products) {
-    this._products = products;
+  // добавить Протукт в Корзину
+  async addProduct(productId: number): Promise<void> {
+    if (this.isLoading || this.products.length) this.isLoading = true;
+    this.isLoading = true;
+    try {
+      const data = await basketAPI.appendBasket(productId);
+      runInAction(() => {
+        this.products = data.products;
+        this.total = data.total;
+      });
+    } catch (error) {
+      console.error("Ошибка Добавления в Корзину:", error);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
   }
 
-  // Всего Позиций в Корзине
+  // Всего Позиций в Корзине (есть total)
   get count() {
-    return this._products.length;
+    return this.products.reduce((sum, item) => sum + item.quantity, 0);
   }
 
-  // стоимость Всех Продуктов Корзины
+  // Cтоимость Всех Продуктов Корзины
   get sum() {
-    return this._products.reduce(
+    return this.products.reduce(
       (sum, item: { price: number; quantity: number }) =>
         sum + item.price * item.quantity,
       0
     );
+  }
+
+  // проверка наличия Продукта в Корзине
+  isProductInBasket(productId: number): boolean {
+    return this.products.some((product) => product.id === productId);
   }
 }
 
