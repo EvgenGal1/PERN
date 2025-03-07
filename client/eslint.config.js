@@ -13,9 +13,17 @@ export default [
   reactRecommended,
   {
     // форматы ф.> поверки
-    files: ["./src/*.{js,jsx,ts,tsx}", "./craco.config.cjs"],
+    files: ["./src/*.{ts,tsx}", "./craco.config.cjs"],
     // пути игнора
-    ignores: ["**/vr/**", "**/dist/**", "**/node_modules/**", "*.config.*"],
+    ignores: [
+      "**/vr/**",
+      "**/dist/**",
+      "**/node_modules/**",
+      "*.config.*",
+      "vr/**",
+      "vr/*",
+      "**.js",
+    ],
     env: {
       node: true, // вкл.поддержку NodeJS
       browser: true, // вкл.браузер.глобал.перемен.
@@ -37,6 +45,7 @@ export default [
         ...globals.node, // NodeJS (module, process,)
         // разреш.как.глобал.перем.
         __dirname: "readonly",
+        document: "readonly",
         process: "readonly",
         module: "readonly",
         require: "readonly",
@@ -58,17 +67,23 @@ export default [
       "react-hooks/rules-of-hooks": "warn", // проверка хуков // ^ error
       "react-hooks/exhaustive-deps": "warn", // проверка зависимостей эффектов
       // TypeScript
+      "no-unused-vars": "off", // отк.стандарт.правило неиспольз.перем./выраж.
       "@typescript-eslint/no-explicit-any": "warn", // тип any
       "@typescript-eslint/no-var-requires": "off", // использ.require
+      "@typescript-eslint/explicit-module-boundary-types": "warn", // требовать явные типы
+      "@typescript-eslint/no-unused-expressions": "warn", // ошб.на неиспользуемые выражения
       "@typescript-eslint/no-unused-vars": /* "warn" */ [
         "warn",
-        { ignoreTypeValueDeclarations: true }, // игнор типов/джейнер.от удал.при не использ.
-      ], // неиспользуемые переменные
-      "@typescript-eslint/explicit-module-boundary-types": "error", // требовать явные типы
+        {
+          ignoreTypeValueDeclarations: true, // игнор типов/джейнер.от удал.при не использ.
+          allowShortCircuit: true, // использ.мал.замыкания
+          allowTernary: true, // исполь.тернар.опре.
+        },
+      ], // неиспользуемые переменные/выражения
       // JavaScript
       "import/no-commonjs": "off", // использ.CommonJS
       "no-undef": "off", // неопред.переменные
-      "no-console": "off", // запрет console.log
+      "no-console": "off", // запрет/off console.log
       // Prettier
       "prettier/prettier": "error", // автоопред.переносов строк
       // Доступность
