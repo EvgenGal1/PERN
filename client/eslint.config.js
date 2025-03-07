@@ -82,8 +82,8 @@ export default [
       ], // неиспользуемые переменные/выражения
       // JavaScript
       "import/no-commonjs": "off", // использ.CommonJS
-      "no-undef": "off", // неопред.переменные
-      "no-console": "off", // запрет/off console.log
+      "no-undef": "on", // неопред.переменные
+      "no-console": "on", // запрет/off console.log
       // Prettier
       "prettier/prettier": "error", // автоопред.переносов строк
       // Доступность

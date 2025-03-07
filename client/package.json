@@ -22,7 +22,7 @@
     "build_1": "craco build",
     "build": "craco build --max-old-space-size=4096",
     "start": "craco start -a 0.0.0.0",
-    "vercel-build": "npm run build && cp -r client/build/* public/",
+    "vercel-build": "npm run build && cp -r build/* public/",
     "serve": "serve -s build",
     "prod": "npm run build && npm run serve",
     "test": "craco test",
@@ -36,7 +36,7 @@
     "ts-check": "tsc --noEmit",
     "ts-cc": "tsc --build --clean",
     "ci-check": "npm run lint & npm run ts-check & npm test",
-    "ci-tsff": "npm runts-check & npm run lint:fix & npm run format",
+    "ci-tsff": "npm run ts-check & npm run lint:fix & npm run format",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
