@@ -22,6 +22,7 @@
     "build": "craco build",
     "build_2": "craco build --max-old-space-size=4096",
     "start_2": "craco start -a 0.0.0.0",
+    "vercel-build": "npm run build && cp -r build/* public/",
     "serve": "serve -s build",
     "prod": "npm run build && npm run serve",
     "test": "craco test",

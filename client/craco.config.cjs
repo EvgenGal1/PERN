@@ -36,7 +36,8 @@ module.exports = {
           }
         });
       }
-
+      // путь к выходным файлам корректен
+      // webpackConfig.output.path = path.resolve(__dirname, "build");
       return webpackConfig; // возврат обнов.конфигурации
     },
   },
