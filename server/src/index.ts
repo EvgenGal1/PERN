@@ -42,8 +42,17 @@ const app: Application = express();
 const PORT = Number(process.env.SRV_PORT) || 5000;
 const PUB_DIR = process.env.PUB_DIR || 'public';
 
-// совместн.использ.ресурс.разн.источников client/server > разрещ.cookie опред.url
-app.use(cors({ credentials: true, origin: process.env.CLT_URL }));
+// совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
+app.use(
+  cors({
+    credentials: true,
+    origin: /* process.env.CLT_URL */ function (origin, callback) {
+      const allowedOrigins = [process.env.CLT_URL, process.env.CLT_URL_PROD];
+      if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+      else callback(new Error('Не разрешён CORS'));
+    },
+  }),
+);
 // MiddleWare > раб.с cookie
 app.use(cookieParser(process.env.SECRET_KEY));
 // MW возм.парсить json
