@@ -7,9 +7,14 @@
       "config": {
         "distDir": "build",
         "includeFiles": ["build/**"],
+        "cleanUrls": true,
         "maxOldSpaceSize": 4096
       }
     }
   ],
-  "routes": [{ "src": "/(.*)", "dest": "/" }]
+  "output": "build",
+  "routes": [
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }

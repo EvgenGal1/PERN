@@ -36,8 +36,15 @@ module.exports = {
           }
         });
       }
+
       // путь к выходным файлам корректен
-      // webpackConfig.output.path = path.resolve(__dirname, "build");
+      webpackConfig.output = {
+        ...webpackConfig.output,
+        publicPath: "/", // Для корневого деплоя
+        filename: "static/js/[name].[contenthash:8].js",
+        chunkFilename: "static/js/[name].[contenthash:8].chunk.js",
+      };
+
       return webpackConfig; // возврат обнов.конфигурации
     },
   },
