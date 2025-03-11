@@ -15,4 +15,4 @@ vr*/
 .env*
 tmp/*
 logs/*
-public/img/shop
+static/img/shop

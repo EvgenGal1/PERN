@@ -40,7 +40,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const app: Application = express();
 // порт из перем.окруж. | умолч.
 const PORT = Number(process.env.SRV_PORT) || 5000;
-const PUB_DIR = process.env.PUB_DIR || 'public';
+const PUB_DIR = process.env.PUB_DIR || 'static';
 
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
 app.use(
