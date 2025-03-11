@@ -31,8 +31,8 @@ export const PaginSortLimit = () => {
   return (
     <div className="pagin-sort-limit">
       {/* ПАГИНАЦИЯ */}
-      <div>
-        {catalog.pagination.totalCount > catalog.pagination.limit && (
+      {catalog.pagination.totalCount > catalog.pagination.limit && (
+        <div>
           <ul className="pagination--eg pagination">
             {Array.from({
               length: Math.ceil(
@@ -53,8 +53,8 @@ export const PaginSortLimit = () => {
               );
             })}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* СОРТИРОВКА ПО ПОЛЮ */}
       <div className="sort-field-container df df-aic">
