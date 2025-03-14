@@ -18,7 +18,7 @@ class OrderController {
   }
 
   private readonly name = 'Заказа';
-  private readonly user = 'Пользователя';
+  // private readonly user = 'Пользователя';
 
   async getOneOrder(req: Request, res: Response, next: NextFunction) {
     try {

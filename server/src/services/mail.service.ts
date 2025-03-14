@@ -15,14 +15,8 @@ class MailService {
   // ч/з констр.инициализ.почтовый клиент
   constructor() {
     // проверка перем.окруж.
-    const {
-      SMTP_HOST,
-      SMTP_PORT,
-      SMTP_USER,
-      SMTP_APP_PSW,
-      SMTP_SERVICE,
-      SMTP_SECURE,
-    } = process.env;
+    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_APP_PSW, SMTP_SECURE } =
+      process.env;
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_APP_PSW) {
       throw ApiError.notFound(
         'Почтовая конфигурация отсутствует. Проверьте переменные окружения.',

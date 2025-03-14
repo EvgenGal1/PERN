@@ -16,7 +16,7 @@ const sequelize = new Sequelize(
   process.env.DB_USER!, // Пользователь
   process.env.DB_PSW!, // пароль
   {
-    dialect: process.env.DB_USER! as Dialect,
+    dialect: process.env.DB_DIALECT! as Dialect,
     host: process.env.DB_HOST!,
     port: Number(process.env.DB_PORT) || 5432,
     define: {

@@ -1,6 +1,6 @@
 // ^ глобал.обарб.ошб.Express с логг./стат.смс.
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, NextFunction } from 'express';
 
 // клс.польз.ошб.
 import ApiError from './ApiError';

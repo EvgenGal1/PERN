@@ -4,7 +4,6 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Sequelize,
-  Optional,
   CreationOptional,
 } from 'sequelize';
 

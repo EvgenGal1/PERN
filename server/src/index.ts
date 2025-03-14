@@ -28,7 +28,7 @@ import {
 // документирование/настр. Swagger
 import { documentSwagger } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
-import { isDevelopment, isProduction } from './config/envs/env.consts';
+import { isDevelopment } from './config/envs/env.consts';
 import initModels from './models/index';
 
 // загр.перем.окруж.из опред.ф.env

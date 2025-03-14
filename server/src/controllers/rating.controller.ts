@@ -11,8 +11,8 @@ class RatingController {
   }
 
   private readonly name = 'Продукта';
-  private readonly user = 'Пользователя';
   private readonly rating = 'Рейтинга';
+  // private readonly user = 'Пользователя';
 
   async getOneRating(req: Request, res: Response, next: NextFunction) {
     try {
