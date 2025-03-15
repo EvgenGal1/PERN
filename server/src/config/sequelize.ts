@@ -26,6 +26,13 @@ const sequelize = new Sequelize(
     },
     logging: false, // false - без лог.записей
     timezone: 'Europe/Moscow',
+    dialectOptions: {
+      // сертификаты не строг.проверка
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
 );
 
