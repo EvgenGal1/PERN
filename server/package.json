@@ -17,6 +17,7 @@
     "dev": "cross-env NODE_ENV=development nodemon --watch src --ext ts --exec ts-node --transpile-only src/index.ts",
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node dist/index.js",
+    "vercel-build": "npm run build",
     "test": "cross-env NODE_ENV=development jest --detectOpenHandles"
   },
   "dependencies": {
