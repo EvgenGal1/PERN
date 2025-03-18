@@ -61,12 +61,14 @@ class TokenService {
       const accessToken = jwt.sign(
         payload,
         process.env.JWT_ACCESS_SECRET_KEY!,
-        { expiresIn: +process.env.RESET_TOKEN_LIFETIME! },
+        {
+          expiresIn: +process.env.RESET_TOKEN_LIFETIME! / 1000, // перевод из мсек.в секунды
+        },
       );
       const refreshToken = jwt.sign(
         payload,
         process.env.JWT_REFRESH_SECRET_KEY!,
-        { expiresIn: +process.env.REFRESH_TOKEN_LIFETIME! },
+        { expiresIn: +process.env.REFRESH_TOKEN_LIFETIME! / 1000 },
       );
       return { accessToken, refreshToken };
     } catch (error: unknown) {
