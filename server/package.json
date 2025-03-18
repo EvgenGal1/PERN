@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "keywords": [
     "PERN",
     "PostgreSQL",
@@ -11,8 +11,6 @@
     "React",
     "NodeJS"
   ],
-  "main": "dist/index.js",
-  "type": "commonjs",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch src --ext ts --exec ts-node --transpile-only src/index.ts",
     "build": "tsc",
