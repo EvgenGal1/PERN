@@ -10,18 +10,14 @@
   },
   "builds": [
     {
-      "src": "dist/index.js",
+      "src": "src/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "index.js"
-    },
-    {
-      "src": "/img/(.*)",
-      "dest": "/public/img/$1"
+      "dest": "index.ts"
     }
   ]
 }
