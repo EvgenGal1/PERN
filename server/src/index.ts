@@ -63,14 +63,15 @@ app.use(reQLog);
 // MW > стат.ф. (img, css)
 app.use(
   express.static(
-    path.join(__dirname, isDevelopment ? `../${PUB_DIR}` : `${PUB_DIR}`),
+    // path.join(__dirname, isDevelopment ? `../${PUB_DIR}` : `${PUB_DIR}`),
+    path.join(__dirname, isDevelopment ? `../public` : `public`),
   ),
 );
 // MW > загр.ф.
 app.use(fileUpload());
 
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
-app.use(`/${process.env.SRV_NAME}`, router);
+app.use(/* `/${process.env.SRV_NAME}`, */ router);
 // тест.маршрут
 app.get('/', (req: Request, res: Response) => {
   res.send(htmlContent);
@@ -105,11 +106,11 @@ const start = async (): Promise<void> => {
       console.log(
         `\x1b[41m${NODE_ENV.toUpperCase()}\x1b[0m   MAIN   SRV: ${mainColor}${process.env.SRV_URL}\x1b[0m   DB: \x1b[33m${process.env.DB_NAME}:${process.env.DB_PORT}\x1b[0m`,
       );
-      if (isDevelopment) {
-        logger.info(
-          `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_NAME}:${process.env.DB_PORT}`,
-        );
-      }
+      // if (isDevelopment) {
+      logger.info(
+        `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_NAME}:${process.env.DB_PORT}`,
+      );
+      // }
     });
   } catch (error: unknown) {
     const err = error as Error;
