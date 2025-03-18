@@ -70,11 +70,11 @@ app.use(
 app.use(fileUpload());
 
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
-app.use(/* `/${process.env.SRV_NAME}`, */ router);
+app.use(`/${process.env.SRV_NAME}`, router);
 // тест.маршрут
-app.get('/', (req: Request, res: Response) => {
-  res.send(htmlContent);
-});
+// app.get('/', (req: Request, res: Response) => {
+//   res.send(htmlContent);
+// });
 
 // документирование (Swagger)
 documentSwagger(app);

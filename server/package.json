@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "PERN (PostgreSQL, Express, React, NodeJS)",
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
+  "private": true,
   "license": "UNLICENSED",
   "keywords": [
     "PERN",
