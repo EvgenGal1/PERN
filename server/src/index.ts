@@ -1,7 +1,7 @@
 // ^ Запуск Сервера. Базов.конфиг для приёма запросов
 
 // express ч/з require для прилож.
-import express, { Application, Request, Response } from 'express';
+import express, { Application /* Request, Response */ } from 'express';
 // наст./перем.окруж.
 import { config } from 'dotenv';
 // cors > отправ.запр.с брауз.
@@ -30,7 +30,7 @@ import { documentSwagger } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
 import initModels from './models/index';
-import { htmlContent } from './utils/varWelcom';
+// import { htmlContent } from './utils/varWelcom';
 
 // загр.перем.окруж.из опред.ф.env
 config({ path: `.env.${process.env.NODE_ENV}` });
