@@ -38,8 +38,9 @@ class UserRoleModel extends Model<
         id: { type: DataTypes.INTEGER, autoIncrement: true, allowNull: false },
         userId: {
           type: DataTypes.INTEGER,
-          allowNull: false,
           primaryKey: true,
+          allowNull: false,
+          autoIncrement: true,
           field: 'user_id',
           // валид.внешн.ключа по существ.roleId
           references: {
