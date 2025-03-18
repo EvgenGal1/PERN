@@ -13,8 +13,8 @@ export const documentSwagger = (app: Application): void => {
       openapi: '3.0.0',
       info: {
         title: 'PERN Stack API',
-        version: '2.1.0',
-        description: 'Документация API интеграции',
+        version: '2.1.1',
+        description: 'PERN API (док.интегр.)',
       },
       servers: [
         {

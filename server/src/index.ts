@@ -40,8 +40,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const app: Application = express();
 // порт из перем.окруж. | умолч.
 const PORT = Number(process.env.SRV_PORT) || 5000;
-const PUB_DIR = process.env.PUB_DIR || 'static';
-
+const PUB_DIR = process.env.PUB_DIR || 'public';
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
 app.use(
   cors({
@@ -61,7 +60,11 @@ app.use(express.json());
 app.use(reSLog);
 app.use(reQLog);
 // MW > стат.ф. (img, css)
-app.use(express.static(path.join(__dirname, `../${PUB_DIR}`)));
+app.use(
+  express.static(
+    path.join(__dirname, isDevelopment ? `../${PUB_DIR}` : `${PUB_DIR}`),
+  ),
+);
 // MW > загр.ф.
 app.use(fileUpload());
 
