@@ -63,8 +63,7 @@ app.use(reQLog);
 // MW > стат.ф. (img, css)
 app.use(
   express.static(
-    // path.join(__dirname, isDevelopment ? `../${PUB_DIR}` : `${PUB_DIR}`),
-    path.join(__dirname, isDevelopment ? `../public` : `public`),
+    path.join(__dirname, isDevelopment ? `../${PUB_DIR}` : `${PUB_DIR}`),
   ),
 );
 // MW > загр.ф.
