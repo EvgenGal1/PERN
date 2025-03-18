@@ -5,6 +5,7 @@
   "author": "EvGen Gal <ZBst.1@yandex.ru>",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "keywords": [
     "PERN",
     "PostgreSQL",
