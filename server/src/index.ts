@@ -30,6 +30,7 @@ import { documentSwagger } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
 import initModels from './models/index';
+import { htmlContent } from './utils/varWelcom';
 
 // загр.перем.окруж.из опред.ф.env
 config({ path: `.env.${process.env.NODE_ENV}` });
@@ -72,7 +73,7 @@ app.use(fileUpload());
 app.use(`/${process.env.SRV_NAME}`, router);
 // тест.маршрут
 app.get('/', (req: Request, res: Response) => {
-  res.send(`Hello, World!`);
+  res.send(htmlContent);
 });
 
 // документирование (Swagger)

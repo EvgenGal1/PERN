@@ -1,15 +1,27 @@
 {
   "version": 2,
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
   "builds": [
     {
-      "src": "dist/index.js",
+      "src": "src/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "src/index.ts"
+    },
+    {
+      "src": "/img/(.*)",
+      "dest": "/public/img/$1"
     }
   ]
 }
