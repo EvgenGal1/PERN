@@ -10,7 +10,7 @@ import cors from 'cors';
 // import fileUpload from 'express-fileupload';
 // MW по корр.раб. с cookie
 // import cookieParser from 'cookie-parser';
-// import path from 'path';
+import path from 'path';
 
 // конфиг.БД
 import sequelize, { connectToDatabase } from './config/sequelize';
@@ -40,7 +40,10 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // созд.server
 const app: Application = express();
 // порт из перем.окруж. | умолч.
-const PORT = isDevelopment ? Number(process.env.SRV_PORT) : 5000;
+const PORT =
+  Number(
+    process.env.PORT,
+  ) /* isDevelopment ? Number(process.env.SRV_PORT) : */ || 5000;
 // const PUB_DIR = process.env.PUB_DIR || 'public';
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
 app.use(
@@ -71,6 +74,8 @@ app.use(reQLog);
 //     ),
 //   ),
 // );
+// В middleware:
+app.use(express.static(path.join(__dirname, '../public')));
 // MW > загр.ф.
 // app.use(fileUpload());
 

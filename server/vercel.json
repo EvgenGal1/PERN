@@ -5,15 +5,14 @@
       "src": "dist/index.js",
       "use": "@vercel/node",
       "config": {
-        "runtime": "nodejs20.x",
-        "includeFiles": ["dist/**", "public/**"]
+        "runtime": "nodejs20.x"
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/index.js"
+      "dest": "/"
     }
   ]
 }
