@@ -1,7 +1,7 @@
 // ^ Запуск Сервера. Базов.конфиг для приёма запросов
 
 // express ч/з require для прилож.
-import express, { Application /* , Request, Response */ } from 'express';
+import express, { Application, Request, Response } from 'express';
 // наст./перем.окруж.
 import { config } from 'dotenv';
 // cors > отправ.запр.с брауз.
@@ -40,7 +40,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // созд.server
 const app: Application = express();
 // порт из перем.окруж. | умолч.
-const PORT = Number(process.env.SRV_PORT) || 5000;
+const PORT = isDevelopment ? Number(process.env.SRV_PORT) : 5000;
 // const PUB_DIR = process.env.PUB_DIR || 'public';
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
 app.use(
@@ -77,9 +77,9 @@ app.use(reQLog);
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
 // app.use(`/${process.env.SRV_NAME}`, router);
 // тест.маршрут
-// app.get('/', (req: Request, res: Response) => {
-//   res.send(htmlContent);
-// });
+app.get('/', (req: Request, res: Response) => {
+  res.send(/* htmlContent */ 'HELLO');
+});
 
 // документирование (Swagger)
 // documentSwagger(app);
