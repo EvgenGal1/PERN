@@ -1,6 +1,6 @@
 // ^ настройки подключения к серверу БД (sequelize | db)
 
-import { Dialect, Sequelize } from 'sequelize';
+import { /* Dialect, */ Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
 // загр.перем.окруж.из ф..env
@@ -16,7 +16,7 @@ const sequelize = new Sequelize(
   process.env.DB_USER!, // Пользователь
   process.env.DB_PSW!, // пароль
   {
-    dialect: process.env.DB_DIALECT! as Dialect,
+    dialect: /* process.env.DB_DIALECT! as Dialect */ 'postgres',
     host: process.env.DB_HOST!,
     port: Number(process.env.DB_PORT) || 5432,
     define: {
@@ -35,6 +35,7 @@ const sequelize = new Sequelize(
         },
       }),
     },
+    dialectModule: require('pg'),
   },
 );
 
