@@ -7,9 +7,9 @@ import { config } from 'dotenv';
 // cors > отправ.запр.с брауз.
 import cors from 'cors';
 // загрузчик файлов
-import fileUpload from 'express-fileupload';
+/* import fileUpload from 'express-fileupload'; */
 // MW по корр.раб. с cookie
-import cookieParser from 'cookie-parser';
+/* import cookieParser from 'cookie-parser'; */
 import path from 'path';
 
 // конфиг.БД
@@ -17,16 +17,16 @@ import sequelize, { connectToDatabase } from './config/sequelize';
 // общ.ф.настр.маршрутизаторов
 import router from './routes/index.routes';
 // MW обраб.ошб.
-import ErrorHandler from './middleware/errors/ErrorHandler';
+/* import ErrorHandler from './middleware/errors/ErrorHandler'; */
 // логирование LH Winston
 import { LoggingWinston as logger } from './config/logging/log_winston.config';
 // MW логгирование входящих HTTP запросов
-import {
+/* import {
   responseLoggingMiddleware as reSLog,
   requestLoggingMiddleware as reQLog,
-} from './middleware/logging/logging.middleware';
+} from './middleware/logging/logging.middleware'; */
 // документирование/настр. Swagger
-import { documentSwagger } from './config/documents/swagger.config';
+/* import { documentSwagger } from './config/documents/swagger.config'; */
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
 import initModels from './models/index';
@@ -54,12 +54,12 @@ app.use(
   }),
 );
 // MiddleWare > раб.с cookie
-app.use(cookieParser(process.env.SECRET_KEY));
+/* app.use(cookieParser(process.env.SECRET_KEY)); */
 // MW возм.парсить json
 app.use(express.json());
 // MW логг.Winston вход.HTTP req
-app.use(reSLog);
-app.use(reQLog);
+/* app.use(reSLog);
+app.use(reQLog); */
 // MW > стат.ф. (img, css)
 app.use(
   express.static(
@@ -69,7 +69,7 @@ app.use(
 // В middleware:
 app.use(express.static(path.join(__dirname, '../public')));
 // MW > загр.ф.
-app.use(fileUpload());
+/* app.use(fileUpload()); */
 
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
 app.use(`/${process.env.SRV_NAME}`, router);
@@ -79,10 +79,10 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // документирование (Swagger)
-documentSwagger(app);
+/* documentSwagger(app); */
 
 // обработка ошибок
-app.use(ErrorHandler);
+/* app.use(ErrorHandler); */
 
 const start = async (): Promise<void> => {
   try {
@@ -124,6 +124,6 @@ const start = async (): Promise<void> => {
 };
 
 // start() при прямом запуске > изоляции сервера при тестах
-if (require.main === module) start();
+/* if (require.main === module) */ start();
 // экспорт приложения > тестов
 export default app;
