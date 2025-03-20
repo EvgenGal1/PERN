@@ -19,7 +19,7 @@ import router from './routes/index.routes';
 // MW обраб.ошб.
 /* import ErrorHandler from './middleware/errors/ErrorHandler'; */
 // логирование LH Winston
-import { LoggingWinston as logger } from './config/logging/log_winston.config';
+// import { LoggingWinston as logger } from './config/logging/log_winston.config';
 // MW логгирование входящих HTTP запросов
 /* import {
   responseLoggingMiddleware as reSLog,
@@ -110,19 +110,19 @@ const start = async (): Promise<void> => {
       console.log(
         `\x1b[41m${NODE_ENV.toUpperCase()}\x1b[0m   MAIN   SRV: ${mainColor}${process.env.SRV_URL}\x1b[0m   DB: \x1b[33m${process.env.DB_NAME}:${process.env.DB_PORT}\x1b[0m`,
       );
-      if (isDevelopment) {
-        logger.info(
-          `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_NAME}:${process.env.DB_PORT}`,
-        );
-      }
+      // if (isDevelopment) {
+      //   logger.info(
+      //     `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_NAME}:${process.env.DB_PORT}`,
+      //   );
+      // }
     });
   } catch (error: unknown) {
     const err = error as Error;
     console.log('ошибка запуска сервера : ', err.message);
-    if (isDevelopment)
-      logger.error(`ошибка запуска сервера, e.msg: ${err?.message}`, {
-        stack: err?.stack,
-      });
+    // if (isDevelopment)
+    //   logger.error(`ошибка запуска сервера, e.msg: ${err?.message}`, {
+    //     stack: err?.stack,
+    //   });
     process.exit(1);
   }
 };
