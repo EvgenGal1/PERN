@@ -119,9 +119,10 @@ const start = async (): Promise<void> => {
   } catch (error: unknown) {
     const err = error as Error;
     console.log('ошибка запуска сервера : ', err.message);
-    logger.error(`ошибка запуска сервера, e.msg: ${err?.message}`, {
-      stack: err?.stack,
-    });
+    if (isDevelopment)
+      logger.error(`ошибка запуска сервера, e.msg: ${err?.message}`, {
+        stack: err?.stack,
+      });
     process.exit(1);
   }
 };
