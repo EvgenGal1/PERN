@@ -62,8 +62,6 @@ app.use(reSLog);
 app.use(reQLog);
 // MW > стат.ф. (img, css)
 app.use(express.static(path.join(__dirname, `../${PUB_DIR}`)));
-// В middleware:
-app.use(express.static(path.join(__dirname, '../public')));
 // MW > загр.ф.
 app.use(fileUpload());
 
@@ -120,6 +118,6 @@ const start = async (): Promise<void> => {
 };
 
 // start() при прямом запуске > изоляции сервера при тестах
-if (require.main === module) start();
+/* if (require.main === module) */ start();
 // экспорт приложения > тестов
 export default app;
