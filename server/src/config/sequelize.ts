@@ -37,6 +37,7 @@ const sequelize = new Sequelize(
         },
       }),
     },
+    dialectModule: require('pg'),
   },
 );
 
