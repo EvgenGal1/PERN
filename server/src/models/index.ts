@@ -16,6 +16,8 @@ import OrderModel from './OrderModel';
 import OrderItemModel from './OrderItemModel';
 import BasketProductModel from './BasketProductModel';
 import RatingModel from './RatingModel';
+// перем.окруж.
+import { isDevelopment } from '../config/envs/env.consts';
 
 // масс.всех моделей
 const models = {
@@ -40,7 +42,7 @@ function initModels() {
     // инициализ.всех модулей ч/з экземп.Sequelize
     Object.values(models).forEach((model) => {
       if (typeof model.initModel === 'function') {
-        // console.log(`Инициализация модели: ${model.name}`);
+        if (isDevelopment) console.log(`Инициализация модели: ${model.name}`);
         model.initModel(sequelize);
       }
     });
@@ -48,13 +50,15 @@ function initModels() {
     // устан.ассоциаций/связей м/у моделями
     Object.values(models).forEach((model) => {
       if (typeof model.associate === 'function') {
-        // console.log(`Установка ассоциаций для: ${model.name}`);
+        if (isDevelopment)
+          console.log(`Установка ассоциаций для: ${model.name}`);
         model.associate(models);
       }
     });
-    // console.log('Модели успешно инициализированы и ассоциации установлены.');
+    if (isDevelopment)
+      console.log('Модели успешно инициализированы и ассоциации установлены.');
   } catch (error) {
-    // console.error('Ошибка при инициализации моделей:', error);
+    console.error('Ошибка при инициализации моделей:', error);
   }
 }
 

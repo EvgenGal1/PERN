@@ -89,8 +89,10 @@ const start = async (): Promise<void> => {
     // синхрониз.структуру БД со схемой данн.(опред.моделью)
     if (isDevelopment)
       await sequelize
-        // force:true удал./созд.табл.  |  alter:true обнов.табл.
-        .sync({ alter: true })
+        .sync({
+          // force: true, // удал./созд.табл.
+          alter: true, // обнов.табл.
+        })
         .then(() => console.log('Синхронизация завершена'))
         .catch((error) => console.error('Ошибка при синхронизации:', error));
     // цвета запуска: DEV - зелённый, PROD - синий

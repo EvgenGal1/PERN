@@ -1,10 +1,12 @@
 // ^ настройки подключения к серверу БД (sequelize | db)
 
-import { /* Dialect, */ Sequelize } from 'sequelize';
+import { Dialect, Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
 // загр.перем.окруж.из ф..env
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+// перем.окруж.
+import { isDevelopment } from './envs/env.consts';
 
 // проверка наличия перем.окруж.
 if (!process.env.DB_USER || !process.env.DB_NAME) {
@@ -16,7 +18,7 @@ const sequelize = new Sequelize(
   process.env.DB_USER!, // Пользователь
   process.env.DB_PSW!, // пароль
   {
-    dialect: /* process.env.DB_DIALECT! as Dialect */ 'postgres',
+    dialect: process.env.DB_DIALECT! as Dialect,
     host: process.env.DB_HOST!,
     port: Number(process.env.DB_PORT) || 5432,
     define: {
@@ -24,18 +26,17 @@ const sequelize = new Sequelize(
       timestamps: true, // вкл.поля created_at и updated_at
       freezeTableName: true, // откл.авто.добав.множ-го числа
     },
-    logging: false, // false - без лог.записей
+    logging: isDevelopment ? true : false, // лог.записей
     timezone: 'Europe/Moscow',
     dialectOptions: {
       // сертификаты не строг.проверка на PROD
-      ...(process.env.NODE_ENV === 'production' && {
+      ...(!isDevelopment && {
         ssl: {
           require: true,
           rejectUnauthorized: false,
         },
       }),
     },
-    dialectModule: require('pg'),
   },
 );
 
