@@ -57,12 +57,13 @@ class UserModel extends Model<
       otherKey: 'userId', // указ.доп.внешн.ключ
       onDelete: 'CASCADE',
     });
-    // доп.связи > раб.с промеж.табл.
+    // доп.связи > раб.с промеж.табл. (возм.лишнее)
     UserModel.hasMany(models.UserRoleModel, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
     models.UserRoleModel.belongsTo(UserModel, { foreignKey: 'userId' });
+    // др.связи табл.с Пользователем
     UserModel.hasOne(models.BasketModel, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',

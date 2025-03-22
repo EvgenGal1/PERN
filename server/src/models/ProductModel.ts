@@ -87,7 +87,11 @@ class ProductModel extends Model<
         categoryId: { type: DataTypes.INTEGER, allowNull: true },
         brandId: { type: DataTypes.INTEGER, allowNull: true },
       },
-      { sequelize, tableName: 'products' },
+      {
+        sequelize,
+        tableName: 'products',
+        indexes: [{ fields: ['category_id'] }, { fields: ['brand_id'] }],
+      },
     );
   }
 }

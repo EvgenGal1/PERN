@@ -18,7 +18,7 @@ class UserRoleModel extends Model<
   declare userId: number;
   declare roleId: number;
   declare level: number;
-  // связь >  доступа к св-ву 'role'
+  // связь > доступа к св-ву 'role'
   declare role?: RoleModel;
 
   static associate(models: Models) {
@@ -35,12 +35,15 @@ class UserRoleModel extends Model<
   static initModel(sequelize: Sequelize) {
     UserRoleModel.init(
       {
-        id: { type: DataTypes.INTEGER, autoIncrement: true, allowNull: false },
+        id: {
+          type: DataTypes.INTEGER,
+          // autoIncrement: true,
+          allowNull: false,
+        },
         userId: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           allowNull: false,
-          autoIncrement: true,
           field: 'user_id',
           // валид.внешн.ключа по существ.roleId
           references: {
@@ -72,12 +75,7 @@ class UserRoleModel extends Model<
         sequelize,
         tableName: 'user_roles',
         // запрет дублей связок user+role, ускор.поиск/контроль уник.ind
-        indexes: [
-          {
-            unique: true,
-            fields: ['user_id', 'role_id' /* 'userId', 'roleId' */],
-          },
-        ],
+        indexes: [{ unique: true, fields: ['user_id', 'role_id'] }],
         // валид.значения уровня роли перед сохр.
         hooks: {
           beforeSave: (instance: UserRoleModel) => {
