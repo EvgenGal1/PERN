@@ -42,9 +42,8 @@ class ProductService {
       order = 'ASC',
       field = 'name',
     } = options;
-
     // перем.для уточнения запроса к др.Табл.
-    let where: any = {};
+    const where: any = {};
 
     // Категории/Бренд
     if (categoryId)
@@ -55,7 +54,7 @@ class ProductService {
       where.brandId = brandId.includes('_') ? brandId.split('_') : brandId;
 
     // кол-во эл.
-    const totalCount = await ProductModel.count({ where });
+    const totalCount = await ProductModel.count(); //  categoryId && brandId ? await ProductModel.count({ where }) :
 
     // Пропуск `n`(limit) первых эл.в БД е/и page > 1 (с защитой от минус.результата)
     const offset = Math.max(
@@ -100,8 +99,18 @@ class ProductService {
         ],
       ],
       include: [
-        { model: BrandModel, as: 'brand', attributes: ['name'] },
-        { model: CategoryModel, as: 'category', attributes: ['name'] },
+        {
+          model: BrandModel,
+          as: 'brand',
+          attributes: ['name'],
+          required: false,
+        },
+        {
+          model: CategoryModel,
+          as: 'category',
+          attributes: ['name'],
+          required: false,
+        },
       ],
       // групп.по полям использ.в SELECT > раб.агрегирующих fn
       group: [
@@ -117,9 +126,10 @@ class ProductService {
     });
 
     // Преобразуем результаты в нужный формат
-    const rowsWithRatings: ProductData[] = products.rows.map(
-      (product): ProductData => {
-        return {
+    const rowsWithRatings: ProductData[] = products.rows
+      .filter((product) => !!product)
+      .map(
+        (product): ProductData => ({
           // унар.преобраз.в num с защит.отсутствия TS
           id: +product.get('productId')!,
           name: product.name,
@@ -133,9 +143,8 @@ class ProductService {
             votes: parseInt(product.get('votes')?.toString() ?? '0', 10),
             rating: +product.rating! || 0,
           } as RatingData,
-        };
-      },
-    );
+        }),
+      );
 
     return { count: totalCount, rows: rowsWithRatings, limit };
   }

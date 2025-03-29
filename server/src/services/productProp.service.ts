@@ -12,6 +12,7 @@ class ProductPropService {
     }
     const properties = await ProductPropModel.findAll({
       where: { productId },
+      attributes: ['name', 'value'],
     });
     return properties;
   }
