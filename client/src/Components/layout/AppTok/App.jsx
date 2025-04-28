@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 // import Countries from "countries-api/lib/data/Countries.json";
 // import "./App.css";
 
-import CountryCard from "./CountryCard.js";
-import Pagination from "../../common/Pagination.js";
+import CountryCard from "./CountryCard.jsx";
+import Pagination from "../../common/Pagination.jsx";
 
 const Countries = [
   {
