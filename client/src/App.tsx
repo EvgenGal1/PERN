@@ -1,6 +1,6 @@
 // использ.зависимости/пакеты
 import { observer } from "mobx-react-lite";
-import { useContext, useEffect, useState } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 // окружение/API
@@ -33,8 +33,10 @@ const App: React.FC = observer(() => {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [user]);
+    if (!user.isAuth) {
+      fetchData();
+    }
+  }, [user.isAuth]);
 
   // показ Loader, при загр.данн.польз.с БД
   if (loading) return <Loader />;
@@ -43,7 +45,10 @@ const App: React.FC = observer(() => {
     <BrowserRouter>
       <Header />
       <NavBar />
-      <AppRouter />
+      {/* Минимизация запросов */}
+      <Suspense fallback={<Loader />}>
+        <AppRouter />
+      </Suspense>
       <Footer />
     </BrowserRouter>
   );
