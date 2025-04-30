@@ -21,8 +21,8 @@ class BasketStore {
     try {
       const data = await basketAPI.getOneBasket();
       runInAction(() => {
-        this.products = data.products;
-        this.total = data.total;
+        this.products = Array.isArray(data) ? data.products : [];
+        this.total = Array.isArray(data) ? data.total : 0;
       });
     } catch (error) {
       console.error("Ошибка загрузки Брендов:", error);
@@ -40,8 +40,8 @@ class BasketStore {
     try {
       const data = await basketAPI.appendBasket(productId);
       runInAction(() => {
-        this.products = data.products;
-        this.total = data.total;
+        this.products = Array.isArray(data) ? data.products : [];
+        this.total = Array.isArray(data) ? data.total : 0;
       });
     } catch (error) {
       console.error("Ошибка Добавления в Корзину:", error);

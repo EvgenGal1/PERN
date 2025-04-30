@@ -67,7 +67,7 @@ class CatalogStore {
       // групп.асинхр.обнов.сост.в одном атомарное изменение > сложн.req от лишних обновлений | от ошб./предупреждения [MobX] о строг.режиме
       runInAction(() => {
         // запись данн.БД в хранилище
-        this.categories = data;
+        this.categories = Array.isArray(data) ? data : [];
       });
     } catch (error) {
       // лог.ошб.
@@ -86,7 +86,7 @@ class CatalogStore {
     try {
       const data = await brandAPI.getAllBrands();
       runInAction(() => {
-        this.brands = data;
+        this.brands = Array.isArray(data) ? data : [];
       });
     } catch (error) {
       console.error("Ошибка загрузки Брендов:", error);
