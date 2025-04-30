@@ -186,9 +186,7 @@ const Auth = observer(() => {
   };
 
   // обработка данных (запрос к БД, маршрут в ЛК, ошибки с БД)
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) /* : void */ => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // ч/з опред.метод запрос к БД

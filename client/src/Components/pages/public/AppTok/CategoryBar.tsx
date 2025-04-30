@@ -62,22 +62,23 @@ const CategoryBar: React.FC = observer(() => {
           Категория
         </button>
         <div className={`choice-param__item ${isOpen ? "visible" : "hidden"}`}>
-          {catalog.categories.map((item) => (
-            <label key={item.id}>
-              <input
-                type="checkbox"
-                name={`category.${item.name}`}
-                value={item.name}
-                checked={
-                  catalog.filters.category
-                    ?.split("_")
-                    .includes(item.id.toString()) || false
-                }
-                onChange={() => handleCategoryChange(item.id)}
-              />
-              <span>{item.name}</span>
-            </label>
-          ))}
+          {Array.isArray(catalog.categories) &&
+            catalog.categories.map((category) => (
+              <label key={category.id}>
+                <input
+                  type="checkbox"
+                  name={`category.${category.name}`}
+                  value={category.name}
+                  checked={
+                    catalog.filters.category
+                      ?.split("_")
+                      .includes(category.id.toString()) || false
+                  }
+                  onChange={() => handleCategoryChange(category.id)}
+                />
+                <span>{category.name}</span>
+              </label>
+            ))}
         </div>
       </div>
     </>

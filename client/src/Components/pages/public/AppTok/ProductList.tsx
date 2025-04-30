@@ -10,20 +10,21 @@ const ProductList: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
 
   // нет загрузки/Продуктов
-  if (catalog.isLoading === false && catalog.products.length === 0) {
+  if (catalog?.isLoading === false && catalog?.products.length === 0) {
     return <div>По Вашему запросу ничего не найдено</div>;
   }
 
   return (
     <>
       {/* ПАГИНАЦИЯ | СОРТИРОВКА | ЛИМИТ */}
-      {catalog.pagination.limit > 10 && !catalog.isLoading && (
+      {catalog?.pagination.limit > 10 && !catalog?.isLoading && (
         <PaginSortLimit />
       )}
       <div className="row-mlr--eg">
         {/* СПИСОК ПРОДУКТОВ */}
-        {!catalog.isLoading ? (
-          catalog.products.map((item) => (
+        {!catalog?.isLoading ? (
+          Array.isArray(catalog?.products) &&
+          catalog?.products.map((item) => (
             <ProductItem key={item.id} {...item} />
           ))
         ) : (

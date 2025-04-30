@@ -48,22 +48,23 @@ const BrandBar: React.FC = observer(() => {
           Бренды
         </button>
         <div className={`choice-param__item ${isOpen ? "visible" : "hidden"}`}>
-          {catalog.brands.map((item) => (
-            <label key={item.id}>
-              <input
-                type="checkbox"
-                name={`brand.${item.name}`}
-                value={item.name}
-                checked={
-                  catalog.filters.brand
-                    ?.split("_")
-                    .includes(item.id.toString()) || false
-                }
-                onChange={() => handleBrandChange(item.id)}
-              />
-              <span>{item.name}</span>
-            </label>
-          ))}
+          {Array.isArray(catalog.brands) &&
+            catalog.brands.map((item) => (
+              <label key={item.id}>
+                <input
+                  type="checkbox"
+                  name={`brand.${item.name}`}
+                  value={item.name}
+                  checked={
+                    catalog.filters.brand
+                      ?.split("_")
+                      .includes(item.id.toString()) || false
+                  }
+                  onChange={() => handleBrandChange(item.id)}
+                />
+                <span>{item.name}</span>
+              </label>
+            ))}
         </div>
       </div>
     </>

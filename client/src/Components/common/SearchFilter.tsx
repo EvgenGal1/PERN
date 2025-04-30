@@ -277,20 +277,23 @@ const SearchFilter: React.FC = () => {
                 Категория
               </button>
               <div className="choice-param__item">
-                {catalog.categories.map((item: any) => (
-                  <label key={item.id}>
-                    <input
-                      type="checkbox"
-                      name="category"
-                      value={item.name}
-                      checked={itemIdStat["category"].includes(String(item.id))}
-                      onChange={(e) =>
-                        changeAndAddBySearchParamsForFilter(e, item)
-                      }
-                    />
-                    <span>{item.name}</span>
-                  </label>
-                ))}
+                {Array.isArray(catalog.categories) &&
+                  catalog.categories.map((item: any) => (
+                    <label key={item.id}>
+                      <input
+                        type="checkbox"
+                        name="category"
+                        value={item.name}
+                        checked={itemIdStat["category"].includes(
+                          String(item.id)
+                        )}
+                        onChange={(e) =>
+                          changeAndAddBySearchParamsForFilter(e, item)
+                        }
+                      />
+                      <span>{item.name}</span>
+                    </label>
+                  ))}
               </div>
             </div>
             {/* Бренды */}
@@ -299,20 +302,21 @@ const SearchFilter: React.FC = () => {
                 Бренд
               </button>
               <div className="choice-param__item">
-                {catalog.brands.map((item: any) => (
-                  <label key={item.id}>
-                    <input
-                      type="checkbox"
-                      name="brand"
-                      value={item.name}
-                      checked={itemIdStat["brand"].includes(String(item.id))}
-                      onChange={(e) =>
-                        changeAndAddBySearchParamsForFilter(e, item)
-                      }
-                    />
-                    <span>{item.name}</span>
-                  </label>
-                ))}
+                {Array.isArray(catalog.brands) &&
+                  catalog.brands.map((item: any) => (
+                    <label key={item.id}>
+                      <input
+                        type="checkbox"
+                        name="brand"
+                        value={item.name}
+                        checked={itemIdStat["brand"].includes(String(item.id))}
+                        onChange={(e) =>
+                          changeAndAddBySearchParamsForFilter(e, item)
+                        }
+                      />
+                      <span>{item.name}</span>
+                    </label>
+                  ))}
               </div>
             </div>
           </div>
