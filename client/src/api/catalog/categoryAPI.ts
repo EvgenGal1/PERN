@@ -30,7 +30,7 @@ export const categoryAPI = {
    */
   async getAllCategories(): Promise<CategoryData[]> {
     return handleRequest(
-      () => guestInstance.get<CategoryData[]>("categories/getall"),
+      () => guestInstance.get<CategoryData[]>("/PERN/categories/getall"),
       "Categories/GetAll"
       // "categories" // кеш ключ
     );

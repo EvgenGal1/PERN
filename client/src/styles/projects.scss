@@ -12,7 +12,7 @@ div {
     margin: 10px 0%;
   }
   h1 {
-    @include adaptiv-font(24, 14);
+    @include adaptiv-font(18, 8);
     font-weight: 900;
     text-align: center;
     letter-spacing: 3px;
@@ -22,7 +22,7 @@ div {
     margin-bottom: var(--sz2);
   }
   h2 {
-    @include adaptiv-font(24, 12);
+    @include adaptiv-font(18, 8);
     font-weight: 800;
     margin: var(--sz2) 0;
   }
@@ -143,8 +143,8 @@ div {
 
 // кнп, inp ----------------------------------------------------------------------------------
 button.btn--eg.btn-primary--eg {
-  @include adaptiv-font(24, 10);
-  @include adaptiv-val("padding", 10, 3);
+  @include adaptiv-font(18, 8);
+  @include adaptiv-val("padding", 7, 3);
 }
 
 // текст ----------------------------------------------------------------------------------
@@ -189,8 +189,8 @@ img.card-img-top {
 .pagination--eg {
   li.page-item {
     .page-link {
-      @include adaptiv-font(24, 10);
-      @include adaptiv-val("padding", 10, 3);
+      @include adaptiv-font(18, 8);
+      @include adaptiv-val("padding", 7, 3);
       color: #000;
       border: 1px solid var(--bord-hr);
       background-color: var(--act-bg);
@@ -391,11 +391,12 @@ img.card-img-top {
 
 // блоки выбора эл. Категорий/Брендов ----------------------------------------------------------------------------------
 .choice-param {
+  @include adaptiv-font(18, 8);
   // КНП.выбора Категорий/Брендов
   &__btn {
     position: relative;
     width: 100%;
-    @include adaptiv-val("padding", 10, 3);
+    @include adaptiv-val("padding", 7, 3);
 
     background-color: var(--act-bg);
     color: #222;
@@ -508,36 +509,19 @@ img.card-img-top {
     }
   }
 }
-
-// карточки/сетка блоков ----------------------------------------------------------------------------------
-.card--eg {
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px;
-  // Продукт/Описание
-  &__product {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    strong {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-}
-
 // Комп.PaginSortLimit (страницы, Сортировка, Выборка, Лимит эл.на стр.) ----------------------------------------------------------------------------------
 .pagin-sort-limit {
   display: flex;
   justify-content: space-between;
-
   .pagination--eg {
     margin: 0px 15px 0px 0px;
     @media (max-width: 768px) {
       margin: 0 10px 0 0;
     }
   }
-
+  .limit--eg {
+    display: flex;
+  }
   button {
     margin: 0 0 0 15px;
   }
@@ -614,26 +598,46 @@ img.card-img-top {
 }
 
 // row/col (строки/колонки) ----------------------------------------------------------------------------------
-:root body #root .main {
-  // отступ от верхней пагинации е/и есть
-  .pagin-sort-limit + div.row-mlr--eg {
-    margin-top: var(--sz3);
+// отступ Продуктов от верхней пагинации е/и есть
+.pagin-sort-limit + div.row-mlr--eg {
+  margin-top: var(--sz3);
+}
+// блок Продуктов
+.row-mlr--eg {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  // перем.для отступов
+  --gutter-x: 1.5rem;
+  --gutter-y: 0;
+  // отрицат.margin отступ (совместн. с положит.padding отступом)
+  margin-right: calc(-0.5 * var(--gutter-x));
+  margin-left: calc(-0.5 * var(--gutter-x));
+  & > * {
+    width: 100%;
+    max-width: 100%;
+    // положит.padding отступ (совместн. с отрицат.margin отступом)
+    padding-right: calc(var(--gutter-x) * 0.5);
+    padding-left: calc(var(--gutter-x) * 0.5);
   }
-  .row-mlr--eg {
-    display: flex;
-    flex-wrap: wrap;
-    // перем.для отступов
-    --gutter-x: 1.5rem;
-    --gutter-y: 0;
-    // отрицат.margin отступ (совместн. с положит.padding отступом)
-    margin-right: calc(-0.5 * var(--gutter-x));
-    margin-left: calc(-0.5 * var(--gutter-x));
-    & > * {
-      width: 100%;
-      max-width: 100%;
-      // положит.padding отступ (совместн. с отрицат.margin отступом)
-      padding-right: calc(var(--gutter-x) * 0.5);
-      padding-left: calc(var(--gutter-x) * 0.5);
+  img {
+    border-radius: var(--szp10);
+  }
+}
+
+// карточки/сетка блоков ----------------------------------------------------------------------------------
+.card--eg {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--szp10);
+  // Продукт/Описание
+  &__product {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    strong {
+      display: flex;
+      justify-content: space-between;
     }
   }
 }
@@ -658,6 +662,10 @@ img.card-img-top {
     @media (max-width: 768px) {
       .col-md-9 {
         margin: 15px 0px 0px 0px;
+      }
+      .col-lg-4 {
+        // ^ нов.размеры
+        width: 50%;
       }
     }
 
@@ -688,6 +696,8 @@ img.card-img-top {
       .col-lg-4 {
         flex: 0 0 auto;
         width: 50%;
+        // ^ нов.размеры
+        width: 25%;
       }
       .col-lg-8 {
         flex: 0 0 auto;
@@ -707,6 +717,8 @@ img.card-img-top {
       .col-lg-4 {
         flex: 0 0 auto;
         width: 33.33333333%;
+        // ^ нов.размеры
+        width: 20%;
       }
       .col-lg-8 {
         flex: 0 0 auto;
@@ -725,6 +737,8 @@ img.card-img-top {
       .col-lg-4 {
         flex: 0 0 auto;
         width: 25%;
+        // ^ нов.размеры
+        width: 14%;
       }
       .col-lg-8 {
         flex: 0 0 auto;
@@ -745,6 +759,8 @@ img.card-img-top {
       .col-lg-4 {
         flex: 0 0 auto;
         width: 20%;
+        // ^ нов.размеры
+        width: 12%;
       }
       .col-lg-8 {
         flex: 0 0 auto;
@@ -767,7 +783,7 @@ img.card-img-top {
   .sort-field-container {
     display: flex;
     gap: 10px;
-    @include adaptiv-font(24, 10);
+    @include adaptiv-font(18, 8);
     span.mda {
       display: none;
     }
@@ -776,8 +792,8 @@ img.card-img-top {
     .select-wrapper {
       position: relative;
       select {
-        @include adaptiv-font(24, 10);
-        @include adaptiv-val("padding", 10, 3);
+        @include adaptiv-font(18, 8);
+        @include adaptiv-val("padding", 7, 3);
         padding-right: 25px;
       }
       &:hover {

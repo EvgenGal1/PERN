@@ -25,7 +25,8 @@ import { Switcher4btn } from "@Comp/ui/switcher/Switcher4btn";
 import { TitleEl } from "@Comp/ui/hintTemplates/TitleEl";
 
 // изо
-import logoImage from "@/img/logo/PERN.png";
+// import logoImage from "@/img/logo/PERN.png";
+import logoImage from "@/img/logo/PERN.png?url";
 
 export function Header() {
   const { user }: any = useContext(AppContext);

@@ -1,3 +1,6 @@
+@use "./mixins";
+@use "./variables" as vars;
+
 // временно, для наглядности цвета
 :root {
   --Red: #ff0000;
@@ -95,6 +98,55 @@ body[data-theme="light"] {
   --txt-dark: var(--Red);
   --bord-hr: var(--DarkRed);
 }
+//  ----------------------------------------------------------------------------------
+// @mixin theme($theme) {
+//   --fon-dark: map-get($theme, fon-dark);
+//   --el-dark: map-get($theme, el-dark);
+//   --el-light: map-get($theme, el-light);
+//   --ui-bg: map-get($theme, ui-bg);
+//   --ui-act-col: map-get($theme, ui-act-col);
+//   --act-bg: map-get($theme, act-bg);
+//   --act-bg-hov: map-get($theme, act-bg-hov);
+//   --bord-hr: map-get($theme, bord-hr);
+// }
+// $themes: (
+//   dark: (
+//     fon-dark: vars.$Coffee,
+//     el-dark: vars.$BlackBrown,
+//     el-light: vars.$SignalBlack,
+//     ui-bg: vars.$DeerBrown,
+//     ui-act-col: vars.$DeepYellow,
+//     act-bg: vars.$WetAsphalt,
+//     act-bg-hov: vars.$BlueGray,
+//     bord-hr: vars.$DeepRedBrown,
+//   ),
+//   natural: (
+//     fon-dark: vars.$BrownBeige,
+//     el-light: vars.$WetAsphalt,
+//     el-dark: vars.$SignalBlack,
+//     ui-bg: vars.$YellowBrown,
+//     ui-act-col: vars.$Gold,
+//     act-bg: vars.$DullGray,
+//     act-bg-hov: vars.$WetAsphalt,
+//     bord-hr: vars.$PinkForest,
+//   ),
+//   light: (
+//     fon-dark: vars.$YellowBrown,
+//     el-light: vars.$WhiteAlum,
+//     el-dark: vars.$WetAsphalt,
+//     ui-bg: #fff,
+//     ui-act-col: vars.$Yellow,
+//     act-bg: vars.$Gray,
+//     act-bg-hov: vars.$DullGray,
+//     bord-hr: vars.$DarkRed,
+//   ),
+// );
+// @each $theme, $colors in $themes {
+//   body[data-theme="#{$theme}"] {
+//     @include theme($colors);
+//   }
+// }
+//  ----------------------------------------------------------------------------------
 
 // ОБЩИЕ СТИЛИ
 :root {

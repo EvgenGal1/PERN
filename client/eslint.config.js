@@ -7,13 +7,18 @@ import reactRecommended from "eslint-plugin-react/configs/recommended.js"; // р
 import jsxA11yPlugin from "eslint-plugin-jsx-a11y"; // плагин доступности
 import eslintPluginPrettier from "eslint-plugin-prettier"; // плагин Prettier
 
-export default [
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
   // рекоменд.правила ESLint/React
   js.configs.recommended,
   reactRecommended,
   {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     // форматы ф.> поверки
-    files: ["./src/*.{ts,tsx}", "./craco.config.cjs"],
+    files: ["./src/*.{ts,tsx}", "./craco.config.cjs", "**/*.{ts,tsx}"],
     // пути игнора
     ignores: [
       "**/vr/**",
@@ -30,6 +35,7 @@ export default [
     },
     // настр.язык.окружения
     languageOptions: {
+      ecmaVersion: 2020,
       // парсер TypeScript (обязательно для TS)
       parser: tsParser,
       // настр.парсера
@@ -55,6 +61,8 @@ export default [
     },
     // плагины (React, TypeScript, Prettier, доступа)
     plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
       react: reactPlugin,
       "@typescript-eslint": tsPlugin,
       prettier: eslintPluginPrettier,
@@ -62,6 +70,11 @@ export default [
     },
     // правила. off - откл., warn - предупреждение, error - запрет/ошб.
     rules: {
+      ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
       // React
       "react/react-in-jsx-scope": "off", // не требовать импорт React в JSX
       "react-hooks/rules-of-hooks": "warn", // проверка хуков // ^ error
@@ -104,5 +117,5 @@ export default [
         },
       },
     },
-  },
-];
+  }
+);

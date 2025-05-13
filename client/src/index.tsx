@@ -1,4 +1,4 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 // основ.прилож.
@@ -15,7 +15,7 @@ import "@/index.css";
 
 // подкл.логг. Sentry ()
 // Sentry.init({
-//   dsn: process.env.REACT_APP_SENTRY_DSN,
+//   dsn: process.env.VITE_SENTRY_DSN,
 //   environment: process.env.NODE_ENV,
 // });
 
@@ -44,7 +44,7 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <ErrorBoundary
       // заклушка UI > отката при ошб.
       FallbackComp={GlobalFallback}
@@ -53,5 +53,5 @@ root.render(
         <App />
       </AppContextProvider>
     </ErrorBoundary>
-  </React.StrictMode>
+  </StrictMode>
 );

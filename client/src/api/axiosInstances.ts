@@ -9,13 +9,27 @@ import axios, {
 import { AuthRes } from "../types/api/auth.types";
 
 // Базовый URL API
-const API_URL = process.env.REACT_APP_SRV_IURL;
+const API_URL = import.meta.env.VITE_SRV_IURL;
 
 // 1. `гостевой экземпляр` axios (неавториз.польз., отправ.cookie в кажд.req(refresh,basketId))
-const guestInstance = axios.create({ baseURL: API_URL, withCredentials: true });
+const guestInstance = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+  },
+});
 
 // 2. авторизованный экземпляр axios (провереные пользователи, отправ.cookie в кажд.req)
-const authInstance = axios.create({ baseURL: API_URL, withCredentials: true });
+const authInstance = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+  },
+});
 
 // Перехватчик > добав.Токена в заголовки авториз.req
 const authInterceptor = (
