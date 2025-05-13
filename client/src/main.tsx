@@ -11,7 +11,7 @@ import ErrorBoundary, {
 } from "@/Components/ErrorBoundary/ErrorBoundary";
 import { ApiError } from "@/utils/errorClasses";
 
-import "@/index.css";
+import "./index.css";
 
 // подкл.логг. Sentry ()
 // Sentry.init({

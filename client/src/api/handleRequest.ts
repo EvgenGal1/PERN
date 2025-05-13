@@ -32,7 +32,10 @@ export const handleRequest = async <T>(
     console.debug(`^ [${context}] RES: `, result);
     // возврат данн.
     return result;
-  } catch (error) {
+  } catch (error: unknown) {
+    // if (error.response?.status === 404) {
+    //   console.error("API не найден. Проверьте проксирование и URL бэкенда");
+    // }
     // кэш удал.данн.
     // if (cacheKey)   queryCache.invalidate(new RegExp(cacheKey)) | requestCache.delete(cacheKey)
     // обраб.ошб.

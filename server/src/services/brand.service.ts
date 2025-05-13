@@ -1,6 +1,7 @@
 import { BrandAttributes } from '../models/sequelize-types';
 import ApiError from '../middleware/errors/ApiError';
 import BrandModel from '../models/BrandModel';
+import { BrandData } from '../types/catalog.interface';
 
 // // ^ КЭШ
 // import NodeCache from 'node-cache';
@@ -11,10 +12,12 @@ import BrandModel from '../models/BrandModel';
 // });
 
 class BrandService {
-  async getAllBrand() {
-    return await BrandModel.findAll({
+  async getAllBrand(): Promise<BrandData[]> {
+    const brands = await BrandModel.findAll({
       attributes: ['id', 'name'],
     });
+    if (!brands.length) throw ApiError.notFound('Бренды не найдены');
+    return brands;
   }
 
   async getOneBrand(id: number) {

@@ -136,8 +136,8 @@ $color-schemes: (
 
 // общ.базовые стили > всех эл.
 %color-scheme-base {
-  @include adaptiv-val("padding", 10, 3);
-  @include adaptiv-font(24, 10);
+  @include adaptiv-val("padding", 7, 3);
+  @include adaptiv-font(18, 8);
   border: 1px solid #bd0000;
   border-radius: var(--sz1);
   transition:
@@ -204,3 +204,9 @@ $color-schemes: (
     }
   }
 }
+// 320px — 479px — мобильные устройства; xs
+// 480px — 767px — планшеты, iPad; sm
+// 768px — 991px — планшеты, iPad; md
+// 992px — 1199px — небольшие экраны, ноутбуки; lg
+// 1200px — 1399px — настольные компьютеры, большие экраны; xl
+// 1400px и больше — очень большие экраны, ТВ. xxl

@@ -21,6 +21,7 @@ body {
   background-color: var(--fon-dark);
   font-size: var(--sz3);
   font-size: 18px;
+  @include adaptiv-font(18, 8);
   line-height: 1;
   font-family: var(--fontfamily);
   &.lock {

@@ -30,7 +30,7 @@ export const brandAPI = {
    */
   async getAllBrands(): Promise<BrandData[]> {
     return handleRequest(
-      () => guestInstance.get<BrandData[]>("brands/getall"),
+      () => guestInstance.get<BrandData[]>("/PERN/brands/getall"),
       "Brands/GetAll"
       // "brands" // кеш ключ
     );

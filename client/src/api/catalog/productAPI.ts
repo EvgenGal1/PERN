@@ -57,7 +57,7 @@ export const productAPI = {
     if (order) params.order = order;
     if (field) params.field = field;
     // базовый URL получ.всех Продуктов
-    let url = "products/getall";
+    let url = "/PERN/products/getall";
     // дополнение URL парам.из props (для 1го знач. и мн.знач.ч/з разделитель(_))
     if (categoryId) url += `/categoryId/${categoryId}`;
     if (brandId) url += `/brandId/${brandId}`;
