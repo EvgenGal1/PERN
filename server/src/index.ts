@@ -45,12 +45,27 @@ const PUB_DIR = process.env.PUB_DIR || 'public';
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
 app.use(
   cors({
+    // credentials: true,
+    // origin: function (origin, callback) {
+    //   const allowedOrigins = [
+    //     'http://localhost:3030',
+    //     process.env.CLT_URL,
+    //     process.env.CLT_URL_PROD,
+    //   ];
+    //   if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    //   else callback(new Error('Не разрешён CORS'));
+    // },
+    origin: [
+      'http://localhost:3030',
+      'http://localhost:5123',
+      'http://127.0.0.1:3030',
+      String(process.env.CLT_URL),
+      String(process.env.CLT_URL_PROD),
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    origin: function (origin, callback) {
-      const allowedOrigins = [process.env.CLT_URL, process.env.CLT_URL_PROD];
-      if (!origin || allowedOrigins.includes(origin)) callback(null, true);
-      else callback(new Error('Не разрешён CORS'));
-    },
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   }),
 );
 // MiddleWare > раб.с cookie
@@ -62,6 +77,8 @@ app.use(reSLog);
 app.use(reQLog);
 // MW > стат.ф. (img, css)
 app.use(express.static(path.join(__dirname, `../${PUB_DIR}`)));
+// app.use(express.static(path.join(__dirname, "public")));
+// app.use("/PERN/static", express.static(path.join(__dirname, "public")));
 // MW > загр.ф.
 app.use(fileUpload());
 
