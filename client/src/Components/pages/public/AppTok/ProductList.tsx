@@ -9,7 +9,7 @@ import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 const ProductList: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
 
-  // нет загрузки/Продуктов
+  // е/и нет загрузки/Продуктов
   if (catalog?.isLoading === false && catalog?.products.length === 0) {
     return <div>По Вашему запросу ничего не найдено</div>;
   }
