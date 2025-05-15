@@ -9,7 +9,7 @@ export const htmlContent = `
             name="viewport"
             content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=no"
           />
-          <link rel="icon" type="image/png" href="./public/favicon.ico" />
+          <link rel="icon" type="image/png" href="./favicon.ico" />
           <title>PERN (API)</title>
           <style>
             body {
