@@ -513,7 +513,11 @@ img.card-img-top {
 .card--eg {
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
+  border-radius: var(--szp5);
+  img {
+    border-top-left-radius: var(--szp5);
+    border-top-right-radius: var(--szp5);
+  }
   // Продукт/Описание
   &__product {
     white-space: nowrap;
@@ -536,6 +540,10 @@ img.card-img-top {
     @media (max-width: 768px) {
       margin: 0 10px 0 0;
     }
+  }
+
+  .limit--eg {
+    display: flex;
   }
 
   button {
@@ -642,7 +650,8 @@ img.card-img-top {
 :root body #root {
   .header,
   .navbar,
-  .main {
+  .main,
+  .footer {
     // откл.все брекпоинты Bootstrap
     @media (min-width: 0px) {
       .container,
@@ -754,6 +763,7 @@ img.card-img-top {
     }
     @media (min-width: 1800px) {
       .header-container,
+      .footer-container,
       .container,
       .container-lg,
       .container-md,
