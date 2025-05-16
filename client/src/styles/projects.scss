@@ -640,8 +640,9 @@ img.card-img-top {
 
 // media медиа ----------------------------------------------------------------------------------
 :root body #root {
-  .main,
-  .navbar {
+  .header,
+  .navbar,
+  .main {
     // откл.все брекпоинты Bootstrap
     @media (min-width: 0px) {
       .container,
@@ -752,6 +753,7 @@ img.card-img-top {
       }
     }
     @media (min-width: 1800px) {
+      .header-container,
       .container,
       .container-lg,
       .container-md,

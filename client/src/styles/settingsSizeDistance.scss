@@ -119,7 +119,9 @@ hr.hr {
 // шапка
 header {
   .header-container {
-    padding: var(--head-pad) !important ;
+    // padding: var(--head-pad) !important ;
+    padding-top: var(--head-pad) !important;
+    padding-bottom: var(--head-pad) !important;
   }
   .header__menu {
     // общ. Верхнее/Нижнее меню
