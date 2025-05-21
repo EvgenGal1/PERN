@@ -61,7 +61,7 @@ const Shop: React.FC = observer(() => {
   };
 
   return (
-    <div className="container">
+    <>
       <div className="search">
         <Search />
       </div>
@@ -89,7 +89,7 @@ const Shop: React.FC = observer(() => {
           <ProductList />
         </div>
       </div>
-    </div>
+    </>
   );
 });
 

@@ -19,20 +19,22 @@ const AppRouter: React.FC = () => {
 
   return (
     <main className="main">
-      <Routes>
-        {routes.map(({ path, Component }) => (
-          <Route
-            key={path}
-            path={path}
-            element={
-              // отрис.с ленив.загр.
-              <Suspense fallback={<Loader />}>
-                <Component />
-              </Suspense>
-            }
-          />
-        ))}
-      </Routes>
+      <div className="container">
+        <Routes>
+          {routes.map(({ path, Component }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                // отрис.с ленив.загр.
+                <Suspense fallback={<Loader />}>
+                  <Component />
+                </Suspense>
+              }
+            />
+          ))}
+        </Routes>
+      </div>
     </main>
   );
 };
