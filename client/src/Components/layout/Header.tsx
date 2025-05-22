@@ -24,6 +24,11 @@ import { Switcher4btn } from "@Comp/ui/switcher/Switcher4btn";
 // подсказка по наведению мыши
 import { TitleEl } from "@Comp/ui/hintTemplates/TitleEl";
 
+// константы/контекст
+import { SHOP_ROUTE } from "@/utils/consts";
+
+// Компонент ссылок
+import NavBar from "./NavBar";
 // изо
 import logoImage from "@/img/logo/PERN.png";
 
@@ -95,7 +100,7 @@ export function Header() {
         <div className="header-container">
           {/* ЛОГО */}
           <div className="header__logo">
-            <Link to="/" className="header__link">
+            <Link to={SHOP_ROUTE} className="header__link">
               <img
                 className="header__img"
                 // src={require("../../img/logo/ЕжеСветRedBlackWhiteEff.png")}
@@ -147,6 +152,7 @@ export function Header() {
                   AboutMe
                 </NavLink>
               </span>
+              <NavBar />
             </nav>
             {/* НИЖНЕЕ/ДОП.МЕНЮ */}
             {pressCombine && (
