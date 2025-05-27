@@ -43,14 +43,14 @@
         }
       }
       .header__img {
-        font-size: var(--szp50);
+        font-size: var(--font-size-logo);
         font-weight: bold;
         color: var(--PERN_blue);
         margin: 0px;
         transition: color var(--sec05) ease;
       }
       .header__text {
-        font-size: var(--szp50);
+        font-size: var(--font-size-logo);
         font-weight: bold;
         margin: 0;
         color: var(--PERN_blue);
