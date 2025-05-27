@@ -29,22 +29,12 @@ import { SHOP_ROUTE } from "@/utils/consts";
 
 // Компонент ссылок
 import NavBar from "./NavBar";
-// изо
-import logoImage from "@/img/logo/PERN.png";
 
-export function Header() {
+const Header = () => {
   const { user }: any = useContext(AppContext);
   // console.log("HDR user ", user);
 
   // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
-  // стат. показа Доп.Меню из LS
-  // const [pressCombine, setPressCombine] = useState(() => {
-  // const initialValue = JSON.parse(saved);
-  // return initialValue || "";
-  // saved ? JSON.parse(saved) : []
-  // })
-  // console.log("HDR 123 ", 123);
-  // ^ нов.версия
   const saved = localStorage.getItem("--dopMenu");
   const [pressCombine, setPressCombine] = useState(
     saved ? JSON.parse(saved) : false
@@ -60,8 +50,6 @@ export function Header() {
     order: true,
   });
   //  ----------------------------------------------------------------------------------
-  // console.log("HDR combinePress ", combinePress);
-  // console.log("HDR pressCombine ", pressCombine);
   // отслеж. измен.с записью в LS
   useEffect(() => {
     if (combinePress === true) {
@@ -101,7 +89,6 @@ export function Header() {
           {/* ЛОГО */}
           <div className="header__logo">
             <a href={SHOP_ROUTE} className="header__link">
-              {/* <img className="header__img" src={logoImage} alt="P.E.R.N." /> */}
               <h3 className="header__img">P</h3>
               <h3 className="header__text">.E.R.N.</h3>
             </a>
@@ -259,6 +246,6 @@ export function Header() {
       </header>
     </>
   );
-}
+};
 
-// export { Header };
+export default Header;

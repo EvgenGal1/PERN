@@ -8,9 +8,8 @@ import AppRouter from "@Comp/layout/AppRouter";
 import { AppContext } from "@/context/AppContext";
 import { authAPI } from "@/api/auth/authAPI";
 // гл.Компоненты
-import NavBar from "@Comp/layout/NavBar";
-import { Footer } from "@Comp/layout/Footer";
-import { Header } from "@Comp/layout/Header";
+import Footer from "@Comp/layout/Footer";
+import Header from "@Comp/layout/Header";
 // доп.Комп.
 import Loader from "@Comp/ui/loader/Loader";
 // стили
@@ -44,7 +43,6 @@ const App: React.FC = observer(() => {
   return (
     <BrowserRouter>
       <Header />
-      <NavBar />
       {/* Минимизация запросов */}
       <Suspense fallback={<Loader />}>
         <AppRouter />
