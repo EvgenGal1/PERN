@@ -23,21 +23,43 @@
   // ЛОГО
   .header__logo {
     display: flex;
-    .header__img {
-      width: 50px;
-      height: 50px;
-      // margin: -10px 10px -10px -10px;
-    }
+    justify-content: center;
+    align-items: center;
     .header__link {
       display: flex;
       justify-content: center;
       align-items: center;
-      // height: 30px;
-      font-weight: bold;
-      font-size: 30px;
+      text-decoration: none;
+      overflow: hidden;
       &:hover {
-        color: gold;
-        color: --DarkRed;
+        .header__img {
+          color: var(--Gold);
+        }
+        .header__text {
+          color: var(--Gold);
+          opacity: 1;
+          transform: translateX(0);
+          animation: logoh3Show var(--sec05) forwards;
+        }
+      }
+      .header__img {
+        font-size: var(--szp50);
+        font-weight: bold;
+        color: var(--PERN_blue);
+        margin: 0px;
+        transition: color var(--sec05) ease;
+      }
+      .header__text {
+        font-size: var(--szp50);
+        font-weight: bold;
+        margin: 0;
+        color: var(--PERN_blue);
+        opacity: 0;
+        transform: translateX(-100%);
+        transition:
+          opacity var(--sec05) ease,
+          transform var(--sec05) ease;
+        white-space: nowrap;
       }
     }
   }
@@ -162,45 +184,14 @@
 
 // АНИМАЦИЯ ЛОГОТИПА <logotTip(ЕжеСвет)>˅=============================================================˅
 .header__logo {
-  &:hover {
-    .header__img {
-      opacity: 0;
-      visibility: hidden;
-      width: 0;
-    }
-    h3 {
-      opacity: 1;
-      visibility: visible;
-      color: #1857a4;
-      animation: logoh3Show 0.5s linear;
-    }
-  }
-  .header__link {
-    justify-content: flex-start !important;
-  }
-  .header__img {
-    width: 100%;
-    opacity: 1;
-  }
-  h3 {
-    margin: 0;
-    line-height: 1;
-    font-size: 70px;
-    opacity: 0;
-    visibility: hidden;
-  }
   @keyframes logoh3Show {
     0% {
-      transform: rotate(0deg);
-    }
-    20% {
-      transform: rotate(-25deg);
-    }
-    50% {
-      transform: rotate(25deg);
+      transform: translateX(-100%);
+      opacity: 0;
     }
     100% {
-      transform: rotate(0deg);
+      transform: translateX(0);
+      opacity: 1;
     }
   }
 }

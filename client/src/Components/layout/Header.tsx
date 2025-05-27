@@ -100,16 +100,11 @@ export function Header() {
         <div className="header-container">
           {/* ЛОГО */}
           <div className="header__logo">
-            <Link to={SHOP_ROUTE} className="header__link">
-              <img
-                className="header__img"
-                // src={require("../../img/logo/ЕжеСветRedBlackWhiteEff.png")}
-                // src={require("../../../img/logo/PERN.png")}
-                src={logoImage}
-                alt=""
-              />
-              <h3>P.E.R.N.</h3>
-            </Link>
+            <a href={SHOP_ROUTE} className="header__link">
+              {/* <img className="header__img" src={logoImage} alt="P.E.R.N." /> */}
+              <h3 className="header__img">P</h3>
+              <h3 className="header__text">.E.R.N.</h3>
+            </a>
           </div>
           {/* ОБЩ. МЕНЮ */}
           <div className="header__menu">
