@@ -64,8 +64,10 @@ body {
     var(--off, 11px);
   --font-size-small: var(--big, 22px) var(--mid, 17px) var(--small, 15px)
     var(--off, 15px);
-  --font-size-logo: var(--big, 50px) var(--mid, 45px) var(--small, 40px)
-    var(--off, 30px);
+  --font-size-logo: var(--big, 35px) var(--mid, 30px) var(--small, 25px)
+    var(--off, 20px);
+  --font-size-logo-big: var(--big, 70px) var(--mid, 60px) var(--small, 50px)
+    var(--off, 45px);
   --font-weight: var(--big, 700) var(--mid, 400) var(--small, 200)
     var(--off, 200);
   --border: var(--big, 1px solid #000) var(--mid, 1px solid #000)
@@ -126,6 +128,13 @@ header {
     // padding: var(--head-pad) !important ;
     padding-top: var(--head-pad) !important;
     padding-bottom: var(--head-pad) !important;
+
+    // стили для лого е/и в контейнере есть нижнее меню
+    &:has(/* .header__menu >  */.header__menu-bottom) .header__logo > a.header__link > h3 {
+      font-size: var(--font-size-logo-big);
+      position: relative;
+      top: -5px;
+    }
   }
   .header__menu {
     // общ. Верхнее/Нижнее меню
@@ -151,6 +160,23 @@ header {
     // Нижнее меню
     &-bottom {
       margin-top: var(--head-bot-top-mar);
+    }
+  }
+}
+
+// ПРЯМЫЕ СТИЛИ > off
+body[data-size="off"] {
+  header .header__menu {
+    // Верхнее меню (минимализация стилей)
+    &-top {
+      span.menu-top__items {
+        width: auto;
+        margin-left: 15px;
+        a.m-t-items__navlink {
+          border: 0;
+          box-shadow: 0 0 0;
+        }
+      }
     }
   }
 }

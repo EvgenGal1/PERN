@@ -36,6 +36,7 @@
           color: var(--Gold);
         }
         .header__text {
+          display: block;
           color: var(--Gold);
           opacity: 1;
           transform: translateX(0);
@@ -50,6 +51,7 @@
         transition: color var(--sec05) ease;
       }
       .header__text {
+        display: none;
         font-size: var(--font-size-logo);
         font-weight: bold;
         margin: 0;
