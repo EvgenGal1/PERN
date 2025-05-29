@@ -10,6 +10,7 @@ import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
   CHECKOUT_ROUTE,
+  ABOUTME_ROUTE,
   CONTACTS_ROUTE,
   DELIVERY_ROUTE,
   DEVICE_ROUTE,
@@ -46,6 +47,7 @@ import Checkout from "@Comp/pages/public/AppTok/Checkout";
 import Product from "@Comp/pages/public/AppTok/Product";
 import SearchFilter from "@Comp/common/SearchFilter";
 import Shop from "@Comp/pages/public/AppTok/Shop";
+import AboutMe from "@Comp/pages/public/AboutMe";
 
 // доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
 export const publicRoutes = [
@@ -64,6 +66,7 @@ export const publicRoutes = [
   { path: NOTFOUND_ROUTE, Component: NotFound },
   { path: BASKET_ROUTE, Component: Basket },
   { path: CHECKOUT_ROUTE, Component: Checkout },
+  { path: ABOUTME_ROUTE, Component: AboutMe },
 ];
 
 // доступ для Авториз.польз.(Польз.)

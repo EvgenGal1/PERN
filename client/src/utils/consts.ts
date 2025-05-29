@@ -6,6 +6,7 @@ export const FILTER_ROUTE = "/search";
 export const DEVICE_ROUTE = "/device";
 export const DELIVERY_ROUTE = "/delivery";
 export const CONTACTS_ROUTE = "/contacts";
+export const ABOUTME_ROUTE = "/aboutme";
 export const NOTFOUND_ROUTE = "*";
 // ^ tokmakov
 export const LOGIN_ROUTE = "/login";
