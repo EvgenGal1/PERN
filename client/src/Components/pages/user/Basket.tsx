@@ -1,4 +1,4 @@
-import BasketList from "./BasketList";
+import BasketList from "./features/BasketList";
 
 const Basket = () => {
   return (

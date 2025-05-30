@@ -1,15 +1,15 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { authAPI } from "../../../api/auth/authAPI";
-import { LOGIN_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
-import { AppContext } from "../../../context/AppContext";
+import { authAPI } from "@/api/auth/authAPI";
+import { LOGIN_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
+import { AppContext } from "@/context/AppContext";
 
 const User = () => {
   const { user }: any = useContext(AppContext);
   const navigate = useNavigate();
 
-  const handleLogout = (/* event: any */) => {
+  const handleLogout = () => {
     authAPI.logout();
     user.logout();
     navigate(LOGIN_ROUTE, { replace: true });
