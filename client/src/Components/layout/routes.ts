@@ -44,9 +44,9 @@ import UserOrders from "@Comp/pages/auth/UserOrders";
 import Auth from "@Comp/pages/public/AppTok/Auth";
 import Basket from "@Comp/pages/public/AppTok/Basket";
 import Checkout from "@Comp/pages/public/AppTok/Checkout";
-import Product from "@Comp/pages/public/AppTok/Product";
+import Product from "@Comp/pages/shop/Product";
 import SearchFilter from "@Comp/common/SearchFilter";
-import Shop from "@Comp/pages/public/AppTok/Shop";
+import Shop from "@Comp/pages/shop/Shop";
 import AboutMe from "@Comp/pages/public/AboutMe";
 
 // доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
