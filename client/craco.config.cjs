@@ -8,11 +8,11 @@ module.exports = {
       webpackConfig.resolve.alias = {
         ...webpackConfig.resolve.alias,
         // eslint-disable-next-line no-undef
-        "@": path.resolve(process.cwd(), "src"),
+        "@/": path.resolve(process.cwd(), "src"),
         // eslint-disable-next-line no-undef
-        "@api": path.resolve(__dirname, "src/api"),
+        "@api/": path.resolve(__dirname, "src/api"),
         // eslint-disable-next-line no-undef
-        "@Comp": path.resolve(__dirname, "src/Components"),
+        "@Comp/": path.resolve(__dirname, "src/Components"),
       };
 
       // настр. sass-loader > использ. dart-sass от.ошб.SCSS в терминале - Deprecation The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0. // ! не раб. - ошб.осталась
