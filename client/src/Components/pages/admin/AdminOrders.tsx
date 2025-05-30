@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { orderAPI } from "@api/shopping/orderAPI";
-import Orders from "@Comp/layout/AppTok/Orders";
+import Orders from "@Comp/pages/shop/Orders";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState(null);

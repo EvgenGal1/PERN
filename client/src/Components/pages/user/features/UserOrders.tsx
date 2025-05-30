@@ -4,7 +4,7 @@ import { Spinner } from "react-bootstrap";
 
 import { orderAPI } from "@/api/shopping/orderAPI";
 import { AppContext } from "@/context/AppContext";
-import Orders from "@Comp/layout/AppTok/Orders";
+import Orders from "@Comp/pages/shop/Orders";
 
 const UserOrders = () => {
   const { user }: any = useContext(AppContext);

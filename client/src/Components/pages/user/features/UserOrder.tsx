@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { useParams } from "react-router-dom";
 
 import { AppContext } from "@/context/AppContext";
-import Order from "@Comp/layout/AppTok/Order";
+import Order from "@Comp/pages/shop/Order";
 
 const UserOrder = () => {
   useContext(AppContext);
