@@ -53,7 +53,7 @@ import AboutMe from "@Comp/pages/public/AboutMe";
 export const publicRoutes = [
   // ^ {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
   // путь Магазина, Каталога(+доп.к URL), Поиска(+доп.к URL)
-  { /* "/", */ path: SHOP_ROUTE, Component: Shop },
+  { path: SHOP_ROUTE, Component: Shop },
   { path: SHOP_CATALOG_ROUTE, Component: Shop },
   { path: FILTER_ROUTE, Component: SearchFilter },
   // Замена 2 Комп.Login|Register на один Комп.с разн.маршр. в строке запроса
