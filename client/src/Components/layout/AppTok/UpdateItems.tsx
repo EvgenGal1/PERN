@@ -1,6 +1,6 @@
 // ^ доп.модальн.окно редактирование Позиций Заказа
 
-import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
+import FormFieldRecursive__EG from "@Comp/ui/Form/FormFieldRecursive__EG";
 
 const UpdateItems = (props: any) => {
   // получ.от родителя масс. хар-тик и fn измен.масс.

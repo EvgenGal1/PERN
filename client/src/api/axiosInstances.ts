@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { AuthRes } from "../types/api/auth.types";
+import { AuthRes } from "@/types/api/auth.types";
 
 // Базовый URL API
 const API_URL = process.env.REACT_APP_SRV_IURL;

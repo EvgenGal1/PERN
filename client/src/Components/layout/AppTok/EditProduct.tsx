@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 
-import { productAPI } from "../../../api/catalog/productAPI";
+import { productAPI } from "@api/catalog/productAPI";
 
 const EditProduct = (props: any) => {
   const { id, show, setShow, setChange } = props;

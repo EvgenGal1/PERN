@@ -1,4 +1,4 @@
-import { BrandData } from "../../types/api/catalog.types";
+import { BrandData } from "@/types/api/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 

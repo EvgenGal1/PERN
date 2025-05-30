@@ -1,6 +1,6 @@
 // ^ Многраз.Комп.Заказов
 import { Link } from "react-router-dom";
-import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
+import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
 
 const Orders = (props: any) => {
   if (props.items?.length === 0 || !props.items) {

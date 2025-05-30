@@ -4,7 +4,7 @@ import React, { Component, ReactNode } from "react";
 // import * as Sentry from "@sentry/react";
 
 // клс.обраб.ошб.
-import { ApiError } from "../../utils/errorClasses";
+import { ApiError } from "@/utils/errorClasses";
 
 interface ErrorBoundaryProps {
   children: ReactNode; // вложен.дочер.Комп.

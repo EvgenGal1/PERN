@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // хук для Размеров (Большой, Средний, Маленький,Выключен)
-import { useSize } from "../../../scripts/hooks/useSize";
+import { useSize } from "@/scripts/hooks/useSize";
 
 import "./Switcher4btn.scss";
 

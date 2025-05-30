@@ -30,8 +30,6 @@ import Contacts from "@Comp/pages/public/Contacts";
 import Delivery from "@Comp/pages/public/Delivery";
 import DevicePage from "@Comp/pages/public/DevicePage";
 import NotFound from "@Comp/pages/public/NotFound";
-// import Login from "../../pages/public/AppTok/Login";
-// import Register from "../../pages/public/AppTok/Register";
 import Admin from "@Comp/pages/admin/Admin";
 import AdminBrands from "@Comp/pages/admin/AdminBrands";
 import AdminCategories from "@Comp/pages/admin/AdminCategories";

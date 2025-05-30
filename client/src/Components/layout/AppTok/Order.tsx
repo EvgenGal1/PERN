@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { orderAPI } from "../../../api/shopping/orderAPI";
-import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "../../../utils/consts";
-import UpdateOrder from "../../layout/AppTok/UpdateOrder";
+import { orderAPI } from "@api/shopping/orderAPI";
+import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
+import UpdateOrder from "@Comp/layout/AppTok/UpdateOrder";
 
 const Order = (props: any) => {
   const navigate = useNavigate();

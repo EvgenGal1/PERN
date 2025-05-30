@@ -1,4 +1,4 @@
-import { IUser } from "../../types/api/auth.types";
+import { IUser } from "@/types/api/auth.types";
 import { authInstance } from "../axiosInstances";
 import { handleRequest } from "../handleRequest";
 

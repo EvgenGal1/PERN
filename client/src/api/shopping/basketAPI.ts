@@ -1,4 +1,4 @@
-import { BasketData } from "../../types/api/shopping.types";
+import { BasketData } from "@/types/api/shopping.types";
 import { guestInstance } from "../axiosInstances";
 import { handleRequest } from "../handleRequest";
 

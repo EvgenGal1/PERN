@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import { orderAPI } from "../../../api/shopping/orderAPI";
-import FormFieldRecursive__EG from "../../ui/Form/FormFieldRecursive__EG";
-import Modal__eg from "../../ui/Modal/Modal__eg";
+import { orderAPI } from "@api/shopping/orderAPI";
+import FormFieldRecursive__EG from "@Comp/ui/Form/FormFieldRecursive__EG";
+import Modal__eg from "@Comp/ui/Modal/Modal__eg";
 import UpdateItems from "./UpdateItems";
 
 // fn валид.

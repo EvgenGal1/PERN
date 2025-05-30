@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // хук для Цветовых Тем (Тёмная/Сетлая/Средняя)
-import { useTheme } from "../../../scripts/hooks/useTheme";
+import { useTheme } from "@/scripts/hooks/useTheme";
 
 import "./Switcher3btn.scss";
 

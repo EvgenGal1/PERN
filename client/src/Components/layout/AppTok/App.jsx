@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 // import "./App.css";
 
 import CountryCard from "./CountryCard.jsx";
-import Pagination from "../../common/Pagination.jsx";
+import Pagination from "@Comp/common/Pagination.jsx";
 
 const Countries = [
   {

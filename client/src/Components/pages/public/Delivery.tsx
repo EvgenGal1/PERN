@@ -1,4 +1,4 @@
-import App from "../../layout/AppTok/App";
+import App from "@Comp/layout/AppTok/App";
 
 const Delivery = () => {
   return (

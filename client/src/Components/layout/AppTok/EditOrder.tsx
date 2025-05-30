@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 
-import { orderAPI } from "../../../api/shopping/orderAPI";
+import { orderAPI } from "@api/shopping/orderAPI";
 
 interface EditOrderProps {
   id?: number; // Добавляем тип для id

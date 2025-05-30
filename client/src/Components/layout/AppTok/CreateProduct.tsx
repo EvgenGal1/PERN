@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 
-import { brandAPI } from "../../../api/catalog/brandAPI";
-import { categoryAPI } from "../../../api/catalog/categoryAPI";
-import { productAPI } from "../../../api/catalog/productAPI";
+import { brandAPI } from "@api/catalog/brandAPI";
+import { categoryAPI } from "@api/catalog/categoryAPI";
+import { productAPI } from "@api/catalog/productAPI";
 import CreateProperties from "./CreateProperties";
 
 // перем.Валидации/Значений по умолч.

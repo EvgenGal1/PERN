@@ -1,7 +1,7 @@
 // ^ Модальное окно с формой добавления Бренда
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Modal } from "react-bootstrap";
-import { brandAPI } from "../../../api/catalog/brandAPI";
+import { brandAPI } from "@api/catalog/brandAPI";
 
 const CreateBrand = (props: any) => {
   const { show, setShow, setChange } = props;

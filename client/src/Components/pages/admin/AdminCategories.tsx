@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
-import { categoryAPI } from "../../../api/catalog/categoryAPI";
-import EditCategory from "../../layout/AppTok/EditCategory";
+import { categoryAPI } from "@api/catalog/categoryAPI";
+import EditCategory from "@Comp/layout/AppTok/EditCategory";
 
 const AdminCategories = () => {
   // список загруженных категорий

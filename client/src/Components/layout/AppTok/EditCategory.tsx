@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 
-import { categoryAPI } from "../../../api/catalog/categoryAPI";
+import { categoryAPI } from "@api/catalog/categoryAPI";
 
 const EditCategory = (props: any) => {
   const { id, show, setShow, setChange } = props;
