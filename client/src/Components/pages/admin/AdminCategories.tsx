@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { categoryAPI } from "@api/catalog/categoryAPI";
-import EditCategory from "@Comp/layout/AppTok/EditCategory";
+import EditCategory from "@Comp/pages/admin/features/EditCategory";
 
 const AdminCategories = () => {
   // список загруженных категорий

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { orderAPI } from "@api/shopping/orderAPI";
 import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
-import UpdateOrder from "@Comp/layout/AppTok/UpdateOrder";
+import UpdateOrder from "@Comp/pages/admin/features/UpdateOrder";
 
 const Order = (props: any) => {
   const navigate = useNavigate();

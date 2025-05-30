@@ -4,9 +4,9 @@ import { Spinner } from "react-bootstrap";
 
 import { productAPI } from "@/api/catalog/productAPI";
 import { AppContext } from "@/context/AppContext";
-import CreateProduct from "@Comp/layout/AppTok/CreateProduct";
+import CreateProduct from "@Comp/pages/admin/features/CreateProduct";
+import UpdateProduct from "@Comp/pages/admin/features/UpdateProduct";
 import { PaginSortLimit } from "@Comp/common/PaginSortLimit";
-import UpdateProduct from "@Comp/layout/AppTok/UpdateProduct";
 
 const AdminProducts = () => {
   const { catalog }: any = useContext(AppContext);

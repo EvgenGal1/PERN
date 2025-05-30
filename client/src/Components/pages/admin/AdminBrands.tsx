@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 
 import { brandAPI } from "@api/catalog/brandAPI";
-import EditBrand from "@Comp/layout/AppTok/EditBrand";
+import EditBrand from "@Comp/pages/admin/features/EditBrand";
 
 const AdminBrands = () => {
   // список загруженных брендов
