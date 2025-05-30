@@ -14,14 +14,18 @@ const Product: React.FC = observer(() => {
   // ID Продукта, Context
   const { id } = useParams();
   const { catalog, user, basket } = useContext(AppContext);
+  console.log("1 catalog.isLoading ", catalog.isLoading);
 
   // наведение на Звёзды
   const [hoverStar, setHoverStar] = useState<number>(0);
 
   useEffect(() => {
+    console.log("1 ", 1);
     const loadProduct = async () => {
       if (!id || isNaN(Number(id))) return;
+      console.log("2 ", 2);
       if (!catalog.getProductById(Number(id))) {
+        console.log("3 ", 3);
         await catalog.fetchProductById(Number(id));
       }
     };
@@ -32,22 +36,33 @@ const Product: React.FC = observer(() => {
   useEffect(() => {
     const loadProp = async () => {
       if (!id || isNaN(Number(id))) return;
+      console.log("6 ", 6);
+      console.log("6 product и props ", product, product?.props);
       const existProp = catalog.getProductById(Number(id));
       if (existProp && !existProp.props) {
+        console.log("66 ", 66);
         await catalog.fetchProductProps(Number(id));
       }
     };
     loadProp();
   }, [id, catalog, catalog.products]);
 
-  if (catalog.isLoading) return <LoadingAtom />;
+  console.log("2 catalog.isLoading ", catalog.isLoading);
+  if (catalog.isLoading) {
+    console.log("4.2 ", 4.2);
+    return <LoadingAtom />;
+  }
   if (!id || isNaN(Number(id))) return <div>Неверный ID продукта</div>;
 
   const product = catalog.getProductById(Number(id));
-  if (!product) return <div>Продукт не найден</div>;
+  if (!product) {
+    console.log("5 ", 5);
+    return <div>Продукт не найден</div>;
+  }
 
   // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
+    console.log("user.isAuth ", user.isAuth);
     if (!user.isAuth || !product) return;
     try {
       await catalog.updateProductRating(user.id!, product.id!, rating);
@@ -57,9 +72,11 @@ const Product: React.FC = observer(() => {
   };
 
   // добавить Продукт в Корзину
-  const handleClickAddToBasket = () => {
+  const handleClickAddToBasket = /* async */ () => {
     if (product && product.id) basket.addProduct(product.id);
   };
+  console.log("return product?.properties ", product?.props /* properties */);
+  console.log("return catalog.products ", catalog.products);
   return (
     <div className="product container" key={id}>
       <div className="df df-row">
@@ -72,16 +89,18 @@ const Product: React.FC = observer(() => {
         {/* Основная информация о продукте */}
         <div className="product-header">
           <h1>{product?.name}</h1>
-          <p>Цена: {formatPrice(product.price)} руб.</p>
+          <p>Цена: {/* catalog. */ formatPrice(product.price)} руб.</p>
           <p>Бренд: {product.brand?.name}</p>
           <p>Категория: {product.category?.name}</p>
           {/* Рейтинг Продукта */}
+          {/* <div className="product-rating"> */}
           <p>
             Рейтинг: {product.ratings?.rating ?? 0}
             {product.ratings?.votes
               ? ` / ${product.ratings?.votes || 0} голосов`
               : null}
           </p>
+          {/* </div> */}
           {/* Звёзды */}
           <div className="stars">
             {Array.from({ length: 5 }).map((_, index) => {
@@ -95,6 +114,7 @@ const Product: React.FC = observer(() => {
                   onClick={() => handleSubmit(index + 1)}
                   style={{
                     fontSize: "25px",
+                    // color: hoverStar > index || rating > index ? "orange" : "gray",
                     color: isActive ? "orange" : "gray",
                     cursor: "pointer",
                   }}
