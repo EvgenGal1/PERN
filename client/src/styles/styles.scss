@@ -30,7 +30,7 @@
 // общие стили для проектов
 @use "./projects";
 // общие стили Главных Компонентов (header, main, footer)
-@use "../Components/layout/Router";
+@use "./Router";
 
 body {
   font-family:
