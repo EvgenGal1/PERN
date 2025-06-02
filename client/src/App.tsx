@@ -23,9 +23,9 @@ const App: React.FC = observer(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { userData, activated } = await authAPI.check();
-        if (userData) user.login(userData);
-        if (activated) user.isActivated(activated);
+        // const { userData, activated } = await authAPI.check();
+        // if (userData) user.login(userData);
+        // if (activated) user.isActivated(activated);
       } catch (error) {
         console.error("Ошибка загрузки данных пользователя:", error);
       } finally {
