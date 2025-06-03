@@ -1,5 +1,6 @@
+import { Transaction } from 'sequelize';
+
 // табл.
-import UserModel from '../models/UserModel';
 import BasketModel from '../models/BasketModel';
 import ProductModel from '../models/ProductModel';
 import BasketProductModel from '../models/BasketProductModel';
@@ -39,16 +40,20 @@ class BasketService {
   }
 
   // созд.корзину по userId
-  async createBasket(userId: number): Promise<BasketResponse> {
-    // параллел.req >  получ. наименьший ID, user по ID
-    const [user, smallestId] = await Promise.all([
-      UserModel.findByPk(userId),
-      DatabaseUtils.getSmallestIDAvailable('basket'),
-    ]);
-    if (!user)
-      throw ApiError.notFound(`Пользователь с ID '${userId}' не найден`);
+  async createBasket(
+    userId: number,
+    transaction?: Transaction,
+  ): Promise<BasketResponse> {
+    // получ. наименьший ID, созд.Корзину
+    const smallestId = await DatabaseUtils.getSmallestIDAvailable(
+      'basket',
+      transaction,
+    );
 
-    const basket = await BasketModel.create({ id: smallestId, userId });
+    const basket = await BasketModel.create(
+      { id: smallestId, userId },
+      { transaction },
+    );
     return DatabaseUtils.formatBasketResponse(basket as BasketWithProducts);
   }
 

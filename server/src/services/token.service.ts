@@ -1,3 +1,4 @@
+import { Transaction } from 'sequelize';
 // подкл.ф.контролера для генерац.web токена
 import jwt from 'jsonwebtoken';
 
@@ -81,6 +82,7 @@ class TokenService {
     userId: number,
     basketId: number,
     refreshToken: string,
+    transaction?: Transaction,
   ): Promise<void> {
     const refreshTokenExpires = new Date(
       Date.now() + +process.env.REFRESH_TOKEN_LIFETIME!,
@@ -92,17 +94,25 @@ class TokenService {
     });
     // обнов.Токен/срок или созд.нов.Токен
     if (tokenData) {
-      await tokenData.update({ refreshToken, refreshTokenExpires });
+      await tokenData.update(
+        { refreshToken, refreshTokenExpires },
+        { transaction },
+      );
     } else {
-      const smallestFreeId =
-        await DatabaseUtils.getSmallestIDAvailable('token');
-      await TokenModel.create({
-        id: smallestFreeId,
-        userId,
-        basketId,
-        refreshToken,
-        refreshTokenExpires,
-      });
+      const smallestFreeId = await DatabaseUtils.getSmallestIDAvailable(
+        'token',
+        transaction,
+      );
+      await TokenModel.create(
+        {
+          id: smallestFreeId,
+          userId,
+          basketId,
+          refreshToken,
+          refreshTokenExpires,
+        },
+        { transaction },
+      );
     }
   }
 

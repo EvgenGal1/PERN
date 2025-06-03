@@ -1,10 +1,12 @@
 // вкл.операторы > сложн.req
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 // подкл. библ. для шифрование пароля нов.польз.
 import bcrypt from 'bcrypt';
 // подкл.генир.уник.рандом.id
 import crypto from 'crypto';
 
+// подкл.к БД
+import sequelize from '../config/sequelize';
 // модель данных табл.User
 import UserModel from '../models/UserModel';
 import TokenModel from '../models/TokenModel';
@@ -70,68 +72,83 @@ class AuthService {
     username = '',
     role: NameUserRoles = NameUserRoles.USER,
   ): Promise<AuthCombinedType> {
-    const existingUser = await UserModel.findOne({ where: { email } });
-    if (existingUser) {
-      throw ApiError.conflict(`Пользователь с Email <${email}> уже существует`);
-    }
+    // Начинаем транзакцию
+    return sequelize.transaction(async (transaction: Transaction) => {
+      const existingUser = await UserModel.findOne({
+        where: { email },
+        transaction,
+      });
+      if (existingUser) {
+        throw ApiError.conflict(`Пользователь с Email <${email}> существует`);
+      }
 
-    // параллел.req > hash psw, генер.уник.ссы.активации, наименьший ID
-    const [hashedPassword, activationLink, smallestFreeId] = await Promise.all([
-      this.hashPassword(password),
-      this.generateActivationLink(crypto.randomUUID()),
-      DatabaseUtils.getSmallestIDAvailable('user'),
-    ]);
+      // параллел.req > hash psw, генер.уник.ссы.активации, наименьший ID
+      const [hashedPassword, activationLink, smallestFreeId] =
+        await Promise.all([
+          this.hashPassword(password),
+          this.generateActivationLink(crypto.randomUUID()),
+          DatabaseUtils.getSmallestIDAvailable('user', transaction),
+        ]);
 
-    // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
-    const user = await UserModel.create({
-      id: smallestFreeId,
-      email,
-      username,
-      password: hashedPassword,
-      activationLink,
+      // СОЗД.НОВ.ПОЛЬЗОВАТЕЛЯ (пароль шифр.)
+      const user = await UserModel.create(
+        {
+          id: smallestFreeId,
+          email,
+          username,
+          password: hashedPassword,
+          activationLink,
+        },
+        { transaction },
+      );
+
+      // параллел.req > привязки.существ.Роли Пользователя, созд.Корзину по User.id
+      const [userRoles, basket] = await Promise.all([
+        RoleService.assignUserRole(user.id, role, 1, transaction),
+        BasketService.createBasket(user.id, transaction),
+      ]);
+
+      // объ.перед.данн. > id/email/username/role/level/basketId
+      const tokenDto = await this.createTokenDto(
+        user,
+        [{ role: role, level: userRoles.level }],
+        basket.id,
+      );
+      // созд./получ. 2 токена
+      const tokens = await TokenService.generateToken(tokenDto);
+      if (!tokens) throw ApiError.internal('Генерация токенов не прошла');
+
+      // параллел.req > отпр.смс на почту для актив.акка, сохр.refresh в БД
+      await Promise.all([
+        MailService.sendActionMail(email, activationLink),
+        TokenService.saveToken(
+          user.id,
+          basket.id,
+          tokens.refreshToken,
+          transaction,
+        ),
+      ]);
+
+      // возвращ.tokens/basket.id
+      return {
+        tokens,
+        basketId: basket.id,
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        },
+        isActivated: false,
+        // общ.масс.объ.
+        roles: [{ role: role, level: userRoles.level }],
+        // отдел.передача
+        // roles: [role],
+        // levels: [userRoles.level],
+        // явно добав.парам. > опцион.типа(Partial)
+        // ...(role && { roles: [role] }),
+        // ...(userRoles && { levels: [userRoles.level] }),
+      };
     });
-
-    // параллел.req > привязки.существ.Роли Пользователя, созд.Корзину по User.id
-    const [userRoles, basket] = await Promise.all([
-      RoleService.assignUserRole(user.id, role),
-      BasketService.createBasket(user.id),
-    ]);
-
-    // объ.перед.данн. > id/email/username/role/level/basketId
-    const tokenDto = await this.createTokenDto(
-      user,
-      [{ role: role, level: userRoles.level }],
-      basket.id,
-    );
-    // созд./получ. 2 токена
-    const tokens = await TokenService.generateToken(tokenDto);
-    if (!tokens) throw ApiError.internal('Генерация токенов не прошла');
-
-    // параллел.req > отпр.смс на почту для актив.акка, сохр.refresh в БД
-    await Promise.all([
-      MailService.sendActionMail(email, activationLink),
-      TokenService.saveToken(user.id, basket.id, tokens.refreshToken),
-    ]);
-
-    // возвращ.tokens/basket.id
-    return {
-      tokens,
-      basketId: basket.id,
-      user: {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-      },
-      isActivated: false,
-      // общ.масс.объ.
-      roles: [{ role: role, level: userRoles.level }],
-      // отдел.передача
-      // roles: [role],
-      // levels: [userRoles.level],
-      // явно добав.парам. > опцион.типа(Partial)
-      // ...(role && { roles: [role] }),
-      // ...(userRoles && { levels: [userRoles.level] }),
-    };
   }
 
   // АВТОРИЗАЦИЯ

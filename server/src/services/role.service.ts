@@ -1,3 +1,5 @@
+import { Transaction } from 'sequelize';
+
 import RoleModel from '../models/RoleModel';
 import UserRoleModel from '../models/UserRoleModel';
 import ApiError from '../middleware/errors/ApiError';
@@ -72,6 +74,7 @@ class RoleService {
     userId: number,
     roleName: RoleName,
     level: number = 1,
+    transaction?: Transaction,
   ): Promise<UserRoleModel> {
     // по имени Роли из объ.взять ID
     const roleId = RolesIdsNames[roleName].id;
@@ -85,6 +88,7 @@ class RoleService {
       {
         conflictFields: ['user_id', 'role_id'] as any, // имя стлб.без типа от ошб.не существ.userId
         returning: true,
+        transaction,
       },
     );
     if (!userRole) {

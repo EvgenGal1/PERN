@@ -1,5 +1,7 @@
 // ^ различные/помошники Утилиты База Данных
 
+import { Transaction } from 'sequelize';
+
 import UserModel from '../models/UserModel';
 import RoleModel from '../models/RoleModel';
 import UserRoleModel from '../models/UserRoleModel';
@@ -16,7 +18,10 @@ import ApiError from '../middleware/errors/ApiError';
 
 class DatabaseUtils {
   // ^^ `получить наименьший доступный идентификатор` из табл.БД>tableName
-  async getSmallestIDAvailable(tableName: string): Promise<number> {
+  async getSmallestIDAvailable(
+    tableName: string,
+    transaction?: Transaction,
+  ): Promise<number> {
     // перем.таблц.
     let model: any;
     // выбор.табл.>tableName
@@ -27,7 +32,7 @@ class DatabaseUtils {
     else if (tableName === 'token') model = TokenModel;
     else throw ApiError.internal('Неверное название таблицы');
     // req.составной
-    const result = await model.findAll({ order: [['id', 'ASC']] });
+    const result = await model.findAll({ order: [['id', 'ASC']], transaction });
     // обраб.0
     if (result.length === 0) return 1;
     // перем. начального доступного ID
