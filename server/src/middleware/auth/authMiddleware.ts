@@ -33,7 +33,7 @@ const authMW = async (
     const decoded = (await TokenService.validateAccessToken(
       accessToken,
     )) as DecodedToken;
-    if (!decoded || !decoded.id || !decoded.role) {
+    if (!decoded || !decoded.id || !decoded.roles) {
       return next(ApiError.unauthorized('Токен не валиден'));
     }
 

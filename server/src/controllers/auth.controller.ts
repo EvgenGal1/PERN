@@ -153,7 +153,7 @@ class AuthController {
   async checkUser(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.auth?.id) {
-        return next(ApiError.badRequest('ID Пользователя не найден'));
+        return next(ApiError.badRequest('Пользователя не авторизован'));
       }
       const user = await UserService.getOneUser(req.auth.id);
       if (!user) {

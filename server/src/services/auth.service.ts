@@ -72,10 +72,11 @@ class AuthService {
     username = '',
     role: NameUserRoles = NameUserRoles.USER,
   ): Promise<AuthCombinedType> {
-    // Начинаем транзакцию
+    // нач.транзакции
     return sequelize.transaction(async (transaction: Transaction) => {
       const existingUser = await UserModel.findOne({
         where: { email },
+        // передача транзакции в кажд.мтд.
         transaction,
       });
       if (existingUser) {

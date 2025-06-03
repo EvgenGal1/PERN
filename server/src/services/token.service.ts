@@ -27,10 +27,14 @@ class TokenService {
   // валид./проверка подделки/сроки жизни токена ACCESS и REFRESH
   async validateAccessToken(token: string): Promise<TokenDto> {
     try {
-      // верифик.|раскодир.токен. `проверять` на валидность(токен, секр.ключ)
+      // `проверять` на валидность(токен, секр.ключ)
       const data = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY!);
       if (typeof data !== 'object' || !('id' in data)) {
         throw ApiError.unauthorized('Неверный формат Токена');
+      }
+      // проверка срока действия
+      if (data.exp && data.exp * 1000 < Date.now()) {
+        throw ApiError.unauthorized('Токен истёк');
       }
       return data as TokenDto;
     } catch (error: unknown) {
