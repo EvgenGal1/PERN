@@ -4,7 +4,6 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Sequelize,
-  CreationOptional,
 } from 'sequelize';
 
 import { Models } from '../types/models.interfaсe';
@@ -14,7 +13,6 @@ class UserRoleModel extends Model<
   InferAttributes<UserRoleModel>,
   InferCreationAttributes<UserRoleModel>
 > {
-  declare id: CreationOptional<number>;
   declare userId: number;
   declare roleId: number;
   declare level: number;
@@ -35,11 +33,6 @@ class UserRoleModel extends Model<
   static initModel(sequelize: Sequelize) {
     UserRoleModel.init(
       {
-        id: {
-          type: DataTypes.INTEGER,
-          // autoIncrement: true,
-          allowNull: false,
-        },
         userId: {
           type: DataTypes.INTEGER,
           primaryKey: true,
