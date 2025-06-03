@@ -4,9 +4,10 @@ export interface AuthRes {
   message: string;
   data: {
     accessToken: string;
-    user?: IUser;
-    roles?: RoleLevels[];
-    isActivated?: boolean;
+    user: IUser;
+    roles: RoleLevels[];
+    isActivated: boolean;
+    basket: number;
   };
 }
 
@@ -29,6 +30,7 @@ export interface TokenPayload {
   username: string;
   roles: RoleLevels[];
   basket: number;
+  isActivated: boolean;
 }
 
 export interface UserResData {
@@ -37,7 +39,7 @@ export interface UserResData {
   username: string;
   roles: RoleLevels[];
   basket: number;
-  isActivated?: boolean;
+  isActivated: boolean;
   status?: number;
   message?: string;
   errors?: string;

@@ -146,16 +146,14 @@ const AdminProducts = () => {
                     <td style={{ textAlign: "center" }}>
                       {item.image && (
                         <a
-                          href={process.env.REACT_APP_IMG_URL_PERN + item.image}
+                          href={`${process.env.REACT_APP_IMG_URL_PERN}/${item.image}`}
                           target="_blank"
                           rel="noreferrer"
                         >
                           {/* фото */}
                           <img
                             alt=""
-                            src={
-                              process.env.REACT_APP_IMG_URL_PERN + item.image
-                            }
+                            src={`${process.env.REACT_APP_IMG_URL_PERN}/${item.image}`}
                             width={50}
                             height={50}
                           />

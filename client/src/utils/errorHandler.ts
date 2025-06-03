@@ -29,7 +29,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
     // при 401 Выход Пользователя и редирект на Авторизацию
     if (status === 401) {
       authAPI.logout();
-      window.location.href = "auth/login";
+      window.location.href = "login";
     }
 
     return {

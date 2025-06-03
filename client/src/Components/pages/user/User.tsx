@@ -38,7 +38,6 @@ const User = () => {
         </section>
         <section className="us--cntrl cntrl">
           <button className="btn--eg btn-primary--eg">
-            {" "}
             Редактировать Пользователя
           </button>
           <button
