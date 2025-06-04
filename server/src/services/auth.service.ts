@@ -214,7 +214,10 @@ class AuthService {
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
   async refreshUser(refreshToken: string): Promise<Tokens> {
     // е/и нет то ошб.не авториз
-    if (!refreshToken) throw ApiError.unauthorized('Требуется авторизация');
+    if (!refreshToken)
+      throw ApiError.unauthorized(
+        'Требуется авторизация для перезаписи Токенов',
+      );
 
     // валид.токен.refresh
     const userData = await TokenService.validateRefreshToken(refreshToken);

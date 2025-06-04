@@ -19,7 +19,7 @@ export default function roleMW(roles: string[]) {
       // проверка в header поля authorization
       const authorizationHeader = req.headers.authorization;
       if (!authorizationHeader) {
-        throw ApiError.unauthorized('требуется авторизация');
+        throw ApiError.unauthorized('Требуется авторизация для проверки');
       }
       // извлечь токен из header (отделить от Типа`Носитель` под ind 0)
       const accessToken = authorizationHeader.split(' ')[1]; // Bearer <токен>

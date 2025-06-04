@@ -106,6 +106,7 @@ class AuthController {
               email: userData.user.email,
               name: userData.user.username,
             },
+            basket: userData.basketId,
             isActivated: userData.isActivated,
             roles: userData.roles,
             // roles: userData.user.roles,
@@ -173,7 +174,7 @@ class AuthController {
       if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
       res.status(200).json({
         success: true,
-        message: 'Пользователь проверен',
+        message: `Пользователь ${user.username} проверен`,
         data: { accessToken: tokens.accessToken },
       });
     } catch (error: unknown) {
