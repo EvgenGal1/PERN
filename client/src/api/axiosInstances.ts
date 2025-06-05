@@ -11,7 +11,7 @@ import { AuthRes } from "@/types/api/auth.types";
 // Базовый URL API
 const API_URL = process.env.REACT_APP_SRV_IURL;
 
-// 1. `гостевой экземпляр` axios (неавториз.польз., отправ.cookie в кажд.req(refresh,basketId))
+// 1. `гостевой экземпляр` axios (неавториз.польз., отправ.cookie в кажд.req(register,login,activate,PasswordReset))
 const guestInstance = axios.create({ baseURL: API_URL, withCredentials: true });
 
 // 2. авторизованный экземпляр axios (провереные пользователи, отправ.cookie в кажд.req)
@@ -36,10 +36,12 @@ authInstance.interceptors.response.use(
     const initialReq = error.config as InternalAxiosRequestConfig & {
       _isRetry?: boolean;
     };
+
     // ошб.401 и не повторный req (Токен обнов.в БД/сохр.в LS)
     if (error.response?.status === 401 && initialReq && !initialReq._isRetry) {
       // пометка > предовращ. повторных req
       initialReq._isRetry = true;
+
       try {
         // req обнов.Токена
         const response = await axios.post<AuthRes>(`${API_URL}/auth/refresh`, {
@@ -50,7 +52,7 @@ authInstance.interceptors.response.use(
         // ч/з экземпл.перехватчика повтор нач.req с нов.Токеном
         return authInstance.request(initialReq);
       } catch (error: unknown) {
-        // console.error("Ошибка при обновлении токена:", error);
+        console.error("Ошибка при обновлении токена:", error);
         // удал.Токена при неудаче
         localStorage.removeItem("tokenAccess");
         throw error;

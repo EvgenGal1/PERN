@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { publicRoutes, authRoutes, adminRoutes } from "./routes";
 import { AppContext } from "@/context/AppContext";
 import Loader from "@Comp/ui/loader/Loader";
+
 const AppRouter: React.FC = () => {
   const { user } = useContext(AppContext);
 
