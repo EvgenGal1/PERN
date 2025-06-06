@@ -41,6 +41,8 @@
     // "removeComments": true,  // откл.коммент
     "allowSyntheticDefaultImports": true, // разрешить импорт без экспорта по умолчанию
     // "incremental": true // ускорение компиляции, сбор ток.измен.ф.
+    "experimentalDecorators": true, // поддержка декораторов (пока только MobX - action, observable)
+    "emitDecoratorMetadata": true // метаданные для декораторов
   },
   // список конкретных ф.> компиляции
   // "files": [ "core.ts", "app.ts" ],
