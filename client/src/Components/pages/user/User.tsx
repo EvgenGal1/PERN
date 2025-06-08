@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
 import { authAPI } from "@/api/auth/authAPI";
 import { LOGIN_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
 
-const User = () => {
-  const { user }: any = useContext(AppContext);
+const User: React.FC = observer(() => {
+  const { user } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -63,6 +64,6 @@ const User = () => {
       </div>
     </div>
   );
-};
+});
 
 export default User;
