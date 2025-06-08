@@ -39,7 +39,7 @@ const NavBar = observer(() => {
       <span className="menu-top__items m-t-items">
         {user.isAuth ? (
           <NavLink to={USER_ROUTE} className="m-t-items__navlink">
-            Личный кабинет
+            ЛК
           </NavLink>
         ) : (
           <NavLink
