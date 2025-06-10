@@ -135,7 +135,9 @@ class AuthController {
   async refreshUser(req: Request, res: Response, next: NextFunction) {
     try {
       const refreshToken =
-        req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
+        req.cookies.refreshToken ||
+        req.headers['authorization']?.split(' ')[1] ||
+        req.signedCookies['refreshToken'];
       const userData = await AuthService.refreshUser(refreshToken);
       res
         .cookie(
