@@ -1,6 +1,8 @@
+import { RoleLevels } from './role.interface';
+
 export interface AuthPayload {
   id: number; // обязат.число
-  role: string; // обязат.строка
+  roles: RoleLevels[]; // обязат.масс.
 }
 
 export interface CustomAuthPayloadRequest extends Request {
