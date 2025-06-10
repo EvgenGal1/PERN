@@ -1,7 +1,6 @@
 import express from 'express';
 
 import authMW from '../middleware/auth/authMiddleware';
-import adminMW from '../middleware/auth/adminMiddleware';
 import roleMW from '../middleware/auth/roleMiddleware';
 import RatingController from '../controllers/rating.controller';
 import { NameUserRoles } from '../types/role.interface';
@@ -67,8 +66,12 @@ router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
 router.post(
   '/product/:productId([0-9]+)/rate/:rate([1-5])',
   authMW,
-  adminMW,
-  roleMW([NameUserRoles.SUPER, NameUserRoles.ADMIN, NameUserRoles.MODER]),
+  roleMW([
+    NameUserRoles.USER,
+    NameUserRoles.SUPER,
+    NameUserRoles.ADMIN,
+    NameUserRoles.MODER,
+  ]),
   RatingController.createRating,
 );
 
