@@ -1,4 +1,5 @@
 // ^ Контекст. По умолч.и передаваемый
+
 import { createContext, FC, ReactNode } from "react";
 
 import UserStore from "@/store/UserStore";
@@ -12,17 +13,27 @@ interface AppContextValue {
   basket: BasketStore;
 }
 
-// контекст, который будем передавать
-const context: AppContextValue = {
-  user: new UserStore(),
-  catalog: new CatalogStore(),
-  basket: new BasketStore(),
-};
+// инициализация экземпляров хранилищ по отделельности один раз при загрузке модуля
+const userStore = new UserStore();
+const catalogStore = new CatalogStore();
+const basketStore = new BasketStore();
 
-const AppContext = createContext<AppContextValue>(context);
+// контекст приложения с нач.знач. > передачи
+const AppContext = createContext<AppContextValue>({
+  user: userStore,
+  catalog: catalogStore,
+  basket: basketStore,
+});
 
+// провайдер контекста с передачей значен.контексту/дочер.эл.
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider
+      value={{ user: userStore, catalog: catalogStore, basket: basketStore }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export { AppContext, AppContextProvider };
