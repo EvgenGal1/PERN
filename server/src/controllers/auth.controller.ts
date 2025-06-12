@@ -189,7 +189,9 @@ class AuthController {
     try {
       // получ.refresh из cookie или заголовка, передача в service, удал.обоих, возвращ.смс об удален.
       const refreshToken =
-        req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
+        req.cookies.refreshToken ||
+        req.headers['authorization']?.split(' ')[1] ||
+        req.signedCookies['refreshToken'];
       await AuthService.logoutUser(refreshToken);
       res
         .clearCookie('refreshToken')
