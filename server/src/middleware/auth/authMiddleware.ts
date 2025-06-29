@@ -24,14 +24,14 @@ const authMW = async (
     }
 
     // достать токен из header (отделяя от типа `Носитель` передающегося по ind 0)
-    const accessToken = authorizationHeader?.split(' ')[1]; // Bearer token (asfasnfkajsfnjk)
-    if (!accessToken) {
+    const tokenAccess = authorizationHeader?.split(' ')[1]; // Bearer token (asfasnfkajsfnjk)
+    if (!tokenAccess) {
       return next(ApiError.forbidden('Токен отсутствует'));
     }
 
     // раскодир.токен. `проверять` валидации ч/з services (токен)
     const decoded = (await TokenService.validateAccessToken(
-      accessToken,
+      tokenAccess,
     )) as DecodedToken;
     if (!decoded || !decoded.id || !decoded.roles) {
       return next(ApiError.unauthorized('Токен не валиден'));

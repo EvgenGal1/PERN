@@ -31,11 +31,11 @@ export interface TokenAttributes {
   id: number;
   userId: number;
   basketId: number;
-  refreshToken?: string;
+  tokenRefresh?: string;
 }
 
 export interface TokenCreationAttributes
-  extends Partial<TokenAttributes, 'id' | 'refreshToken'> {}
+  extends Partial<TokenAttributes, 'id' | 'tokenRefresh'> {}
 
 // Определение модели Token
 export declare class Token

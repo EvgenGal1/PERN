@@ -22,13 +22,13 @@ export default function roleMW(roles: string[]) {
         throw ApiError.unauthorized('Требуется авторизация для проверки');
       }
       // извлечь токен из header (отделить от Типа`Носитель` под ind 0)
-      const accessToken = authorizationHeader.split(' ')[1]; // Bearer <токен>
-      if (!accessToken) {
+      const tokenAccess = authorizationHeader.split(' ')[1]; // Bearer <токен>
+      if (!tokenAccess) {
         throw ApiError.unauthorized('Токен отсутствует');
       }
 
       // проверка валидации
-      const decoded = await TokenService.validateAccessToken(accessToken);
+      const decoded = await TokenService.validateAccessToken(tokenAccess);
       if (!decoded || !decoded.id || !decoded.roles) {
         throw ApiError.unauthorized('Токен не валид');
       }

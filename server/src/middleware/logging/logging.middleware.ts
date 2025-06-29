@@ -57,22 +57,22 @@ export function requestLoggingMiddleware(
       // удал. body е/и пуст
       if (Object.keys(requestData.body).length === 0) delete requestData.body;
     }
-    if (req.cookies.refreshToken) {
+    if (req.cookies.tokenRefresh) {
       requestData.cookies = {
-        refreshToken: `${req.cookies.refreshToken.slice(0, 3)}...${req.cookies.refreshToken.slice(-3)}`,
+        tokenRefresh: `${req.cookies.tokenRefresh.slice(0, 3)}...${req.cookies.tokenRefresh.slice(-3)}`,
       };
     }
-    if (req.signedCookies.basketId || req.signedCookies.refreshToken) {
+    if (req.signedCookies.basketId || req.signedCookies.tokenRefresh) {
       requestData.signedCookies = {
         basketId: req.signedCookies.basketId,
-        refreshToken: req.signedCookies.refreshToken
+        tokenRefresh: req.signedCookies.tokenRefresh
           ? // скрыть данн.
-            `${req.signedCookies.refreshToken.slice(0, 3)}...${req.signedCookies.refreshToken.slice(-3)}`
+            `${req.signedCookies.tokenRefresh.slice(0, 3)}...${req.signedCookies.tokenRefresh.slice(-3)}`
           : undefined,
       };
-      // удал. refreshToken е/и нет
-      if (!requestData.signedCookies.refreshToken)
-        delete requestData.signedCookies.refreshToken;
+      // удал. tokenRefresh е/и нет
+      if (!requestData.signedCookies.tokenRefresh)
+        delete requestData.signedCookies.tokenRefresh;
     }
     // лог.req
     logger.debug(
@@ -120,8 +120,8 @@ export function responseLoggingMiddleware(
           const responseBody =
             typeof body === 'string' ? JSON.parse(body) : body;
           // скрыть данн.
-          if (responseBody.data?.accessToken) {
-            responseBody.data.accessToken = `${responseBody.data.accessToken.slice(0, 3)}...${responseBody.data.accessToken.slice(-3)}`;
+          if (responseBody.data?.tokenAccess) {
+            responseBody.data.tokenAccess = `${responseBody.data.tokenAccess.slice(0, 3)}...${responseBody.data.tokenAccess.slice(-3)}`;
           }
           // добав.res.тело в объ.данн.
           responseData.body = responseBody;

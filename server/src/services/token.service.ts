@@ -1,6 +1,7 @@
 import { Transaction } from 'sequelize';
 // подкл.ф.контролера для генерац.web токена
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 import TokenModel from '../models/TokenModel';
 import DatabaseUtils from '../utils/database.utils';
@@ -9,6 +10,11 @@ import ApiError from '../middleware/errors/ApiError';
 
 // сохр.токенов по id при регистр/логин
 class TokenService {
+  // Хеширование Токена
+  private hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
+  }
+
   // обраб.ошб.JWT и их локализация
   private handleJwtError(error: unknown): never {
     // [Сохранена оригинальная обработка ошибок]
@@ -41,16 +47,20 @@ class TokenService {
       this.handleJwtError(error);
     }
   }
-  async validateRefreshToken(token: string): Promise<TokenDto> {
+  async validateRefreshToken(tokenRefresh: string): Promise<TokenDto> {
     try {
-      const data = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY!);
+      const data = jwt.verify(
+        tokenRefresh,
+        process.env.JWT_REFRESH_SECRET_KEY!,
+      );
+      // доп.проверки Токена
       if (typeof data !== 'object' || !('id' in data))
         throw ApiError.unauthorized('Неверный формат токена');
-      // доп.проверка срока действия токена
-      const tokenRecord = await this.findToken(token);
+      const token = await this.findToken(tokenRefresh);
+      if (!token) throw ApiError.notFound('Токен не найден в БД');
       if (
-        !tokenRecord.refreshTokenExpires ||
-        tokenRecord.refreshTokenExpires < new Date()
+        !token.refreshTokenExpires ||
+        token.refreshTokenExpires < new Date()
       ) {
         throw ApiError.unauthorized('Токен истёк');
       }
@@ -63,17 +73,17 @@ class TokenService {
   // генер.ACCESS и REFRESH токенов(`полезная нагрузка` прячется в токен)
   async generateToken(payload: TokenDto): Promise<JwtToken> {
     try {
-      const accessToken = jwt.sign(
+      const tokenAccess = jwt.sign(
         payload,
         process.env.JWT_ACCESS_SECRET_KEY!,
         { expiresIn: +process.env.RESET_TOKEN_LIFETIME! },
       );
-      const refreshToken = jwt.sign(
+      const tokenRefresh = jwt.sign(
         payload,
         process.env.JWT_REFRESH_SECRET_KEY!,
         { expiresIn: +process.env.REFRESH_TOKEN_LIFETIME! },
       );
-      return { accessToken, refreshToken };
+      return { tokenAccess, tokenRefresh };
     } catch (error: unknown) {
       throw ApiError.conflict(
         `Ошибка генерации токенов: ${(error as Error).message}`,
@@ -85,9 +95,12 @@ class TokenService {
   async saveToken(
     userId: number,
     basketId: number,
-    refreshToken: string,
+    tokenRefresh: string,
     transaction?: Transaction,
   ): Promise<void> {
+    // Хеширование Токена перед сохранением
+    const hashedToken = this.hashToken(tokenRefresh);
+    // срок Токена
     const refreshTokenExpires = new Date(
       Date.now() + +process.env.REFRESH_TOKEN_LIFETIME!,
     );
@@ -99,7 +112,7 @@ class TokenService {
     // обнов.Токен/срок или созд.нов.Токен
     if (tokenData) {
       await tokenData.update(
-        { refreshToken, refreshTokenExpires },
+        { refreshToken: hashedToken, refreshTokenExpires },
         { transaction },
       );
     } else {
@@ -112,7 +125,7 @@ class TokenService {
           id: smallestFreeId,
           userId,
           basketId,
-          refreshToken,
+          refreshToken: hashedToken,
           refreshTokenExpires,
         },
         { transaction },
@@ -120,24 +133,28 @@ class TokenService {
     }
   }
 
-  // Удален.REFRESH из БД
-  async removeToken(refreshToken: string): Promise<boolean> {
-    const token = await TokenModel.findOne({ where: { refreshToken } });
-    if (!token) throw ApiError.notFound('Токен не найден');
-    if (token.refreshTokenExpires && token.refreshTokenExpires < new Date())
-      throw ApiError.unauthorized('Токен уже истёк');
-    await token.destroy();
-    return true;
-  }
-
   // Поиск REFRESH токена в БД
-  async findToken(refreshToken: string): Promise<TokenModel> {
-    const token = await TokenModel.findOne({ where: { refreshToken } });
+  async findToken(tokenRefresh: string): Promise<TokenModel> {
+    // Хеширование Токена перед поиском
+    const hashedToken = this.hashToken(tokenRefresh);
+    const token = await TokenModel.findOne({
+      where: { refreshToken: hashedToken },
+    });
     if (!token) throw ApiError.notFound('Токен не найден');
     if (token.refreshTokenExpires! < new Date()) {
       throw ApiError.unauthorized('Токен истёк');
     }
     return token;
+  }
+
+  // Удален.REFRESH из БД
+  async removeToken(tokenRefresh: string): Promise<boolean> {
+    const token = await this.findToken(tokenRefresh);
+    if (!token) throw ApiError.notFound('Токен не найден для удаления');
+    if (token.refreshTokenExpires && token.refreshTokenExpires < new Date())
+      throw ApiError.unauthorized('Токен уже истёк');
+    await token.destroy();
+    return true;
   }
 }
 

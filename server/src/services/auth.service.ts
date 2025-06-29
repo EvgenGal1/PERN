@@ -125,7 +125,7 @@ class AuthService {
         TokenService.saveToken(
           user.id,
           basket.id,
-          tokens.refreshToken,
+          tokens.tokenRefresh,
           transaction,
         ),
       ]);
@@ -178,8 +178,8 @@ class AuthService {
     const tokens = await TokenService.generateToken(tokenDto);
     if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
 
-    // сохр.refreshToken > user_id и basket_id
-    await TokenService.saveToken(user.id, basket.id, tokens.refreshToken);
+    // сохр.tokenRefresh > user_id и basket_id
+    await TokenService.saveToken(user.id, basket.id, tokens.tokenRefresh);
     return {
       tokens,
       basketId: basket.id,
@@ -212,17 +212,17 @@ class AuthService {
   }
 
   // ПЕРЕЗАПИСЬ ACCESS|REFRESH токен. Отправ.refresh, получ.access и refresh
-  async refreshUser(refreshToken: string): Promise<Tokens> {
+  async refreshUser(tokenRefresh: string): Promise<Tokens> {
     // е/и нет то ошб.не авториз
-    if (!refreshToken)
+    if (!tokenRefresh)
       throw ApiError.unauthorized(
         'Требуется авторизация для перезаписи Токенов',
       );
 
     // валид.токен.refresh
-    const userData = await TokenService.validateRefreshToken(refreshToken);
+    const userData = await TokenService.validateRefreshToken(tokenRefresh);
     // поиск токена
-    const token = await TokenService.findToken(refreshToken);
+    const token = await TokenService.findToken(tokenRefresh);
     // проверка валид и поиска Токена
     if (!userData?.id || !token) throw ApiError.unauthorized('Неверный токен');
 
@@ -241,16 +241,16 @@ class AuthService {
     if (!tokens) throw ApiError.internal('Генерация токенов не удалась');
 
     // сохр./возврат Токенов
-    await TokenService.saveToken(user.id, token.basketId, tokens.refreshToken);
+    await TokenService.saveToken(user.id, token.basketId, tokens.tokenRefresh);
     return { tokens };
   }
 
-  // ВЫХОД. Удален.refreshToken из БД ч/з token.serv
-  async logoutUser(refreshToken: string): Promise<boolean> {
-    // пров.переданого токена
-    if (!refreshToken)
+  // ВЫХОД. Удален.tokenRefresh из БД ч/з token.serv
+  async logoutUser(tokenRefresh: string): Promise<boolean> {
+    // пров.передан.Токена
+    if (!tokenRefresh)
       throw ApiError.badRequest('Отсутствует токен обновления');
-    await TokenService.removeToken(refreshToken);
+    await TokenService.removeToken(tokenRefresh);
     return true;
   }
 
@@ -324,7 +324,7 @@ class AuthService {
     await TokenService.saveToken(
       user.id,
       tokenEntry.basketId,
-      tokens.refreshToken,
+      tokens.tokenRefresh,
     );
     return { tokens };
   }

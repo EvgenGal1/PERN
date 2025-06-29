@@ -2,8 +2,8 @@ import { UserProfile } from './user.interface';
 import { RoleLevels } from './role.interface';
 
 export interface JwtToken {
-  accessToken: string;
-  refreshToken: string;
+  tokenAccess: string;
+  tokenRefresh: string;
 }
 
 export interface Tokens {

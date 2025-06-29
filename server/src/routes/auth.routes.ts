@@ -122,7 +122,7 @@ router.post('/refresh', AuthController.refreshUser);
 // ПРОВЕРКА | auth
 router.get('/check', authMW, AuthController.checkUser);
 
-// ВЫХОД. Удален.Token.refreshToken
+// ВЫХОД. Удален.tokenRefresh
 /**
  * @swagger
  * /auth/logout:

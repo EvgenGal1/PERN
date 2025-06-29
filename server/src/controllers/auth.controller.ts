@@ -36,12 +36,12 @@ class AuthController {
         password,
         username,
       );
-      // сохр.в cookie refreshToken/basketId и возвращ.данн.Пользователя
+      // сохр.в cookie tokenRefresh/basketId и возвращ.данн.Пользователя
       res
         .cookie(
-          'refreshToken',
-          userData.tokens.refreshToken,
-          COOKIE_OPTIONS.refreshToken,
+          'tokenRefresh',
+          userData.tokens.tokenRefresh,
+          COOKIE_OPTIONS.tokenRefresh,
         )
         .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId)
         .status(201)
@@ -50,7 +50,7 @@ class AuthController {
             'Регистрация пройдена. Проверьте эл.почту для активации учётной записи',
           success: true,
           data: {
-            accessToken: userData.tokens.accessToken,
+            tokenAccess: userData.tokens.tokenAccess,
             user: {
               id: userData.user.id,
               email: userData.user.email,
@@ -87,12 +87,12 @@ class AuthController {
       const { email, password } = req.body;
       // авторизация через сервис
       const userData = await AuthService.loginUser(email, password);
-      // сохр.refreshToken/basketId в cookie и возвращ. accessToken/данн.Пользователя
+      // сохр.tokenRefresh/basketId в cookie и возвращ. tokenAccess/данн.Пользователя
       res
         .cookie(
-          'refreshToken',
-          userData.tokens.refreshToken,
-          COOKIE_OPTIONS.refreshToken,
+          'tokenRefresh',
+          userData.tokens.tokenRefresh,
+          COOKIE_OPTIONS.tokenRefresh,
         )
         .cookie('basketId', userData.basketId, COOKIE_OPTIONS.basketId)
         .status(200)
@@ -100,7 +100,7 @@ class AuthController {
           success: true,
           message: 'Успешный Вход',
           data: {
-            accessToken: userData.tokens.accessToken,
+            tokenAccess: userData.tokens.tokenAccess,
             user: {
               id: userData.user.id,
               email: userData.user.email,
@@ -134,19 +134,20 @@ class AuthController {
   // ПЕРЕЗАПИСЬ ACCESS токен. Отправ.refresh, получ.access и refresh
   async refreshUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const refreshToken =
-        req.cookies.refreshToken ||
-        req.headers['authorization']?.split(' ')[1] ||
-        req.signedCookies['refreshToken'];
-      const userData = await AuthService.refreshUser(refreshToken);
+      const tokenRefresh = req.signedCookies['tokenRefresh'];
+      const userData = await AuthService.refreshUser(tokenRefresh);
       res
         .cookie(
-          'refreshToken',
-          userData.tokens.refreshToken,
-          COOKIE_OPTIONS.refreshToken,
+          'tokenRefresh',
+          userData.tokens.tokenRefresh,
+          COOKIE_OPTIONS.tokenRefresh,
         )
         .status(200)
-        .json({ accessToken: userData.tokens.accessToken });
+        .json({
+          success: true,
+          message: 'Произведена Перезапись Токенов',
+          data: { tokenAccess: userData.tokens.tokenAccess },
+        });
     } catch (error: unknown) {
       next(error);
     }
@@ -177,24 +178,22 @@ class AuthController {
       res.status(200).json({
         success: true,
         message: `Пользователь ${user.username} проверен`,
-        data: { accessToken: tokens.accessToken },
+        data: { tokenAccess: tokens.tokenAccess },
       });
     } catch (error: unknown) {
       next(error);
     }
   }
 
-  // ВЫХОД. Удал.Cookie.refreshToken
+  // ВЫХОД. Удал.Cookie.tokenRefresh
   async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
       // получ.refresh из cookie или заголовка, передача в service, удал.обоих, возвращ.смс об удален.
-      const refreshToken =
-        req.cookies.refreshToken ||
-        req.headers['authorization']?.split(' ')[1] ||
-        req.signedCookies['refreshToken'];
-      await AuthService.logoutUser(refreshToken);
+      const tokenRefresh = req.signedCookies['tokenRefresh'];
+      await AuthService.logoutUser(tokenRefresh);
       res
-        .clearCookie('refreshToken')
+        .clearCookie('tokenRefresh')
+        .clearCookie('basketId')
         .json({ success: true, message: 'Вы вышли из системы' });
     } catch (error: unknown) {
       next(error);
@@ -228,15 +227,15 @@ class AuthController {
       const { tokens } = await AuthService.resetPassword(token, password);
       res
         .cookie(
-          'refreshToken',
-          tokens.refreshToken,
-          COOKIE_OPTIONS.refreshToken,
+          'tokenRefresh',
+          tokens.tokenRefresh,
+          COOKIE_OPTIONS.tokenRefresh,
         )
         .status(200)
         .json({
           success: true,
           message: 'Пароль успешно обновлен',
-          data: { accessToken: tokens.accessToken },
+          data: { tokenAccess: tokens.tokenAccess },
         });
     } catch (error: unknown) {
       next(error);
