@@ -3,7 +3,7 @@ export interface AuthRes {
   success: true;
   message: string;
   data: {
-    accessToken: string;
+    tokenAccess: string;
     user: IUser;
     roles: RoleLevels[];
     isActivated: boolean;

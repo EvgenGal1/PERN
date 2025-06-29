@@ -13,21 +13,36 @@ import { AuthRes, TokenPayload, UserResData } from "@/types/api/auth.types";
 
 export const authAPI = {
   /**
-   * Общая обработка успешного ответа аутентификации
+   * обработка ответа Авторизации
+   * @param response - ответ Сервера
+   * @returns данные Пользователя
    */
   processAuthResponse(response: AuthRes): UserResData {
-    const { accessToken } = response.data;
-    if (!accessToken) {
+    const {
+      tokenAccess,
+      user: userData,
+      roles,
+      basket,
+      isActivated,
+    } = response.data;
+    if (!tokenAccess) {
       throw new ApiError("Токен отсутствует", 401, "MISSING_TOKEN");
     }
-    const userData = this.parseToken(response.data.accessToken);
-    localStorage.setItem("tokenAccess", response.data.accessToken);
-    userData.isActivated = response.data.isActivated;
-    return userData;
+    localStorage.setItem("tokenAccess", tokenAccess);
+    return {
+      id: userData.id,
+      email: userData.email,
+      username: userData.username || "",
+      roles,
+      basket,
+      isActivated,
+    };
   },
 
   /**
-   * Парсинг JWT токена
+   * декодирование JWT Токена
+   * @param token - JWT Токен
+   * @returns данные Пользователя
    */
   parseToken(token: string): UserResData {
     try {
@@ -39,28 +54,38 @@ export const authAPI = {
 
   /**
    * Регистрация Пользователя
-   * @param email - Email пользователя
+   * @param email - Email Пользователя
    * @param password - Пароль
    */
   async register(email: string, password: string): Promise<TokenPayload> {
-    const response = await handleRequest(
-      () => guestInstance.post<AuthRes>("auth/register", { email, password }),
-      "Auth/Register"
-    );
-    return this.processAuthResponse(response);
+    try {
+      const response = await handleRequest(
+        () => guestInstance.post<AuthRes>("auth/register", { email, password }),
+        "Auth/Register"
+      );
+      return this.processAuthResponse(response);
+    } catch (error) {
+      console.error("Ошибка Регистрация Пользователя : ", error);
+      throw error;
+    }
   },
 
   /**
-   * Авторизация пользователя
-   * @param email - Email пользователя
+   * Авторизация Пользователя
+   * @param email - Email Пользователя
    * @param password - Пароль
    */
   async login(email: string, password: string): Promise<TokenPayload> {
-    const response = await handleRequest(
-      () => guestInstance.post<AuthRes>("auth/login", { email, password }),
-      "Auth/Login"
-    );
-    return this.processAuthResponse(response);
+    try {
+      const response = await handleRequest(
+        () => guestInstance.post<AuthRes>("auth/login", { email, password }),
+        "Auth/Login"
+      );
+      return this.processAuthResponse(response);
+    } catch (error) {
+      console.error("Ошибка Авторизация Пользователя : ", error);
+      throw error;
+    }
   },
 
   /**
@@ -82,19 +107,35 @@ export const authAPI = {
    * Обновление Токена Пользователя
    */
   async refresh(): Promise<TokenPayload> {
-    const response = await handleRequest(
-      () => authInstance.post<AuthRes>("auth/refresh"),
-      "Auth/Refresh"
-    );
-    return this.processAuthResponse(response);
+    try {
+      const response = await handleRequest(
+        () => authInstance.post<AuthRes>("auth/refresh"),
+        "Auth/Refresh"
+      );
+      return this.processAuthResponse(response);
+    } catch (error) {
+      console.error("Ошибка обновления Токена : ", error);
+      throw error;
+    }
   },
 
   /**
    * Выход Пользователя
+   * удал. tokenRefresh в БД
+   * удал. tokenRefresh и BasketId из cookie
+   * удал. tokenAccess из LS
    */
   async logout(): Promise<void> {
-    localStorage.removeItem("tokenAccess");
-    await handleRequest(() => authInstance.post("auth/logout"), "Auth/Logout");
+    try {
+      await handleRequest(
+        () => authInstance.post<AuthRes>("auth/logout"),
+        "Auth/Logout"
+      );
+      localStorage.removeItem("tokenAccess");
+    } catch (error) {
+      console.error("Ошибка при Выходе : ", error);
+      throw error;
+    }
   },
 
   /**

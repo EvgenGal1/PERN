@@ -44,11 +44,12 @@ authInstance.interceptors.response.use(
 
       try {
         // req обнов.Токена
-        const response = await axios.post<AuthRes>(`${API_URL}/auth/refresh`, {
-          withCredentials: true,
-        });
-        // сохр.нов. accessToken в LS
-        localStorage.setItem("tokenAccess", response.data.data.accessToken);
+        const response = await guestInstance.post<AuthRes>(
+          `${API_URL}/auth/refresh`,
+          { withCredentials: true }
+        );
+        // сохр.нов. tokenAccess в LS
+        localStorage.setItem("tokenAccess", response.data.data.tokenAccess);
         // ч/з экземпл.перехватчика повтор нач.req с нов.Токеном
         return authInstance.request(initialReq);
       } catch (error: unknown) {

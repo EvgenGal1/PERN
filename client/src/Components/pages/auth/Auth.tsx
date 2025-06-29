@@ -13,19 +13,14 @@ import { AppContext } from "@/context/AppContext";
 import { UserResData } from "@/types/api/auth.types";
 
 interface FormValues {
-  sms: string;
-  // name: string;
   email: string;
   password: string;
-  // confirmPassword: string;
 }
 
 interface FormErrors {
-  sms?: string;
-  // name: string;
   email?: string;
   password?: string;
-  // confirmPassword?: string;
+  sms?: string;
 }
 
 // оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач.для renderа
@@ -37,26 +32,20 @@ const Auth = observer(() => {
 
   // state Formы. values/errors
   const [formValues, setFormValues] = useState<FormValues>({
-    sms: "",
-    // name: "",
     email: "",
     password: "",
-    // confirmPassword: "",
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({
-    sms: "",
-    // name: "",
     email: "",
     password: "",
-    // confirmPassword: "",
   });
   // проверка валидности всей формы (е/и нет ошибок)
   const isFormValid = Object.values(formErrors).every((error) => error === "");
 
   // если пользователь авторизован, перенаправление по Роли
   useEffect(() => {
-    if (user.isAuth) navigate(USER_ROUTE, { replace: true });
-    if (user.isAdmin) navigate(ADMIN_ROUTE, { replace: true });
+    if (user.isAuth)
+      navigate(user.isAdmin ? ADMIN_ROUTE : USER_ROUTE, { replace: true });
   }, [navigate, user.isAdmin, user.isAuth]);
 
   // проверка Formы
@@ -71,7 +60,7 @@ const Auth = observer(() => {
         [emailName, emailDomain] = value.split("@");
       }
       // Проверка наличия доменного имени почтового сервиса (mail|yandex|google)
-      let emailService, topLevelDomain;
+      let emailService: string | undefined, topLevelDomain: string | undefined;
       // Проверка наличия домена первого уровня (ru|com|org|net)
       if (value.includes(".")) {
         emailService = emailDomain.split(".").shift();
@@ -189,69 +178,68 @@ const Auth = observer(() => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // ч/з опред.метод запрос к БД
-    let dataRes: UserResData;
-    if (isLogin)
-      dataRes = await authAPI.login(formValues.email, formValues.password);
-    else
-      dataRes = await authAPI.register(formValues.email, formValues.password);
-    console.log("DATA 00000 ", dataRes);
+    try {
+      // запрос в зависимости от типа страницы
+      const userData: UserResData = isLogin
+        ? await authAPI.login(formValues.email, formValues.password)
+        : await authAPI.register(formValues.email, formValues.password);
 
-    // пров./ввывод errors
-    if (dataRes?.errors) {
-      // для err массива
-      if (Array.isArray(dataRes?.errors)) {
-        dataRes.errors?.forEach((error: any) => {
-          if (error.param === "email") {
-            setFormErrors((prevState) => ({
-              ...prevState,
-              email: prevState.email
-                ? prevState.email + "\n" + error.msg + " - " + error.value
-                : error.msg + " - " + error.value,
-            }));
-          } else if (error.param === "password") {
-            setFormErrors((prevState) => ({
-              ...prevState,
-              password: prevState.password
-                ? prevState.password + `\n` + error.msg + " - " + error.value
-                : error.msg + " - " + error.value,
-            }));
-          }
-        });
-      }
-      // для err string
-      if (typeof dataRes?.errors === "string") {
-        // ^ проверка содержимого строки на email/password
-        setFormErrors((prevState) => ({
-          ...prevState,
-          email: dataRes.errors,
-        }));
+      // пров./ввывод errors
+      if (userData?.errors) {
+        // для err массива
+        if (Array.isArray(userData?.errors)) {
+          userData.errors?.forEach((error: any) => {
+            if (error.param === "email") {
+              setFormErrors((prevState) => ({
+                ...prevState,
+                email: prevState.email
+                  ? prevState.email + "\n" + error.msg + " - " + error.value
+                  : error.msg + " - " + error.value,
+              }));
+            } else if (error.param === "password") {
+              setFormErrors((prevState) => ({
+                ...prevState,
+                password: prevState.password
+                  ? prevState.password + `\n` + error.msg + " - " + error.value
+                  : error.msg + " - " + error.value,
+              }));
+            }
+          });
+        }
+        // для err string
+        if (typeof userData?.errors === "string") {
+          // ^ проверка содержимого строки на email/password
+          setFormErrors((prevState) => ({
+            ...prevState,
+            email: userData.errors,
+          }));
+        }
+        // для смс
+        if (userData?.message) {
+          setFormErrors((prevState) => ({
+            ...prevState,
+            sms: userData.message,
+          }));
+        }
       }
       // для смс
-      if (dataRes?.message) {
-        setFormErrors((prevState) => ({
-          ...prevState,
-          sms: dataRes.message,
-        }));
+      if (userData?.status && userData?.status > 400) {
+        if (userData?.message) {
+          setFormErrors((prevState) => ({
+            ...prevState,
+            sms: userData.message,
+          }));
+        }
       }
-    }
-    // для смс
-    if (dataRes?.status && dataRes?.status > 400) {
-      if (dataRes?.message) {
-        setFormErrors((prevState) => ({
-          ...prevState,
-          sms: dataRes.message,
-        }));
-      }
-    }
 
-    // перенаправление в ЛК е/и нет ошб., прошёл Польз.
-    if (!dataRes?.errors && dataRes.email && dataRes.roles) {
+      // сохр.данн.Пользователя, сброс.ошб., перенаправ в ЛК
+      user.login(userData);
       setFormErrors({ sms: "", email: "", password: "" });
-      user.login(dataRes.id, dataRes.username, dataRes.email, dataRes.roles);
-      user.isActivated(dataRes.isActivated);
-      if (user.isAdmin) navigate(ADMIN_ROUTE);
-      if (user.isAuth) navigate(USER_ROUTE);
+      navigate(user.isAdmin ? ADMIN_ROUTE : USER_ROUTE);
+    } catch (error: any) {
+      console.log("Auth error ", error);
+      // обраб.ошб.
+      setFormErrors({ ...formErrors, sms: error.message || "Ошибка сервера" });
     }
   };
 
@@ -317,9 +305,9 @@ const Auth = observer(() => {
                 value={formValues.password}
                 onChange={(e) => handleChange(e)}
                 className={`inpt--eg ${
-                  formValues.password !== "" && formErrors.password
+                  formValues.email && formErrors.password
                     ? "err-inpt"
-                    : formValues.password !== "" && !formErrors.password
+                    : formValues.email
                       ? "err-inpt-suces"
                       : ""
                 } `}
