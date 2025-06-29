@@ -33,7 +33,7 @@ export default class UserStore {
     }
   }
 
-  // Входа Пользователя
+  // Входа Пользователя. Сохр.данн.в Store и LS от сбросов MobX при перезагрузке
   @action login(payload: TokenPayload) {
     this.id = payload.id;
     this.username = payload.username;
@@ -46,14 +46,9 @@ export default class UserStore {
     this.saveToLocalStorage();
   }
 
-  isActivated(activated: boolean) {
-    this.activated = activated;
-  }
-
   // восст.сост.из LS
   async restoreSession(tokenAccess: string): Promise<boolean> {
     if (!tokenAccess) return false;
-
     try {
       const userDataDat = authAPI.parseToken(tokenAccess);
       this.login(userDataDat);
@@ -65,6 +60,10 @@ export default class UserStore {
     }
   }
 
+  /**
+   * Выход Пользователя
+   * удал. user/catalog Store из LS
+   */
   // Выход Пользователя
   @action logout() {
     runInAction(() => {
@@ -74,9 +73,9 @@ export default class UserStore {
       this.isAuth = false;
       this.isAdmin = false;
       this.activated = false;
-
       // очистка LS
-      localStorage.removeItem("userStore");
+      this.clearLocalStorage;
+      localStorage.removeItem("catalogStore");
     });
   }
 
