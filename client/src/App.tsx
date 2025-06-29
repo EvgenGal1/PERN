@@ -21,21 +21,35 @@ const App: React.FC = observer(() => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    // проверка наличия Токена в LS
+    const tokenAccess = localStorage.getItem("tokenAccess") ?? "";
     const fetchData = async () => {
       try {
-        // const { userData, activated } = await authAPI.check();
-        // if (userData) user.login(userData);
-        // if (activated) user.isActivated(activated);
-      } catch (error) {
-        console.error("Ошибка загрузки данных пользователя:", error);
+        // восстановление сессии если есть Токен в LS
+        if (tokenAccess) {
+          const isSessionRestored = await user.restoreSession(tokenAccess);
+          if (!isSessionRestored) {
+            setLoading(false);
+            return;
+          }
+        }
+
+        // API проверка Токена Пользователя е/и нет сессии
+        const { userData, activated } = await authAPI.check();
+        if (userData && userData.id) {
+          user.login({ ...userData, isActivated: activated });
+        }
+      } catch (error: unknown) {
+        console.error("Ошибка восстановления сессии Пользователя:", error);
       } finally {
         setLoading(false);
       }
     };
-    if (!user.isAuth) {
-      fetchData();
-    }
-  }, [user.isAuth]);
+
+    // вызов данн.Пользователя если не Авторизован
+    if (tokenAccess && !user.isAuth) fetchData();
+    else setLoading(false);
+  }, []);
 
   // показ Loader, при загр.данн.польз.с БД
   if (loading) return <Loader />;

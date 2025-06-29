@@ -12,8 +12,8 @@ const User: React.FC = observer(() => {
 
   const handleLogout = () => {
     authAPI.logout();
-    user.logout();
     navigate(LOGIN_ROUTE, { replace: true });
+    user.logout();
   };
 
   return (
