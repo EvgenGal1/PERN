@@ -75,8 +75,8 @@ const AdminProducts = () => {
       )
       .then((data) => {
         setProducts(data.rows);
-        catalog.pagination.limit = Math.ceil(data.limit);
-        catalog.count = data.count;
+        catalog.pagination.limit = Math.ceil(data.pagination.limit);
+        catalog.count = data.pagination.count;
       })
       .finally(() => setFetching(false));
   }, [

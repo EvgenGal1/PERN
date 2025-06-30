@@ -244,8 +244,7 @@ const SearchFilter: React.FC = () => {
         catalog.sortSettings.field!
       )
       .then((data) => {
-        // console.log("FLT usEf 000 data ", data);
-        countProduct = data.count;
+        countProduct = data.pagination.count;
       })
       .finally(/* () => console.log("countProduct ", countProduct) */);
   }, [itemIdStat]);

@@ -28,9 +28,8 @@ export interface PropertyData {
 }
 
 export interface ProductRes {
-  count: number;
-  limit: number;
   rows: ProductData[];
+  pagination: { count: number; limit: number; page: number };
 }
 
 // Рейтинг
