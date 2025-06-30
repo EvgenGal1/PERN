@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 
 import ProductModel from '../models/ProductModel';
 import ProductPropModel from '../models/ProductPropModel';
@@ -31,9 +31,10 @@ class ProductService {
     return product as ProductData;
   }
 
-  async getAllProducts(
-    options: ProductOptions,
-  ): Promise<{ count: number; rows: ProductData[]; limit: number }> {
+  async getAllProducts(options: ProductOptions): Promise<{
+    rows: ProductData[];
+    pagination?: { count: number; limit: number; page: number };
+  }> {
     const {
       categoryId,
       brandId,
@@ -42,39 +43,35 @@ class ProductService {
       order = 'ASC',
       field = 'name',
     } = options;
-    // перем.для уточнения запроса к др.Табл.
+
+    // валидация параметров с защитой от отрацательных и больших чисел
+    const pageNumber = Math.max(1, Number(page) || 1);
+    const limitNumber = Math.min(Math.max(1, Number(limit) || 20), 100);
+
+    // объ.для уточнения запроса к др.Табл.
     const where: any = {};
 
-    // Категории/Бренд
+    // Фильтр по ID Категорий/Брендов
     if (categoryId)
+      // массив значений для IN-запроса с преобраз.в число или число
       where.categoryId = categoryId.includes('_')
-        ? categoryId.split('_')
-        : categoryId;
+        ? { [Op.in]: categoryId.split('_').map(Number) }
+        : Number(categoryId);
     if (brandId)
-      where.brandId = brandId.includes('_') ? brandId.split('_') : brandId;
-
-    // кол-во эл.
-    const totalCount = await ProductModel.count(); //  categoryId && brandId ? await ProductModel.count({ where }) :
-
-    // Пропуск `n`(limit) первых эл.в БД е/и page > 1 (с защитой от минус.результата)
-    const offset = Math.max(
-      0,
-      (page - 1) * limit > totalCount
-        ? // е/и эл.в БД МЕНЬШЕ чем в запросе(offset)
-          totalCount - limit
-        : (page - 1) * limit,
-    );
+      where.brandId = brandId.includes('_')
+        ? { [Op.in]: brandId.split('_').map(Number) }
+        : Number(brandId);
 
     // ^ сорт.по голосу (врем.откл.)
     // const order = field === 'votes' ? [[ {  model: RatingModel, as: 'ratings',getAttributes: ['rate', 'productId', 'userId'], }, 'rates', order || 'ASC', ], ]   :   [[field || 'name', order || 'ASC']];
 
     const products = await ProductModel.findAndCountAll({
       where,
-      limit,
-      offset,
+      limit: limitNumber,
+      offset: (pageNumber - 1) * limitNumber,
       attributes: [
-        // псевдоним для id из ProductModel
-        ['id', 'productId'], // Явно указываем alias для id из ProductModel
+        // явно указ./переимен. alias/псевдоним id из ProductModel в productId
+        ['id', 'productId'],
         'name',
         'price',
         'image',
@@ -125,28 +122,36 @@ class ProductService {
       // order as RatingModel | ProductModel | any // ^ сорт.по голосу (врем.откл.)
     });
 
-    // Преобразуем результаты в нужный формат
-    const rowsWithRatings: ProductData[] = products.rows
-      .filter((product) => !!product)
-      .map(
-        (product): ProductData => ({
-          // унар.преобраз.в num с защит.отсутствия TS
-          id: +product.get('productId')!,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          brand: product.brand ? { name: product.brand.name } : null,
-          category: product.category ? { name: product.category.name } : null,
-          ratings: {
-            // измен.формат со знач.по умолчанию
-            rates: parseInt(product.get('rates')?.toString() ?? '0', 10),
-            votes: parseInt(product.get('votes')?.toString() ?? '0', 10),
-            rating: +product.rating! || 0,
-          } as RatingData,
-        }),
-      );
+    // преобраз.результ.в нужный формат
+    const rowsWithRatings: ProductData[] = products.rows.map(
+      (product): ProductData => ({
+        // унар.преобраз.в num с защит.отсутствия TS
+        id: Number(product.get('productId')),
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        brand: product.brand ? { name: product.brand.name } : null,
+        category: product.category ? { name: product.category.name } : null,
+        ratings: {
+          // измен.формат со знач.по умолчанию
+          rates: Number(product.get('rates')) || 0,
+          votes: parseInt(product.get('votes')?.toString() ?? '0', 10),
+          rating: +product.rating! || 0,
+        } as RatingData,
+      }),
+    );
 
-    return { count: totalCount, rows: rowsWithRatings, limit };
+    return {
+      rows: rowsWithRatings,
+      pagination: {
+        // Кол-во Продуктов с учётом масс.GROUP BY по длине
+        count: Array.isArray(products.count)
+          ? products.count.length
+          : products.count,
+        limit: limitNumber,
+        page: pageNumber,
+      },
+    };
   }
 
   async createProduct(

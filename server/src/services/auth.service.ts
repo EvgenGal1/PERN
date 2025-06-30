@@ -27,7 +27,7 @@ class AuthService {
   // уровень хеширования
   private readonly saltRounds = Number(process.env.SALT_ROUNDS) || 10;
   private readonly resetTokenBytes = 32;
-  // хэширование пароля (синхрон bcrypt)
+  // хеширование пароля (синхрон bcrypt)
   private async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, this.saltRounds);
   }
