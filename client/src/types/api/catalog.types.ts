@@ -1,3 +1,17 @@
+// переменные CatalogStore
+export interface CatalogStoreData {
+  categories: CategoryData[];
+  brands: BrandData[];
+  products: ProductData[];
+  product: ProductData;
+  filters: { category: string | null; brand: string | null };
+  pagination: { page: number; limit: number; totalCount: number };
+  sortSettings: {
+    field: "name" | "price" | "rating" | "votes";
+    order: "ASC" | "DESC";
+  };
+}
+
 // Сущности Каталога
 export interface CategoryData {
   id: number;
