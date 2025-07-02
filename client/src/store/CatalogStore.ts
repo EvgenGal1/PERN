@@ -1,10 +1,13 @@
 // ^ хранилище Каталога (Категории, Бренды, Продукты, фильтры/пагинация/сортировка, загрузка)
-import { makeAutoObservable, runInAction } from "mobx";
 
-import {
+import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
+
+import type {
+  CatalogStoreData,
   ProductData,
   CategoryData,
   BrandData,
+  PropertyData,
 } from "@/types/api/catalog.types";
 import { categoryAPI } from "@/api/catalog/categoryAPI";
 import { brandAPI } from "@/api/catalog/brandAPI";
@@ -13,33 +16,38 @@ import { ratingAPI } from "@/api/catalog/ratingAPI";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 
 class CatalogStore {
-  // масс.данн.Категории/Бренды/Продукты
-  categories: CategoryData[] = [];
-  brands: BrandData[] = [];
-  products: ProductData[] = [];
-  // фильтры - Категория/Бренд
-  filters = {
+  // масс.данн.Категории/Бренды/Продукты с авто отслеж./обновл.данн.у наблюдателей
+  @observable categories: CategoryData[] = [];
+  @observable brands: BrandData[] = [];
+  // общ.масс.данн. Продуктов, отдел.Продукт
+  @observable products: ProductData[] = [];
+  @observable product: ProductData | null = null;
+  // фильтры Категории/Бренды с глубоким авто отслеж./обновл.данн.влож.объ/полей у наблюдателей
+  @observable.deep filters = {
     category: null as string | null,
     brand: null as string | null,
   };
   // пагинация стр. - текущая, кол-во Продуктов на стр., общ.кол-во Продуктов
-  pagination = {
+  @observable.deep pagination = {
     page: 1,
     limit: 10,
     totalCount: 0,
   };
   // сортировка по - полю(имя/цена/рейтинг/голоса), порядку(возврастанию/убыванию)
-  sortSettings = {
+  @observable.deep sortSettings = {
     field: "name" as "name" | "price" | "rating" | "votes",
     order: "ASC" as "ASC" | "DESC",
   };
   // состояние загрузки
-  isLoading = false;
-  // отдел.флаги загр.от повтор.загр.
-  isFetchingCategories = false;
-  isFetchingBrands = false;
-  // флаг.загр.Хар-к Продукта
-  isLoadingProps = false;
+  @observable isLoading = false;
+
+  // хеширование/последний хеш URL параметров запроса
+  private getHashUrlParams(params: Record<string, unknown>): string {
+    return JSON.stringify(params);
+  }
+  private lastUrlParamsHash = "";
+  // хеш Свойства Продукта
+  private propsCache = new Map<number, PropertyData[]>();
 
   constructor() {
     // автообраб.измен.в.ф.с обёрткой в декораторы - observable/`наблюдаемый` и action/`действие`
@@ -48,59 +56,100 @@ class CatalogStore {
       this,
       // опред.конкретн.св-в
       {},
-      // автопривязка контекста this к мтд., оптимиз.с откл.глубок.реактив. > больших объ.
-      { autoBind: true, deep: false }
-      // > автоотслеж.зависимости и автовыполн.кода при измен.наблюдаемых данных
-      // autorun(() => { if (this.shouldFetch) { this.fetchAllProducts(); } });
+      // оптимиз.: откл.автопривязки контекста this к мтд. е/и нет колбеков, откл.глубок.наблюд. > больших объ.по умолч.
+      { autoBind: false, deep: false }
     );
+    // логирование изменений
+    spy((event) => {
+      if (event.type === "action") console.log("Action:", event.name);
+    });
+
+    // чтение данн.из localStorage при инициализации
+    const storedData = localStorage.getItem("catalogStore");
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData) as Partial<CatalogStoreData>;
+        this.categories = parsedData.categories || [];
+        this.brands = parsedData.brands || [];
+        this.products = parsedData.products || [];
+        this.product = parsedData.product ?? null;
+        this.filters = parsedData.filters || { category: null, brand: null };
+        this.pagination = parsedData.pagination || {
+          page: 1,
+          limit: 10,
+          totalCount: 0,
+        };
+        this.sortSettings = parsedData.sortSettings || {
+          field: "name",
+          order: "ASC",
+        };
+      } catch (error) {
+        console.error("Ошибка чтения catalogStore из LS:", error);
+        this.clearLocalStorage();
+      }
+    }
   }
 
+  // LOCALSTORE ----------------------------------------------------------------------------------
+
+  // сохр.данн.в LS
+  @action saveToLocalStorage() {
+    // с зашитой от undefined или методов
+    const data = {
+      categories: this.categories.filter(Boolean),
+      brands: this.brands.filter(Boolean),
+      products: this.products.filter(Boolean),
+      product: this.product ? { ...this.product } : null,
+      filters: { ...this.filters },
+      pagination: { ...this.pagination },
+      sortSettings: { ...this.sortSettings },
+    };
+    localStorage.setItem("catalogStore", JSON.stringify(data));
+  }
+
+  // удал.данн.из LS
+  @action clearLocalStorage() {
+    localStorage.removeItem("catalogStore");
+  }
+
+  // ASYNC ----------------------------------------------------------------------------------
+
   // мтд.получ.данн.с БД (получ.Все Категории ч/з внутр.API с настр. загр./обраб./ошб./логг.)
-  async fetchCategories(): Promise<void> {
-    // проверка на пустой массив и флаг загр.Категории
-    if (this.isFetchingCategories || this.categories.length > 0) return;
-    // загр.вкл.
-    this.isFetchingCategories = true;
+  @action async fetchCategories(): Promise<void> {
     try {
       //  ч/з внутр.мтд.API req к БД
       const data = await categoryAPI.getAllCategories();
       // групп.асинхр.обнов.сост.в одном атомарное изменение > сложн.req от лишних обновлений | от ошб./предупреждения [MobX] о строг.режиме
       runInAction(() => {
-        // запись данн.БД в хранилище
+        // запись данн.из БД в хранилище
         this.categories = Array.isArray(data) ? data : [];
+        // сохр.данн.в LS
+        this.saveToLocalStorage();
       });
     } catch (error) {
       // лог.ошб.
       console.error("Ошибка загрузки Категорий:", error);
     } finally {
-      runInAction(() => {
-        // загр.выкл.
-        this.isFetchingCategories = false;
-      });
+      runInAction(() => {});
     }
   }
 
-  async fetchBrands(): Promise<void> {
-    if (this.isFetchingBrands || this.brands.length > 0) return;
-    this.isFetchingBrands = true;
+  @action async fetchBrands(): Promise<void> {
     try {
       const data = await brandAPI.getAllBrands();
       runInAction(() => {
         this.brands = Array.isArray(data) ? data : [];
+        this.saveToLocalStorage();
       });
     } catch (error) {
       console.error("Ошибка загрузки Брендов:", error);
     } finally {
-      runInAction(() => {
-        this.isFetchingBrands = false;
-      });
+      runInAction(() => {});
     }
   }
 
   // объедин.мтд.загр.Категорий/Брендов
-  async fetchInitialCatalog(): Promise<void> {
-    if (this.isLoading || (this.categories.length && this.brands.length))
-      return;
+  @action async fetchInitialCatalog(): Promise<void> {
     this.isLoading = true;
     try {
       await Promise.all([this.fetchCategories(), this.fetchBrands()]);
@@ -113,51 +162,24 @@ class CatalogStore {
     }
   }
 
-  // загр.Одного Продукта
-  async fetchProductById(id: number): Promise<void> {
-    const existing = this.products.find((p) => p.id === id);
-    if (this.isLoading || existing) return;
-    this.isLoading = true;
-    try {
-      const product = await productAPI.getOneProduct(id);
-      runInAction(() => {
-        this.products = [...this.products, product];
-      });
-    } catch (error) {
-      console.error("Ошибка загрузки Одного Продукта:", error);
-    } finally {
-      runInAction(() => (this.isLoading = false));
-    }
-  }
-
-  // загр.Хар-ик Продукта
-  async fetchProductProps(productId: number) {
-    const existing = this.products.find((p) => p.id === productId);
-    if (this.isLoadingProps || existing?.props?.length) return;
-    this.isLoadingProps = true;
-    try {
-      const props = await productAPI.getAllProperty(productId);
-      runInAction(() => {
-        const index = this.products.findIndex((p) => p.id === productId);
-        if (index !== -1) {
-          this.products = [{ ...this.products[index], props: [...props] }];
-        }
-      });
-    } catch (error) {
-      console.error("Ошибка загрузки Характеристик:", error);
-    } finally {
-      runInAction(() => {
-        this.isLoadingProps = false;
-      });
-    }
-  }
-
   // загр.Всех Продуктов
-  async fetchAllProducts(): Promise<void> {
-    if (this.isLoading || this.products.length) this.isLoading = true;
+  @action async fetchAllProducts(): Promise<void> {
+    // созд.нов.хеш, сравн.со стар.хешем, обновление хеша
+    const params = {
+      category: this.filters.category,
+      brand: this.filters.brand,
+      page: this.pagination.page,
+      limit: this.pagination.limit,
+      order: this.sortSettings.order,
+      field: this.sortSettings.field,
+    };
+    const hash = this.getHashUrlParams(params);
+    if (this.isLoading && hash === this.lastUrlParamsHash) return;
+    this.lastUrlParamsHash = hash;
+    // нач.загр.
     this.isLoading = true;
     try {
-      const { rows, count } = await productAPI.getAllProducts(
+      const productsAll = await productAPI.getAllProducts(
         this.filters.category?.toString(),
         this.filters.brand?.toString(),
         this.pagination.page,
@@ -166,25 +188,67 @@ class CatalogStore {
         this.sortSettings.field
       );
       runInAction(() => {
-        this.products = rows;
-        this.pagination.totalCount = count;
+        this.products = productsAll.rows;
+        this.pagination.totalCount = productsAll.pagination.count;
+        // сохр.данн.в LS
+        this.saveToLocalStorage();
       });
     } catch (error) {
       console.error("Ошибка загрузки Всех Продуктов:", error);
     } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
+      runInAction(() => (this.isLoading = false));
     }
   }
 
-  // проверка Продуктов в сторе
-  getProductById(id: number): ProductData | null {
-    return this.products.find((p) => p.id === id) || null;
+  // загр.Одного Продукта
+  @action async fetchProductById(id: number): Promise<void> {
+    if (this.product?.id === id) return;
+    this.isLoading = true;
+    try {
+      const productOne = await productAPI.getOneProduct(id);
+      runInAction(() => {
+        // сохр.в отдел.Продукт
+        this.product = productOne;
+        // иммутаб.обнов.в общем списке
+        this.products = this.products.some((p) => p.id === id)
+          ? this.products.map((p) => (p.id === id ? productOne : p))
+          : [...this.products, productOne];
+        // сохр.данн.в LS
+        this.saveToLocalStorage();
+      });
+    } catch (error) {
+      console.error("Ошибка загрузки Одного Продукта:", error);
+      runInAction(() => (this.product = null));
+    } finally {
+      runInAction(() => (this.isLoading = false));
+    }
+  }
+
+  // загр.Св-тв Продукта
+  @action async fetchProductProps(productId: number): Promise<void> {
+    // возврат при наличии хеша
+    if (this.propsCache.has(productId)) {
+      this.updateProductPropsInState(productId);
+      return;
+    }
+    this.isLoading = true;
+    try {
+      const props = await productAPI.getAllProperty(productId);
+      runInAction(() => {
+        // сохр.в хеш, обнов.связанные Свойства в общ.Продуктах и Продукте, сохр.в LS
+        this.propsCache.set(productId, props);
+        this.updateProductPropsInState(productId, props);
+        this.saveToLocalStorage();
+      });
+    } catch (error) {
+      console.error("Ошибка загрузки Свойств Продукта:", error);
+    } finally {
+      runInAction(() => (this.isLoading = false));
+    }
   }
 
   // обнов.Рейтинга Продукта
-  async updateProductRating(
+  @action async updateProductRating(
     userId: number,
     productId: number,
     rating: number
@@ -192,25 +256,50 @@ class CatalogStore {
     if (this.isLoading) return;
     this.isLoading = true;
     try {
-      const data = await ratingAPI.createProductRating(
+      const ratingData = await ratingAPI.createProductRating(
         userId,
         productId,
         rating
       );
       runInAction(() => {
-        // обнов.Рейтинг Продукта в сторе
-        const product = this.products.find((p) => p.id === productId);
-        if (product) product.ratings = data;
+        // иммутаб.обнов.Рейтинг в общ.Продуктах и Продукте
+        this.products = this.products.map((p) =>
+          p.id === productId ? { ...p, rating: ratingData.rating } : p
+        );
+        if (this.product?.id === productId) {
+          this.product = { ...this.product, rating: ratingData.rating };
+        }
       });
-      return data;
+      this.saveToLocalStorage();
+      // return ratingData;
     } catch (error) {
       console.error("Ошибка обновления Рейтинга:", error);
+      throw error;
     } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
+      runInAction(() => (this.isLoading = false));
     }
   }
+
+  // ДОП.МТД.ПРОДУКТЫ/СВОЙСТВ ----------------------------------------------------------------------------------
+
+  // проверка Продуктов в хран-ще
+  getProductById(id: number): ProductData | null {
+    return this.products.find((p) => p.id === id) || null;
+  }
+
+  // обнов. Св-ва Продукта
+  private updateProductPropsInState(productId: number, props?: PropertyData[]) {
+    const actualProps = props || this.propsCache.get(productId);
+    if (!actualProps) return;
+    // обнов. Свойства в общ./отдел. Продукте
+    this.products = this.products.map((p) =>
+      p.id === productId ? { ...p, props: [...actualProps] } : p
+    );
+    if (this.product?.id === productId)
+      this.product = { ...this.product, props: [...actualProps] };
+  }
+
+  // СЕТТЕРЫ ----------------------------------------------------------------------------------
 
   // мтд.фильтра Категорий
   setCategory(category: string | null) {
@@ -268,30 +357,49 @@ class CatalogStore {
   // обнуления стр.при измен.фильтров
   resetPagination() {
     this.pagination.page = 1;
+    this.pagination.totalCount = 0;
   }
 
   // мтд.> обнов.парам.в URL
   updateUrlParams(pathname?: string) {
-    const params: Record<string, string> = {};
-    if (this.filters.category) params.category = this.filters.category;
-    if (this.filters.brand) params.brand = this.filters.brand;
-    if (this.pagination.page > 1) params.page = this.pagination.page.toString();
-    if (this.pagination.limit !== 10)
-      params.limit = this.pagination.limit.toString();
-    if (this.sortSettings.order !== "ASC")
-      params.order = this.sortSettings.order;
-    if (this.sortSettings.field !== "name")
-      params.field = this.sortSettings.field;
+    const { category, brand } = this.filters;
+    const { page, limit } = this.pagination;
+    const { order, field } = this.sortSettings;
 
-    const search = new URLSearchParams(params).toString();
-    let varpathname = pathname
+    const params = new URLSearchParams();
+    if (category) params.append("category", category);
+    if (brand) params.append("brand", brand);
+    if (page > 1) params.append("page", page.toString());
+    if (limit !== 10) params.append("limit", limit.toString());
+    if (order !== "ASC") params.append("order", order);
+    if (field !== "name") params.append("field", field);
+
+    const path = pathname
       ? pathname
-      : this.filters.category || this.filters.brand
+      : category || brand
         ? SHOP_CATALOG_ROUTE
         : SHOP_ROUTE;
+    const url = `${path}?${params.toString()}`;
 
-    window.history.replaceState(null, "", `${varpathname}?${search}`);
+    if (window.location.pathname + window.location.search !== url) {
+      window.history.replaceState(null, "", url);
+    }
   }
 }
+
+// dddddddd;
+// dddddddd;
+// dddddddd;
+// dddddddd;
+// dddddddd;
+// dddddddd;
+// asdasd
+// asdasd
+// asdasd
+// asdasd
+// asdasd
+// asdasd
+// asdasd
+// asdasd
 
 export default CatalogStore;
