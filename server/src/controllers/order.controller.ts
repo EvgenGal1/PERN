@@ -23,7 +23,9 @@ class OrderController {
   async getOneOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseId(+req.params.id, this.name);
-      const isAdmin = req.auth?.role === NameUserRoles.ADMIN;
+      const isAdmin = req.auth?.roles?.some(
+        (r) => r.role === NameUserRoles.ADMIN,
+      );
       const userId = isAdmin ? undefined : req.auth?.id;
       // по ID Заказа и Пользователя или Заказ > Admin
       const order = await OrderService.getOneOrder(id, userId);
@@ -35,7 +37,9 @@ class OrderController {
 
   async getAllOrders(req: Request, res: Response, next: NextFunction) {
     try {
-      const isAdmin = req.auth?.role === NameUserRoles.ADMIN;
+      const isAdmin = req.auth?.roles?.some(
+        (r) => r.role === NameUserRoles.ADMIN,
+      );
       const userId = isAdmin ? undefined : req.auth?.id;
       // все Заказы для Admin или по ID User
       const orders = await OrderService.getAllOrders(userId);
@@ -47,21 +51,25 @@ class OrderController {
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, phone, address, comment = null, items } = req.body;
-      const { role, id: userId } = req.auth || {};
+      const { roles = [], id: userId } = req.auth || {};
       if (!userId) throw ApiError.badRequest('ID Пользователя не найден');
       if (!name || !email || !phone || !address) {
         throw ApiError.badRequest('Отсутствуют обязательные поля');
       }
 
       let orderItems = items;
-      if (role === NameUserRoles.ADMIN) {
+      const userRoles = roles.map((r) => r.role);
+      if (userRoles.includes(NameUserRoles.ADMIN)) {
         // проверка на наличие items в теле запроса
         if (!items || items.length === 0) {
           throw ApiError.badRequest('Не указан Позиции Заказа');
         }
         // проверка существования Пользователя
         if (userId) await UserService.getOneUser(userId);
-      } else if (role === NameUserRoles.USER || role === NameUserRoles.GUEST) {
+      } else if (
+        userRoles.includes(NameUserRoles.USER) ||
+        userRoles.includes(NameUserRoles.GUEST)
+      ) {
         // получить позиции Заказа из Корзины
         const basket = await BasketService.getOneBasket(
           +req.signedCookies.basketId,
@@ -79,7 +87,7 @@ class OrderController {
         comment,
         items: orderItems,
       });
-      if (role !== NameUserRoles.ADMIN)
+      if (!userRoles.includes(NameUserRoles.ADMIN))
         await BasketService.clearBasket(+req.signedCookies.basketId);
 
       res.status(201).json(order);
