@@ -7,7 +7,10 @@ import ApiError from '../errors/ApiError';
 
 const adminMW = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    if (!req.auth || req.auth?.role !== NameUserRoles.ADMIN) {
+    const isAdmin = req.auth?.roles?.some(
+      (r) => r.role === NameUserRoles.ADMIN,
+    );
+    if (!req.auth || isAdmin) {
       throw ApiError.forbidden('Только для администратора');
     }
     next();
