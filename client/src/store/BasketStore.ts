@@ -1,17 +1,39 @@
 // ^ хранилище Корзины
 
-import { makeAutoObservable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
 import { BasketProduct } from "@/types/api/shopping.types";
 
 class BasketStore {
-  products: BasketProduct[] = [];
-  total: number = 0;
-  isLoading = false;
+  @observable products: BasketProduct[] = [];
+  @observable total: number = 0;
+  @observable isLoading = false;
 
   constructor() {
-    makeAutoObservable(this, {}, { autoBind: true, deep: false });
+    makeAutoObservable(this, {}, { autoBind: false, deep: false });
+
+    // чтение данн.из localStorage при инициализации
+    const storedData = localStorage.getItem("basketStore");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      this.products = parsedData.items || [];
+    }
+  }
+
+  // сохр.данн.в LS
+  @action saveToLocalStorage() {
+    localStorage.setItem(
+      "basketStore",
+      JSON.stringify({
+        items: this.products,
+      })
+    );
+  }
+
+  // удал.данн.из LS
+  @action clearLocalStorage() {
+    localStorage.removeItem("basketStore");
   }
 
   // получить Корзину
@@ -43,6 +65,7 @@ class BasketStore {
         this.products = Array.isArray(data) ? data.products : [];
         this.total = Array.isArray(data) ? data.total : 0;
       });
+      this.saveToLocalStorage();
     } catch (error) {
       console.error("Ошибка Добавления в Корзину:", error);
     } finally {
