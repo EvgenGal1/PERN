@@ -1,5 +1,4 @@
 import { Op, Sequelize } from 'sequelize';
-import { Multer } from 'multer';
 
 import ProductModel from '../models/ProductModel';
 import ProductPropModel from '../models/ProductPropModel';
