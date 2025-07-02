@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "types": [
+      "jest",
       "node"
     ],
     "target": "es6", // es6 || ES2020
