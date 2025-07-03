@@ -43,7 +43,7 @@ export const documentSwagger = (app: Application): void => {
         persistAuthorization: true,
       },
       // кастом иконки в браузере
-      customfavIcon: `${process.env.SRV_URL}/public/img/ico/icon.ico`,
+      customfavIcon: `${process.env.SRV_URL}/img/ico/icon.ico`,
       // кастом ф.CSS
       // customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
       customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`,
