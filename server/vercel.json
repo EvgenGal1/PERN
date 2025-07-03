@@ -1,5 +1,13 @@
 {
   "version": 2,
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
   "builds": [
     {
       "src": "src/index.ts",
@@ -10,6 +18,14 @@
     {
       "src": "/(.*)",
       "dest": "src/index.ts"
+    },
+    {
+      "src": "/img/(.*)",
+      "dest": "/public/img/$1"
+    },
+    {
+      "src": "/views/(.*)",
+      "dest": "/public/views/$1"
     }
   ]
 }
