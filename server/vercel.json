@@ -10,14 +10,17 @@
   },
   "builds": [
     {
-      "src": "src/index.ts",
-      "use": "@vercel/node"
+      "src": "dist/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/public/**"]
+      }
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "src/index.ts"
+      "src": "/public/(.*)",
+      "dest": "dist/public/$1"
     },
     {
       "src": "/img/(.*)",
