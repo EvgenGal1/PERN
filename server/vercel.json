@@ -11,10 +11,7 @@
   "builds": [
     {
       "src": "src/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["public/**/*"]
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -29,14 +26,6 @@
     {
       "src": "/views/(.*)",
       "dest": "/public/views/$1"
-    },
-    {
-      "src": "/swagger",
-      "dest": "src/index.ts"
-    },
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
     }
   ]
 }
