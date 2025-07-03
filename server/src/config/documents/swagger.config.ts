@@ -14,7 +14,7 @@ export const documentSwagger = (app: Application): void => {
       info: {
         title: 'PERN Stack API',
         version: '2.1.1',
-        description: 'PERN API (док.интегр.)',
+        description: 'Описание методов интеграции API',
       },
       servers: [
         {
@@ -45,7 +45,7 @@ export const documentSwagger = (app: Application): void => {
       // кастом иконки в браузере
       customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
       // кастом ф.CSS
-      // customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
+      customCss: `${process.env.SRV_URL}/swagger/theme.css`,
       customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`,
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
