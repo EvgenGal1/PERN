@@ -45,7 +45,8 @@ export const documentSwagger = (app: Application): void => {
       // кастом иконки в браузере
       customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
       // кастом ф.CSS
-      customCss: `${process.env.SRV_URL}/swagger/theme.css`,
+      // customCss: `${process.env.SRV_URL}/swagger/theme.css`,
+      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
       // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`,
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
