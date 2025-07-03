@@ -36,15 +36,17 @@ export const documentSwagger = (app: Application): void => {
     '/swagger',
     swaggerUi.serve,
     swaggerUi.setup(swaggerDocs, {
+      // Название страницы Swagger
+      customSiteTitle: 'PERN API Docs (Swagger)',
       swaggerOptions: {
         // `постоянное разрешение` на использ.JWT Токен в swg
         persistAuthorization: true,
       },
-      customSiteTitle: 'PERN API Docs',
       // кастом иконки в браузере
-      customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
+      customfavIcon: `${process.env.SRV_URL}/public/img/ico/icon.ico`,
       // кастом ф.CSS
-      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
+      // customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
+      customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`,
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
       //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`, // темы + своё
