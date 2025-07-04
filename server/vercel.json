@@ -11,7 +11,10 @@
   "builds": [
     {
       "src": "src/index.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["public/**/*"]
+      }
     }
   ],
   "routes": [
@@ -20,12 +23,8 @@
       "dest": "src/index.ts"
     },
     {
-      "src": "/img/(.*)",
-      "dest": "/public/img/$1"
-    },
-    {
-      "src": "/views/(.*)",
-      "dest": "/public/views/$1"
+      "src": "/public/(.*)",
+      "dest": "/public/$1"
     }
   ]
 }
