@@ -14,55 +14,34 @@ const Product: React.FC = observer(() => {
   // ID Продукта, Context
   const { id } = useParams();
   const { catalog, user, basket } = useContext(AppContext);
-  console.log("1 catalog.isLoading ", catalog.isLoading);
 
   // наведение на Звёзды
   const [hoverStar, setHoverStar] = useState<number>(0);
 
-  useEffect(() => {
-    console.log("1 ", 1);
-    const loadProduct = async () => {
-      if (!id || isNaN(Number(id))) return;
-      console.log("2 ", 2);
-      if (!catalog.getProductById(Number(id))) {
-        console.log("3 ", 3);
-        await catalog.fetchProductById(Number(id));
-      }
-    };
-
-    loadProduct();
-  }, [id, catalog]);
-
+  // загр.Свойств Продукта
   useEffect(() => {
     const loadProp = async () => {
       if (!id || isNaN(Number(id))) return;
-      console.log("6 ", 6);
-      console.log("6 product и props ", product, product?.props);
       const existProp = catalog.getProductById(Number(id));
       if (existProp && !existProp.props) {
-        console.log("66 ", 66);
         await catalog.fetchProductProps(Number(id));
       }
     };
     loadProp();
   }, [id, catalog, catalog.products]);
 
-  console.log("2 catalog.isLoading ", catalog.isLoading);
   if (catalog.isLoading) {
-    console.log("4.2 ", 4.2);
     return <LoadingAtom />;
   }
   if (!id || isNaN(Number(id))) return <div>Неверный ID продукта</div>;
 
   const product = catalog.getProductById(Number(id));
   if (!product) {
-    console.log("5 ", 5);
     return <div>Продукт не найден</div>;
   }
 
   // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
-    console.log("user.isAuth ", user.isAuth);
     if (!user.isAuth || !product) return;
     try {
       await catalog.updateProductRating(user.id!, product.id!, rating);
@@ -75,8 +54,6 @@ const Product: React.FC = observer(() => {
   const handleClickAddToBasket = /* async */ () => {
     if (product && product.id) basket.addProduct(product.id);
   };
-  console.log("return product?.properties ", product?.props /* properties */);
-  console.log("return catalog.products ", catalog.products);
   return (
     <div className="product container" key={id}>
       <div className="df df-row">
