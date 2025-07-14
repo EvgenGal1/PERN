@@ -15,7 +15,6 @@ import ProductList from "./ProductList";
 import { FILTER_ROUTE } from "@/utils/consts";
 import { findValueFromStringInArray } from "@/scripts/helpers/findValueFromStringInArray";
 
-// При начальной загрузке каталога мы проверяем наличие GET-параметров и если они есть — выполняем запрос на сервер с учетом выбранной категории, бренда и страницы.
 // ^ оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач. для renderа при измен.
 const Shop: React.FC = observer(() => {
   const { catalog } = useContext(AppContext);
@@ -23,15 +22,28 @@ const Shop: React.FC = observer(() => {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      await Promise.all([
-        catalog.fetchCategories(),
-        catalog.fetchBrands(),
-        catalog.fetchAllProducts(),
-      ]);
+      // загр.данн.Каталога/Брендов при пустых масс.
+      const promises: any = [];
+      if (catalog.categories.length === 0)
+        promises.push(catalog.fetchCategories());
+      if (catalog.brands.length === 0) promises.push(catalog.fetchBrands());
+      // попытка восстановить сессию
+      const catalogStore = localStorage.getItem("catalogStore") ?? "";
+      // Всегда загружаем Продукты, но с проверкой параметров
+      if (!catalogStore) promises.push(catalog.fetchAllProducts());
+      await Promise.all(promises);
     };
 
     loadInitialData();
-  }, [catalog]);
+  }, [
+    /* catalog */
+    catalog.filters.category,
+    catalog.filters.brand,
+    catalog.pagination.page,
+    catalog.pagination.limit,
+    catalog.sortSettings.field,
+    catalog.sortSettings.order,
+  ]);
 
   // перенаправление на Filter с/без парам.поиска
   const redirectToFilter = () => {
