@@ -82,12 +82,9 @@ const Checkout = () => {
     authAPI
       .check()
       .then((data) => {
-        // console.log("Checkout checkAuth data ", data);
-        if (data) {
-          user.login(data.userData);
-        }
+        if (data) user.login(data.userData);
       })
-      .catch((/* error */) => user.logout());
+      .catch((error) => user.logout());
   }, [basket, user]);
 
   // Авториз.Корзин. loader, пока получаем корзину
