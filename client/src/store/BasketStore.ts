@@ -3,7 +3,7 @@
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
-import { BasketProduct } from "@/types/api/shopping.types";
+import { BasketData, BasketProduct } from "@/types/api/shopping.types";
 
 class BasketStore {
   @observable products: BasketProduct[] = [];
@@ -12,12 +12,22 @@ class BasketStore {
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
+    this.loadFromLocalStorage();
+  }
 
-    // чтение данн.из localStorage при инициализации
+  // LOCALSTORE ----------------------------------------------------------------------------------
+
+  // загр.данн.из LS
+  @action private loadFromLocalStorage() {
     const storedData = localStorage.getItem("basketStore");
     if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      this.products = parsedData.items || [];
+      try {
+        const { items } = JSON.parse(storedData) as { items: BasketProduct[] };
+        this.products = items || [];
+      } catch (error) {
+        console.error("Ошибка Загрузки basketStore из LS :", error);
+        this.clearLocalStorage();
+      }
     }
   }
 
@@ -25,9 +35,7 @@ class BasketStore {
   @action saveToLocalStorage() {
     localStorage.setItem(
       "basketStore",
-      JSON.stringify({
-        items: this.products,
-      })
+      JSON.stringify({ items: this.products })
     );
   }
 
@@ -35,6 +43,8 @@ class BasketStore {
   @action clearLocalStorage() {
     localStorage.removeItem("basketStore");
   }
+
+  // ASYNC ----------------------------------------------------------------------------------
 
   // получить Корзину
   async fetchBasket(): Promise<void> {
