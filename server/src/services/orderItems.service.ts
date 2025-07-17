@@ -1,9 +1,13 @@
 // ^ servis для Позиций Заказа
 
+import { Transaction } from 'sequelize';
+
 import OrderModel from '../models/OrderModel';
 import OrderItemModel from '../models/OrderItemModel';
-import { OrderItemAttributes } from '../models/sequelize-types';
+import type { OrderItemAttributes } from '../models/sequelize-types';
+import { OrderItemCreateDto } from '../types/order_item.interface';
 import ApiError from '../middleware/errors/ApiError';
+import DatabaseUtils from '../utils/database.utils';
 
 class OrderItemService {
   async getAllOrderItems(orderId: number): Promise<OrderItemAttributes[]> {
@@ -34,42 +38,81 @@ class OrderItemService {
     return item.get({ plain: true }) as OrderItemAttributes;
   }
 
+  /**
+   * созд. Одну Позицию Заказа
+   * @param orderId - ID Заказа
+   * @param data - данн. Позиции
+   */
   async createOrderItems(
     orderId: number,
     data: any,
+    transaction?: Transaction,
   ): Promise<OrderItemAttributes> {
-    const order = await OrderModel.findByPk(orderId);
+    const order = await OrderModel.findByPk(orderId, { transaction });
     if (!order) {
       throw ApiError.notFound('Заказ не найден');
     }
     const { name, price, quantity } = data;
-    const item = await OrderItemModel.create(
-      {
-        name,
-        price,
-        quantity,
-        orderId,
-        // orderId: order.get('id'), // Используем order.get('id') для связи
-        // orderId: sequelize.literal(orderId.toString()), // Используем sequelize.literal для связи
-        // orderId: sequelize.literal(`${orderId}`), // Используем sequelize.literal для связи
-        // orderId: orderId, // Используем orderId напрямую
-        // orderId: sequelize.literal(orderId.toString()), // Используем sequelize.literal для связи
-      } /* as any */,
-    ); // Приведение типа для обхода ошибки
+    const item = await OrderItemModel.create({
+      name,
+      price,
+      quantity,
+      orderId,
+    });
     return item.get({ plain: true }) as OrderItemAttributes;
   }
 
+  /**
+   * созд. Несколько Позиций Заказа
+   * @param orderId - ID Заказа
+   * @param items - масс. Позиций
+   * @param transaction - Транзакция
+   */
+  async createOrderItemsBatch(
+    orderId: number,
+    items: OrderItemCreateDto[],
+    transaction?: Transaction,
+  ): Promise<void> {
+    // получ. наименьший ID Позиций
+    const startId = await DatabaseUtils.getSmallestIDAvailable(
+      'order_item',
+      transaction,
+    );
+
+    // созд. Позиции Заказа с послед.ID
+    await Promise.all(
+      items.map((item, index) =>
+        OrderItemModel.create(
+          {
+            id: startId + index,
+            orderId,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          },
+          { transaction },
+        ),
+      ),
+    );
+  }
+
+  /**
+   * обнов. Позиций Заказа
+   * @param orderId - ID Заказа
+   * @param itemId - ID Позиции
+   * @param data - объ. Позиций для изменения
+   */
   async updateOrderItems(
     orderId: number,
-    id: number,
-    data: any,
+    itemId: number,
+    data: OrderItemCreateDto,
   ): Promise<OrderItemAttributes> {
     const order = await OrderModel.findByPk(orderId);
     if (!order) {
       throw ApiError.notFound('Заказ не найден');
     }
     const item = await OrderItemModel.findOne({
-      where: { id: id /* , orderId: orderId */ },
+      where: { id: itemId /* , orderId: orderId */ },
       include: [{ model: OrderModel, as: 'order', where: { id: orderId } }],
     });
     if (!item) {
