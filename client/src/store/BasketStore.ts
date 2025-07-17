@@ -3,12 +3,13 @@
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
-import { BasketData, BasketProduct } from "@/types/api/shopping.types";
+import type { BasketData, BasketProduct } from "@/types/api/shopping.types";
 
 class BasketStore {
   @observable products: BasketProduct[] = [];
   @observable total: number = 0;
   @observable isLoading = false;
+  @observable error: string | null = null;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
@@ -24,6 +25,7 @@ class BasketStore {
       try {
         const { items } = JSON.parse(storedData) as { items: BasketProduct[] };
         this.products = items || [];
+        this.calculateTotals();
       } catch (error) {
         console.error("Ошибка Загрузки basketStore из LS :", error);
         this.clearLocalStorage();
@@ -47,51 +49,117 @@ class BasketStore {
   // ASYNC ----------------------------------------------------------------------------------
 
   // получить Корзину
-  async fetchBasket(): Promise<void> {
+  @action async fetchBasket(): Promise<void> {
     if (this.isLoading || this.products.length > 0) return;
     this.isLoading = true;
+    this.error = null;
     try {
-      const data = await basketAPI.getOneBasket();
-      runInAction(() => {
-        this.products = Array.isArray(data) ? data.products : [];
-        this.total = Array.isArray(data) ? data.total : 0;
-      });
+      const basket = await basketAPI.getOneBasket();
+      this.updateBasket(basket);
     } catch (error) {
-      console.error("Ошибка загрузки Брендов:", error);
+      this.handleError("Ошибка Загрузки Корзины:", error);
     } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
+      runInAction(() => (this.isLoading = false));
     }
   }
 
-  // добавить Протукт в Корзину
-  async addProduct(productId: number): Promise<void> {
-    if (this.isLoading || this.products.length) this.isLoading = true;
+  // добавить Продукт в Корзину
+  @action async fetchAddProduct(productId: number): Promise<void> {
+    if (this.isLoading || this.products.length) return;
     this.isLoading = true;
+    this.error = null;
     try {
-      const data = await basketAPI.appendBasket(productId);
-      runInAction(() => {
-        this.products = Array.isArray(data) ? data.products : [];
-        this.total = Array.isArray(data) ? data.total : 0;
-      });
-      this.saveToLocalStorage();
+      const basket = await basketAPI.appendBasket(productId);
+      this.updateBasket(basket);
     } catch (error) {
-      console.error("Ошибка Добавления в Корзину:", error);
+      this.handleError("Ошибка Добавления Продукта в Корзину:", error);
+      throw error;
     } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
+      runInAction(() => (this.isLoading = false));
     }
   }
+
+  @action async fetchRemoveProduct(productId: number): Promise<void> {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    this.error = null;
+    try {
+      const data = await basketAPI.removeBasket(productId);
+      this.updateBasket(data);
+    } catch (error) {
+      this.handleError("Ошибка Удаления Продуктов из Корзины:", error);
+      throw error;
+    } finally {
+      runInAction(() => (this.isLoading = false));
+    }
+  }
+
+  @action async incrementProduct(productId: number): Promise<void> {
+    await this.fetchUpdateProductQuantity(productId, "increment");
+  }
+
+  @action async decrementProduct(productId: number): Promise<void> {
+    await this.fetchUpdateProductQuantity(productId, "decrement");
+  }
+
+  // ДОП.МТД. (PRIVATE HELPERS/UPD ПРОДУКТЫ/КАЛЬКУЛЯЦИЯ/ОШИБКИ) ----------------------------------------------------------------------------------
+
+  // Получить Обновление Количества Продукта
+  private async fetchUpdateProductQuantity(
+    productId: number,
+    action: "increment" | "decrement"
+  ): Promise<void> {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    this.error = null;
+    try {
+      const apiMethod =
+        action === "increment"
+          ? basketAPI.incrementBasket
+          : basketAPI.decrementBasket;
+      const data = await apiMethod(productId);
+      this.updateBasket(data);
+    } catch (error) {
+      this.handleError(`Ошибка ${action} Продукта:`, error);
+      throw error;
+    } finally {
+      runInAction(() => (this.isLoading = false));
+    }
+  }
+
+  @action private updateBasket(basket?: BasketData) {
+    if (!basket) return;
+    runInAction(() => {
+      this.products = Array.isArray(basket.products) ? basket.products : [];
+      this.total = basket.total !== 0 ? basket.total : this.calculateTotals();
+      this.saveToLocalStorage();
+    });
+  }
+
+  // вроде не нужно. подсчёт в БД
+  @action private calculateTotals(): number {
+    return (this.total = this.products.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    ));
+  }
+
+  @action private handleError(message: string, error: unknown) {
+    console.error(message, error);
+    runInAction(() => {
+      this.error = error instanceof Error ? error.message : "Unknown error";
+    });
+  }
+
+  // ==================== Getters ====================
 
   // Всего Позиций в Корзине (есть total)
-  get count() {
+  get count(): number {
     return this.products.reduce((sum, item) => sum + item.quantity, 0);
   }
 
   // Cтоимость Всех Продуктов Корзины
-  get sum() {
+  get sum(): number {
     return this.products.reduce(
       (sum, item: { price: number; quantity: number }) =>
         sum + item.price * item.quantity,
@@ -99,9 +167,12 @@ class BasketStore {
     );
   }
 
-  // проверка наличия Продукта в Корзине
-  isProductInBasket(productId: number): boolean {
-    return this.products.some((product) => product.id === productId);
+  // ==================== UI Actions ====================
+  @action clearBasket(): void {
+    this.products = [];
+    this.total = 0;
+    this.error = null;
+    this.saveToLocalStorage();
   }
 }
 
