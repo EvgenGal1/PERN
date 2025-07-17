@@ -1,6 +1,7 @@
 import { Transaction } from 'sequelize';
 
-// табл.
+import sequelize from '../config/sequelize';
+// табл.Модулей
 import BasketModel from '../models/BasketModel';
 import ProductModel from '../models/ProductModel';
 import BasketProductModel from '../models/BasketProductModel';
@@ -13,9 +14,17 @@ import ApiError from '../middleware/errors/ApiError';
 
 class BasketService {
   // получить корзину по basketId/userId
+  /**
+   * получ. Корзину с Продуктами
+   * @param basketId - ID Корзины (опционально)
+   * @param userId - ID Пользователя (опционально)
+   * @param transaction - Транзакция (опционально)
+   * @returns данн. Корзины с Продуктами
+   */
   async getOneBasket(
     basketId?: number,
     userId?: number,
+    transaction?: Transaction,
   ): Promise<BasketResponse> {
     if (!basketId && !userId)
       throw ApiError.badRequest('Требуется basketId или userId');
@@ -31,15 +40,25 @@ class BasketService {
           through: { attributes: ['quantity'], as: 'BasketProduct' }, // вкл.кол-во из связ.табл.
         },
       ],
+      transaction,
     });
     if (!basket || !basket.products)
       throw ApiError.notFound(
         `Корзина ${basketId ? `с ID '${basketId}' ` : `Пользователя с ID ${userId}`} не найдена`,
       );
+
+    // ! разобраться с типом BasketWithProducts (много хочет)
+
     return DatabaseUtils.formatBasketResponse(basket as BasketWithProducts);
   }
 
   // созд.корзину по userId
+  /**
+   * созд. Корзину для Пользователя
+   * @param userId - ID Пользователя
+   * @param transaction - Транзакция (опционально)
+   * @returns данн. Корзины
+   */
   async createBasket(
     userId: number,
     transaction?: Transaction,
@@ -57,34 +76,67 @@ class BasketService {
     return DatabaseUtils.formatBasketResponse(basket as BasketWithProducts);
   }
 
-  // добавить Продукт в корзину
+  /**
+   * добав.или обнов. Продукт в Корзине
+   * @param basketId - ID корзины
+   * @param productId - ID продукта
+   * @param quantity - Количество для добавления
+   * @returns Обновленная корзина
+   */
   async appendBasket(
     basketId: number,
     productId: number,
     quantity: number,
   ): Promise<BasketResponse> {
-    // параллел.req > получ. Корзины и Продуктов по их ID
-    const [basket, product] = await Promise.all([
-      BasketModel.findByPk(basketId),
-      ProductModel.findByPk(productId),
-    ]);
-    if (!basket) throw ApiError.notFound('Корзина не найдена');
-    if (!product) throw ApiError.notFound('Продукт не найден');
-    // обнов.кол-во или добав.нов.Продукт в Корзину
-    const [item] = await BasketProductModel.findOrCreate({
-      where: { basketId, productId },
-      // созд.е/и отсутствует
-      defaults: { basketId, productId, quantity },
-    });
-    // е/и Продукт стар. - увелич.кол-во Продуктов в Корзине
-    if (!item.isNewRecord) {
-      await item.increment('quantity', { by: quantity });
+    if (quantity <= 0) {
+      throw ApiError.badRequest('Количество должно быть больше 0');
     }
-    // нов.req > актуал.данн.
-    return this.getOneBasket(basketId);
+
+    // нач.транзакции
+    const transaction = await sequelize.transaction();
+
+    try {
+      // общ.req > получ. Корзины и Продуктов по их ID и проверка
+      const [basket, product] = await Promise.all([
+        BasketModel.findByPk(basketId),
+        ProductModel.findByPk(productId),
+      ]);
+      if (!basket) throw ApiError.notFound('Корзина не найдена');
+      if (!product) throw ApiError.notFound('Продукт не найден');
+
+      // Обнов.Кол-во или Добав.нов. Продукт в Корзину
+      const [basketProduct, created] = await BasketProductModel.findOrCreate({
+        where: { basketId, productId },
+        defaults: { basketId, productId, quantity },
+        transaction,
+      });
+      // е/и Продукт стар.(created = false) - увелич.Кол-во Продуктов в Корзине
+      if (!created) {
+        await basketProduct.increment('quantity', {
+          by: quantity,
+          transaction,
+        });
+      }
+
+      // нов.req > актуал.данн.
+      const result = await this.getOneBasket(basketId, undefined, transaction);
+      // подтверждить транзакцию
+      await transaction.commit();
+      return result;
+    } catch (error) {
+      // откат транзакции при ошб.
+      await transaction.rollback();
+      throw error;
+    }
   }
 
-  // добавить Продукт в Корзину
+  /**
+   * увелич.Кол-во Продуктов в Корзине
+   * @param basketId - ID Корзины
+   * @param productId - ID Продукта
+   * @param quantity - Количество для добавления
+   * @returns Обнов. Корзина
+   */
   async incrementBasket(
     basketId: number,
     productId: number,
@@ -92,70 +144,147 @@ class BasketService {
   ): Promise<BasketResponse> {
     if (quantity <= 0)
       throw ApiError.badRequest('Количество должно быть больше 0');
-    const item = await BasketProductModel.findOne({
-      where: { basketId, productId },
-    });
-    if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
-    await item.increment('quantity', { by: quantity });
-    return this.getOneBasket(basketId);
+    const transaction = await sequelize.transaction();
+    try {
+      const basketProduct = await BasketProductModel.findOne({
+        where: { basketId, productId },
+        transaction,
+      });
+      if (!basketProduct)
+        throw ApiError.notFound('Продукт не найден в Корзине');
+      await basketProduct.increment('quantity', { by: quantity, transaction });
+      const result = await this.getOneBasket(basketId, undefined, transaction);
+      await transaction.commit();
+      return result;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 
-  // убрать Продукт из Корзины
+  /**
+   * уменьш.Кол-во Продуктов в Корзине
+   * @param basketId - ID Корзины
+   * @param productId - ID Продукта
+   * @param quantity - Количество для добавления
+   * @returns Обнов. Корзина
+   */
   async decrementBasket(
     basketId: number,
     productId: number,
     quantity: number,
   ): Promise<BasketResponse> {
-    const item = await BasketProductModel.findOne({
-      where: { basketId, productId },
-    });
-    if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
-    // сравнения кол-ва Продуктов (удал.Продукт е/и 0|< или уменьш.кол-ва Продукта)
-    if (item.quantity <= quantity) {
-      await item.destroy();
-    } else {
-      await item.decrement('quantity', { by: quantity });
+    const transaction = await sequelize.transaction();
+    try {
+      const item = await BasketProductModel.findOne({
+        where: { basketId, productId },
+        transaction,
+      });
+      if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
+      // сравнения кол-ва Продуктов (удал.Продукт е/и 0 или уменьш.кол-ва Продукта)
+      if (item.quantity <= quantity) await item.destroy({ transaction });
+      else await item.decrement('quantity', { by: quantity, transaction });
+
+      const result = await this.getOneBasket(basketId, undefined, transaction);
+      await transaction.commit();
+      return result;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
-    return this.getOneBasket(basketId);
   }
 
-  // удаление Продукта из Корзины
-  async removeBasket(
+  /**
+   * удал. Продукт из Корзины
+   * @param basketId - ID Корзины
+   * @param productId - ID Продукта
+   * @param transaction - Транзакция (опционально)
+   * @returns Обновленная корзина
+   */
+  async removeBasketProduct(
     basketId: number,
     productId: number,
   ): Promise<BasketResponse> {
-    const item = await BasketProductModel.findOne({
-      where: { basketId, productId },
-    });
-    if (!item) throw ApiError.notFound('Продукт не найден в Корзине');
-    // удал.Продукта
-    await item.destroy();
-    return this.getOneBasket(basketId);
+    const transaction = await sequelize.transaction();
+    try {
+      const deletedCount = await BasketProductModel.destroy({
+        where: { basketId, productId },
+        transaction,
+      });
+
+      if (deletedCount === 0) {
+        throw ApiError.notFound('Продукт не найден в корзине');
+      }
+
+      const basket = await this.getOneBasket(basketId, undefined, transaction);
+      await transaction.commit();
+      return basket;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 
-  // очистка Корзины от Продуктов
-  async clearBasket(basketId: number): Promise<BasketResponse> {
+  /**
+   * очистка Корзины от Всех Продуктов
+   * @param basketId - ID корзины
+   * @param transaction - Транзакция (опционально)
+   * @returns Очищенная корзина
+   */
+  async clearBasketProducts(
+    basketId: number,
+    // transaction?: Transaction,
+  ): Promise<BasketResponse> {
     const basket = await BasketModel.findByPk(basketId);
     if (!basket) throw ApiError.notFound('Корзина не найдена');
-    // удал.всех Продуктов Корзины
-    await BasketProductModel.destroy({ where: { basketId } });
-    return this.getOneBasket(basketId);
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      await BasketProductModel.destroy({
+        where: { basketId },
+        transaction,
+      });
+
+      const basket = await this.getOneBasket(basketId, undefined, transaction);
+      await transaction.commit();
+      return basket;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 
   // удаление Корзины (с Продуктами как в removeBasket но без проверок)
+  /**
+   * полн.удал. Корзины
+   * @param basketId - ID корзины
+   * @returns Сообщение об удалении
+   */
   async deleteBasket(basketId: number): Promise<void | { message: string }> {
-    const basket = await BasketModel.findByPk(basketId, {
-      include: [BasketProductModel],
-    });
-    if (!basket)
-      throw ApiError.notFound(`Корзина с ID '${basketId}' не найдена`);
-    // удал., возврат смс
-    const productCount = basket.products?.length ?? 0;
-    // связь CASCADE удаляет и Продукты и Корзину
-    await basket.destroy();
-    return {
-      message: `Корзина с ID '${basketId}' ${productCount ? `с ${productCount} Продуктами` : 'без Продуктов'} удалена`,
-    };
+    const transaction = await sequelize.transaction();
+
+    try {
+      const basket = await BasketModel.findByPk(basketId, {
+        include: [{ model: ProductModel, as: 'products', attributes: ['id'] }],
+        transaction,
+      });
+
+      if (!basket) {
+        throw ApiError.notFound(`Корзина с ID ${basketId} не найдена`);
+      }
+
+      const productCount = basket.products?.length || 0;
+      await basket.destroy({ transaction });
+      await transaction.commit();
+
+      return {
+        message: `Корзина с ID ${basketId} ${productCount ? `с ${productCount} Продуктами` : 'без Продуктов'} Удалена`,
+      };
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 }
 
