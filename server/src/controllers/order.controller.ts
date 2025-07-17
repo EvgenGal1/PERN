@@ -48,6 +48,7 @@ class OrderController {
       next(error);
     }
   }
+
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, phone, address, comment = null, items } = req.body;
@@ -56,7 +57,6 @@ class OrderController {
       if (!name || !email || !phone || !address) {
         throw ApiError.badRequest('Отсутствуют обязательные поля');
       }
-
       let orderItems = items;
       const userRoles = roles.map((r) => r.role);
       if (userRoles.includes(NameUserRoles.ADMIN)) {
@@ -78,7 +78,6 @@ class OrderController {
           throw ApiError.badRequest('Корзина пуста');
         orderItems = basket.products;
       }
-
       const order = await OrderService.createOrder({
         name,
         email,
@@ -89,12 +88,12 @@ class OrderController {
       });
       if (!userRoles.includes(NameUserRoles.ADMIN))
         await BasketService.clearBasket(+req.signedCookies.basketId);
-
       res.status(201).json(order);
     } catch (error) {
       next(error);
     }
   }
+
   async updateOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseId(req.params.id, this.name);
@@ -105,6 +104,7 @@ class OrderController {
       next(error);
     }
   }
+
   async deleteOrder(req: Request, res: Response, next: NextFunction) {
     try {
       // if (!req.params.id) throw ApiError.badRequest('Не указан ID Заказа');

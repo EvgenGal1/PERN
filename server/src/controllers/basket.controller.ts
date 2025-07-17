@@ -23,16 +23,11 @@ class BasketController {
     return parseInt(basketId);
   }
 
-  // добавить
-  async appendBasket(req: Request, res: Response, next: NextFunction) {
+  // получить одну Корзину
+  async getOneBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
-      const { productId, quantity } = req.params;
-      const basket = await BasketService.appendBasket(
-        basketId,
-        +productId,
-        +quantity,
-      );
+      const basket = await BasketService.getOneBasket(basketId);
       res
         .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
@@ -42,11 +37,16 @@ class BasketController {
     }
   }
 
-  // получить одну
-  async getOneBasket(req: Request, res: Response, next: NextFunction) {
+  // добавить Продукт в Корзину
+  async appendBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
-      const basket = await BasketService.getOneBasket(basketId);
+      const { productId, quantity } = req.params;
+      const basket = await BasketService.appendBasket(
+        basketId,
+        +productId,
+        +quantity,
+      );
       res
         .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
@@ -98,7 +98,7 @@ class BasketController {
   async clearBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
-      const basket = await BasketService.clearBasket(basketId);
+      const basket = await BasketService.clearBasketProducts(basketId);
       res
         .cookie('basketId', basket.id, COOKIE_OPTIONS.basketId)
         .status(200)
@@ -112,7 +112,7 @@ class BasketController {
   async removeBasket(req: Request, res: Response, next: NextFunction) {
     try {
       const basketId = await this.getBasketId(req);
-      const basket = await BasketService.removeBasket(
+      const basket = await BasketService.removeBasketProduct(
         basketId,
         +req.params.productId,
       );
