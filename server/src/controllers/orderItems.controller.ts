@@ -52,11 +52,11 @@ class OrderItemsController {
   async updateOrderItems(req: Request, res: Response, next: NextFunction) {
     try {
       const orderId = parseId(req.params.orderId, this.name);
-      const id = parseId(req.params.id, this.item);
+      const itemId = parseId(req.params.id, this.item);
       validateData(req.body, this.item);
       const item = await OrderItemsService.updateOrderItems(
         orderId,
-        id,
+        itemId,
         req.body,
       );
       res.status(200).json(item);

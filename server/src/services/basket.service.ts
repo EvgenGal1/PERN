@@ -78,10 +78,10 @@ class BasketService {
 
   /**
    * добав.или обнов. Продукт в Корзине
-   * @param basketId - ID корзины
-   * @param productId - ID продукта
+   * @param basketId - ID Корзины
+   * @param productId - ID Продукта
    * @param quantity - Количество для добавления
-   * @returns Обновленная корзина
+   * @returns Обнов. Корзина
    */
   async appendBasket(
     basketId: number,
@@ -120,7 +120,7 @@ class BasketService {
 
       // нов.req > актуал.данн.
       const result = await this.getOneBasket(basketId, undefined, transaction);
-      // подтверждить транзакцию
+      // подтвердить транзакцию
       await transaction.commit();
       return result;
     } catch (error) {
@@ -199,7 +199,7 @@ class BasketService {
    * @param basketId - ID Корзины
    * @param productId - ID Продукта
    * @param transaction - Транзакция (опционально)
-   * @returns Обновленная корзина
+   * @returns Обнов. корзина
    */
   async removeBasketProduct(
     basketId: number,
@@ -255,11 +255,10 @@ class BasketService {
     }
   }
 
-  // удаление Корзины (с Продуктами как в removeBasket но без проверок)
   /**
-   * полн.удал. Корзины
-   * @param basketId - ID корзины
-   * @returns Сообщение об удалении
+   * полн.удал. Корзины (с Продуктами как в removeBasket но без проверок)
+   * @param basketId - ID Корзины
+   * @returns смс об Удалении
    */
   async deleteBasket(basketId: number): Promise<void | { message: string }> {
     const transaction = await sequelize.transaction();

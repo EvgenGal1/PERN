@@ -87,7 +87,7 @@ class OrderController {
         items: orderItems,
       });
       if (!userRoles.includes(NameUserRoles.ADMIN))
-        await BasketService.clearBasket(+req.signedCookies.basketId);
+        await BasketService.clearBasketProducts(+req.signedCookies.basketId);
       res.status(201).json(order);
     } catch (error) {
       next(error);
