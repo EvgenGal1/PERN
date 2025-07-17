@@ -9,7 +9,9 @@ import BasketModel from '../models/BasketModel';
 import ProductModel from '../models/ProductModel';
 import BasketProductModel from '../models/BasketProductModel';
 import TokenModel from '../models/TokenModel';
-import {
+import OrderModel from '../models/OrderModel';
+import OrderItemModel from '../models/OrderItemModel';
+import type {
   BasketProduct,
   BasketResponse,
   BasketWithProducts,
@@ -17,22 +19,39 @@ import {
 import ApiError from '../middleware/errors/ApiError';
 
 class DatabaseUtils {
-  // ^^ `получить наименьший доступный идентификатор` из табл.БД>tableName
+  // получ.Модуль > getSmallestIDAvailable
+  private static modelMap: Record<string, any> = {
+    user: UserModel,
+    role: RoleModel,
+    userrole: UserRoleModel,
+    basket: BasketModel,
+    token: TokenModel,
+    order: OrderModel,
+    order_item: OrderItemModel,
+  };
+
+  /**
+   * получить наименьший доступный ID в указ.табл.
+   * @param tableName - Название таблицы
+   * @param transaction - Опциональная транзакция
+   * @returns Promise<number> - Наименьший свободный ID
+   */
   async getSmallestIDAvailable(
-    tableName: string,
+    tableName: keyof typeof DatabaseUtils.modelMap,
     transaction?: Transaction,
   ): Promise<number> {
-    // перем.таблц.
-    let model: any;
-    // выбор.табл.>tableName
-    if (tableName === 'user') model = UserModel;
-    else if (tableName === 'role') model = RoleModel;
-    else if (tableName === 'userrole') model = UserRoleModel;
-    else if (tableName === 'basket') model = BasketModel;
-    else if (tableName === 'token') model = TokenModel;
-    else throw ApiError.internal('Неверное название таблицы');
+    // перем. выбора табл.
+    const model = DatabaseUtils.modelMap[tableName];
+    if (!model)
+      throw ApiError.internal(`Неверное название таблицы: ${tableName}`);
+
     // req.составной
-    const result = await model.findAll({ order: [['id', 'ASC']], transaction });
+    const result = await model.findAll({
+      attributes: ['id'],
+      order: [['id', 'ASC']],
+      transaction,
+      raw: true, // ускоряет запрос
+    });
     // обраб.0
     if (result.length === 0) return 1;
     // перем. начального доступного ID
@@ -40,7 +59,7 @@ class DatabaseUtils {
     // перебор./сравн. начал.ID <> ID БД
     for (const item of result) {
       if (item.id > id) break;
-      id++;
+      id = item.id + 1;
     }
     // возврат первого свободного ID
     return id;
@@ -67,7 +86,8 @@ class DatabaseUtils {
       }),
     );
     // подсчёт общ.суммы
-    const total = products.reduce((sum, p) => sum + p.price * p.quantity, 0);
+    const total =
+      products.reduce((sum, p) => sum + p.price * p.quantity, 0) || 0;
     // возврат данн.с фикс.тчк.в сумме
     return { ...base, products, total: Number(total.toFixed(2)) };
   }
