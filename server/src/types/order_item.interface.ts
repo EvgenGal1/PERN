@@ -1,5 +1,6 @@
 export interface OrderCreateDto {
   id?: number;
+  userId: number;
   name: string;
   email: string;
   phone: string;
@@ -44,7 +45,7 @@ export interface OrderUpdateData {
   email?: string;
   phone?: string;
   address?: string;
-  comment?: string;
+  comment?: string | null;
   items?: OrderItemCreateDto[];
 }
 

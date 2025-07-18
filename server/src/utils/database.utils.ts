@@ -45,24 +45,24 @@ class DatabaseUtils {
     if (!model)
       throw ApiError.internal(`Неверное название таблицы: ${tableName}`);
 
-    // req.составной
-    const result = await model.findAll({
+    // req.составной для записей
+    const records = await model.findAll({
       attributes: ['id'],
       order: [['id', 'ASC']],
       transaction,
       raw: true, // ускоряет запрос
     });
     // обраб.0
-    if (result.length === 0) return 1;
-    // перем. начального доступного ID
-    let id = 1;
+    if (records.length === 0) return 1;
+    // перем. ожидаемого доступного ID
+    let expectedId = 1;
     // перебор./сравн. начал.ID <> ID БД
-    for (const item of result) {
-      if (item.id > id) break;
-      id = item.id + 1;
+    for (const record of records) {
+      if (record.id > expectedId) break;
+      expectedId = record.id + 1;
     }
     // возврат первого свободного ID
-    return id;
+    return expectedId;
   }
 
   // утилита форматир.res.Корзины

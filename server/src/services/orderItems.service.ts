@@ -66,7 +66,7 @@ class OrderItemService {
    * созд. Несколько Позиций Заказа
    * @param orderId - ID Заказа
    * @param items - масс. Позиций
-   * @param transaction - Транзакция
+   * @param transaction - Транзакция (опционально)
    */
   async createOrderItemsBatch(
     orderId: number,
@@ -112,7 +112,7 @@ class OrderItemService {
       throw ApiError.notFound('Заказ не найден');
     }
     const item = await OrderItemModel.findOne({
-      where: { id: itemId /* , orderId: orderId */ },
+      where: { id: itemId },
       include: [{ model: OrderModel, as: 'order', where: { id: orderId } }],
     });
     if (!item) {
