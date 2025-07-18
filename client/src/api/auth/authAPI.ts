@@ -29,11 +29,12 @@ export const authAPI = {
       throw new ApiError("Токен отсутствует", 401, "MISSING_TOKEN");
     }
     localStorage.setItem("tokenAccess", tokenAccess);
+    const userDataPars = this.parseToken(tokenAccess);
     return {
-      id: userData.id,
-      email: userData.email,
-      username: userData.username || "",
-      roles,
+      id: userDataPars.id,
+      email: userDataPars.email,
+      username: userDataPars.username || "",
+      roles: userDataPars.roles,
       basket,
       isActivated,
     };
