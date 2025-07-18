@@ -11,7 +11,7 @@ const AdminOrders = () => {
 
   useEffect(() => {
     orderAPI
-      .getAllOrders()
+      .getAllOrdersAdmin()
       .then((data: any) => setOrders(data))
       .finally(() => setFetching(false));
   }, []);

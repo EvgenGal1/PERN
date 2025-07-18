@@ -30,7 +30,7 @@ export const orderAPI = {
   /**
    * Получение списка Всех Заказов
    */
-  async getAllOrders(): Promise<OrderData[]> {
+  async getAllOrdersAdmin(): Promise<OrderData[]> {
     return handleRequest(
       () => authInstance.get<OrderData[]>("orders/admin/getall"),
       "Order/Admin/GetAll"
@@ -116,7 +116,7 @@ export const orderAPI = {
   /**
    * Получение списка Всех Заказов Пользователя
    */
-  async getAllOrderUser(): Promise<OrderData[]> {
+  async getAllOrdersUser(): Promise<OrderData[]> {
     return handleRequest(
       () => authInstance.get<OrderData[]>("orders/user/getall"),
       "Order/User/GetAll"

@@ -79,12 +79,9 @@ const Checkout = () => {
       })
       .finally(() => setFetching(false));
     // нужно знать, авторизован ли пользователь
-    authAPI
-      .check()
-      .then((data) => {
-        if (data) user.login(data.userData);
-      })
-      .catch((error) => user.logout());
+    authAPI.check().then((data) => {
+      if (data) user.login(data.userData);
+    });
   }, [basket, user]);
 
   // Авториз.Корзин. loader, пока получаем корзину
@@ -182,13 +179,13 @@ const Checkout = () => {
       create(body).then((data) => {
         console.log("Checkout data ", data);
         setOrder(data);
-        basket.products = [];
+        basket.clearBasket();
       });
     }
   };
 
   return (
-    <div className="container">
+    <>
       {/* Авториз.Корзин. Если корзина пуста — пользователь будет направлен на страницу корзины, где увидит сообщение «Ваша корзина пуста». После того, как заказ был создан, переменная order изменяет свое значение — и пользователь увидит сообщение, что заказ успешно оформлен. */}
       {basket.count === 0 && <Navigate to={BASKET_ROUTE} replace={true} />}
       {/*  */}
@@ -209,29 +206,8 @@ const Checkout = () => {
           ],
           ["comment", value.comment],
         ]}
-        // valid={valid}
         label={true}
         legend={"Введите данные __EG"}
-      />
-      {}
-      <FormField__eg
-        // handleSubmit={handleSubmit}
-        handleSubmitBtnField={handleSubmit}
-        MsgBtnField="Отправить"
-        handleChange={handleChange}
-        label={true}
-        clForm={"form--eg p-4"}
-        valueArr={[
-          ["name", value.name],
-          ["address", value.address],
-          [
-            ["phone", value.phone],
-            ["email", value.email],
-          ],
-          ["comment", value.comment],
-        ]}
-        valid={valid}
-        legend={"Введите данные __eg"}
       />
       <Form className="form form--eg p-4" noValidate onSubmit={handleSubmit}>
         <Form.Control
@@ -286,7 +262,7 @@ const Checkout = () => {
           Отправить
         </button>
       </Form>
-    </div>
+    </>
   );
 };
 

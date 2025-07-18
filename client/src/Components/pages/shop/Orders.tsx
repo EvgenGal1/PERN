@@ -1,9 +1,10 @@
 // ^ Многраз.Комп.Заказов
 import { Link } from "react-router-dom";
 import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
+import { formatTimeStr } from "@/utils/format";
 
 const Orders = (props: any) => {
-  if (props.items?.length === 0 || !props.items) {
+  if (props?.items?.rows.length === 0 || !props.items) {
     return <p>Список заказов пустой</p>;
   }
 
@@ -23,10 +24,10 @@ const Orders = (props: any) => {
           </tr>
         </thead>
         <tbody>
-          {props.items?.map((item: any) => (
+          {props?.items?.rows.map((item: any) => (
             <tr key={item.id}>
               <td>{item.id}</td>
-              <td>{item.prettyCreatedAt}</td>
+              <td>{formatTimeStr(item.createdAt)}</td>
               <td>{item.name}</td>
               <td>{item.email}</td>
               <td>{item.phone}</td>
@@ -46,7 +47,7 @@ const Orders = (props: any) => {
                   </Link>
                 ) : (
                   <Link to={USERORDERS_ROUTE + `/${item.id}`}>
-                    Подробнее о Заказе {/* для USER */}
+                    Подробнее о Заказе
                   </Link>
                 )}
               </td>

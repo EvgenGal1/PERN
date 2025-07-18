@@ -14,7 +14,7 @@ const UserOrders = () => {
 
   useEffect(() => {
     orderAPI
-      .getAllOrders()
+      .getAllOrdersUser()
       .then((data) => {
         console.log("UserOrderS data ", data);
         setOrders(data);
