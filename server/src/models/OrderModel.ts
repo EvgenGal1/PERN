@@ -14,6 +14,7 @@ class OrderModel extends Model<
   InferCreationAttributes<OrderModel>
 > {
   declare id: CreationOptional<number>;
+  declare userId: CreationOptional<number>;
   declare name: string;
   declare email: string;
   declare phone: string;
@@ -47,6 +48,11 @@ class OrderModel extends Model<
           primaryKey: true,
           autoIncrement: true,
           allowNull: false,
+        },
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: { model: 'users', key: 'id' },
         },
         name: { type: DataTypes.STRING, allowNull: false },
         email: { type: DataTypes.STRING, allowNull: false },
