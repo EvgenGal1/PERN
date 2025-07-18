@@ -2,6 +2,27 @@
 
 import { CategoryData } from "../types/api/catalog.types";
 
+// Время
+export const formatTimeStr = (time: string): string => {
+  const date = new Date(time);
+
+  const formatter = new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  });
+
+  const formatted = formatter
+    .format(date)
+    .replace(/(\d+).(\d+).(\d+),?/, "$1.$2.$3")
+    .replace(/,/, "");
+  return formatted;
+};
+
 // Цена
 export const formatPrice = (price: number): string => {
   if (price >= 1e9) return `${(price / 1e9).toFixed(2)} B`;
