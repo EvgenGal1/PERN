@@ -1,41 +1,39 @@
 // ^ глобал.обарб.ошб.Express с логг./стат.смс.
 
-import { Request, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 // клс.польз.ошб.
 import ApiError from './ApiError';
 // логг.ошб.
 import { LoggingWinston as logger } from '../../config/logging/log_winston.config';
 
+/**
+ * Middleware для обработки ошибок API
+ */
 const ErrorHandler = (
-  err: ApiError | Error,
+  err: Error | ApiError,
   req: Request,
-  res: any /* Response */,
+  res: Response,
   next: NextFunction,
 ) => {
   // преобраз.неизвест.ошб.в формат ApiError
   if (!(err instanceof ApiError) && err instanceof Error) {
-    err = ApiError.internal(err.message);
+    err = new ApiError(500, err.message || 'Неизвестная ОШБ.', err.name);
   }
 
-  // ошб.экземпл.ApiError
-  if (err instanceof ApiError) {
-    logger.error(
-      `API ОШБ.: ${req.method} ${req.url}: ${err.message} (${err.status})`,
-    );
-    return res.status(err.status).json({
-      status: err.status,
-      message: err.message,
-      errors: err.errors || null,
-    });
-  }
+  const apiError = err as ApiError;
 
-  // неизвестые ошб. обраб./лог./ответ
-  const message = JSON.stringify(err) || 'Произошла неизвестная ошибка';
-  logger.error(`API ... ОШБ.: ${req.method} ${req.url}: ${err.message}`);
-  return res.status(500).json({
-    message: message,
-    errors: null,
+  // лог.ошб.
+  logger.error(
+    `API Error: ${req.method} ${req.url} - ${apiError.status} ${apiError.message}`,
+  );
+
+  // стандарт.res
+  res.status(apiError.status).json({
+    status: apiError.status,
+    message: apiError.message,
+    errors: apiError.errors || null,
+    code: apiError.code || 'UNKNOWN_ERROR',
   });
 };
 

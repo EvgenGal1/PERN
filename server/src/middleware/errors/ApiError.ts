@@ -1,23 +1,25 @@
 // ^ клс.польз-их ошб./исключ.с разн.статусами - throw ApiError.notFound('Ресурс не найден')
 
 // класс для объедин. неск.мтд. Кл.расшир.Error
+/**
+ * кастом.класс ошибок API
+ * Расшир.стандартный Error и добав.статус код и доп.данн.
+ */
 class ApiError extends Error {
-  // указ.св-в (стат.код,смс,ошб)
-  status: number;
-  message: string;
-  errors?: any;
-
   // в парам.приним. стат.код, смс, ошб.(по умолч.масс.пуст)
-  constructor(status: number, message: string, errors: any = null) {
+  constructor(
+    public status: number,
+    public message: string,
+    public errors: any = null,
+    public code?: string,
+  ) {
     super(message); // вызов.род.клс.констр. с передачей смс
     // присвойка полученого в экземпляр кл.
-    this.status = status;
-    this.message = message; // сохр.смс
-    this.errors = errors;
+    this.name = 'ApiError';
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 
-  // статич.мтд.созд.объ.ошб. (мжн.вызов.без созд.объ.обращ.на прямую к кл.)
+  // статич.мтды.созд.объ.типовых ошб. (мжн.вызов.без созд.объ.обращ.на прямую к кл.)
 
   // `не изменён`
   static notModified(message: string): ApiError {
@@ -25,15 +27,15 @@ class ApiError extends Error {
   }
 
   // `плохой запрос`
-  static badRequest(message: string, errors: any = null): ApiError {
+  static badRequest(message: string, errors?: any): ApiError {
     // возвращ.нов.объ.(экземпляр)с парам.(код,смс,ошб)
-    return new ApiError(400, message, errors);
+    return new ApiError(400, message, errors, 'BAD_REQUEST');
   }
 
   // `несанкционирован`/не авторизован
   static unauthorized(message: string): ApiError {
     // возвращ.экземпл.текущ.кл.
-    return new ApiError(401, message);
+    return new ApiError(401, message, null, 'UNAUTHORIZED');
   }
 
   // `запрещенный`/нет доступа
@@ -43,7 +45,7 @@ class ApiError extends Error {
 
   // `не найдено`
   static notFound(message: string): ApiError {
-    return new ApiError(404, message);
+    return new ApiError(404, message, null, 'NOT_FOUND');
   }
 
   // `конфликт` данных
