@@ -50,7 +50,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
  * @swagger
  * /orders/getall:
  *   get:
- *     summary: Получить список Всех Заказов
+ *     summary: Получить список Всех Заказов Всех Пользователей как ADMIN
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -58,7 +58,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
  *       200:
  *         description: Список Всех Заказов
  */
-router.get('/getall', authMW, adminMW, OrderController.getAllOrders);
+router.get('/admin/getall', authMW, adminMW, OrderController.getAllOrdersAdmin);
 
 // создать новый Заказ
 /**
@@ -456,7 +456,7 @@ router.get('/user/getone/:id([0-9]+)', authMW, OrderController.getOneOrder);
  *       200:
  *         description: Список Всех Заказов Пользователя
  */
-router.get('/user/getall', authMW, OrderController.getAllOrders);
+router.get('/user/getall', authMW, OrderController.getAllOrdersUser);
 
 /*
  * для неавторизованного Пользователя

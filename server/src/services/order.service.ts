@@ -1,3 +1,5 @@
+import { Transaction } from 'sequelize';
+
 import sequelize from '../config/sequelize';
 import OrderModel from '../models/OrderModel';
 import OrderItemModel from '../models/OrderItemModel';
@@ -12,8 +14,24 @@ import ApiError from '../middleware/errors/ApiError';
 import DatabaseUtils from '../utils/database.utils';
 
 class OrderService {
-  async getOneOrder(orderId: number, userId?: number): Promise<OrderModel> {
-    const where: any = { orderId };
+  private static readonly baseOrderAttributes = [
+    'id',
+    'name',
+    'email',
+    'phone',
+    'address',
+    'amount',
+    'status',
+    'comment',
+    'createdAt',
+  ];
+
+  async getOneOrder(
+    orderId: number,
+    userId?: number,
+    transaction?: Transaction,
+  ): Promise<OrderModel> {
+    const where: any = { id: orderId };
     if (userId) where.userId = userId;
     const order = await OrderModel.findOne({
       where,
@@ -24,29 +42,35 @@ class OrderService {
           attributes: ['id', 'name', 'price', 'quantity'],
         },
       ],
+      transaction,
     });
     if (!order) throw ApiError.notFound(`Заказ с ID '${orderId}' не найден`);
     return order;
   }
 
-  async getAllOrders(
-    userId?: number,
-  ): Promise<{ count: number; rows: OrderData[] }> {
-    const queryOptions: any = {
-      attributes: [
-        'id',
-        'name',
-        'email',
-        'phone',
-        'address',
-        'amount',
-        'status',
-        'comment',
-      ],
-    };
-    if (userId) queryOptions.where = { userId };
-    const orders = await OrderModel.findAndCountAll(queryOptions);
-    if (!orders.rows.length) throw ApiError.notFound('Заказы не найдены');
+  // Все Заказы Пользователя
+  async getAllOrdersUser(userId: number) {
+    if (!userId) throw ApiError.badRequest('Не указан ID Пользователя');
+    if (isNaN(userId))
+      throw ApiError.badRequest('Некорректный ID Пользователя');
+    const orders = await OrderModel.findAndCountAll({
+      attributes: OrderService.baseOrderAttributes,
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+    });
+
+    if (!orders.count) throw ApiError.notFound('Заказы не найдены');
+    return orders;
+  }
+
+  // Все Заказы Всех Пользователей > ADMIN
+  async getAllOrdersAdmin(): Promise<{ count: number; rows: OrderData[] }> {
+    const orders = await OrderModel.findAndCountAll({
+      attributes: OrderService.baseOrderAttributes,
+      order: [['createdAt', 'DESC']],
+    });
+
+    if (!orders.count) throw ApiError.notFound('Заказы не найдены');
     return orders;
   }
 
@@ -97,11 +121,11 @@ class OrderService {
         items,
         transaction,
       );
+
       // подтвердить транзакцию
       await transaction.commit();
-      // возврат Заказ с Позициями
-      const result = await this.getOneOrder(order.id);
-      return result;
+      // возврат Заказ с Позициями после commit
+      return this.getOneOrder(order.id);
     } catch (error) {
       // откат транзакции при ошб.
       await transaction.rollback();

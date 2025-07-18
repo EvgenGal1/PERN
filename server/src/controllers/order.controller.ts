@@ -11,7 +11,8 @@ class OrderController {
   constructor() {
     // привязка мтд.к контексту клс.
     this.getOneOrder = this.getOneOrder.bind(this);
-    this.getAllOrders = this.getAllOrders.bind(this);
+    this.getAllOrdersUser = this.getAllOrdersUser.bind(this);
+    this.getAllOrdersAdmin = this.getAllOrdersAdmin.bind(this);
     this.createOrder = this.createOrder.bind(this);
     this.updateOrder = this.updateOrder.bind(this);
     this.deleteOrder = this.deleteOrder.bind(this);
@@ -35,16 +36,24 @@ class OrderController {
     }
   }
 
-  async getAllOrders(req: Request, res: Response, next: NextFunction) {
+  // Все Заказы Пользователя
+  async getAllOrdersUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const isAdmin = req.auth?.roles?.some(
-        (r) => r.role === NameUserRoles.ADMIN,
-      );
-      const userId = isAdmin ? undefined : req.auth?.id;
-      // все Заказы для Admin или по ID User
-      const orders = await OrderService.getAllOrders(userId);
+      if (!req.auth?.id) throw ApiError.unauthorized('Не авторизован');
+      const orders = await OrderService.getAllOrdersUser(req.auth.id);
       res.status(200).json(orders);
-    } catch (error: unknown) {
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Все Заказы Всех Пользователей > ADMIN
+  async getAllOrdersAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.auth?.id) throw ApiError.unauthorized('Не авторизован');
+      const orders = await OrderService.getAllOrdersAdmin();
+      res.status(200).json(orders);
+    } catch (error) {
       next(error);
     }
   }
@@ -80,6 +89,7 @@ class OrderController {
       }
       const order = await OrderService.createOrder({
         name,
+        userId,
         email,
         phone,
         address,
