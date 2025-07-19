@@ -10,7 +10,8 @@ import {
   USER_ROUTE,
 } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
-import { UserResData } from "@/types/api/auth.types";
+import { UserDataRes } from "@/types/api/auth.types";
+import { errorHandleUniversal } from "@/utils/errorObject";
 
 interface FormValues {
   email: string;
@@ -25,7 +26,7 @@ interface FormErrors {
 
 // оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач.для renderа
 const Auth = observer(() => {
-  const { user }: any = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
@@ -180,10 +181,9 @@ const Auth = observer(() => {
 
     try {
       // запрос в зависимости от типа страницы
-      const userData: UserResData = isLogin
+      const userData: UserDataRes = isLogin
         ? await authAPI.login(formValues.email, formValues.password)
         : await authAPI.register(formValues.email, formValues.password);
-
       // пров./ввывод errors
       if (userData?.errors) {
         // для err массива
@@ -236,10 +236,12 @@ const Auth = observer(() => {
       user.login(userData);
       setFormErrors({ sms: "", email: "", password: "" });
       navigate(user.isAdmin ? ADMIN_ROUTE : USER_ROUTE);
-    } catch (error: any) {
-      console.log("Auth error ", error);
+    } catch (error: unknown) {
+      errorHandleUniversal(error);
+      const { message, status } = errorHandleUniversal(error);
+      console.log(`Auth error  ${status}: ${message}`);
       // обраб.ошб.
-      setFormErrors({ ...formErrors, sms: error.message || "Ошибка сервера" });
+      setFormErrors({ ...formErrors, sms: message });
     }
   };
 
