@@ -20,31 +20,33 @@ const Product: React.FC = observer(() => {
 
   // загр.Свойств Продукта
   useEffect(() => {
-    const loadProp = async () => {
-      if (!id || isNaN(Number(id))) return;
-      const existProp = catalog.getProductById(Number(id));
-      if (existProp && !existProp.props) {
-        await catalog.fetchProductProps(Number(id));
+    if (!id || isNaN(Number(id))) return;
+    const loadProductData = async () => {
+      const productId = Number(id);
+      const existProduct = catalog.getProductById(productId);
+      // загр.е/и нет Продукта
+      if (!existProduct) {
+        await catalog.fetchProductById(productId);
+      }
+      // загр.е/и нет Св-ва Продукта
+      if (existProduct && !existProduct.props) {
+        await catalog.fetchProductProperties(productId);
       }
     };
-    loadProp();
-  }, [id, catalog, catalog.products]);
+    loadProductData();
+  }, [id, catalog]);
 
-  if (catalog.isLoading) {
-    return <LoadingAtom />;
-  }
+  // проверки, загрузка
   if (!id || isNaN(Number(id))) return <div>Неверный ID продукта</div>;
-
+  if (catalog.isLoading) return <LoadingAtom />;
   const product = catalog.getProductById(Number(id));
-  if (!product) {
-    return <div>Продукт не найден</div>;
-  }
+  if (!product) return <div>Продукт не найден</div>;
 
   // созд. Рейтинга в БД
   const handleSubmit = async (rating: number) => {
     if (!user.isAuth || !product) return;
     try {
-      await catalog.updateProductRating(user.id!, product.id!, rating);
+      await catalog.fetchUpdateProductRating(user.id!, product.id!, rating);
     } catch (error) {
       console.error("Ошибка при создании Рейтинга:", error);
     }
@@ -52,7 +54,7 @@ const Product: React.FC = observer(() => {
 
   // добавить Продукт в Корзину
   const handleClickAddToBasket = /* async */ () => {
-    if (product && product.id) basket.addProduct(product.id);
+    if (product && product.id) basket.fetchAddProduct(product.id);
   };
   return (
     <div className="product container" key={id}>

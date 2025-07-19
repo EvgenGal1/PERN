@@ -116,7 +116,6 @@ const CreateProduct = (props: any) => {
 
   // fn() сброса на нач.знач. statов и ФормДат ?нужна ли?
   const resetValueAndValidAndVBulk = () => {
-    console.log("reset ", 0);
     // приводим форму в изначальное состояние
     setValid(defaultValid);
 

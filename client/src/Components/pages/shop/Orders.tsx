@@ -4,7 +4,7 @@ import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
 import { formatTimeStr } from "@/utils/format";
 
 const Orders = (props: any) => {
-  if (props?.items?.rows.length === 0 || !props.items) {
+  if (props?.items?.length === 0 || !props.items) {
     return <p>Список заказов пустой</p>;
   }
 
