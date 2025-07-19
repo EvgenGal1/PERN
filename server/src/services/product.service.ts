@@ -193,7 +193,7 @@ class ProductService {
   async updateProduct(
     id: number,
     data: ProductUpdateDTO,
-    img?: Express.Multer.File,
+    img?: /* Express.Multer. */ File,
   ): Promise<ProductData> {
     const product = await ProductModel.findByPk(id, {
       include: [{ model: ProductPropModel, as: 'props' }],

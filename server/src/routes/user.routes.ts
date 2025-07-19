@@ -44,7 +44,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, UserController.getOneUser);
 // получит всех Пользователей
 /**
  * @swagger
- * /users/users:
+ * /users/getall:
  *   get:
  *     summary: Получить список Всех Пользователей
  *     tags: [Users]
