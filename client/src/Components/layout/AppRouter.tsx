@@ -1,4 +1,4 @@
-import { useContext, useMemo, Suspense } from "react";
+import { useContext, /* useMemo, */ Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { publicRoutes, authRoutes, adminRoutes } from "./routes";
@@ -8,15 +8,12 @@ import Loader from "@Comp/ui/loader/Loader";
 const AppRouter: React.FC = () => {
   const { user } = useContext(AppContext);
 
-  // маршруты с мемоизацией
-  const routes = useMemo(
-    () => [
-      ...publicRoutes,
-      ...(user.isAuth ? authRoutes : []),
-      ...(user.isAdmin ? adminRoutes : []),
-    ],
-    [user.isAuth, user.isAdmin]
-  );
+  // маршруты /* с мемоизацией */
+  const routes = /* useMemo(() => */ [
+    ...publicRoutes,
+    ...(user.isAuth ? authRoutes : []),
+    ...(user.isAdmin ? adminRoutes : []),
+  ]; /* , [user.isAuth, user.isAdmin]) */
 
   return (
     <main className="main">
