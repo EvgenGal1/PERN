@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { AuthRes } from "@/types/api/auth.types";
+import { authAPI } from "./auth/authAPI";
 
 // Базовый URL API
 const API_URL = process.env.REACT_APP_SRV_IURL;
@@ -44,12 +44,9 @@ authInstance.interceptors.response.use(
 
       try {
         // req обнов.Токена
-        const response = await guestInstance.post<AuthRes>(
-          `${API_URL}/auth/refresh`,
-          { withCredentials: true }
-        );
+        const { data } = await authAPI.refresh();
         // сохр.нов. tokenAccess в LS
-        localStorage.setItem("tokenAccess", response.data.data.tokenAccess);
+        localStorage.setItem("tokenAccess", data.tokenAccess);
         // ч/з экземпл.перехватчика повтор нач.req с нов.Токеном
         return authInstance.request(initialReq);
       } catch (error: unknown) {
