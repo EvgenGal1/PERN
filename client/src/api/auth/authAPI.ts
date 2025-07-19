@@ -9,7 +9,14 @@ import { handleRequest } from "../handleRequest";
 // общ.клс.ошб.
 import { ApiError } from "@/utils/errorClasses";
 // DTO/типы/интерфейсы
-import { AuthRes, TokenPayload, UserResData } from "@/types/api/auth.types";
+import {
+  AuthRes,
+  CheckRes,
+  IUser,
+  TokenPayload,
+  UserDataRes,
+} from "@/types/api/auth.types";
+import { isErrorWithStatus } from "@/utils/errorObject";
 
 export const authAPI = {
   /**
@@ -17,24 +24,17 @@ export const authAPI = {
    * @param response - ответ Сервера
    * @returns данные Пользователя
    */
-  processAuthResponse(response: AuthRes): UserResData {
-    const {
-      tokenAccess,
-      user: userData,
-      roles,
-      basket,
-      isActivated,
-    } = response.data;
+  processAuthResponse(response: AuthRes): UserDataRes {
+    const { tokenAccess, user, roles, basket, isActivated } = response.data;
     if (!tokenAccess) {
       throw new ApiError("Токен отсутствует", 401, "MISSING_TOKEN");
     }
     localStorage.setItem("tokenAccess", tokenAccess);
-    const userDataPars = this.parseToken(tokenAccess);
     return {
-      id: userDataPars.id,
-      email: userDataPars.email,
-      username: userDataPars.username || "",
-      roles: userDataPars.roles,
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      roles: roles,
       basket,
       isActivated,
     };
@@ -44,10 +44,11 @@ export const authAPI = {
    * декодирование JWT Токена
    * @param token - JWT Токен
    * @returns данные Пользователя
+   * @throws {ApiError} невалидном Токене
    */
-  parseToken(token: string): UserResData {
+  parseToken(token: string): TokenPayload {
     try {
-      return jwtDecode<UserResData>(token);
+      return jwtDecode<TokenPayload>(token);
     } catch (error: unknown) {
       throw new ApiError("Невалидный токен", 401, "INVALID_TOKEN", { error });
     }
@@ -92,22 +93,24 @@ export const authAPI = {
   /**
    * Проверка Токена Пользователя
    */
-  async check(): Promise<{ userData: TokenPayload; activated: boolean }> {
-    const response = await handleRequest(
-      () => authInstance.get<AuthRes>("auth/check"),
-      "Auth/Check"
-    );
-    const token = this.processAuthResponse(response);
-    return {
-      userData: token,
-      activated: response.data.isActivated!,
-    };
+  async check(): Promise<{ isValid: boolean; userData?: IUser }> {
+    try {
+      const response = await handleRequest(
+        () => authInstance.get<CheckRes>("auth/check"),
+        "Auth/Check"
+      );
+      return { isValid: response.success, userData: response.data.user };
+    } catch (error: unknown) {
+      if (isErrorWithStatus(error, 401)) return { isValid: false };
+      console.error("Ошибка Проверки Пользователя : ", error);
+      throw error;
+    }
   },
 
   /**
    * Обновление Токена Пользователя
    */
-  async refresh(): Promise<TokenPayload> {
+  async refresh(): Promise</* AuthRes */ any /* // ! типы настроить  */> {
     try {
       const response = await handleRequest(
         () => authInstance.post<AuthRes>("auth/refresh"),
@@ -123,7 +126,7 @@ export const authAPI = {
   /**
    * Выход Пользователя
    * удал. tokenRefresh в БД
-   * удал. tokenRefresh и BasketId из cookie
+   * удал. tokenRefresh из cookie
    * удал. tokenAccess из LS
    */
   async logout(): Promise<void> {
@@ -132,10 +135,10 @@ export const authAPI = {
         () => authInstance.post<AuthRes>("auth/logout"),
         "Auth/Logout"
       );
-      localStorage.removeItem("tokenAccess");
     } catch (error) {
-      console.error("Ошибка при Выходе : ", error);
-      throw error;
+      console.warn("Ошибка при Выходе (возможно уже разлогинен):", error);
+    } finally {
+      localStorage.removeItem("tokenAccess");
     }
   },
 
