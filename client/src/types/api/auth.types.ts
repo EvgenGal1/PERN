@@ -1,5 +1,5 @@
 export interface AuthRes {
-  status: number;
+  // status: number;
   success: true;
   message: string;
   data: {
@@ -11,12 +11,28 @@ export interface AuthRes {
   };
 }
 
+export interface CheckRes {
+  success: true;
+  message: string;
+  data: {
+    user: IUser;
+  };
+}
+
 export interface IUser {
   id: number;
   email: string;
   username: string;
   // ! вр.вкл.от ошб.в UserAutoriz
   isActivated?: boolean;
+}
+
+export interface UserStoreData {
+  id: number;
+  email: string;
+  username: string;
+  roles: string[];
+  isAuth: boolean;
 }
 
 export interface RoleLevels {
@@ -31,9 +47,10 @@ export interface TokenPayload {
   roles: RoleLevels[];
   basket: number;
   isActivated: boolean;
+  exp?: number;
 }
 
-export interface UserResData {
+export interface UserDataRes {
   id: number;
   email: string;
   username: string;
