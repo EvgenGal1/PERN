@@ -2,16 +2,16 @@
 
 import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 
+import { categoryAPI } from "@/api/catalog/categoryAPI";
+import { brandAPI } from "@/api/catalog/brandAPI";
+import { productAPI } from "@/api/catalog/productAPI";
+import { ratingAPI } from "@/api/catalog/ratingAPI";
 import type {
   ProductData,
   CategoryData,
   BrandData,
   PropertyData,
 } from "@/types/api/catalog.types";
-import { categoryAPI } from "@/api/catalog/categoryAPI";
-import { brandAPI } from "@/api/catalog/brandAPI";
-import { productAPI } from "@/api/catalog/productAPI";
-import { ratingAPI } from "@/api/catalog/ratingAPI";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 
 class CatalogStore {
@@ -58,7 +58,9 @@ class CatalogStore {
 
     // логирование изменений
     spy((event) => {
-      if (event.type === "action") console.log("Action:", event.name);
+      if (event.type === "action") {
+        console.log("CatalogStore Action:", event.name);
+      }
     });
 
     // чтение данн.из localStorage при инициализации
@@ -145,7 +147,11 @@ class CatalogStore {
   @action async fetchInitialCatalog(): Promise<void> {
     this.isLoading = true;
     try {
-      await Promise.all([this.fetchCategories(), this.fetchBrands()]);
+      const data = await Promise.all([
+        this.fetchCategories(),
+        this.fetchBrands(),
+      ]);
+      console.log("fetchInitialCatalog data : ", data);
     } catch (error) {
       console.error("Ошибка загрузки данных Каталога:", error);
     } finally {
@@ -186,7 +192,6 @@ class CatalogStore {
       runInAction(() => {
         this.products = productsAll.rows;
         this.pagination.totalCount = productsAll.pagination.count;
-        // сохр.данн.в LS
         this.saveToLocalStorage();
       });
     } catch (error) {
@@ -221,7 +226,7 @@ class CatalogStore {
     }
   }
 
-  // загр.Св-тв Продукта
+  // загр.Св-ва Продукта
   @action async fetchProductProperties(productId: number): Promise<void> {
     // возврат при наличии хеша
     if (this.propsCache.has(productId)) {
@@ -298,9 +303,11 @@ class CatalogStore {
 
   // обнов.везде Рейтинг Продукта
   private updateProductRatingInState(productId: number, rating: number) {
+    // обнов.в Общ.Продуктах
     this.products = this.products.map((p) =>
       p.id === productId ? { ...p, rating } : p
     );
+    // обнов.в Одном Продукте
     if (this.product?.id === productId) {
       this.product = { ...this.product, rating };
     }

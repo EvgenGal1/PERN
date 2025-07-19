@@ -1,6 +1,6 @@
 // ^ хранилище Корзины
 
-import { action, makeAutoObservable, observable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
 import type { BasketData, BasketProduct } from "@/types/api/shopping.types";
@@ -13,6 +13,10 @@ class BasketStore {
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
+    spy((event) => {
+      if (event.type === "action")
+        console.log("BasketStore Action:", event.name);
+    });
     this.loadFromLocalStorage();
   }
 
@@ -65,7 +69,7 @@ class BasketStore {
 
   // добавить Продукт в Корзину
   @action async fetchAddProduct(productId: number): Promise<void> {
-    if (this.isLoading || this.products.length) return;
+    if (this.isLoading) return;
     this.isLoading = true;
     this.error = null;
     try {
