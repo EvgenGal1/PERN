@@ -153,48 +153,49 @@ class AuthController {
     }
   }
 
-  // ПРОВЕРКА. Польз.
+  /**
+   * ПРОВЕРКА Пользователя
+   * @returns JSON с +/- res { success: true/false, message: string, + data: { user: UserData } } - HTTP 401
+   */
   async checkUser(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.auth?.id) {
-        return next(ApiError.badRequest('Пользователя не авторизован'));
-      }
-      const user = await UserService.getOneUser(req.auth.id);
+      const user = await UserService.getOneUser(req.auth!.id);
       if (!user) {
-        return next(ApiError.badRequest('Пользователь не найден'));
+        res.status(401).json({
+          success: false,
+          message: 'Пользователь не найден',
+        });
+        return;
       }
-      // получ.масс.все Роли/уровни Пользователя
-      const userRoles = await RoleService.getUserRolesAndLevels(user.id);
-      // получ.basket_id
-      const basket = await BasketService.getOneBasket(undefined, user.id);
-      const tokenDto = await AuthService.createTokenDto(
-        user,
-        userRoles,
-        basket.id,
-      );
-      // созд./получ. 2 токена
-      const tokens = await TokenService.generateToken(tokenDto);
-      if (!tokens) throw ApiError.badRequest('Генерация токенов не прошла');
       res.status(200).json({
         success: true,
         message: `Пользователь ${user.username} проверен`,
-        data: { tokenAccess: tokens.tokenAccess },
+        data: { user: { id: user.id, email: user.email, name: user.username } },
       });
     } catch (error: unknown) {
       next(error);
     }
   }
 
-  // ВЫХОД. Удал.Cookie.tokenRefresh
+  /**
+   * ВЫХОД. Удал.Cookie.tokenRefresh
+   * получ.refresh из cookie, обраб.отсутст.refresh, передача/удал.refresh в service, возвращ. удал.cookie и смс
+   * @returns JSON - { success: true, message: 'Сессия завершена' } и очистка cookies - refreshToken и basketId
+   */
   async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
-      // получ.refresh из cookie или заголовка, передача в service, удал.обоих, возвращ.смс об удален.
       const tokenRefresh = req.signedCookies['tokenRefresh'];
-      await AuthService.logoutUser(tokenRefresh);
+      // если нет Токена и/или ошб.в serv не крашим удал.cookie
+      if (tokenRefresh) {
+        await AuthService.logoutUser(tokenRefresh).catch(() =>
+          console.warn('Токен был недействительным при Выходе'),
+        );
+      }
+      // выход в любом случае
       res
         .clearCookie('tokenRefresh')
         .clearCookie('basketId')
-        .json({ success: true, message: 'Вы вышли из системы' });
+        .json({ success: true, message: 'Сессия завершена' });
     } catch (error: unknown) {
       next(error);
     }
