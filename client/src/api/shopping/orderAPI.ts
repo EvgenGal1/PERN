@@ -34,7 +34,10 @@ export const orderAPI = {
     return handleRequest(
       () => authInstance.get<OrderData[]>("orders/admin/getall"),
       "Order/Admin/GetAll"
-    );
+    ).catch((error) => {
+      if (error.status === 404) return [];
+      throw error;
+    });
   },
 
   /**
@@ -120,7 +123,10 @@ export const orderAPI = {
     return handleRequest(
       () => authInstance.get<OrderData[]>("orders/user/getall"),
       "Order/User/GetAll"
-    );
+    ).catch((error) => {
+      if (error.status === 404) return [];
+      throw error;
+    });
   },
 
   /**
