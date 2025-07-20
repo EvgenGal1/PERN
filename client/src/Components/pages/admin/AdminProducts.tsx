@@ -1,11 +1,11 @@
 // ^ Список Продуктов
 import { useContext, useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 import { productAPI } from "@/api/catalog/productAPI";
 import { AppContext } from "@/context/AppContext";
 import CreateProduct from "@Comp/pages/admin/features/CreateProduct";
 import UpdateProduct from "@Comp/pages/admin/features/UpdateProduct";
+import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 import { PaginSortLimit } from "@Comp/common/PaginSortLimit";
 
 const AdminProducts = () => {
@@ -138,7 +138,7 @@ const AdminProducts = () => {
             </thead>
             <tbody>
               {fetching ? (
-                <Spinner animation="border" />
+                <LoadingAtom />
               ) : (
                 products.map((item: any) => (
                   <tr key={item.id}>

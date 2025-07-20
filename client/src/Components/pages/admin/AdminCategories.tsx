@@ -1,9 +1,9 @@
 // ^ Список Категорий
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 import { categoryAPI } from "@api/catalog/categoryAPI";
 import EditCategory from "@Comp/pages/admin/features/EditCategory";
+import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
 const AdminCategories = () => {
   // список загруженных категорий
@@ -48,9 +48,7 @@ const AdminCategories = () => {
       .finally(() => setFetching(false));
   }, [change]);
 
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+  if (fetching) return <LoadingAtom />;
 
   return (
     <div className="container">

@@ -1,9 +1,9 @@
 // ^ Список Заказов для Admina
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 import { orderAPI } from "@api/shopping/orderAPI";
 import Orders from "@Comp/pages/shop/Orders";
+import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState(null);
@@ -16,9 +16,7 @@ const AdminOrders = () => {
       .finally(() => setFetching(false));
   }, []);
 
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+  if (fetching) return <LoadingAtom />;
 
   return (
     <div className="container">

@@ -1,9 +1,9 @@
 // ^ Список Брендов
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 import { brandAPI } from "@api/catalog/brandAPI";
 import EditBrand from "@Comp/pages/admin/features/EditBrand";
+import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
 const AdminBrands = () => {
   // список загруженных брендов
@@ -47,9 +47,7 @@ const AdminBrands = () => {
       .finally(() => setFetching(false));
   }, [change]);
 
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+  if (fetching) return <LoadingAtom />;
 
   return (
     <div className="container">
