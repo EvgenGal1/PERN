@@ -1,33 +1,39 @@
 // ^ Список Заказов Usera
 import { useContext, useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 
 import { orderAPI } from "@/api/shopping/orderAPI";
 import { AppContext } from "@/context/AppContext";
 import Orders from "@Comp/pages/shop/Orders";
+import { OrderData } from "@/types/api/shopping.types";
+import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
 const UserOrders = () => {
   const { user }: any = useContext(AppContext);
 
-  const [orders, setOrders]: any = useState(null);
+  const [orders, setOrders] = useState<OrderData[]>([]);
   const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     orderAPI
       .getAllOrdersUser()
       .then((data) => {
+        setFetching(true);
         console.log("UserOrderS data ", data);
         setOrders(data);
+      })
+      .catch((err) => {
+        setError("Не удалось загрузить Заказы");
+        console.error("UserOrderS err ", err);
       })
       .finally(() => setFetching(false));
   }, []);
 
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+  if (fetching) return <LoadingAtom />;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div className="container">
+    <div className="container user-orders">
       <h1>Ваши заказы</h1>
       <Orders items={orders} admin={user.isAdmin} />
     </div>

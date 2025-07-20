@@ -1,11 +1,11 @@
 // ^ Многраз.Комп.Заказа
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 import { orderAPI } from "@api/shopping/orderAPI";
 import { ADMINORDERS_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
 import UpdateOrder from "@Comp/pages/admin/features/UpdateOrder";
+import LoadingAtom from "@/Components/ui/loader/LoadingAtom";
 
 const Order = (props: any) => {
   const navigate = useNavigate();
@@ -75,12 +75,8 @@ const Order = (props: any) => {
   }, [change, id, admin]);
 
   // заглушки для Загрузки/Ошибки
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
-  if (error) {
-    return <p>{error}</p>;
-  }
+  if (fetching) return <LoadingAtom />;
+  if (error) return <p>{error}</p>;
 
   return (
     <>

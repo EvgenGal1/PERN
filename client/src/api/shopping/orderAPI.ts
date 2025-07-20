@@ -145,7 +145,7 @@ export const orderAPI = {
   async createOrderGuest(body: OrderData): Promise<OrderData> {
     return handleRequest(
       () => guestInstance.post<OrderData>("orders/guest/create", body),
-      "Basket/GuestCreate"
+      "Order/GuestCreate"
     );
   },
 };

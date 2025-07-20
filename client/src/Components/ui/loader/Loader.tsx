@@ -1,5 +1,3 @@
-// import { Spinner } from "react-bootstrap";
-
 const Loader = () => {
   const style = {
     width: "100%",
@@ -8,11 +6,7 @@ const Loader = () => {
     justifyContent: "center",
     alignItems: "center",
   };
-  return (
-    <div style={style}>
-      {/* <Spinner animation="grow" variant="primary" /> */}
-    </div>
-  );
+  return <div style={style}></div>;
 };
 
 export default Loader;
