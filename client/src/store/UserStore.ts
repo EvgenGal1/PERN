@@ -1,17 +1,25 @@
 // ^ хранилище Пользователей
 
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
+import { jwtDecode } from "jwt-decode";
 
-import { authAPI } from "@/api/auth/authAPI";
 import type { TokenPayload } from "@/types/api/auth.types";
 
 export default class UserStore {
   @observable id: number | null = null;
   @observable username: string | null = null;
   @observable email: string | null = null;
+  // масс.объ.
+  // @observable.deep roles = [
+  //   {
+  //     role: null as string | null,
+  //     level: null as string | null,
+  //   },
+  // ];
   @observable isAuth = false;
   @observable isAdmin = false;
   @observable activated = false;
+  @observable isLoading = false;
 
   constructor() {
     makeAutoObservable(this, {
@@ -39,6 +47,8 @@ export default class UserStore {
     this.username = payload.username;
     this.email = payload.email;
     this.isAuth = true;
+    // сохр.Роли Уровни
+    // (this.role = payload.roles["role"]), (this.isAuth = true);
     this.activated = payload.isActivated;
     this.isAdmin = payload.roles.some((role) => role.role === "ADMIN");
 
@@ -47,16 +57,32 @@ export default class UserStore {
   }
 
   // восст.сост.из LS
-  async restoreSession(tokenAccess: string): Promise<boolean> {
-    if (!tokenAccess) return false;
+  /**
+   * восстан.сессии из lS
+   * @param tokenAccess - JWT Токен
+   * @returns Promise<boolean> успех восстановления
+   */
+  async restoreSession(): Promise<boolean> {
+    this.isLoading = true;
     try {
-      const userDataDat = authAPI.parseToken(tokenAccess);
-      this.login(userDataDat);
+      const tokenAccess = localStorage.getItem("tokenAccess") ?? "";
+      if (!tokenAccess) return false;
+      // проверка срок действия токена(без декодирования)
+      const { exp } = jwtDecode<{ exp: number }>(tokenAccess);
+      // проверка валидности Токена без запроса к БД
+      // выход при просроченном Токене
+      if (exp < Date.now() / 1000) {
+        this.logout();
+        return false;
+      }
+      this.isAuth = true;
       return true;
     } catch (error) {
       console.error("Ошибка восстановления сессии из LS : ", error);
       this.logout();
       return false;
+    } finally {
+      this.isLoading = false;
     }
   }
 
@@ -64,19 +90,21 @@ export default class UserStore {
    * Выход Пользователя
    * удал. user/catalog Store из LS
    */
-  // Выход Пользователя
   @action logout() {
     runInAction(() => {
-      this.id = null;
-      this.username = null;
-      this.email = null;
-      this.isAuth = false;
-      this.isAdmin = false;
-      this.activated = false;
-      // очистка LS
-      this.clearLocalStorage;
-      localStorage.removeItem("catalogStore");
+      this._resetUserState();
+      this.clearAllLocalStorage();
     });
+  }
+
+  @action private _resetUserState() {
+    this.id = null;
+    this.username = null;
+    this.email = null;
+    // ^ roles
+    this.isAuth = false;
+    this.isAdmin = false;
+    this.activated = false;
   }
 
   // сохр.данн.в LS
@@ -87,6 +115,7 @@ export default class UserStore {
         id: this.id,
         username: this.username,
         email: this.email,
+        // Роли и УРовни
         isAuth: this.isAuth,
         isAdmin: this.isAdmin,
         activated: this.activated,
@@ -95,7 +124,10 @@ export default class UserStore {
   }
 
   // удал.данн.из LS
-  @action clearLocalStorage() {
+  @action clearAllLocalStorage() {
+    localStorage.removeItem("tokenAccess");
     localStorage.removeItem("userStore");
+    localStorage.removeItem("basketStore");
+    localStorage.removeItem("catalogStore");
   }
 }

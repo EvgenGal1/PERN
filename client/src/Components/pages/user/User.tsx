@@ -10,10 +10,18 @@ const User: React.FC = observer(() => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    authAPI.logout();
-    navigate(LOGIN_ROUTE, { replace: true });
-    user.logout();
+  const handleLogout = async () => {
+    if (!confirm("Вы уверены, что хотите выйти?")) return;
+    try {
+      await authAPI.logout();
+      user.logout();
+      navigate(LOGIN_ROUTE, {
+        replace: true,
+        // ? state: { from: null }, // сброс истории навигации
+      });
+    } catch (error) {
+      console.error("Ошибка навигации при выходе из системы ", error);
+    }
   };
 
   return (
