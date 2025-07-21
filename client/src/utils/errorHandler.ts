@@ -1,50 +1,58 @@
 // ^ основной обработчик ошибок (axios/req/res c БД, спец.доп.ошб., натив.ошб.JS, неизвестные ошб.)
 
-import { AxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 // логгирование
 // import * as Sentry from "@sentry/react";
 
 import { authAPI } from "../api/auth/authAPI";
-import { ApiError } from "./errorClasses";
+import { ApiError } from "./errorAPI";
 
 export const errorHandler = (error: unknown, context?: string): ApiError => {
-  // баз.объ.ошб.
-  const baseError = new ApiError("Неизвестная ошибка", 500, "UNKNOWN_ERROR");
   // логг.Sentry
   // if (process.env.NODE_ENV === "production") Sentry.captureException(error, { tags: { context } });
   // Логирование контекста
   console.error(`errorHandler [${context}] ОШБ: `, error);
 
   // обраб.ошб.axios
-  if (error instanceof AxiosError) {
+  if (error instanceof AxiosError || isAxiosError(error)) {
+    // ответ от БД, обраб.ошб.
+    const response = error.response;
     // ошб.сетевые (нет ответа)
-    if (!error.response) {
-      return new ApiError("Сервер недоступен", 503, "NETWORK_ERROR", { error });
+    if (!response) {
+      return new ApiError(503, "Сервер недоступен", "NETWORK_ERROR", { error });
     }
 
-    // ошб.от БД
-    const { status, data } = error.response;
-    const responseData = data as ApiError;
+    const status = error.response?.status ?? 500;
+    const data = error.response?.data ?? {};
 
     // при 401 Выход Пользователя и редирект на Авторизацию
-    if (status === 401) {
+    if (response.status === 401) {
       authAPI.logout();
-      window.location.href = "login";
+      window.location.href = "login"; // ! redirect лучше это делать в компоненте
     }
 
-    return {
-      status,
-      message: responseData?.message || "Неизвестная ошибка",
-      errors: responseData?.errors,
-      code: responseData?.code || "UNKNOWN_ERROR",
-    } as ApiError;
+    // стандарт.ошб.БД
+    if (response?.data?.error) {
+      return new ApiError(
+        response.status,
+        response.data.error.message,
+        response.data.error.code,
+        undefined,
+        response.data.error.details
+      );
+    }
+    // нестандарт ошб.
+    return new ApiError(
+      response.status,
+      response.data?.message || error.message || "нестандартная ошибка",
+      response.data?.code || "SERVER_ERROR"
+    );
   }
 
   // спец.доп.ошб.
   if (error instanceof ApiError) return error;
   // натив.ошб.JS
-  if (error instanceof Error)
-    return { ...baseError, message: error.message } as ApiError;
+  if (error instanceof Error) return new ApiError(500, error.message);
   // неизвестные ошб.
-  return baseError;
+  return new ApiError(500, "Неизвестная ошибка");
 };

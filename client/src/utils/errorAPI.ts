@@ -11,8 +11,9 @@ export class ApiError extends Error {
     public details?: any
   ) {
     super(message);
+    // для логов/отладки
     this.name = "ApiError";
-    Object.setPrototypeOf(this, ApiError.prototype);
+    // Object.setPrototypeOf(this, ApiError.prototype);
   }
 
   toJSON() {
@@ -25,5 +26,17 @@ export class ApiError extends Error {
       // подроб.в development
       stack: process.env.NODE_ENV === "development" ? this.stack : undefined,
     };
+  }
+
+  // статич.мтд. > созд.из AxiosError
+  static fromAxiosError(error: AxiosError): ApiError {
+    const data = error.response?.data as any;
+    return new ApiError(
+      error.response?.status || 500,
+      data?.message || error.message,
+      data?.code || "NETWORK_ERROR",
+      data?.errors,
+      data?.details
+    );
   }
 }
