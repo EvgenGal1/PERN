@@ -1,19 +1,40 @@
-import { useContext, /* useMemo, */ Suspense } from "react";
+import { useContext, useMemo, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { publicRoutes, authRoutes, adminRoutes } from "./routes";
 import { AppContext } from "@/context/AppContext";
-import Loader from "@Comp/ui/loader/Loader";
+import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
+
+interface RouteConfig {
+  path: string;
+  Component: React.ComponentType;
+  roles?: Array<{ name: string; level?: number }>;
+}
 
 const AppRouter: React.FC = () => {
   const { user } = useContext(AppContext);
 
-  // маршруты /* с мемоизацией */
-  const routes = /* useMemo(() => */ [
-    ...publicRoutes,
-    ...(user.isAuth ? authRoutes : []),
-    ...(user.isAdmin ? adminRoutes : []),
-  ]; /* , [user.isAuth, user.isAdmin]) */
+  /**
+   * проверка доступа к Маршруту от Роли/Уровня Пользователя
+   * @param route - конфигурация Маршрута
+   * @returns boolean - true если доступ разрешен
+   */
+  const hasAccess = (route: RouteConfig): boolean => {
+    // публичные Маршруты доступны Всем
+    if (!route.roles) return true;
+    // проверка требований Маршрута
+    return user.hasAnyRole(route.roles);
+  };
+
+  // Маршруты с мемоизацией и фильтром Доступа
+  const routes = useMemo(
+    () => [
+      ...publicRoutes,
+      ...(user.isAuth ? authRoutes.filter((route) => hasAccess(route)) : []),
+      ...(user.isAdmin ? adminRoutes.filter((route) => hasAccess(route)) : []),
+    ],
+    [user.isAuth, user.roles]
+  );
 
   return (
     <main className="main">
@@ -25,7 +46,7 @@ const AppRouter: React.FC = () => {
               path={path}
               element={
                 // отрис.с ленив.загр.
-                <Suspense fallback={<Loader />}>
+                <Suspense fallback={<LoadingAtom />}>
                   <Component />
                 </Suspense>
               }
