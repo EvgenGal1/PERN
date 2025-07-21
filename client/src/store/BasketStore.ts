@@ -1,15 +1,17 @@
 // ^ хранилище Корзины
 
 import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
+import { debounce } from "lodash";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
 import type { BasketData, BasketProduct } from "@/types/api/shopping.types";
+import { ApiError } from "@/utils/errorAPI";
 
 class BasketStore {
   @observable products: BasketProduct[] = [];
   @observable total: number = 0;
   @observable isLoading = false;
-  @observable error: string | null = null;
+  @observable error: ApiError | null = null;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
@@ -25,25 +27,28 @@ class BasketStore {
   // загр.данн.из LS
   @action private loadFromLocalStorage() {
     const storedData = localStorage.getItem("basketStore");
-    if (storedData) {
-      try {
-        const { items } = JSON.parse(storedData) as { items: BasketProduct[] };
-        this.products = items || [];
-        this.calculateTotals();
-      } catch (error) {
-        console.error("Ошибка Загрузки basketStore из LS :", error);
-        this.clearLocalStorage();
-      }
+    if (!storedData) return;
+    try {
+      const { items } = JSON.parse(storedData) as { items: BasketProduct[] };
+      this.products = items || [];
+      this.calculateTotals();
+    } catch (error) {
+      this.handleError(error, "Ошибка Загрузки basketStore из LS :");
+      this.clearLocalStorage();
     }
   }
 
   // сохр.данн.в LS
-  @action saveToLocalStorage() {
-    localStorage.setItem(
-      "basketStore",
-      JSON.stringify({ items: this.products })
-    );
-  }
+  @action private saveToLocalStorage = debounce(() => {
+    try {
+      localStorage.setItem(
+        "basketStore",
+        JSON.stringify({ items: this.products })
+      );
+    } catch (error) {
+      this.handleError(error, `Ошибка Сохранения BasketStore из LS`);
+    }
+  }, 500);
 
   // удал.данн.из LS
   @action clearLocalStorage() {
@@ -61,7 +66,7 @@ class BasketStore {
       const basket = await basketAPI.getOneBasket();
       this.updateBasket(basket);
     } catch (error) {
-      this.handleError("Ошибка Загрузки Корзины:", error);
+      this.handleError(error, "Ошибка Загрузки Корзины:");
     } finally {
       runInAction(() => (this.isLoading = false));
     }
@@ -76,8 +81,8 @@ class BasketStore {
       const basket = await basketAPI.appendBasket(productId);
       this.updateBasket(basket);
     } catch (error) {
-      this.handleError("Ошибка Добавления Продукта в Корзину:", error);
-      throw error;
+      this.handleError(error, "Ошибка Добавления Продукта в Корзину:");
+      // throw error; // ?  нужен ли ?
     } finally {
       runInAction(() => (this.isLoading = false));
     }
@@ -91,8 +96,7 @@ class BasketStore {
       const data = await basketAPI.removeBasket(productId);
       this.updateBasket(data);
     } catch (error) {
-      this.handleError("Ошибка Удаления Продуктов из Корзины:", error);
-      throw error;
+      this.handleError(error, "Ошибка Удаления Продуктов из Корзины:");
     } finally {
       runInAction(() => (this.isLoading = false));
     }
@@ -124,8 +128,7 @@ class BasketStore {
       const data = await apiMethod(productId);
       this.updateBasket(data);
     } catch (error) {
-      this.handleError(`Ошибка ${action} Продукта:`, error);
-      throw error;
+      this.handleError(error, `Ошибка ${action} Продукта:`);
     } finally {
       runInAction(() => (this.isLoading = false));
     }
@@ -148,14 +151,17 @@ class BasketStore {
     ));
   }
 
-  @action private handleError(message: string, error: unknown) {
-    console.error(message, error);
-    runInAction(() => {
-      this.error = error instanceof Error ? error.message : "Unknown error";
-    });
+  @action private handleError(error: unknown, context?: string) {
+    const apiError =
+      error instanceof ApiError
+        ? error
+        : new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", { context });
+    this.error = apiError;
+    // captureException(error); // Отправка ошибки в Sentry или аналоги
+    console.error(`Ошб.в CatalogStore [${context}]`, apiError);
   }
 
-  // ==================== Getters ====================
+  // ==================== ГЕТТЕРЫ ====================
 
   // Всего Позиций в Корзине (есть total)
   get count(): number {

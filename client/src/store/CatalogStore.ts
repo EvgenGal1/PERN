@@ -1,6 +1,7 @@
 // ^ хранилище Каталога (Категории, Бренды, Продукты, фильтры/пагинация/сортировка, загрузка)
 
 import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
+import { debounce } from "lodash";
 
 import { categoryAPI } from "@/api/catalog/categoryAPI";
 import { brandAPI } from "@/api/catalog/brandAPI";
@@ -13,6 +14,7 @@ import type {
   PropertyData,
 } from "@/types/api/catalog.types";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
+import { ApiError } from "@/utils/errorAPI";
 
 class CatalogStore {
   // масс.данн.Категории/Бренды/Продукты с авто отслеж./обновл.данн.у наблюдателей
@@ -37,8 +39,9 @@ class CatalogStore {
     field: "name" as "name" | "price" | "rating" | "votes",
     order: "ASC" as "ASC" | "DESC",
   };
-  // состояние загрузки
+  // сост.загр., ошб.
   @observable isLoading = false;
+  @observable error: ApiError | null = null;
 
   // хеш URL параметров запроса (последний)
   private lastUrlParamsHash = "";
@@ -56,7 +59,7 @@ class CatalogStore {
       { autoBind: false, deep: false }
     );
 
-    // логирование изменений
+    // лог.измен.
     spy((event) => {
       if (event.type === "action") {
         console.log("CatalogStore Action:", event.name);
@@ -78,13 +81,13 @@ class CatalogStore {
       const parsedData = JSON.parse(storedData);
       Object.assign(this, parsedData);
     } catch (error) {
-      console.error("Ошибка Загрузки CatalogStore из LS : ", error);
+      this.handleError(error, `Ошибка Загрузки CatalogStore из LS`);
       this.clearLocalStorage();
     }
   }
 
-  // сохр.данн.в LS
-  @action private saveToLocalStorage() {
+  // сохр.данн.в LS с debounce (отклад.выполн.на опред.вр.от мн.записей)
+  @action private saveToLocalStorage = debounce(() => {
     try {
       // с зашитой от undefined/null или методов
       const data = {
@@ -98,9 +101,9 @@ class CatalogStore {
       };
       localStorage.setItem("catalogStore", JSON.stringify(data));
     } catch (error) {
-      console.error("Ошибка Сохранения catalogStore в LS : ", error);
+      this.handleError(error, `Ошибка Сохранения CatalogStore из LS`);
     }
-  }
+  }, 500);
 
   // удал.данн.из LS
   @action private clearLocalStorage() {
@@ -123,7 +126,7 @@ class CatalogStore {
       });
     } catch (error) {
       // лог.ошб.
-      console.error("Ошибка загрузки Категорий:", error);
+      this.handleError(error, `Ошибка загрузки Категорий`);
     } finally {
       runInAction(() => {});
     }
@@ -137,7 +140,7 @@ class CatalogStore {
         this.saveToLocalStorage();
       });
     } catch (error) {
-      console.error("Ошибка загрузки Брендов:", error);
+      this.handleError(error, `Ошибка загрузки Брендов`);
     } finally {
       runInAction(() => {});
     }
@@ -151,9 +154,8 @@ class CatalogStore {
         this.fetchCategories(),
         this.fetchBrands(),
       ]);
-      console.log("fetchInitialCatalog data : ", data);
     } catch (error) {
-      console.error("Ошибка загрузки данных Каталога:", error);
+      this.handleError(error, `Ошибка загрузки данных Каталога`);
     } finally {
       runInAction(() => {
         this.isLoading = false;
@@ -195,7 +197,7 @@ class CatalogStore {
         this.saveToLocalStorage();
       });
     } catch (error) {
-      console.error("Ошибка загрузки Всех Продуктов:", error);
+      this.handleError(error, `Ошибка загрузки Всех Продуктов`);
       runInAction(() => {
         this.lastUrlParamsHash = "";
       });
@@ -219,7 +221,7 @@ class CatalogStore {
         this.saveToLocalStorage();
       });
     } catch (error) {
-      console.error("Ошибка загрузки Одного Продукта:", error);
+      this.handleError(error, `Ошибка загрузки Одного Продукта`);
       runInAction(() => (this.product = null));
     } finally {
       runInAction(() => (this.isLoading = false));
@@ -244,7 +246,7 @@ class CatalogStore {
         this.saveToLocalStorage();
       });
     } catch (error) {
-      console.error("Ошибка Загрузки Свойств Продукта:", error);
+      this.handleError(error, `Ошибка Загрузки Свойств Продукта`);
     } finally {
       runInAction(() => (this.isLoading = false));
     }
@@ -271,14 +273,13 @@ class CatalogStore {
       });
       // return ratingData;
     } catch (error) {
-      console.error("Ошибка обновления Рейтинга:", error);
-      throw error;
+      this.handleError(error, `Ошибка обновления Рейтинга`);
     } finally {
       runInAction(() => (this.isLoading = false));
     }
   }
 
-  // ДОП.МТД. (ПРОДУКТЫ/СВОЙСТВА/РЕЙТИНГ) ----------------------------------------------------------------------------------
+  // ДОП.МТД. (ПРОДУКТЫ/СВОЙСТВА/РЕЙТИНГ/ОШИБКИ) ----------------------------------------------------------------------------------
 
   // объедин.Продукт в Общ.Продуктах
   private mergeProductIntoList(product: ProductData) {
@@ -292,12 +293,17 @@ class CatalogStore {
     const properties = props || this.propsCache.get(productId);
     if (!properties) return;
 
-    // обнов. Свойства в Общ./Одном Продукте
+    // обнов. Свойства в Общ.Продуктах
     this.products = this.products.map((p) =>
       p.id === productId ? { ...p, props: [...properties] } : p
     );
+    // обнов.: е/и Продукт тот же, его нет, он другой
     if (this.product?.id === productId) {
       this.product = { ...this.product, props: [...properties] };
+    } else if (this.product === null || this.product?.id !== productId) {
+      const findProduct = this.products.find((p) => p.id === productId);
+      if (findProduct)
+        this.product = { ...findProduct, props: [...properties] };
     }
   }
 
@@ -311,6 +317,16 @@ class CatalogStore {
     if (this.product?.id === productId) {
       this.product = { ...this.product, rating };
     }
+  }
+
+  @action private handleError(error: unknown, context?: string) {
+    const apiError =
+      error instanceof ApiError
+        ? error
+        : new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", { context });
+    this.error = apiError;
+    // captureException(error); // Отправка ошибки в Sentry или аналоги
+    console.error(`Ошб.в CatalogStore [${context}]`, apiError);
   }
 
   // ГЕТТЕРЫ ----------------------------------------------------------------------------------
