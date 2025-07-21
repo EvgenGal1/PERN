@@ -8,7 +8,7 @@ import { OrderData } from "@/types/api/shopping.types";
 import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
 const UserOrders = () => {
-  const { user }: any = useContext(AppContext);
+  const { user } = useContext(AppContext);
 
   const [orders, setOrders] = useState<OrderData[]>([]);
   const [fetching, setFetching] = useState(true);

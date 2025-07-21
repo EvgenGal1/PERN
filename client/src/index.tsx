@@ -9,7 +9,7 @@ import { AppContextProvider } from "@/context/AppContext";
 import ErrorBoundary, {
   FallbackComp,
 } from "@/Components/ErrorBoundary/ErrorBoundary";
-import { ApiError } from "@/utils/errorClasses";
+import { ApiError } from "@/utils/errorAPI";
 
 import "@/index.css";
 

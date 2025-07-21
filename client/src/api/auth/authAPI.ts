@@ -7,7 +7,7 @@ import { guestInstance, authInstance } from "../axiosInstances";
 // обраб.req/res
 import { handleRequest } from "../handleRequest";
 // общ.клс.ошб.
-import { ApiError } from "@/utils/errorClasses";
+import { ApiError } from "@/utils/errorAPI";
 // DTO/типы/интерфейсы
 import {
   AuthRes,
@@ -27,7 +27,7 @@ export const authAPI = {
   processAuthResponse(response: AuthRes): UserDataRes {
     const { tokenAccess, user, roles, basket, isActivated } = response.data;
     if (!tokenAccess) {
-      throw new ApiError("Токен отсутствует", 401, "MISSING_TOKEN");
+      throw new ApiError(401, "Токен отсутствует", "MISSING_TOKEN");
     }
     localStorage.setItem("tokenAccess", tokenAccess);
     return {
@@ -50,7 +50,7 @@ export const authAPI = {
     try {
       return jwtDecode<TokenPayload>(token);
     } catch (error: unknown) {
-      throw new ApiError("Невалидный токен", 401, "INVALID_TOKEN", { error });
+      throw new ApiError(401, "Невалидный токен", "INVALID_TOKEN", { error });
     }
   },
 
@@ -60,16 +60,11 @@ export const authAPI = {
    * @param password - Пароль
    */
   async register(email: string, password: string): Promise<TokenPayload> {
-    try {
-      const response = await handleRequest(
-        () => guestInstance.post<AuthRes>("auth/register", { email, password }),
-        "Auth/Register"
-      );
-      return this.processAuthResponse(response);
-    } catch (error) {
-      console.error("Ошибка Регистрация Пользователя : ", error);
-      throw error;
-    }
+    const response = await handleRequest(
+      () => guestInstance.post<AuthRes>("auth/register", { email, password }),
+      "Auth/Register"
+    );
+    return this.processAuthResponse(response);
   },
 
   /**
@@ -78,16 +73,11 @@ export const authAPI = {
    * @param password - Пароль
    */
   async login(email: string, password: string): Promise<TokenPayload> {
-    try {
-      const response = await handleRequest(
-        () => guestInstance.post<AuthRes>("auth/login", { email, password }),
-        "Auth/Login"
-      );
-      return this.processAuthResponse(response);
-    } catch (error) {
-      console.error("Ошибка Авторизация Пользователя : ", error);
-      throw error;
-    }
+    const response = await handleRequest(
+      () => guestInstance.post<AuthRes>("auth/login", { email, password }),
+      "Auth/Login"
+    );
+    return this.processAuthResponse(response);
   },
 
   /**
@@ -111,16 +101,11 @@ export const authAPI = {
    * Обновление Токена Пользователя
    */
   async refresh(): Promise</* AuthRes */ any /* // ! типы настроить  */> {
-    try {
-      const response = await handleRequest(
-        () => authInstance.post<AuthRes>("auth/refresh"),
-        "Auth/Refresh"
-      );
-      return this.processAuthResponse(response);
-    } catch (error) {
-      console.error("Ошибка обновления Токена : ", error);
-      throw error;
-    }
+    const response = await handleRequest(
+      () => authInstance.post<AuthRes>("auth/refresh"),
+      "Auth/Refresh"
+    );
+    return this.processAuthResponse(response);
   },
 
   /**

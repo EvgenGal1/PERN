@@ -1,7 +1,6 @@
 // ^ панель навигации
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
-import { Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 
 // константы/контекст
@@ -17,7 +16,7 @@ import {
 import { AppContext } from "@/context/AppContext";
 
 const NavBar = observer(() => {
-  const { user, basket }: any = useContext(AppContext);
+  const { user, basket } = useContext(AppContext);
 
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;

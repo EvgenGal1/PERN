@@ -233,7 +233,7 @@ const Auth = observer(() => {
       }
 
       // сохр.данн.Пользователя, сброс.ошб., перенаправ в ЛК
-      user.login(userData);
+      user.save(userData);
       setFormErrors({ sms: "", email: "", password: "" });
       navigate(user.isAdmin ? ADMIN_ROUTE : USER_ROUTE);
     } catch (error: unknown) {

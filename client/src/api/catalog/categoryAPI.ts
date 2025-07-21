@@ -32,7 +32,7 @@ export const categoryAPI = {
     return handleRequest(
       () => guestInstance.get<CategoryData[]>("categories/getall"),
       "Categories/GetAll"
-      // "categories" // кеш ключ
+      // "categories" // кэш ключ
     );
   },
 

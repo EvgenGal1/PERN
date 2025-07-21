@@ -4,7 +4,7 @@ import React, { Component, ReactNode } from "react";
 // import * as Sentry from "@sentry/react";
 
 // клс.обраб.ошб.
-import { ApiError } from "@/utils/errorClasses";
+import { ApiError } from "@/utils/errorAPI";
 
 interface ErrorBoundaryProps {
   children: ReactNode; // вложен.дочер.Комп.
@@ -56,7 +56,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     console.error("ErrorBoundary ОШБ: ", error);
     // Sentry.captureException(error);
     return {
-      error: new ApiError(error.message, 500, "COMPONENT_ERROR", {
+      error: new ApiError(500, error.message, "COMPONENT_ERROR", {
         stack: error.stack,
       }),
     };
