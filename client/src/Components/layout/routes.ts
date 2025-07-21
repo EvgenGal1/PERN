@@ -47,16 +47,23 @@ import SearchFilter from "@Comp/common/SearchFilter";
 import Shop from "@Comp/pages/shop/Shop";
 import AboutMe from "@Comp/pages/public/AboutMe";
 
-// доступ для любых польз.(Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
-export const publicRoutes = [
+export interface RouteConfig {
+  path: string;
+  Component: React.ComponentType;
+  exact?: boolean;
+  roles?: Array<{ name: string; level?: number }>;
+}
+
+// публичные маршруты > всех Пользователей (Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
+export const publicRoutes: RouteConfig[] = [
   // ^ {путь отраб.стр., Комп.стр.} (по url ADMIN_ROUTE(/admin) вызов Комп.Admin)
   // путь Магазина, Каталога(+доп.к URL), Поиска(+доп.к URL)
-  { path: SHOP_ROUTE, Component: Shop },
+  { path: SHOP_ROUTE, Component: Shop, exact: true },
   { path: SHOP_CATALOG_ROUTE, Component: Shop },
   { path: FILTER_ROUTE, Component: SearchFilter },
   // Замена 2 Комп.Login|Register на один Комп.с разн.маршр. в строке запроса
-  { path: LOGIN_ROUTE, Component: /* Login */ Auth },
-  { path: REGISTER_ROUTE, Component: /* Register */ Auth },
+  { path: LOGIN_ROUTE, Component: Auth },
+  { path: REGISTER_ROUTE, Component: Auth },
   { path: PRODUCT_ROUTE + "/:id", Component: Product },
   { path: DEVICE_ROUTE + "/:id", Component: DevicePage },
   { path: DELIVERY_ROUTE, Component: Delivery },
@@ -67,19 +74,58 @@ export const publicRoutes = [
   { path: ABOUTME_ROUTE, Component: AboutMe },
 ];
 
-// доступ для Авториз.польз.(Польз.)
-export const authRoutes = [
-  { path: USER_ROUTE, Component: User },
-  { path: USERORDERS_ROUTE, Component: UserOrders },
-  { path: USERORDER_ROUTE, Component: UserOrder },
+// маршруты > Авториз.Пользователя с доступом по Роли/Уровню
+export const authRoutes: RouteConfig[] = [
+  {
+    path: USER_ROUTE,
+    Component: User,
+    roles: [{ name: "USER", level: 1 }],
+  },
+  {
+    path: USERORDERS_ROUTE,
+    Component: UserOrders,
+    roles: [{ name: "USER", level: 1 }],
+  },
+  {
+    path: USERORDER_ROUTE,
+    Component: UserOrder,
+    roles: [{ name: "USER", level: 1 }],
+  },
 ];
 
-// доступ для Админа (Админ панель)
+// маршруты > Админа с доступом по Роли/Уровню
 export const adminRoutes = [
-  { path: ADMIN_ROUTE, Component: Admin },
-  { path: ADMINORDERS_ROUTE, Component: AdminOrders },
-  { path: ADMINORDER_ROUTE, Component: AdminOrder },
-  { path: ADMINCATEGORIES_ROUTE, Component: AdminCategories },
-  { path: ADMINBRANDS_ROUTE, Component: AdminBrands },
-  { path: ADMINPRODUCTS_ROUTE, Component: AdminProducts },
+  {
+    path: ADMIN_ROUTE,
+    Component: Admin,
+    roles: [
+      { name: "ADMIN", level: 3 },
+      { name: "MODERATOR", level: 2 },
+    ],
+  },
+  {
+    path: ADMINORDERS_ROUTE,
+    Component: AdminOrders,
+    roles: [{ name: "ADMIN", level: 1 }],
+  },
+  {
+    path: ADMINORDER_ROUTE,
+    Component: AdminOrder,
+    roles: [{ name: "ADMIN", level: 1 }],
+  },
+  {
+    path: ADMINCATEGORIES_ROUTE,
+    Component: AdminCategories,
+    roles: [{ name: "ADMIN", level: 1 }],
+  },
+  {
+    path: ADMINBRANDS_ROUTE,
+    Component: AdminBrands,
+    roles: [{ name: "ADMIN", level: 1 }],
+  },
+  {
+    path: ADMINPRODUCTS_ROUTE,
+    Component: AdminProducts,
+    roles: [{ name: "ADMIN", level: 1 }],
+  },
 ];
