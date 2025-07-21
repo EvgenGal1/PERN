@@ -1,16 +1,16 @@
 // ^ хранилище Заказов и их Позиция
 
-import { makeAutoObservable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
-import { orderAPI } from "@/api/catalog/orderAPI";
-import { productAPI } from "@/api/catalog/productAPI";
+import { orderAPI } from "@/api/shopping/orderAPI";
 import type { OrderData } from "@/types/api/shopping.types";
+import { ApiError } from "@/utils/errorAPI";
 
 class OrderStore {
-  orders: OrderData[] = [];
-  currentOrder: OrderData | null = null;
-  isLoading = false;
-  error: string | null = null;
+  @observable orders: OrderData[] = [];
+  @observable currentOrder: OrderData | null = null;
+  @observable isLoading = false;
+  @observable error: ApiError | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -21,18 +21,15 @@ class OrderStore {
   /**
    * Загрузка списка заказов пользователя
    */
-  async loadOrders() {
+  @action async loadOrders() {
     this.isLoading = true;
     try {
       const orders = await orderAPI.getUserOrders();
       runInAction(() => {
         this.orders = orders;
-        this.error = null;
       });
     } catch (error) {
-      runInAction(() => {
-        this.error = "Не удалось загрузить заказы";
-      });
+      this.handleError(error, "Не удалось Загрузить Заказы");
     } finally {
       runInAction(() => {
         this.isLoading = false;
@@ -43,18 +40,15 @@ class OrderStore {
   /**
    * Загрузка деталей конкретного заказа
    */
-  async loadOrderDetails(id: number) {
+  @action async loadOrderDetails(id: number) {
     this.isLoading = true;
     try {
       const order = await orderAPI.getOrderById(id);
       runInAction(() => {
         this.currentOrder = order;
-        this.error = null;
       });
     } catch (error) {
-      runInAction(() => {
-        this.error = "Не удалось загрузить детали заказа";
-      });
+      this.handleError(error, "Не удалось Загрузить Детали Заказы");
     } finally {
       runInAction(() => {
         this.isLoading = false;
@@ -65,25 +59,34 @@ class OrderStore {
   /**
    * Создание нового заказа
    */
-  async createOrder(orderData: OrderData) {
+  @action async createOrder(orderData: OrderData) {
     this.isLoading = true;
     try {
       const newOrder = await orderAPI.createOrder(orderData);
       runInAction(() => {
         this.orders.unshift(newOrder);
-        this.error = null;
       });
       return newOrder;
     } catch (error) {
-      runInAction(() => {
-        this.error = "Не удалось создать заказ";
-      });
+      this.handleError(error, "Не удалось Создать Заказ");
       throw error;
     } finally {
       runInAction(() => {
         this.isLoading = false;
       });
     }
+  }
+
+  // ДОП.МТД. (ОШИБКИ) ----------------------------------------------------------------------------------
+
+  @action private handleError(error: unknown, context?: string) {
+    const apiError =
+      error instanceof ApiError
+        ? error
+        : new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", { context });
+    this.error = apiError;
+    // captureException(error); // Отправка ошибки в Sentry или аналоги
+    console.error(`Ошб.в CatalogStore [${context}]`, apiError);
   }
 
   // ГЕТТЕРЫ ----------------------------------------------------------------------------------
