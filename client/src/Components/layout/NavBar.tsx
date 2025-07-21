@@ -1,16 +1,16 @@
 // ^ панель навигации
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 // константы/контекст
 import {
+  ABOUTME_ROUTE,
   ADMIN_ROUTE,
   BASKET_ROUTE,
   CONTACTS_ROUTE,
   DELIVERY_ROUTE,
   LOGIN_ROUTE,
-  REGISTER_ROUTE,
   USER_ROUTE,
 } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
@@ -18,54 +18,54 @@ import { AppContext } from "@/context/AppContext";
 const NavBar = observer(() => {
   const { user, basket } = useContext(AppContext);
 
-  const location = useLocation();
-  const isLogin = location.pathname === LOGIN_ROUTE;
+  // масс.маршрутов с путями,меткой,доступом
+  const navItems = useMemo(
+    () => [
+      {
+        path: user.isAuth ? USER_ROUTE : LOGIN_ROUTE,
+        label: user.isAuth ? "ЛК" : "Войти",
+        show: true,
+      },
+      {
+        path: BASKET_ROUTE,
+        label: (
+          <> Корзина {basket.count > 0 && <span>({basket.count})</span>} </>
+        ),
+        show: user.isAuth,
+      },
+      { path: DELIVERY_ROUTE, label: "Доставка", show: true },
+      { path: CONTACTS_ROUTE, label: "Контакты", show: true },
+      {
+        path: ABOUTME_ROUTE,
+        label: "обо мне",
+        show: user.hasRole("USER", 1),
+      },
+      {
+        path: ADMIN_ROUTE,
+        label: "admin панель",
+        show: user.hasRole("ADMIN", 4),
+      },
+    ],
+    [user.isAuth, basket.count]
+  );
 
   return (
     <>
-      {/* общ.меню */}
-      <span className="menu-top__items m-t-items">
-        <NavLink to={DELIVERY_ROUTE} className="m-t-items__navlink">
-          Доставка
-        </NavLink>
-      </span>
-      <span className="menu-top__items m-t-items">
-        <NavLink to={CONTACTS_ROUTE} className="m-t-items__navlink">
-          Контакты
-        </NavLink>
-      </span>
-      {/* Авториз */}
-      <span className="menu-top__items m-t-items">
-        {user.isAuth ? (
-          <NavLink to={USER_ROUTE} className="m-t-items__navlink">
-            ЛК
-          </NavLink>
-        ) : (
-          <NavLink
-            to={isLogin ? LOGIN_ROUTE : REGISTER_ROUTE}
-            className="m-t-items__navlink"
-          >
-            Входите
-          </NavLink>
-        )}
-      </span>
-      {/* Админ */}
-      {user.isAdmin && (
-        <span className="menu-top__items m-t-items">
-          <NavLink to={ADMIN_ROUTE} className="m-t-items__navlink">
-            Панель управления
-          </NavLink>
-        </span>
-      )}
-      {/* корзина */}
-      {user.isAuth && (
-        <span className="menu-top__items m-t-items">
-          <NavLink to={BASKET_ROUTE} className="m-t-items__navlink">
-            Корзина
-            {!!basket.count && <span>({basket.count})</span>}
-          </NavLink>
-        </span>
-      )}
+      {navItems
+        .filter((item) => item.show)
+        .map((item) => (
+          <span key={item.path} className="menu-top__items m-t-items">
+            <NavLink
+              to={item.path}
+              className={({ isActive }) =>
+                `m-t-items__navlink ${isActive ? "active" : ""}`
+              }
+            >
+              {item.label}
+            </NavLink>
+          </span>
+        ))}
+      {/* </nav> */}
     </>
   );
 });
