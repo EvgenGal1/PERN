@@ -22,9 +22,6 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
       return new ApiError(503, "Сервер недоступен", "NETWORK_ERROR", { error });
     }
 
-    const status = error.response?.status ?? 500;
-    const data = error.response?.data ?? {};
-
     // при 401 Выход Пользователя и редирект на Авторизацию
     if (response.status === 401) {
       authAPI.logout();

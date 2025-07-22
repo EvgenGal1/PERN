@@ -12,7 +12,7 @@ import type {
   CategoryData,
   BrandData,
   PropertyData,
-} from "@/types/api/catalog.types";
+} from "@/types/catalog.types";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 import { ApiError } from "@/utils/errorAPI";
 

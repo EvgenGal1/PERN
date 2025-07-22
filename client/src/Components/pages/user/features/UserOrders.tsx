@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { orderAPI } from "@/api/shopping/orderAPI";
 import { AppContext } from "@/context/AppContext";
 import Orders from "@Comp/pages/shop/Orders";
-import { OrderData } from "@/types/api/shopping.types";
+import { OrderData } from "@/types/shopping.types";
 import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
 const UserOrders = () => {

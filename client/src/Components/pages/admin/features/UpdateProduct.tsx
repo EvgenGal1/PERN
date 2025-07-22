@@ -6,7 +6,7 @@ import { v4 as uuid } from "uuid";
 import { brandAPI } from "@api/catalog/brandAPI";
 import { categoryAPI } from "@api/catalog/categoryAPI";
 import { productAPI } from "@api/catalog/productAPI";
-import { PropertyData } from "@/types/api/catalog.types";
+import { PropertyData } from "@/types/catalog.types";
 import UpdateProperties from "./UpdateProperties";
 
 const defaultValue = { name: "", price: "", category: "", brand: "" };

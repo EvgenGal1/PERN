@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "@/context/AppContext";
 // API/типы
 import { ratingAPI } from "@/api/catalog/ratingAPI";
-import { CategoryData, ProductData } from "@/types/api/catalog.types";
+import { CategoryData, ProductData } from "@/types/catalog.types";
 // конст.
 import { PRODUCT_ROUTE } from "@/utils/consts";
 // Звезд.Комп.Рейтинга. Пуст./Полн.

@@ -1,8 +1,4 @@
-import {
-  ProductData,
-  ProductRes,
-  PropertyData,
-} from "@/types/api/catalog.types";
+import { ProductData, ProductRes, PropertyData } from "@/types/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 
@@ -139,7 +135,7 @@ export const productAPI = {
     id: number,
     property: PropertyData
   ): Promise<PropertyData> {
-    return handleRequest(
+    const result = await handleRequest(
       () =>
         authInstance.put<PropertyData>(
           `products/${productId}/property/update/${id}`,
@@ -147,6 +143,8 @@ export const productAPI = {
         ),
       "Properties/Update"
     );
+
+    return result;
   },
 
   /**

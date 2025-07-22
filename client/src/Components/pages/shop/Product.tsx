@@ -54,7 +54,7 @@ const Product: React.FC = observer(() => {
 
   // добавить Продукт в Корзину
   const handleClickAddToBasket = /* async */ () => {
-    if (product && product.id) basket.fetchAddProduct(product.id);
+    if (product && product.id) basket.addProduct(product.id);
   };
   return (
     <div className="product container" key={id}>

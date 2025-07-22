@@ -3,7 +3,7 @@
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
 
 import { orderAPI } from "@/api/shopping/orderAPI";
-import type { OrderData } from "@/types/api/shopping.types";
+import type { OrderData } from "@/types/shopping.types";
 import { ApiError } from "@/utils/errorAPI";
 
 class OrderStore {

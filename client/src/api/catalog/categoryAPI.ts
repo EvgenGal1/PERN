@@ -1,4 +1,4 @@
-import { CategoryData } from "@/types/api/catalog.types";
+import { CategoryData } from "@/types/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
 

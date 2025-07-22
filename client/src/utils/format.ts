@@ -1,6 +1,6 @@
 // ^ Форматирование/Сокращение данных
 
-import { CategoryData } from "@/types/api/catalog.types";
+import { CategoryData } from "@/types/catalog.types";
 
 // Время
 export const formatTimeStr = (time: string): string => {

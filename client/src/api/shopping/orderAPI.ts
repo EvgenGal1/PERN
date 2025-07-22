@@ -1,4 +1,4 @@
-import { OrderData, OrderItemData } from "@/types/api/shopping.types";
+import { OrderData, OrderItemData } from "@/types/shopping.types";
 import { authInstance, guestInstance } from "../axiosInstances";
 import { handleRequest } from "../handleRequest";
 
