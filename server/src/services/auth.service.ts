@@ -72,17 +72,21 @@ class AuthService {
     username = '',
     role: NameUserRoles = NameUserRoles.USER,
   ): Promise<AuthCombinedType> {
-    // нач.транзакции
-    return sequelize.transaction(async (transaction: Transaction) => {
-      const existingUser = await UserModel.findOne({
-        where: { email },
-        // передача транзакции в кажд.мтд.
-        transaction,
-      });
-      if (existingUser) {
-        throw ApiError.conflict(`Пользователь с Email <${email}> существует`);
-      }
+    // проверка/отказ > существующего Пользователя
+    const existingUser = await UserModel.findOne({
+      where: { email },
+      attributes: ['id'],
+    });
+    if (existingUser) {
+      throw ApiError.conflict(`Пользователь с Email <${email}> существует`);
+    }
 
+    // нач.транзакции
+    const transaction = await sequelize.transaction();
+    // отдел.нов.перем. > удал.при ошб.
+    let newUserId: number | null = null;
+
+    try {
       // параллел.req > hash psw, генер.уник.ссы.активации, наименьший ID
       const [hashedPassword, activationLink, smallestFreeId] =
         await Promise.all([
@@ -102,6 +106,8 @@ class AuthService {
         },
         { transaction },
       );
+      // ID сохр.нов.перем.
+      newUserId = user.id;
 
       // параллел.req > привязки.существ.Роли Пользователя, созд.Корзину по User.id
       const [userRoles, basket] = await Promise.all([
@@ -130,6 +136,8 @@ class AuthService {
         ),
       ]);
 
+      // подтвердить транзакцию
+      await transaction.commit();
       // возвращ.tokens/basket.id
       return {
         tokens,
@@ -142,14 +150,20 @@ class AuthService {
         isActivated: false,
         // общ.масс.объ.
         roles: [{ role: role, level: userRoles.level }],
-        // отдел.передача
-        // roles: [role],
-        // levels: [userRoles.level],
-        // явно добав.парам. > опцион.типа(Partial)
-        // ...(role && { roles: [role] }),
-        // ...(userRoles && { levels: [userRoles.level] }),
       };
-    });
+    } catch (error) {
+      // откат транзакции
+      if (transaction && !transaction.commit) await transaction.rollback();
+      // удал.нов. Пользователя
+      if (newUserId) {
+        await UserModel.destroy({
+          where: { id: newUserId },
+          force: true,
+        });
+      }
+
+      throw error;
+    }
   }
 
   // АВТОРИЗАЦИЯ
@@ -190,14 +204,6 @@ class AuthService {
       },
       isActivated: user.isActivated,
       roles: userRoles,
-      // добав.сразу
-      // ...userRoles,
-      // добав.по отдел.
-      // roles: userRoles.roles,
-      // levels: userRoles.levels,
-      // добав.перебором
-      // roles: userRoles.roles.map((role) => role),
-      // levels: userRoles.levels.map((level) => level),
     };
   }
 

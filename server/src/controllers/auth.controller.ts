@@ -3,13 +3,9 @@ import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
 // модели данных табл.
-import UserModel from '../models/UserModel';
 // services
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
-import RoleService from '../services/role.service';
-import BasketService from '../services/basket.service';
-import TokenService from '../services/token.service';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 // парам.куки
@@ -20,7 +16,12 @@ class AuthController {
   private static async validateRequest(req: Request) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw ApiError.badRequest('Некорректные данные', errors.array());
+      const errorMessages = errors.array().map((err) => ({
+        message: err.msg,
+        param: err.param,
+        value: err.value,
+      }));
+      throw ApiError.badRequest('Некорректные данные', errorMessages);
     }
   }
   // РЕГИСТРАЦИЯ
@@ -56,24 +57,12 @@ class AuthController {
               email: userData.user.email,
               name: userData.user.username,
             },
-            isActivated: userData.isActivated,
+            basket: userData.basketId,
             roles: userData.roles,
-            // по отдел.
-            // roles: userData.user.roles,
-            // levels: userData.user.levels,
-            // проверка перед добав. > опцион.типов
-            // ...(userData.user.roles && { roles: userData.user.roles }),
-            // приведение типа > опцион.типов
-            // role: (userData.user as User & Role).role,
+            isActivated: userData.isActivated,
           },
         });
     } catch (error: unknown) {
-      // при ошб. удал.нов.созд.user
-      const { email } = req.body;
-      const user = await UserModel.findOne({ where: { email } });
-      if (user) {
-        await UserService.deleteUser(user.getDataValue('id'));
-      }
       next(error);
     }
   }
@@ -107,10 +96,8 @@ class AuthController {
               name: userData.user.username,
             },
             basket: userData.basketId,
-            isActivated: userData.isActivated,
             roles: userData.roles,
-            // roles: userData.user.roles,
-            // levels: userData.user.levels,
+            isActivated: userData.isActivated,
           },
         });
     } catch (error: unknown) {
