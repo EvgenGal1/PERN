@@ -1,5 +1,7 @@
+// типы Каталога Магазина и его сущностей
+
 // переменные CatalogStore
-export interface CatalogStoreData {
+export type CatalogStoreData = {
   categories: CategoryData[];
   brands: BrandData[];
   products: ProductData[];
@@ -10,21 +12,21 @@ export interface CatalogStoreData {
     field: "name" | "price" | "rating" | "votes";
     order: "ASC" | "DESC";
   };
-}
+};
 
 // Сущности Каталога
-export interface CategoryData {
+export type CategoryData = {
   id: number;
   name: string;
-}
+};
 
-export interface BrandData {
+export type BrandData = {
   id: number;
   name: string;
-}
+};
 
 // Продукт и их Свойства
-export interface ProductData {
+export type ProductData = {
   id: number;
   name: string;
   price: number;
@@ -34,21 +36,21 @@ export interface ProductData {
   brand: BrandData;
   ratings?: RatingData;
   props?: PropertyData[];
-}
+};
 
-export interface PropertyData {
+export type PropertyData = {
   name: string;
   value: string;
-}
+};
 
-export interface ProductRes {
+export type ProductRes = {
   rows: ProductData[];
   pagination: { count: number; limit: number; page: number };
-}
+};
 
 // Рейтинг
-export interface RatingData {
+export type RatingData = {
   rates: number; // ставки
   votes: number; // голоса
   rating: number; // рейтинг
-}
+};

@@ -1,20 +1,21 @@
-// Корзина и её Продукты
-export interface BasketProduct {
+// типы Корзины/Заказа и их Продуктов
+
+export type BasketProduct = {
   id: number;
   name: string;
   price: number;
   quantity: number;
-}
+};
 
-export interface BasketData {
+export type BasketData = {
   id: number;
   products: BasketProduct[];
   userId: number;
   total: number;
-}
+};
 
 // Заказ и его Позиции (Продукты)
-export interface OrderData {
+export type OrderData = {
   id?: number;
   name: string;
   email: string;
@@ -24,12 +25,12 @@ export interface OrderData {
   status?: number;
   comment?: string;
   items?: OrderItemData[];
-}
+};
 
-export interface OrderItemData {
+export type OrderItemData = {
   id?: number;
   name: string;
   price: number; // цена
   quantity: number; // количество
   orderId?: number;
-}
+};
