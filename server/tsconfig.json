@@ -13,9 +13,14 @@
     "esModuleInterop": true, // использ.вместе модули CommonJS и ES
     "forceConsistentCasingInFileNames": true, // единообразие в именах ф.
     "noImplicitAny": true, // вкл.ошб.неявные типы 
-    "baseUrl": "./src", // базовый путь модулей
+    "baseUrl": ".", // базовый путь модулей
     "rootDir": "./src", // путь TS проекта
     "outDir": "./dist", // путь скомпилированных ф.
+    // "paths": {
+    //   "@shared/*": [
+    //     "../shared/src/*" // путь общ. типов/интерфейсов (вр.откл.)
+    //   ]
+    // },
     "resolveJsonModule": true, // импорта JSON-ф
     "noUnusedLocals": true, // отчет о ошб.при ошб.чтения локал.перем.
     "noImplicitReturns": true // отчет о ошб.при не возврат.в  fn кодов.путей
@@ -35,4 +40,9 @@
     "**/vr*/*",
     "dist"
   ]
+  // , "references": [
+  //   {
+  //     "path": "../shared" // путь общ. типов/интерфейсов (вр.откл.)
+  //   }
+  // ]
 }
