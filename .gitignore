@@ -29,6 +29,9 @@ vr/
 ZZZ/
 # dtos/
 
+# будущие общ.типы/интерфейсы
+shared/ 
+
 # js
 # src/scripts/*
 
