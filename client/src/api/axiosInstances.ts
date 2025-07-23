@@ -44,15 +44,16 @@ authInstance.interceptors.response.use(
 
       try {
         // req обнов.Токена
-        const { data } = await authAPI.refresh();
+        const { tokenAccess } = await authAPI.refresh();
         // сохр.нов. tokenAccess в LS
-        localStorage.setItem("tokenAccess", data.tokenAccess);
+        localStorage.setItem("tokenAccess", tokenAccess);
         // ч/з экземпл.перехватчика повтор нач.req с нов.Токеном
         return authInstance.request(initialReq);
       } catch (error: unknown) {
         console.error("Ошибка при обновлении токена:", error);
         // удал.Токена при неудаче
         localStorage.removeItem("tokenAccess");
+        window.location.href = "/login";
         throw error;
       }
     }
