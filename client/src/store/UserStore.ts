@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { debounce } from "lodash";
 
 import { authAPI } from "@/api/auth/authAPI";
-import type { RoleLevels, TokenPayload } from "@/types/api/auth.types";
+import type { RoleLevel, UserProfile } from "@/types/user.types";
 import { ApiError } from "@/utils/errorAPI";
 
 export default class UserStore {
@@ -13,7 +13,7 @@ export default class UserStore {
   @observable username: string | null = null;
   @observable email: string | null = null;
   // масс.объ.Роль/Уровень
-  @observable.deep roles: RoleLevels[] = [];
+  @observable.deep roles: RoleLevel[] = [];
   @observable isAuth = false;
   @observable activated = false;
   // загр., ошб.
@@ -81,24 +81,44 @@ export default class UserStore {
   @action async login(email: string, password: string): Promise<void> {
     this.isLoading = true;
     try {
-      const response = await authAPI.login(email, password);
+      const response = await authAPI.login({ email, password });
       runInAction(() => {
-        this.id = response.id;
-        this.username = response.username;
-        this.email = response.email;
-        this.roles = response.roles;
-        this.isAuth = true;
-        // сохр.дан.в LS
-        this.saveToLocalStorage();
+        this.saveData(response);
       });
     } catch (error) {
-      this.handleError(error, "Ошибка авторизации");
+      this.handleError(error, "Ошибка Авторизации");
       throw error;
     } finally {
       runInAction(() => {
         this.isLoading = false;
       });
     }
+  }
+
+  @action async register(email: string, password: string): Promise<void> {
+    this.isLoading = true;
+    try {
+      const response = await authAPI.register({ email, password });
+      runInAction(() => {
+        this.saveData(response);
+      });
+    } catch (error) {
+      this.handleError(error, "Ошибка Регистрации");
+      throw error;
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
+  }
+
+  @action private saveData(userData: UserProfile): void {
+    this.id = userData.id;
+    this.username = userData.username;
+    this.email = userData.email;
+    this.roles = userData.roles;
+    this.isAuth = true;
+    this.saveToLocalStorage();
   }
 
   // USER ----------------------------------------------------------------------------------
@@ -124,14 +144,14 @@ export default class UserStore {
   }
 
   // Входа Пользователя. Сохр.данн.в Store и LS от сбросов MobX при перезагрузке
-  @action save(payload: TokenPayload) {
+  @action save(payload: UserProfile) {
     this.id = payload.id;
     this.username = payload.username;
     this.email = payload.email;
     this.isAuth = true;
     // сохр.Роли Уровни
     this.roles = payload.roles;
-    this.activated = payload.isActivated;
+    this.activated = payload.isActivated!;
     // сохр.данн.в LS
     this.saveToLocalStorage();
   }
