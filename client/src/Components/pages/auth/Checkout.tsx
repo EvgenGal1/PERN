@@ -20,7 +20,7 @@ const Checkout = () => {
     if (!basket.count) return;
 
     const loadData = async () => {
-      await basket.fetchBasket();
+      await basket.loadBasket();
       await authAPI.check();
     };
 
