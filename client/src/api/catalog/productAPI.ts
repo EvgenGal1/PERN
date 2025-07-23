@@ -1,6 +1,7 @@
 import { ProductData, ProductRes, PropertyData } from "@/types/catalog.types";
 import { handleRequest } from "../handleRequest";
 import { authInstance, guestInstance } from "../axiosInstances";
+import { requestCache } from "@/utils/cache";
 
 // CRUD > Продукта и его Свойств
 export const productAPI = {
@@ -26,7 +27,8 @@ export const productAPI = {
   async getOneProduct(id: number): Promise<ProductData> {
     return handleRequest(
       () => guestInstance.get<ProductData>(`products/getone/${id}`),
-      "Products/GetOne"
+      "Products/GetOne",
+      { cacheKey: `product_${id}`, ttl: 60000 } // 1 минута
     );
   },
 
@@ -47,6 +49,8 @@ export const productAPI = {
     order?: string,
     field?: string
   ): Promise<ProductRes> {
+    // кэш запись как URL
+    const cacheKey = `products_${categoryId}_${brandId}_${page}_${limit}_${order}_${field}`;
     // параметры для постраничной навигации
     const params: any = { page, limit };
     // сортировка по порядку и полю (назв.,цена,рейтинг)
@@ -60,7 +64,8 @@ export const productAPI = {
     // req/res
     return handleRequest(
       () => guestInstance.get<ProductRes>(url, { params }),
-      "Products/GetAll"
+      "Products/GetAll",
+      { cacheKey, ttl: 30000 } // 30 секунд
     );
   },
 
@@ -141,8 +146,12 @@ export const productAPI = {
           `products/${productId}/property/update/${id}`,
           property
         ),
-      "Properties/Update"
+      "Properties/Update",
+      { useCache: true }
     );
+    // удален.кэша после обнов.
+    requestCache.delete(new RegExp(`^product_${id}`));
+    requestCache.delete(new RegExp("^products_"));
 
     return result;
   },
