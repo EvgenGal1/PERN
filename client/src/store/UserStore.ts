@@ -206,10 +206,10 @@ export default class UserStore {
    * @returns boolean - true если есть хотя бы одна подходящая Роль
    */
   @action hasAnyRole(
-    requiredRoles: Array<{ name: string; level?: number }>
+    requiredRoles: Array<{ role: string; level?: number }>
   ): boolean {
     return requiredRoles.some((required) =>
-      this.hasRole(required.name, required.level ?? 1)
+      this.hasRole(required.role, required.level ?? 1)
     );
   }
 

@@ -61,7 +61,7 @@ class OrderController {
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        name,
+        username,
         email,
         phone,
         address,
@@ -70,7 +70,7 @@ class OrderController {
       } = req.body;
       const { roles = [], id: userId } = req.auth || {};
       if (!userId) throw ApiError.badRequest('ID Пользователя не найден');
-      if (!name || !email || !phone || !address) {
+      if (!username || !email || !phone || !address) {
         throw ApiError.badRequest('Отсутствуют обязательные поля');
       }
 
@@ -97,7 +97,7 @@ class OrderController {
         throw ApiError.badRequest('Логика для ADMIN в разработке');
       }
       const order = await OrderService.createOrder({
-        name,
+        username,
         userId,
         email,
         phone,

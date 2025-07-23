@@ -17,7 +17,7 @@ export type BasketData = {
 // Заказ и его Позиции (Продукты)
 export type OrderData = {
   id?: number;
-  name: string;
+  username: string;
   email: string;
   phone: string;
   address: string;

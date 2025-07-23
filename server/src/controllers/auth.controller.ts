@@ -55,7 +55,7 @@ class AuthController {
             user: {
               id: userData.user.id,
               email: userData.user.email,
-              name: userData.user.username,
+              username: userData.user.username,
             },
             basket: userData.basketId,
             roles: userData.roles,
@@ -93,7 +93,7 @@ class AuthController {
             user: {
               id: userData.user.id,
               email: userData.user.email,
-              name: userData.user.username,
+              username: userData.user.username,
             },
             basket: userData.basketId,
             roles: userData.roles,
@@ -163,7 +163,9 @@ class AuthController {
       res.status(200).json({
         success: true,
         message: `Пользователь ${user.username} проверен`,
-        data: { user: { id: user.id, email: user.email, name: user.username } },
+        data: {
+          user: { id: user.id, email: user.email, username: user.username },
+        },
       });
     } catch (error: unknown) {
       next(error);

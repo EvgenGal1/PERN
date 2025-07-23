@@ -28,7 +28,7 @@ const Orders = (props: any) => {
             <tr key={item.id}>
               <td>{item.id}</td>
               <td>{formatTimeStr(item.createdAt)}</td>
-              <td>{item.name}</td>
+              <td>{item.username}</td>
               <td>{item.email}</td>
               <td>{item.phone}</td>
               <td>

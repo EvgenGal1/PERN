@@ -82,7 +82,7 @@ router.get('/getall/admin', authMW, adminMW, OrderController.getAllOrdersAdmin);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               username:
  *                 type: string
  *               email:
  *                 type: string
@@ -140,7 +140,7 @@ router.post('/create/admin', authMW, adminMW, OrderController.createOrder);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               username:
  *                 type: string
  *               email:
  *                 type: string
@@ -412,7 +412,7 @@ router.delete(
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               username:
  *                 type: string
  *               email:
  *                 type: string
@@ -487,7 +487,7 @@ router.get('/getall/user', authMW, OrderController.getAllOrdersUser);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               username:
  *                 type: string
  *               email:
  *                 type: string

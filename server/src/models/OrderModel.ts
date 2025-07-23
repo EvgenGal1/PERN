@@ -15,7 +15,7 @@ class OrderModel extends Model<
 > {
   declare id: CreationOptional<number>;
   declare userId: CreationOptional<number>;
-  declare name: string;
+  declare username: string;
   declare email: string;
   declare phone: string;
   declare address: string;
@@ -54,7 +54,7 @@ class OrderModel extends Model<
           allowNull: true,
           references: { model: 'users', key: 'id' },
         },
-        name: { type: DataTypes.STRING, allowNull: false },
+        username: { type: DataTypes.STRING, allowNull: false },
         email: { type: DataTypes.STRING, allowNull: false },
         phone: { type: DataTypes.STRING, allowNull: false },
         address: { type: DataTypes.STRING, allowNull: false },

@@ -109,7 +109,7 @@ const Order = (props: any) => {
         <span>Данные Получателя</span>
         <ul className="list-param--eg">
           <li>
-            <p>Имя, Фамилия:</p> {orders.name}
+            <p>Имя, Фамилия:</p> {orders.username}
           </li>
           <li>
             <p>Адрес почты:</p> {orders.email}

@@ -16,7 +16,7 @@ import DatabaseUtils from '../utils/database.utils';
 class OrderService {
   private static readonly baseOrderAttributes = [
     'id',
-    'name',
+    'username',
     'email',
     'phone',
     'address',

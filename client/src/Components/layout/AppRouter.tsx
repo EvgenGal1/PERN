@@ -8,7 +8,7 @@ import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 interface RouteConfig {
   path: string;
   Component: React.ComponentType;
-  roles?: Array<{ name: string; level?: number }>;
+  roles?: Array<{ role: string; level?: number }>;
 }
 
 const AppRouter: React.FC = () => {

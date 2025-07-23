@@ -6,7 +6,7 @@ import FormFieldRecursive__EG from "@Comp/ui/Form/FormFieldRecursive__EG";
 import FormField__eg from "@Comp/ui/Form/FormField__eg";
 
 interface CheckoutFormValues {
-  name: string;
+  username: string;
   email: string;
   phone: string;
   address: string;
@@ -14,7 +14,7 @@ interface CheckoutFormValues {
 }
 
 interface CheckoutFormValidation {
-  name: string | boolean | null | undefined;
+  username: string | boolean | null | undefined;
   email: string | boolean | null | undefined;
   phone: string | boolean | null | undefined;
   address: string | boolean | null | undefined;
@@ -24,7 +24,7 @@ interface CheckoutFormValidation {
 const isValid = (input: HTMLInputElement) => {
   let pattern: RegExp;
   switch (input.name) {
-    case "name":
+    case "username":
       pattern = /^[-а-я]|[a-z0-9._%+-]{2,}( [-а-я]|[a-z0-9._%+-]{2,}){1,2}$/i;
       return pattern.test(input.value.trim());
     case "email":
@@ -42,14 +42,14 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
   const [formState, setFormState] = useState(/* ... */);
 
   const [value, setValue] = useState<CheckoutFormValues>({
-    name: "",
+    username: "",
     email: "",
     phone: "",
     address: "",
     comment: "",
   });
   const [valid, setValid] = useState<CheckoutFormValidation>({
-    name: "", // null,
+    username: "", // null,
     email: "", // null,
     phone: "", // null,
     address: "", // null,
@@ -71,8 +71,8 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
     event.preventDefault();
 
     setValue({
-      name: (
-        event.currentTarget.elements.namedItem("name") as HTMLInputElement
+      username: (
+        event.currentTarget.elements.namedItem("username") as HTMLInputElement
       ).value.trim(),
       email: (
         event.currentTarget.elements.namedItem("email") as HTMLInputElement
@@ -89,8 +89,8 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
     });
 
     setValid({
-      name: isValid(
-        event.currentTarget.elements.namedItem("name") as HTMLInputElement
+      username: isValid(
+        event.currentTarget.elements.namedItem("username") as HTMLInputElement
       ),
       email: isValid(
         event.currentTarget.elements.namedItem("email") as HTMLInputElement
@@ -107,7 +107,7 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
     });
 
     // е/и форма заполнена правильно, можно отправлять данные
-    if (valid.name && valid.email && valid.phone && valid.address) {
+    if (valid.username && valid.email && valid.phone && valid.address) {
       // Заказ.
       // Свойство "comment" не существует в типе "EventTarget".
       // let comment: any = event.target.comment.value.trim();
@@ -120,14 +120,16 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
       const body: any = {
         ...value,
         comment,
-        productId: basket.products.map(
+        products: basket.products.map(
           (product: { id: number; quantity: number }) => product.id
         ),
         quantity: basket.products.map(
           (product: { id: number; quantity: number }) => product.quantity
         ),
       };
-      const create = user.isAuth ? orderAPI.createOrder : orderAPI.createOrder;
+      const create = user.isAuth
+        ? orderAPI.createOrderUser
+        : orderAPI.createOrderAdmin;
       create(body).then((data) => {
         console.log("Checkout data ", data);
         onOrder(data);
@@ -161,7 +163,7 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
         handleChange={handleChange}
         formClass={"form--eg p-4"}
         valueArr={[
-          ["name", value.name],
+          ["username", value.username],
           ["address", value.address],
           [
             ["phone", value.phone],
@@ -182,7 +184,7 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
         label={true}
         clForm={"form--eg p-4"}
         valueArr={[
-          ["name", value.name],
+          ["username", value.username],
           ["address", value.address],
           [
             ["phone", value.phone],
@@ -195,12 +197,12 @@ const CheckoutForm = ({ user, basket, onSuccess, onOrder }) => {
       /> */}
       <Form className="form form--eg p-4" noValidate onSubmit={handleSubmit}>
         <Form.Control
-          name="name"
-          value={value.name}
+          name="username"
+          value={value.username}
           // onChange={(e) => handleChange(e)}
           onChange={handleChange}
-          isValid={valid.name === true}
-          isInvalid={valid.name === false}
+          isValid={valid.username === true}
+          isInvalid={valid.username === false}
           placeholder="Введите имя и фамилию..."
           className="mb-3"
         />

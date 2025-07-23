@@ -160,7 +160,7 @@ export interface ProductPropAttributes {
 // Определение интерфейса для модели Order
 export interface OrderAttributes {
   id?: number;
-  name: string;
+  username: string;
   email: string;
   phone: string;
   address: string;
@@ -184,7 +184,7 @@ class Order
   implements OrderAttributes
 {
   public id!: number;
-  public name!: string;
+  public username!: string;
   public email!: string;
   public phone!: string;
   public address!: string;

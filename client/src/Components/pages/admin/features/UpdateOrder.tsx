@@ -15,10 +15,10 @@ const isValid = (value: any) => {
   const patternEML = /^[a-z0-9._%+-]+@[a-z0-9.-]+.{1,2}[a-z]+$/i;
   const patternPHN = /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d- ]{7,10}$/i;
   for (const key in value) {
-    if (key === "name")
-      result.name =
-        // patternNam.test(value.name.trim());
-        value.name.trim() !== "";
+    if (key === "username")
+      result.username =
+        // patternNam.test(value.username.trim());
+        value.username.trim() !== "";
     if (key === "email")
       result.email =
         // value.email.trim();
@@ -99,7 +99,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
   const { id, show, setShow, orders } = props;
 
   const order2 = {
-    name: orders.name.toString(),
+    username: orders.username.toString(),
     email: orders.email.toString(),
     phone: orders.phone.toString(),
     address: orders.address.toString(),
@@ -138,7 +138,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
   //   // if (id) {  adminGetOne(id).then((data) => {получ.данн.Продукта с БД}) } // ^ упразднено
   //   //     // получ.данн.Продукта с БД
   //   const order = {
-  //     name: orders.name.toString(),
+  //     username: orders.username.toString(),
   //     email: orders.email.toString(),
   //     phone: orders.phone.toString(),
   //     address: orders.address.toString(),
@@ -163,7 +163,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
   //     })
   //   );
   // }, [
-  //   orders.name,
+  //   orders.username,
   //   orders.email,
   //   orders.phone,
   //   orders.address,
@@ -193,9 +193,9 @@ const UpdateOrder: React.FC<Props> = (props) => {
     setValid(correct);
 
     // если введенные данные прошли проверку — можно отправлять их на сервер
-    if (correct.name && correct.email && correct.phone && correct.address) {
+    if (correct.username && correct.email && correct.phone && correct.address) {
       const data = new FormData();
-      data.append("name", value.name.trim());
+      data.append("username", value.username.trim());
       data.append("email", value.email.trim());
       data.append("phone", value.phone.trim());
       data.append("address", value.address.trim());
@@ -208,7 +208,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
       // adminUpdate(id, data)
       //   .then((data) => {
       //     const order = {
-      //       name: data.name,
+      //       username: data.username,
       //       email: data.email.toString(),
       //       phone: data.phone.toString(),
       //       address: data.address.toString(),
@@ -255,7 +255,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
             {/* // ^ Комп.FFR (ток на масс.) */}
             <FormFieldRecursive__EG
               valueArr={[
-                ["name", value.name],
+                ["username", value.username],
                 ["address", value.address],
                 [
                   ["email", value.email],
@@ -314,7 +314,7 @@ const UpdateOrder: React.FC<Props> = (props) => {
             <button
               type="submit"
               className="btn--eg btn-success--eg"
-              // блок.кнп. е/и пусты name/address или есть ошб.
+              // блок.кнп. е/и пусты username/address или есть ошб.
               // disabled={
               //   valueArr[0][1] === "" || valueArr[1][1] === "" || !isFormValid
               // }

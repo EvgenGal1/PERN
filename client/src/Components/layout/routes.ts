@@ -51,7 +51,7 @@ export interface RouteConfig {
   path: string;
   Component: React.ComponentType;
   exact?: boolean;
-  roles?: Array<{ name: string; level?: number }>;
+  roles?: Array<{ role: string; level?: number }>;
 }
 
 // публичные маршруты > всех Пользователей (Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
@@ -79,17 +79,17 @@ export const authRoutes: RouteConfig[] = [
   {
     path: USER_ROUTE,
     Component: User,
-    roles: [{ name: "USER", level: 1 }],
+    roles: [{ role: "USER", level: 1 }],
   },
   {
     path: USERORDERS_ROUTE,
     Component: UserOrders,
-    roles: [{ name: "USER", level: 1 }],
+    roles: [{ role: "USER", level: 1 }],
   },
   {
     path: USERORDER_ROUTE,
     Component: UserOrder,
-    roles: [{ name: "USER", level: 1 }],
+    roles: [{ role: "USER", level: 1 }],
   },
 ];
 
@@ -99,33 +99,33 @@ export const adminRoutes = [
     path: ADMIN_ROUTE,
     Component: Admin,
     roles: [
-      { name: "ADMIN", level: 3 },
-      { name: "MODERATOR", level: 2 },
+      { role: "ADMIN", level: 3 },
+      { role: "MODERATOR", level: 2 },
     ],
   },
   {
     path: ADMINORDERS_ROUTE,
     Component: AdminOrders,
-    roles: [{ name: "ADMIN", level: 1 }],
+    roles: [{ role: "ADMIN", level: 1 }],
   },
   {
     path: ADMINORDER_ROUTE,
     Component: AdminOrder,
-    roles: [{ name: "ADMIN", level: 1 }],
+    roles: [{ role: "ADMIN", level: 1 }],
   },
   {
     path: ADMINCATEGORIES_ROUTE,
     Component: AdminCategories,
-    roles: [{ name: "ADMIN", level: 1 }],
+    roles: [{ role: "ADMIN", level: 1 }],
   },
   {
     path: ADMINBRANDS_ROUTE,
     Component: AdminBrands,
-    roles: [{ name: "ADMIN", level: 1 }],
+    roles: [{ role: "ADMIN", level: 1 }],
   },
   {
     path: ADMINPRODUCTS_ROUTE,
     Component: AdminProducts,
-    roles: [{ name: "ADMIN", level: 1 }],
+    roles: [{ role: "ADMIN", level: 1 }],
   },
 ];

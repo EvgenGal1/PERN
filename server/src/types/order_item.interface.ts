@@ -1,7 +1,7 @@
 export interface OrderCreateDto {
   id?: number;
   userId: number;
-  name: string;
+  username: string;
   email: string;
   phone: string;
   address: string;
@@ -12,7 +12,7 @@ export interface OrderCreateDto {
 }
 
 export interface OrderUpdateDto {
-  name?: string;
+  username?: string;
   email?: string;
   phone?: string;
   address?: string;
@@ -30,7 +30,7 @@ export interface OrderItemCreateDto {
 
 export interface OrderData {
   id: number;
-  name: string;
+  username: string;
   email: string;
   phone: string;
   address: string;
@@ -41,7 +41,7 @@ export interface OrderData {
 }
 
 export interface OrderUpdateData {
-  name?: string;
+  username?: string;
   email?: string;
   phone?: string;
   address?: string;
