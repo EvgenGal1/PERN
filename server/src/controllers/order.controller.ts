@@ -60,32 +60,41 @@ class OrderController {
 
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, email, phone, address, comment = null, items } = req.body;
+      const {
+        name,
+        email,
+        phone,
+        address,
+        comment = null,
+        products,
+      } = req.body;
       const { roles = [], id: userId } = req.auth || {};
       if (!userId) throw ApiError.badRequest('ID Пользователя не найден');
       if (!name || !email || !phone || !address) {
         throw ApiError.badRequest('Отсутствуют обязательные поля');
       }
-      let orderItems = items;
-      const userRoles = roles.map((r) => r.role);
-      if (userRoles.includes(NameUserRoles.ADMIN)) {
-        // проверка на наличие items в теле запроса
-        if (!items || items.length === 0) {
-          throw ApiError.badRequest('Не указан Позиции Заказа');
-        }
-        // проверка существования Пользователя
-        if (userId) await UserService.getOneUser(userId);
-      } else if (
+
+      let basketItems = products;
+      // проверка на наличие Позиций в теле запроса
+      if (!basketItems || basketItems.length === 0) {
+        throw ApiError.badRequest('Не указаны Позиции Заказа');
+      }
+      let userRoles = roles.map((r) => r.role);
+      if (
         userRoles.includes(NameUserRoles.USER) ||
         userRoles.includes(NameUserRoles.GUEST)
       ) {
-        // получить позиции Заказа из Корзины
+        // проверка сущ. Пользователя
+        if (userId) await UserService.getOneUser(userId);
+        // получить Позиции Заказа из Корзины
         const basket = await BasketService.getOneBasket(
           +req.signedCookies.basketId,
         );
         if (!basket?.products.length)
           throw ApiError.badRequest('Корзина пуста');
-        orderItems = basket.products;
+        basketItems = basket.products;
+      } else if (userRoles.includes(NameUserRoles.ADMIN)) {
+        throw ApiError.badRequest('Логика для ADMIN в разработке');
       }
       const order = await OrderService.createOrder({
         name,
@@ -94,7 +103,7 @@ class OrderController {
         phone,
         address,
         comment,
-        items: orderItems,
+        items: basketItems,
       });
       if (!userRoles.includes(NameUserRoles.ADMIN))
         await BasketService.clearBasketProducts(+req.signedCookies.basketId);

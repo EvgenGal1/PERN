@@ -17,13 +17,13 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: Orders
- *   description: API для управления Заказами
+ *   description: API для управления Заказами ADMIN
  */
 
 // получить Заказ по id
 /**
  * @swagger
- * /orders/getone/{id}:
+ * /orders/getone/{id}/admin:
  *   get:
  *     summary: Получить Один Заказ по ID
  *     tags: [Orders]
@@ -43,7 +43,12 @@ const router = express.Router();
  *       404:
  *         description: Заказ не найден
  */
-router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
+router.get(
+  '/getone/:id([0-9]+)/admin',
+  authMW,
+  adminMW,
+  OrderController.getOneOrder,
+);
 
 // получить список всех Заказов магазина
 /**
@@ -58,7 +63,7 @@ router.get('/getone/:id([0-9]+)', authMW, adminMW, OrderController.getOneOrder);
  *       200:
  *         description: Список Всех Заказов
  */
-router.get('/admin/getall', authMW, adminMW, OrderController.getAllOrdersAdmin);
+router.get('/getall/admin', authMW, adminMW, OrderController.getAllOrdersAdmin);
 
 // создать новый Заказ
 /**
@@ -100,7 +105,7 @@ router.get('/admin/getall', authMW, adminMW, OrderController.getAllOrdersAdmin);
  *       400:
  *         description: Ошибка валидации данных
  */
-router.post('/create', authMW, adminMW, OrderController.createOrder);
+router.post('/create/admin', authMW, adminMW, OrderController.createOrder);
 
 // получить список Заказов Пользователя
 // router.get(
@@ -151,7 +156,12 @@ router.post('/create', authMW, adminMW, OrderController.createOrder);
  *       404:
  *         description: Заказ не найден
  */
-router.put('/update/:id([0-9]+)', authMW, adminMW, OrderController.updateOrder);
+router.put(
+  '/update/:id([0-9]+)/admin',
+  authMW,
+  adminMW,
+  OrderController.updateOrder,
+);
 
 // удалить Заказ по id
 /**
@@ -177,7 +187,7 @@ router.put('/update/:id([0-9]+)', authMW, adminMW, OrderController.updateOrder);
  *         description: Заказ не найден
  */
 router.delete(
-  '/delete/:id([0-9]+)',
+  '/delete/:id([0-9]+)/admin',
   authMW,
   adminMW,
   OrderController.deleteOrder,
@@ -416,7 +426,7 @@ router.delete(
  *       400:
  *         description: Ошибка валидации данных
  */
-router.post('/user/create', authMW, OrderController.createOrder);
+router.post('/create/user', authMW, OrderController.createOrder);
 
 // получить один Заказ Пользователя
 /**
@@ -441,7 +451,7 @@ router.post('/user/create', authMW, OrderController.createOrder);
  *       404:
  *         description: Заказ не найден
  */
-router.get('/user/getone/:id([0-9]+)', authMW, OrderController.getOneOrder);
+router.get('/getone/:id([0-9]+)/user', authMW, OrderController.getOneOrder);
 
 // получить все Заказы Пользователя
 /**
@@ -456,7 +466,7 @@ router.get('/user/getone/:id([0-9]+)', authMW, OrderController.getOneOrder);
  *       200:
  *         description: Список Всех Заказов Пользователя
  */
-router.get('/user/getall', authMW, OrderController.getAllOrdersUser);
+router.get('/getall/user', authMW, OrderController.getAllOrdersUser);
 
 /*
  * для неавторизованного Пользователя
@@ -491,6 +501,6 @@ router.get('/user/getall', authMW, OrderController.getAllOrdersUser);
  *       400:
  *         description: Ошибка валидации данных
  */
-router.post('/guest/create', OrderController.createOrder);
+router.post('/create/guest', OrderController.createOrder);
 
 export default router;
