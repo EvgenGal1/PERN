@@ -4,37 +4,57 @@ import { AxiosResponse } from "axios";
 
 // обраб.ошб.
 import { errorHandler } from "@/utils/errorHandler";
-// кэш // import { queryCache } from "../utils/cache"; | const requestCache = new Map<string, any>();
+// кэш
+import { requestCache } from "@/utils/cache";
 
 /**
  * Обрабатывает API-запросы, автоматически обрабатывая ошибки
  * @param method - Метод возвращающий Promise с Axios-ответом
  * @param context - Контекст для логирования (название метода)
+ * @param options - КЭШ
+ * @returns
  */
 export const handleRequest = async <T>(
   method: () => Promise<AxiosResponse<T>>,
-  context: string = "Unknown"
-  // cacheKey?: string,
-  // ttl: number = 60_000
+  context: string = "Unknown",
+  // кэш
+  options: {
+    cacheKey?: string; // ключ кэша
+    ttl?: number; // вр.жизни (мс)
+    useCache?: boolean; // управ.кэшем
+    // invalidateCache?: boolean; // Принудительное обновление
+  } = {}
 ): Promise<T> => {
+  const { cacheKey, ttl = 30000, useCache = true } = options;
+
+  // проверка кэша
+  if (useCache && cacheKey) {
+    const cached = requestCache.get<T>(cacheKey);
+    if (cached) {
+      console.debug(`[${context}] КЭШ выбил `, cacheKey);
+      return cached;
+    }
+  }
+
   // обраб.req/ошб.
   try {
-    // кэш проверка/возврат закешир.результат
-    // if (cacheKey) {
-    //   const cached =   queryCache.get<T>(cacheKey) | requestCache.has(cacheKey)
-    //   if (cached)   return cached | requestCache.get(cacheKey)
-    // }
     // вызов мтд.
     const response = await method();
     const result = response.data;
-    // кэш сохр.данн.
-    // if (cacheKey)   queryCache.set(cacheKey, result, ttl) | requestCache.set(cacheKey, result)
+
+    // сохр.кэш данн.
+    if (useCache && cacheKey) {
+      requestCache.set(cacheKey, result, ttl);
+      console.debug(`[${context}] Cache SET for`, cacheKey);
+    }
+
     console.debug(`^ [${context}] RES: `, result);
     // возврат данн.
     return result;
   } catch (error) {
-    // кэш удал.данн.
-    // if (cacheKey)   queryCache.invalidate(new RegExp(cacheKey)) | requestCache.delete(cacheKey)
+    // очистка кэша при ошб.
+    if (cacheKey) requestCache.delete(cacheKey);
+
     // обраб.ошб.
     const processedError = errorHandler(error, context);
     // логг.ошб.с контекстом
