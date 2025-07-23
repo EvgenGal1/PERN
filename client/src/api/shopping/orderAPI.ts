@@ -10,9 +10,9 @@ export const orderAPI = {
   /**
    * Создание нового Заказа
    */
-  async createOrder(body: OrderData): Promise<OrderData> {
+  async createOrderAdmin(body: OrderData): Promise<OrderData> {
     return handleRequest(
-      () => authInstance.post<OrderData>("orders/create", body),
+      () => authInstance.post<OrderData>("orders/create/admin", body),
       "Order/Create"
     );
   },
@@ -22,7 +22,7 @@ export const orderAPI = {
    */
   async getOneOrder(orderId: number): Promise<OrderData> {
     return handleRequest(
-      () => authInstance.get<OrderData>(`orders/getone/${orderId}`),
+      () => authInstance.get<OrderData>(`orders/getone/${orderId}/admin`),
       "Order/GetOne"
     );
   },
@@ -32,7 +32,7 @@ export const orderAPI = {
    */
   async getAllOrdersAdmin(): Promise<OrderData[]> {
     return handleRequest(
-      () => authInstance.get<OrderData[]>("orders/admin/getall"),
+      () => authInstance.get<OrderData[]>("orders/getall/admin"),
       "Order/Admin/GetAll"
     ).catch((error) => {
       if (error.status === 404) return [];
@@ -45,7 +45,7 @@ export const orderAPI = {
    */
   async updateOrder(orderId: number, body: OrderData): Promise<OrderData> {
     return handleRequest(
-      () => authInstance.put<OrderData>(`orders/update/${orderId}`, body),
+      () => authInstance.put<OrderData>(`orders/update/${orderId}/admin`, body),
       "Order/Update"
     );
   },
@@ -55,7 +55,7 @@ export const orderAPI = {
    */
   async deleteOrder(orderId: number): Promise<void> {
     return handleRequest(
-      () => authInstance.delete(`orders/delete/${orderId}`),
+      () => authInstance.delete(`orders/delete/${orderId}/admin`),
       "Order/Delete"
     );
   },
@@ -110,8 +110,9 @@ export const orderAPI = {
    * Создание Нового Заказа (Пользователь)
    */
   async createOrderUser(body: OrderData): Promise<OrderData> {
+    console.log("body : ", body);
     return handleRequest(
-      () => authInstance.post<OrderData>("orders/user/create", body),
+      () => authInstance.post<OrderData>("orders/create/user", body),
       "Order/UserCreate"
     );
   },
@@ -121,7 +122,7 @@ export const orderAPI = {
    */
   async getAllOrdersUser(): Promise<OrderData[]> {
     return handleRequest(
-      () => authInstance.get<OrderData[]>("orders/user/getall"),
+      () => authInstance.get<OrderData[]>("orders/getall/user"),
       "Order/User/GetAll"
     ).catch((error) => {
       if (error.status === 404) return [];
@@ -134,7 +135,7 @@ export const orderAPI = {
    */
   async getOneOrderUser(orderId: number): Promise<OrderData> {
     return handleRequest(
-      () => authInstance.get<OrderData>(`orders/user/getone/${orderId}`),
+      () => authInstance.get<OrderData>(`orders/getone/${orderId}/user`),
       "Order/UserGetOne"
     );
   },
@@ -144,7 +145,7 @@ export const orderAPI = {
    */
   async createOrderGuest(body: OrderData): Promise<OrderData> {
     return handleRequest(
-      () => guestInstance.post<OrderData>("orders/guest/create", body),
+      () => guestInstance.post<OrderData>("orders/create/guest", body),
       "Order/GuestCreate"
     );
   },
