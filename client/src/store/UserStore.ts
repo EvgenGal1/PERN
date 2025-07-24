@@ -6,6 +6,7 @@ import { debounce } from "lodash";
 
 import { authAPI } from "@/api/auth/authAPI";
 import type { RoleLevel, UserProfile } from "@/types/user.types";
+import type { AuthResponse } from "@/types/auth.types";
 import { ApiError } from "@/utils/errorAPI";
 
 export default class UserStore {
@@ -83,7 +84,7 @@ export default class UserStore {
     try {
       const response = await authAPI.login({ email, password });
       runInAction(() => {
-        this.saveData(response);
+        this.saveData(response.data!);
       });
     } catch (error) {
       this.handleError(error, "Ошибка Авторизации");
@@ -100,7 +101,7 @@ export default class UserStore {
     try {
       const response = await authAPI.register({ email, password });
       runInAction(() => {
-        this.saveData(response);
+        this.saveData(response.data!);
       });
     } catch (error) {
       this.handleError(error, "Ошибка Регистрации");
@@ -112,12 +113,17 @@ export default class UserStore {
     }
   }
 
-  @action private saveData(userData: UserProfile): void {
-    this.id = userData.id;
-    this.username = userData.username;
-    this.email = userData.email;
+  @action private saveData(userData: AuthResponse): void {
+    // сохр.данн.в Store
+    this.id = userData.user.id;
+    this.username = userData.user.username;
+    this.email = userData.user.email;
     this.roles = userData.roles;
     this.isAuth = true;
+    this.activated = userData.isActivated!;
+    // сохр. Токена в LS
+    localStorage.setItem("tokenAccess", userData.tokenAccess);
+    // сохр.данн.в LS
     this.saveToLocalStorage();
   }
 

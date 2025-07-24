@@ -4,7 +4,7 @@ import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 import { debounce } from "lodash";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
-import type { BasketData, BasketProduct } from "@/types/api/shopping.types";
+import type { BasketData, BasketProduct } from "@/types/shopping.types";
 import { ApiError } from "@/utils/errorAPI";
 
 class BasketStore {
@@ -15,10 +15,6 @@ class BasketStore {
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
-    spy((event) => {
-      if (event.type === "action")
-        console.log("BasketStore Action:", event.name);
-    });
     this.loadFromLocalStorage();
   }
 
@@ -29,11 +25,13 @@ class BasketStore {
     const storedData = localStorage.getItem("basketStore");
     if (!storedData) return;
     try {
-      const { items } = JSON.parse(storedData) as { items: BasketProduct[] };
-      this.products = items || [];
+      const { products } = JSON.parse(storedData) as {
+        products: BasketProduct[];
+      };
+      this.products = products || [];
       this.calculateTotals();
     } catch (error) {
-      this.handleError(error, "Ошибка Загрузки basketStore из LS :");
+      this.handleError(error, "Ошибка Загрузки basketStore из LS");
       this.clearLocalStorage();
     }
   }
@@ -43,7 +41,7 @@ class BasketStore {
     try {
       localStorage.setItem(
         "basketStore",
-        JSON.stringify({ items: this.products })
+        JSON.stringify({ products: this.products })
       );
     } catch (error) {
       this.handleError(error, `Ошибка Сохранения BasketStore из LS`);
@@ -58,62 +56,46 @@ class BasketStore {
   // ASYNC ----------------------------------------------------------------------------------
 
   // получить Корзину
-  @action async fetchBasket(): Promise<void> {
-    if (this.isLoading || this.products.length > 0) return;
+  @action async loadBasket(): Promise<void> {
+    if (this.isLoading) return;
     this.isLoading = true;
     this.error = null;
     try {
       const basket = await basketAPI.getOneBasket();
-      this.updateBasket(basket);
+      runInAction(() => this.updateBasket(basket));
     } catch (error) {
-      this.handleError(error, "Ошибка Загрузки Корзины:");
+      this.handleError(error, "Ошибка Загрузки Корзины");
+      this.loadFromLocalStorage();
     } finally {
       runInAction(() => (this.isLoading = false));
     }
   }
 
   // добавить Продукт в Корзину
-  @action async fetchAddProduct(productId: number): Promise<void> {
+  @action async addProduct(productId: number): Promise<void> {
     if (this.isLoading) return;
     this.isLoading = true;
     this.error = null;
     try {
       const basket = await basketAPI.appendBasket(productId);
-      this.updateBasket(basket);
+      runInAction(() => this.updateBasket(basket));
     } catch (error) {
-      this.handleError(error, "Ошибка Добавления Продукта в Корзину:");
-      // throw error; // ?  нужен ли ?
-    } finally {
-      runInAction(() => (this.isLoading = false));
-    }
-  }
-
-  @action async fetchRemoveProduct(productId: number): Promise<void> {
-    if (this.isLoading) return;
-    this.isLoading = true;
-    this.error = null;
-    try {
-      const data = await basketAPI.removeBasket(productId);
-      this.updateBasket(data);
-    } catch (error) {
-      this.handleError(error, "Ошибка Удаления Продуктов из Корзины:");
+      this.handleError(error, "Ошибка Добавления Продукта в Корзину");
     } finally {
       runInAction(() => (this.isLoading = false));
     }
   }
 
   @action async incrementProduct(productId: number): Promise<void> {
-    await this.fetchUpdateProductQuantity(productId, "increment");
+    await this.updateProductQuantity(productId, "increment");
   }
 
   @action async decrementProduct(productId: number): Promise<void> {
-    await this.fetchUpdateProductQuantity(productId, "decrement");
+    await this.updateProductQuantity(productId, "decrement");
   }
 
-  // ДОП.МТД. (PRIVATE HELPERS/UPD ПРОДУКТЫ/КАЛЬКУЛЯЦИЯ/ОШИБКИ) ----------------------------------------------------------------------------------
-
-  // Получить Обновление Количества Продукта
-  private async fetchUpdateProductQuantity(
+  // общ.мтд.чтоб обновить Количества Продукта
+  @action async updateProductQuantity(
     productId: number,
     action: "increment" | "decrement"
   ): Promise<void> {
@@ -128,11 +110,27 @@ class BasketStore {
       const data = await apiMethod(productId);
       this.updateBasket(data);
     } catch (error) {
-      this.handleError(error, `Ошибка ${action} Продукта:`);
+      this.handleError(error, `Ошибка ${action} Кол-ва Продукта`);
     } finally {
       runInAction(() => (this.isLoading = false));
     }
   }
+
+  @action async fetchRemoveProduct(productId: number): Promise<void> {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    this.error = null;
+    try {
+      const data = await basketAPI.removeBasket(productId);
+      this.updateBasket(data);
+    } catch (error) {
+      this.handleError(error, "Ошибка Удаления Продуктов из Корзины");
+    } finally {
+      runInAction(() => (this.isLoading = false));
+    }
+  }
+
+  // ДОП.МТД. (PRIVATE HELPERS/UPD ПРОДУКТЫ/КАЛЬКУЛЯЦИЯ/ОШИБКИ) ----------------------------------------------------------------------------------
 
   @action private updateBasket(basket?: BasketData) {
     if (!basket) return;
@@ -158,7 +156,7 @@ class BasketStore {
         : new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", { context });
     this.error = apiError;
     // captureException(error); // Отправка ошибки в Sentry или аналоги
-    console.error(`Ошб.в CatalogStore [${context}]`, apiError);
+    console.error(`Ошб.в BasketStore [${context}]`, apiError);
   }
 
   // ==================== ГЕТТЕРЫ ====================
@@ -175,6 +173,10 @@ class BasketStore {
         sum + item.price * item.quantity,
       0
     );
+  }
+
+  get isEmpty(): boolean {
+    return this.products.length === 0;
   }
 
   // ==================== UI Actions ====================
