@@ -41,7 +41,7 @@ import UserOrder from "@Comp/pages/user/features/UserOrder";
 import UserOrders from "@Comp/pages/user/features/UserOrders";
 import Auth from "@Comp/pages/auth/Auth";
 import Basket from "@Comp/pages/user/Basket";
-import Checkout from "@Comp/pages/auth/Checkout";
+import Checkout from "@Comp/pages/order/Checkout";
 import Product from "@Comp/pages/shop/Product";
 import SearchFilter from "@Comp/common/SearchFilter";
 import Shop from "@Comp/pages/shop/Shop";
