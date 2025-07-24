@@ -1,8 +1,15 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 
 import authMW from '../middleware/auth/authMiddleware';
 import { validateAuth } from '../middleware/validation/authValidator';
 import AuthController from '../controllers/auth.controller';
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 50, // Лимит запросов
+  message: 'Слишком много запросов, попробуйте позже',
+});
 
 const router = express.Router();
 
@@ -117,10 +124,10 @@ router.get('/activate/:link', AuthController.activateUser);
  *       401:
  *         description: Невалидный токен обновления
  */
-router.post('/refresh', AuthController.refreshUser);
+router.post('/refresh', authLimiter, AuthController.refreshUser);
 
 // ПРОВЕРКА | auth
-router.get('/check', authMW, AuthController.checkUser);
+router.get('/check', authLimiter, authMW, AuthController.checkUser);
 
 // ВЫХОД. Удален.tokenRefresh
 /**
