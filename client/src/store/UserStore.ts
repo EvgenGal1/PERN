@@ -5,8 +5,12 @@ import { jwtDecode } from "jwt-decode";
 import { debounce } from "lodash";
 
 import { authAPI } from "@/api/auth/authAPI";
-import type { RoleLevel, UserProfile } from "@/types/user.types";
-import type { AuthResponse } from "@/types/auth.types";
+import type { RoleLevel } from "@/types/user.types";
+import type {
+  AuthResponse,
+  LoginCredentials,
+  RegisterCredentials,
+} from "@/types/auth.types";
 import { ApiError } from "@/utils/errorAPI";
 
 export default class UserStore {
@@ -24,8 +28,8 @@ export default class UserStore {
   constructor() {
     makeAutoObservable(this);
 
-    // чтение данн.из localStorage при инициализации
-    this.loadFromLocalStorage();
+    // инициализация с чтение данн.из LS и проверкой
+    this.initializeSession();
   }
 
   // LOCALSTORE ----------------------------------------------------------------------------------
@@ -77,99 +81,25 @@ export default class UserStore {
     localStorage.removeItem("catalogStore");
   }
 
-  // ASYNC ----------------------------------------------------------------------------------
+  // SESSION ----------------------------------------------------------------------------------
 
-  @action async login(email: string, password: string): Promise<void> {
-    this.isLoading = true;
-    try {
-      const response = await authAPI.login({ email, password });
-      runInAction(() => {
-        this.saveData(response.data!);
-      });
-    } catch (error) {
-      this.handleError(error, "Ошибка Авторизации");
-      throw error;
-    } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
-    }
-  }
+  @action private initializeSession() {
+    this.loadFromLocalStorage();
 
-  @action async register(email: string, password: string): Promise<void> {
-    this.isLoading = true;
-    try {
-      const response = await authAPI.register({ email, password });
-      runInAction(() => {
-        this.saveData(response.data!);
-      });
-    } catch (error) {
-      this.handleError(error, "Ошибка Регистрации");
-      throw error;
-    } finally {
-      runInAction(() => {
-        this.isLoading = false;
-      });
-    }
-  }
-
-  @action private saveData(userData: AuthResponse): void {
-    // сохр.данн.в Store
-    this.id = userData.user.id;
-    this.username = userData.user.username;
-    this.email = userData.user.email;
-    this.roles = userData.roles;
-    this.isAuth = true;
-    this.activated = userData.isActivated!;
-    // сохр. Токена в LS
-    localStorage.setItem("tokenAccess", userData.tokenAccess);
-    // сохр.данн.в LS
-    this.saveToLocalStorage();
-  }
-
-  // USER ----------------------------------------------------------------------------------
-
-  /**
-   * Выход Пользователя
-   * удал. user/catalog Store из LS
-   */
-  @action logout() {
-    runInAction(() => {
-      this.resetUserState();
-      this.clearAllLocalStorage();
+    // проверка Токена при инициализации
+    this.checkSession().catch((error) => {
+      console.warn("проверка Сессии не удалась:", error);
+      this.logout();
     });
   }
 
-  @action private resetUserState() {
-    this.id = null;
-    this.username = null;
-    this.email = null;
-    this.roles = [];
-    this.isAuth = false;
-    this.activated = false;
-  }
-
-  // Входа Пользователя. Сохр.данн.в Store и LS от сбросов MobX при перезагрузке
-  @action save(payload: UserProfile) {
-    this.id = payload.id;
-    this.username = payload.username;
-    this.email = payload.email;
-    this.isAuth = true;
-    // сохр.Роли Уровни
-    this.roles = payload.roles;
-    this.activated = payload.isActivated!;
-    // сохр.данн.в LS
-    this.saveToLocalStorage();
-  }
-
-  // восст.сост.из LS
   /**
    * восстан.сессии из lS
    * @param tokenAccess - JWT Токен
    * @returns Promise<boolean> успех восстановления
    */
   async restoreSession(): Promise<boolean> {
-    this.isLoading = true;
+    this.setLoading(true);
     try {
       const tokenAccess = localStorage.getItem("tokenAccess") ?? "";
       if (!tokenAccess) return false;
@@ -188,11 +118,134 @@ export default class UserStore {
       this.logout();
       return false;
     } finally {
-      this.isLoading = false;
+      this.setLoading(false);
     }
   }
 
-  // ДОП.МТД. (РОЛИ/ОШИБКИ) ----------------------------------------------------------------------------------
+  // сохр.сессии
+  @action private persistSession(data: AuthResponse) {
+    this.id = data.user.id;
+    this.email = data.user.email;
+    this.username = data.user.username;
+    this.roles = data.roles;
+    this.isAuth = true;
+    this.activated = data.isActivated;
+    // сохр. Токена в LS
+    localStorage.setItem("tokenAccess", data.tokenAccess);
+    // сохр.данн.в LS
+    this.saveToLocalStorage();
+  }
+
+  @action clearSession() {
+    this.id = null;
+    this.email = null;
+    this.username = null;
+    this.roles = [];
+    this.isAuth = false;
+    this.activated = false;
+    this.error = null;
+
+    this.clearAllLocalStorage();
+  }
+
+  // ASYNC ----------------------------------------------------------------------------------
+
+  @action async login(credentials: LoginCredentials): Promise<void> {
+    this.setLoading(true);
+    try {
+      const response = await authAPI.login(credentials);
+      runInAction(() => {
+        this.persistSession(response.data!);
+      });
+    } catch (error) {
+      this.handleError(error, "Ошибка Авторизации");
+      throw error;
+    } finally {
+      runInAction(() => {
+        this.setLoading(false);
+      });
+    }
+  }
+
+  @action async register(credentials: RegisterCredentials): Promise<void> {
+    this.setLoading(true);
+    try {
+      const response = await authAPI.register(credentials);
+      runInAction(() => {
+        this.persistSession(response.data);
+      });
+    } catch (error) {
+      this.handleError(error, "Ошибка Регистрации");
+      throw error;
+    } finally {
+      runInAction(() => {
+        this.setLoading(false);
+      });
+    }
+  }
+
+  @action async logout(): Promise<void> {
+    this.setLoading(true);
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.warn("Предупреждение о выходе из системы : ", error);
+    } finally {
+      runInAction(() => {
+        this.clearSession();
+        this.setLoading(false);
+      });
+    }
+  }
+
+  // проверка Пользователя в БД
+  @action async checkSession(): Promise<boolean> {
+    this.setLoading(true);
+    try {
+      const { isValid, user } = await authAPI.check();
+
+      runInAction(() => {
+        if (isValid && user) {
+          this.id = user.id;
+          this.email = user.email;
+          this.username = user.username;
+          this.isAuth = true;
+          user.isActivated ? (this.activated = user.isActivated) : false;
+          this.saveToLocalStorage();
+        } else {
+          this.clearSession();
+        }
+      });
+
+      return isValid;
+    } catch (error) {
+      this.handleError(error, "проверка сессии не удалась");
+      this.clearSession();
+      return false;
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  @action async refreshToken(): Promise<void> {
+    this.setLoading(true);
+    try {
+      const tokens = await authAPI.refresh();
+      localStorage.setItem("tokenAccess", tokens.tokenAccess);
+    } catch (error) {
+      this.handleError(error, "не удалось обновить Токен");
+      this.clearSession();
+      throw error;
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  // ДОП.МТД. (ЗАГРУЗКА/РОЛИ/ОШИБКИ) ----------------------------------------------------------------------------------
+
+  @action private setLoading(state: boolean) {
+    this.isLoading = state;
+  }
 
   // проверка Роли с мин.Уровнем
   /**
@@ -237,7 +290,7 @@ export default class UserStore {
 
   // ГЕТТЕРЫ ----------------------------------------------------------------------------------
 
-  // проверка ADMIN /* с уровнем */
+  // проверка ADMIN с уровнем
   get isAdmin(): boolean {
     return this.hasRole("ADMIN", 1);
   }
