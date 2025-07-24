@@ -21,7 +21,7 @@
     "test": "cross-env NODE_ENV=development jest --detectOpenHandles"
   },
   "dependencies": {
-    "@vercel/node": "^5.1.14",
+    "@vercel/node": "^4.0.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.8",
@@ -31,6 +31,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-fileupload": "^1.4.0",
+    "express-rate-limit": "^8.0.1",
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^9.0.0",
     "node-cache": "^5.1.2",
