@@ -21,7 +21,7 @@ const Checkout = () => {
 
     const loadData = async () => {
       await basket.loadBasket();
-      await authAPI.check();
+      await user.checkSession();
     };
 
     loadData();

@@ -16,7 +16,6 @@ const Admin = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    authAPI.logout();
     user.logout();
     navigate(LOGIN_ROUTE, { replace: true });
   };

@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { authAPI } from "./auth/authAPI";
+import UserStore from "@/store/UserStore";
 
 // Базовый URL API
 const API_URL = process.env.REACT_APP_SRV_IURL;
@@ -44,9 +44,7 @@ authInstance.interceptors.response.use(
 
       try {
         // req обнов.Токена
-        const { tokenAccess } = await authAPI.refresh();
-        // сохр.нов. tokenAccess в LS
-        localStorage.setItem("tokenAccess", tokenAccess);
+        await UserStore.prototype.refreshToken();
         // ч/з экземпл.перехватчика повтор нач.req с нов.Токеном
         return authInstance.request(initialReq);
       } catch (error: unknown) {

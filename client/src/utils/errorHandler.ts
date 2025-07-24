@@ -4,7 +4,6 @@ import { AxiosError, isAxiosError } from "axios";
 // логгирование
 // import * as Sentry from "@sentry/react";
 
-import { authAPI } from "../api/auth/authAPI";
 import { ApiError } from "./errorAPI";
 
 export const errorHandler = (error: unknown, context?: string): ApiError => {
@@ -22,8 +21,8 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
       return new ApiError(503, "Сервер недоступен", "NETWORK_ERROR", { error });
     }
 
-    // при 401 Выход Пользователя и редирект на Авторизацию
-    if (response.status === 401) authAPI.logout();
+    // при 401 Выход Пользователя
+    // if (response.status === 401) UserStore.prototype.logout();
 
     // стандарт.ошб.БД
     if (response?.data?.error) {

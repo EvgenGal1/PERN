@@ -13,7 +13,6 @@ const User: React.FC = observer(() => {
   const handleLogout = async () => {
     if (!confirm("Вы уверены, что хотите выйти?")) return;
     try {
-      await authAPI.logout();
       user.logout();
       navigate(LOGIN_ROUTE, {
         replace: true,
