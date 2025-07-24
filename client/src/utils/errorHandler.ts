@@ -23,10 +23,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
     }
 
     // при 401 Выход Пользователя и редирект на Авторизацию
-    if (response.status === 401) {
-      authAPI.logout();
-      window.location.href = "login"; // ! redirect лучше это делать в компоненте
-    }
+    if (response.status === 401) authAPI.logout();
 
     // стандарт.ошб.БД
     if (response?.data?.error) {

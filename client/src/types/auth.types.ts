@@ -36,3 +36,9 @@ export type TokenPayload = {
   isActivated: boolean;
   exp?: number;
 };
+
+export type FormErrors = {
+  email?: string;
+  password?: string;
+  sms?: string;
+};
