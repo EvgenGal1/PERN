@@ -78,7 +78,7 @@ class AuthService {
       attributes: ['id'],
     });
     if (existingUser) {
-      throw ApiError.conflict(`Пользователь с Email <${email}> существует`);
+      throw ApiError.conflict(`Пользователь с Email '${email}' существует`);
     }
 
     // нач.транзакции
@@ -173,7 +173,7 @@ class AuthService {
       where: { email },
     });
     if (!user)
-      throw ApiError.notFound(`Пользователь с Email <${email}> не найден`);
+      throw ApiError.notFound(`Пользователь с Email '${email}' не найден`);
 
     // валид.пароля с шифрованым
     const isValidPsw = await this.comparePasswords(password, user.password);
