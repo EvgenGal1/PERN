@@ -56,13 +56,16 @@ const Auth = observer(() => {
 
     try {
       if (isLogin) {
-        await user.login(credentials.email, credentials.password);
+        await user.login({
+          email: credentials.email,
+          password: credentials.password,
+        });
       } else {
-        await user.register(
-          credentials.email,
-          credentials.password,
-          credentials.username
-        );
+        await user.register({
+          email: credentials.email,
+          password: credentials.password,
+          username: credentials.username,
+        });
       }
       setErrors({ email: "", password: "", sms: "" });
     } catch (error: unknown) {

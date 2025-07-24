@@ -9,62 +9,28 @@ import { handleRequest } from "../handleRequest";
 // общ.клс.ошб.
 import { ApiError } from "@/utils/errorAPI";
 // DTO/типы/интерфейсы
-import {
+import type {
   AuthRes,
   CheckRes,
-  IUser,
-  TokenPayload,
-  UserDataRes,
-} from "@/types/api/auth.types";
+  LoginCredentials,
+  RefreshRes,
+  RegisterCredentials,
+  Token,
+} from "@/types/auth.types";
+import type { User, UserProfile } from "@/types/user.types";
 import { isErrorWithStatus } from "@/utils/errorObject";
 
 export const authAPI = {
-  /**
-   * обработка ответа Авторизации
-   * @param response - ответ Сервера
-   * @returns данные Пользователя
-   */
-  processAuthResponse(response: AuthRes): UserDataRes {
-    const { tokenAccess, user, roles, basket, isActivated } = response.data;
-    if (!tokenAccess) {
-      throw new ApiError(401, "Токен отсутствует", "MISSING_TOKEN");
-    }
-    localStorage.setItem("tokenAccess", tokenAccess);
-    return {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      roles: roles,
-      basket,
-      isActivated,
-    };
-  },
-
-  /**
-   * декодирование JWT Токена
-   * @param token - JWT Токен
-   * @returns данные Пользователя
-   * @throws {ApiError} невалидном Токене
-   */
-  parseToken(token: string): TokenPayload {
-    try {
-      return jwtDecode<TokenPayload>(token);
-    } catch (error: unknown) {
-      throw new ApiError(401, "Невалидный токен", "INVALID_TOKEN", { error });
-    }
-  },
-
   /**
    * Регистрация Пользователя
    * @param email - Email Пользователя
    * @param password - Пароль
    */
-  async register(email: string, password: string): Promise<TokenPayload> {
-    const response = await handleRequest(
-      () => guestInstance.post<AuthRes>("auth/register", { email, password }),
+  async register(credentials: RegisterCredentials): Promise<AuthRes> {
+    return await handleRequest(
+      () => guestInstance.post<AuthRes>("auth/register", credentials),
       "Auth/Register"
     );
-    return this.processAuthResponse(response);
   },
 
   /**
@@ -72,24 +38,23 @@ export const authAPI = {
    * @param email - Email Пользователя
    * @param password - Пароль
    */
-  async login(email: string, password: string): Promise<TokenPayload> {
-    const response = await handleRequest(
-      () => guestInstance.post<AuthRes>("auth/login", { email, password }),
+  async login(credentials: LoginCredentials): Promise<AuthRes> {
+    return await handleRequest(
+      () => guestInstance.post<AuthRes>("auth/login", credentials),
       "Auth/Login"
     );
-    return this.processAuthResponse(response);
   },
 
   /**
    * Проверка Токена Пользователя
    */
-  async check(): Promise<{ isValid: boolean; userData?: IUser }> {
+  async check(): Promise<{ isValid: boolean; user?: User }> {
     try {
       const response = await handleRequest(
         () => authInstance.get<CheckRes>("auth/check"),
         "Auth/Check"
       );
-      return { isValid: response.success, userData: response.data.user };
+      return { isValid: response.success, user: response.data?.user };
     } catch (error: unknown) {
       if (isErrorWithStatus(error, 401)) return { isValid: false };
       console.error("Ошибка Проверки Пользователя : ", error);
@@ -100,12 +65,24 @@ export const authAPI = {
   /**
    * Обновление Токена Пользователя
    */
-  async refresh(): Promise</* AuthRes */ any /* // ! типы настроить  */> {
-    const response = await handleRequest(
-      () => authInstance.post<AuthRes>("auth/refresh"),
-      "Auth/Refresh"
-    );
-    return this.processAuthResponse(response);
+  async refresh(): Promise<Token> {
+    try {
+      const response = await handleRequest(
+        () => authInstance.post<RefreshRes>("auth/refresh"),
+        "Auth/Refresh"
+      );
+      if (!response.data?.tokenAccess) {
+        throw new ApiError(401, "Невалидный токен", "INVALID_TOKEN");
+      }
+      return response?.data;
+    } catch (error: unknown) {
+      if (isErrorWithStatus(error, 401)) {
+        // очистка данн.при неавториз.доступе
+        localStorage.removeItem("tokenAccess");
+        throw new ApiError(401, "Требуется авторизация", "UNAUTHORIZED");
+      }
+      throw error;
+    }
   },
 
   /**
@@ -121,7 +98,7 @@ export const authAPI = {
         "Auth/Logout"
       );
     } catch (error) {
-      console.warn("Ошибка при Выходе (возможно уже разлогинен):", error);
+      console.error("Ошибка при Выходе (возможно уже разлогинен):", error);
     } finally {
       localStorage.removeItem("tokenAccess");
     }
@@ -162,5 +139,19 @@ export const authAPI = {
       () => guestInstance.post(`auth/reset-password/${token}`, { newPassword }),
       "Auth/confirmPasswordReset"
     );
+  },
+
+  /**
+   * декодирование JWT Токена
+   * @param token - JWT Токен
+   * @returns данные Пользователя
+   * @throws {ApiError} невалидном Токене
+   */
+  parseToken(token: string): UserProfile {
+    try {
+      return jwtDecode<UserProfile>(token);
+    } catch (error: unknown) {
+      throw new ApiError(401, "Невалидный токен", "INVALID_TOKEN", { error });
+    }
   },
 };
