@@ -49,40 +49,25 @@ export const authAPI = {
    * Проверка Токена Пользователя
    */
   async check(): Promise<{ isValid: boolean; user?: User }> {
-    try {
-      const response = await handleRequest(
-        () => authInstance.get<CheckRes>("auth/check"),
-        "Auth/Check"
-      );
-      return { isValid: response.success, user: response.data?.user };
-    } catch (error: unknown) {
-      if (isErrorWithStatus(error, 401)) return { isValid: false };
-      console.error("Ошибка Проверки Пользователя : ", error);
-      throw error;
-    }
+    const response = await handleRequest(
+      () => authInstance.get<CheckRes>("auth/check"),
+      "Auth/Check"
+    );
+    return { isValid: response.success, user: response.data?.user };
   },
 
   /**
    * Обновление Токена Пользователя
    */
   async refresh(): Promise<Token> {
-    try {
-      const response = await handleRequest(
-        () => authInstance.post<RefreshRes>("auth/refresh"),
-        "Auth/Refresh"
-      );
-      if (!response.data?.tokenAccess) {
-        throw new ApiError(401, "Невалидный токен", "INVALID_TOKEN");
-      }
-      return response?.data;
-    } catch (error: unknown) {
-      if (isErrorWithStatus(error, 401)) {
-        // очистка данн.при неавториз.доступе
-        localStorage.removeItem("tokenAccess");
-        throw new ApiError(401, "Требуется авторизация", "UNAUTHORIZED");
-      }
-      throw error;
+    const response = await handleRequest(
+      () => authInstance.post<RefreshRes>("auth/refresh"),
+      "Auth/Refresh"
+    );
+    if (!response.data?.tokenAccess) {
+      throw new ApiError(401, "Невалидный токен", "INVALID_TOKEN");
     }
+    return response?.data;
   },
 
   /**
@@ -92,16 +77,10 @@ export const authAPI = {
    * удал. tokenAccess из LS
    */
   async logout(): Promise<void> {
-    try {
-      await handleRequest(
-        () => authInstance.post<AuthRes>("auth/logout"),
-        "Auth/Logout"
-      );
-    } catch (error) {
-      console.error("Ошибка при Выходе (возможно уже разлогинен):", error);
-    } finally {
-      localStorage.removeItem("tokenAccess");
-    }
+    await handleRequest(
+      () => authInstance.post<AuthRes>("auth/logout"),
+      "Auth/Logout"
+    );
   },
 
   /**
