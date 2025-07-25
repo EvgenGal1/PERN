@@ -60,11 +60,11 @@ class CatalogStore {
     );
 
     // лог.измен.
-    spy((event) => {
-      if (event.type === "action") {
-        console.log("CatalogStore Action:", event.name);
-      }
-    });
+    // spy((event) => {
+    //   if (event.type === "action") {
+    //     console.log("CatalogStore Action:", event.name);
+    //   }
+    // });
 
     // чтение данн.из localStorage при инициализации
     this.loadFromLocalStorage();

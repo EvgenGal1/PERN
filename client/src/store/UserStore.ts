@@ -1,6 +1,6 @@
 // ^ хранилище Пользователей
 
-import { action, makeAutoObservable, observable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 import { jwtDecode } from "jwt-decode";
 import { debounce } from "lodash";
 
@@ -27,7 +27,12 @@ export default class UserStore {
 
   constructor() {
     makeAutoObservable(this);
-
+    // лог.измен.
+    spy((event) => {
+      if (event.type === "action") {
+        console.log("UserStore Action:", event.name);
+      }
+    });
     // инициализация с чтение данн.из LS и проверкой
     this.initializeSession();
   }
@@ -136,6 +141,7 @@ export default class UserStore {
     this.saveToLocalStorage();
   }
 
+  // очистка данн.в Store/LS
   @action clearSession() {
     this.id = null;
     this.email = null;
@@ -184,26 +190,12 @@ export default class UserStore {
     }
   }
 
-  @action async logout(): Promise<void> {
-    this.setLoading(true);
-    try {
-      await authAPI.logout();
-    } catch (error) {
-      console.warn("Предупреждение о выходе из системы : ", error);
-    } finally {
-      runInAction(() => {
-        this.clearSession();
-        this.setLoading(false);
-      });
-    }
-  }
-
   // проверка Пользователя в БД
   @action async checkSession(): Promise<boolean> {
+    if (this.isLoading) return false;
     this.setLoading(true);
     try {
       const { isValid, user } = await authAPI.check();
-
       runInAction(() => {
         if (isValid && user) {
           this.id = user.id;
@@ -238,6 +230,20 @@ export default class UserStore {
       throw error;
     } finally {
       this.setLoading(false);
+    }
+  }
+
+  @action async logout(): Promise<void> {
+    this.setLoading(true);
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.warn("Предупреждение о выходе из системы : ", error);
+    } finally {
+      runInAction(() => {
+        this.clearSession();
+        this.setLoading(false);
+      });
     }
   }
 
@@ -281,11 +287,6 @@ export default class UserStore {
     this.error = apiError;
     // captureException(error); // Отправка ошибки в Sentry или аналоги
     console.error(`Ошб.в UserStore [${context}]`, apiError);
-
-    // авто logout при 401
-    if (apiError.status === 401) {
-      this.logout();
-    }
   }
 
   // ГЕТТЕРЫ ----------------------------------------------------------------------------------
