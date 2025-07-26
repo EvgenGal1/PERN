@@ -6,7 +6,6 @@ import { Request, Response, NextFunction } from 'express';
 import ApiError from './ApiError';
 // логг.ошб.
 import { LoggingWinston as logger } from '../../config/logging/log_winston.config';
-import { isDevelopment } from '../../config/envs/env.consts';
 
 /**
  * Middleware для обработки ошибок API
@@ -17,9 +16,6 @@ const ErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  // лог.полной ошб. > разработки
-  if (isDevelopment) console.error('Full error:', err);
-
   // преобраз.неизвест.ошб.в формат ApiError
   if (!(err instanceof ApiError) && err instanceof Error) {
     err = new ApiError(500, err.message || 'Неизвестная ОШБ.', err.name);
@@ -29,9 +25,9 @@ const ErrorHandler = (
 
   // лог.ошб.
   logger.error(
-    `API Error: ${req.method} ${req.url} - ${apiError.status}\n` +
-      `Message : ${apiError.message}\n` +
-      `Stack : ${apiError.errors}\n`,
+    `\nAPI Error: ${req.method} ${req.url} - ${apiError.status}\n` +
+      `Message : ${apiError.message}  Code : ${apiError.code}\n` +
+      `Error : ${apiError.errors}`,
   );
 
   // стандарт.res
