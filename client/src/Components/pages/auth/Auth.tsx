@@ -6,6 +6,7 @@ import {
   ADMIN_ROUTE,
   LOGIN_ROUTE,
   REGISTER_ROUTE,
+  SHOP_ROUTE,
   USER_ROUTE,
 } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
@@ -33,15 +34,16 @@ const Auth = observer(() => {
     isLogin
   );
 
-  // если пользователь авторизован, перенаправление по Роли
+  // е/и пользователь авторизован/есть роли/загр.завершена - перенаправление по Роли
   useEffect(() => {
-    if (user.isAuth) {
-      navigate(user.isAdmin ? ADMIN_ROUTE : USER_ROUTE, {
-        replace: true,
-        state: { from: location.state?.from },
+    if (user.isAuth && user.roles.length > 0 && !user.isLoading) {
+      const targetRoute = user.isAdmin ? ADMIN_ROUTE : USER_ROUTE;
+      navigate(targetRoute, {
+        replace: true, // замена текущ.записи в истор.брауз. (нет кнп.Назад)
+        state: { from: location.state?.from || SHOP_ROUTE }, // сохр.путь прихода (возврат на маршрут после Auth)
       });
     }
-  }, [user.isAuth, user.isAdmin, navigate, location]);
+  }, [user.isAuth, user.roles, location.state]);
 
   // обраб.данн.формы (запрос/ошб.с БД)
   const handleSubmit = async (event: FormEvent) => {
