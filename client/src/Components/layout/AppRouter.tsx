@@ -1,17 +1,18 @@
 import { useContext, useMemo, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
 import { publicRoutes, authRoutes, adminRoutes } from "./routes";
 import { AppContext } from "@/context/AppContext";
 import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
 
-interface RouteConfig {
+type RouteConfig = {
   path: string;
   Component: React.ComponentType;
   roles?: Array<{ role: string; level?: number }>;
-}
+};
 
-const AppRouter: React.FC = () => {
+const AppRouter: React.FC = observer(() => {
   const { user } = useContext(AppContext);
 
   /**
@@ -56,6 +57,6 @@ const AppRouter: React.FC = () => {
       </div>
     </main>
   );
-};
+});
 
 export default AppRouter;

@@ -16,17 +16,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/styles.scss";
 
 const App: React.FC = observer(() => {
-  const { user } = useContext(AppContext);
+  const { user, basket } = useContext(AppContext);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const initialize = async () => {
       // попытка восстановить сессию
       await user.restoreSession();
+      // после востанов.user загр.basket
+      if (user.isAuth) await basket.loadBasket();
       setLoading(false);
     };
     initialize();
-  }, []);
+  }, [user, basket]);
 
   // показ LoadingAtom, при загр.данн.польз.с БД
   if (loading) return <LoadingAtom />;
