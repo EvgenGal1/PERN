@@ -13,7 +13,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
   console.error(`errorHandler [${context}] ОШБ: `, error);
 
   // обраб.ошб.axios
-  if (error instanceof AxiosError || isAxiosError(error)) {
+  if (isAxiosError(error)) {
     // ответ от БД, обраб.ошб.
     const response = error.response;
     // ошб.сетевые (нет ответа)
@@ -24,7 +24,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
     // при 401 Выход Пользователя
     // if (response.status === 401) UserStore.prototype.logout();
 
-    // стандарт.ошб.БД
+    // ошб.БД формата ApiError
     if (response?.data?.error) {
       return new ApiError(
         response.status,
@@ -34,7 +34,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
         response.data.error.details
       );
     }
-    // нестандарт ошб.
+    // стандарт ошб.БД
     return new ApiError(
       response.status,
       response.data?.message || error.message || "нестандартная ошибка",
@@ -47,5 +47,7 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
   // натив.ошб.JS
   if (error instanceof Error) return new ApiError(500, error.message);
   // неизвестные ошб.
-  return new ApiError(500, "Неизвестная ошибка");
+  return new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", {
+    originalError: error,
+  });
 };

@@ -1,10 +1,10 @@
 // ^ КЭШирование запросов с TTL
 
-interface CacheEntry<T> {
+type CacheEntry<T> = {
   data: T; // кэш.данн.
   timestamp: number; // время записи (мс)
   ttl: number; // время жизни (мс)
-}
+};
 
 class RequestCache {
   private cache = new Map<string, CacheEntry<any>>();

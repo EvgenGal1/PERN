@@ -4,16 +4,21 @@ import { AxiosError } from "axios";
 
 export class ApiError extends Error {
   constructor(
-    public status: number = 500,
-    public message: string = "Неизвестная ошибка",
-    public code: string = "UNKNOWN_ERROR",
-    public errors?: Record<string, unknown>,
-    public details?: any
+    // ^ в боте есть переделка
+    public readonly status: number = 500,
+    public readonly message: string = "Неизвестная ошибка",
+    public readonly code: string = "UNKNOWN_ERROR",
+    public readonly errors?: Record<string, unknown>,
+    public readonly details?: any
   ) {
     super(message);
     // для логов/отладки
     this.name = "ApiError";
     // Object.setPrototypeOf(this, ApiError.prototype);
+    // проверка доступности stack
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ApiError);
+    }
   }
 
   toJSON() {

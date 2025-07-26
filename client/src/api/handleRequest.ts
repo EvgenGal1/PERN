@@ -45,7 +45,7 @@ export const handleRequest = async <T>(
     // сохр.кэш данн.
     if (useCache && cacheKey) {
       requestCache.set(cacheKey, result, ttl);
-      console.debug(`[${context}] Cache SET for`, cacheKey);
+      console.debug(`[${context}] Cache Установлен > `, cacheKey);
     }
 
     console.debug(`^ [${context}] RES: `, result);

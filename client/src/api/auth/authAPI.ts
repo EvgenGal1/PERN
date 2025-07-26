@@ -18,7 +18,6 @@ import type {
   Token,
 } from "@/types/auth.types";
 import type { User, UserProfile } from "@/types/user.types";
-import { isErrorWithStatus } from "@/utils/errorObject";
 
 export const authAPI = {
   /**

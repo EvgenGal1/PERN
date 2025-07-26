@@ -7,11 +7,11 @@ import CatalogStore from "@/store/CatalogStore";
 import BasketStore from "@/store/BasketStore";
 
 // интерф.> тип.хранилищ
-interface AppContextValue {
+type AppContextValue = {
   user: UserStore;
   catalog: CatalogStore;
   basket: BasketStore;
-}
+};
 
 // инициализация экземпляров хранилищ по отделельности один раз при загрузке модуля
 const userStore = new UserStore();
