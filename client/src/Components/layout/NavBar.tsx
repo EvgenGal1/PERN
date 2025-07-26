@@ -38,12 +38,12 @@ const NavBar = observer(() => {
       {
         path: ABOUTME_ROUTE,
         label: "обо мне",
-        show: user.hasRole("USER", 1),
+        show: user.isAdmin,
       },
       {
         path: ADMIN_ROUTE,
         label: "admin панель",
-        show: user.hasRole("ADMIN", 4),
+        show: user.hasRole("ADMIN", 3),
       },
     ],
     [user.isAuth, basket.count]

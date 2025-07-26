@@ -138,27 +138,26 @@ export const useAuthForm = (
     return "";
   }, []);
 
-  // валид.confirmPassword
-  const validateConfirmPassword =
-    /* useCallback( */
+  // валид.подтверждения паролz
+  const validateConfirmPassword = useCallback(
     (confirmPassword: string, password: string): string => {
-      console.log("confirmPassword : ", confirmPassword);
-      console.log("password : ", password);
       if (!confirmPassword) return "Подтвердите пароль";
       if (confirmPassword !== password) return "Пароли не совпадают";
       return "";
-    }; /* ,
+    },
     []
-  ); */
+  );
+
+  // ^ проверка разности email и password (не должны совпадать или быть похожими)
+  // if (errors.email === errors.password) {
+  //   const strErr = `Не должны совпадать ${errors.email} и ${errors.password}`;
+  //   errors.email = strErr;  errors.password = strErr;  }
+  // else {  errors.email = "";  errors.password = "";  }
+  // ^ проверка уникальности. не должно быть простых комбинаций, последовательных знаков/букв
 
   // валид.значения по имени
   const validateField = useCallback(
     (name: keyof AuthCredential, value: string): string => {
-      console.log(
-        "validateField credentials.password : ",
-        credentials.password
-      );
-      console.log("validateField value : ", value);
       switch (name) {
         case "email":
           return validateEmail(value);
@@ -220,30 +219,6 @@ export const useAuthForm = (
   const resetForm = () => {
     setCredentials(() => ({ email: "", password: "" }));
   };
-
-  // ^ будущ.дораб. > username/проверка password при Регистрации
-  // проверка имени
-  // if (!credentials.username.trim()) { errors.username = "Поле обязательно для заполнения"; }
-  // else if (credentials.username.trim().length < 3) { errors.username = "Имя должно содержать не менее 3 символов"; }
-  // else { errors.username = "";}
-
-  // проверка подтверждения пароля
-  // if (!credentials.confirmPassword.trim()) { errors.confirmPassword = "Поле обязательно для заполнения"; }
-  // else if (credentials.confirmPassword.trim() !== value.trim()) { errors.confirmPassword = "Пароли не совпадают"; }
-  // else { errors.confirmPassword = ""; }
-
-  // ^ проверка разности email и password (не должны совпадать или быть похожими)
-  // if (errors.email === errors.password) {
-  //   console.log("errors.email ", errors.email);
-  //   console.log("errors.password ", errors.password);
-  //   const strErr = `Не должны совпадать ${errors.email} и ${errors.password}`;
-  //   errors.email = strErr;
-  //   errors.password = strErr;
-  // } else {
-  //   errors.email = "";
-  //   errors.password = "";
-  // }
-  // ^ проверка уникальности. не должно быть простых комбинаций, последовательных знаков/букв
 
   return {
     credentials,

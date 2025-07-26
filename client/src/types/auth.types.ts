@@ -4,6 +4,7 @@ import { ApiResponse } from "./api.types";
 import { User, UserProfile, RoleLevel } from "./user.types";
 
 export type AuthResponse = Token & {
+  token?: Token;
   user: UserProfile;
   basket: number;
   roles: RoleLevel[];
@@ -25,6 +26,7 @@ export type RegisterCredentials = LoginCredentials & {
 
 export type Token = {
   tokenAccess: string;
+  tokenRefresh?: string;
 };
 
 export type TokenPayload = {

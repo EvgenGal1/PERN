@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
-import { authAPI } from "@/api/auth/authAPI";
 import { LOGIN_ROUTE, USERORDERS_ROUTE } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
 
@@ -16,7 +15,7 @@ const User: React.FC = observer(() => {
       user.logout();
       navigate(LOGIN_ROUTE, {
         replace: true,
-        // ? state: { from: null }, // сброс истории навигации
+        state: { from: null }, // сброс истории навигации
       });
     } catch (error) {
       console.error("Ошибка навигации при выходе из системы ", error);

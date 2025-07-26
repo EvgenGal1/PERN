@@ -47,12 +47,12 @@ import SearchFilter from "@Comp/common/SearchFilter";
 import Shop from "@Comp/pages/shop/Shop";
 import AboutMe from "@Comp/pages/public/AboutMe";
 
-export interface RouteConfig {
+export type RouteConfig = {
   path: string;
   Component: React.ComponentType;
   exact?: boolean;
   roles?: Array<{ role: string; level?: number }>;
-}
+};
 
 // публичные маршруты > всех Пользователей (Магз., Логин, Регистр., Конкретн.Устр.с ID, ...,)
 export const publicRoutes: RouteConfig[] = [
