@@ -12,6 +12,7 @@ import type {
   RegisterCredentials,
 } from "@/types/auth.types";
 import { ApiError } from "@/utils/errorAPI";
+import { errorHandler } from "@/utils/errorHandler";
 
 export default class UserStore {
   @observable id: number | null = null;
@@ -92,7 +93,7 @@ export default class UserStore {
     this.loadFromLocalStorage();
 
     // проверка Токена при инициализации
-    this.checkSession().catch((error) => {
+    this.check().catch((error) => {
       console.warn("проверка Сессии не удалась:", error);
       this.logout();
     });
@@ -128,7 +129,7 @@ export default class UserStore {
   }
 
   // сохр.сессии
-  @action private persistSession(data: AuthResponse) {
+  @action private saveSession(data: AuthResponse) {
     this.id = data.user.id;
     this.email = data.user.email;
     this.username = data.user.username;
@@ -161,7 +162,7 @@ export default class UserStore {
     try {
       const response = await authAPI.login(credentials);
       runInAction(() => {
-        this.persistSession(response.data!);
+        this.saveSession(response.data);
       });
     } catch (error) {
       this.handleError(error, "Ошибка Авторизации");
@@ -178,7 +179,7 @@ export default class UserStore {
     try {
       const response = await authAPI.register(credentials);
       runInAction(() => {
-        this.persistSession(response.data);
+        this.saveSession(response.data);
       });
     } catch (error) {
       this.handleError(error, "Ошибка Регистрации");
@@ -191,7 +192,7 @@ export default class UserStore {
   }
 
   // проверка Пользователя в БД
-  @action async checkSession(): Promise<boolean> {
+  @action async check(): Promise<boolean> {
     if (this.isLoading) return false;
     this.setLoading(true);
     try {
@@ -273,20 +274,17 @@ export default class UserStore {
   @action hasAnyRole(
     requiredRoles: Array<{ role: string; level?: number }>
   ): boolean {
-    return requiredRoles.some((required) =>
-      this.hasRole(required.role, required.level ?? 1)
-    );
+    return requiredRoles.some((r) => this.hasRole(r.role, r.level ?? 1));
   }
 
-  @action private handleError(error: unknown, context?: string) {
-    const apiError =
-      error instanceof ApiError
-        ? error
-        : new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", { context });
-
+  @action private handleError(error: unknown, context: string) {
+    // обраб. ч/з универ.fn обраб.ошб.
+    const apiError = errorHandler(error, `UserStore: ${context}`);
+    // сохр./логг.
     this.error = apiError;
-    // captureException(error); // Отправка ошибки в Sentry или аналоги
     console.error(`Ошб.в UserStore [${context}]`, apiError);
+    // отправка ошб.в Sentry
+    // captureException(apiError);
   }
 
   // ГЕТТЕРЫ ----------------------------------------------------------------------------------

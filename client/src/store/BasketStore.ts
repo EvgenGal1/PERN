@@ -6,6 +6,7 @@ import { debounce } from "lodash";
 import { basketAPI } from "@/api/shopping/basketAPI";
 import type { BasketData, BasketProduct } from "@/types/shopping.types";
 import { ApiError } from "@/utils/errorAPI";
+import { errorHandler } from "@/utils/errorHandler";
 
 class BasketStore {
   @observable products: BasketProduct[] = [];
@@ -150,13 +151,13 @@ class BasketStore {
   }
 
   @action private handleError(error: unknown, context?: string) {
-    const apiError =
-      error instanceof ApiError
-        ? error
-        : new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", { context });
+    // обраб. ч/з универ.fn обраб.ошб.
+    const apiError = errorHandler(error, `UserStore: ${context}`);
+    // сохр./логг.
     this.error = apiError;
-    // captureException(error); // Отправка ошибки в Sentry или аналоги
-    console.error(`Ошб.в BasketStore [${context}]`, apiError);
+    console.error(`Ошб.в UserStore [${context}]`, apiError);
+    // отправка ошб.в Sentry
+    // captureException(apiError);
   }
 
   // ==================== ГЕТТЕРЫ ====================
