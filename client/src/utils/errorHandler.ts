@@ -1,11 +1,34 @@
 // ^ основной обработчик ошибок (axios/req/res c БД, спец.доп.ошб., натив.ошб.JS, неизвестные ошб.)
 
-import { AxiosError, isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 // логгирование
 // import * as Sentry from "@sentry/react";
 
 import { ApiError } from "./errorAPI";
 
+/**
+ * @function errorHandler
+ * @description Универсальная функция для обработки и нормализации ошибок.
+ *              Превращает любую ошибку в экземпляр `ApiError` для единообразной обработки.
+ *
+ * @param {unknown} error - Любая ошибка, которую нужно обработать.
+ * @param {string} [context] - Контекст, в котором произошла ошибка (например, имя метода).
+ * @returns {ApiError} Нормализованный объект ошибки типа `ApiError`.
+ *
+ * @example
+ * try {
+ *   await someAsyncOperation();
+ * } catch (error) {
+ *   const apiError = errorHandler(error, "UserService.fetchUser");
+ *   console.error("Код ошибки:", apiError.code);
+ *   console.error("Сообщение:", apiError.message);
+ * }
+ *
+ * @example
+ * // Обработка ошибки сети
+ * // Вход: Network Error (from Axios)
+ * // Выход: new ApiError(503, "Сервер недоступен", "NETWORK_ERROR")
+ */
 export const errorHandler = (error: unknown, context?: string): ApiError => {
   // логг.Sentry
   // if (process.env.NODE_ENV === "production") Sentry.captureException(error, { tags: { context } });
