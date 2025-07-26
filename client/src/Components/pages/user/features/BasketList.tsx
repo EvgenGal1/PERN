@@ -1,110 +1,38 @@
 import { observer } from "mobx-react-lite";
-import { useContext, useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { basketAPI } from "@/api/shopping/basketAPI";
-import { CHECKOUT_ROUTE } from "@/utils/consts";
 import { AppContext } from "@/context/AppContext";
-import BasketItem from "./BasketItem";
+import BasketTable from "./BasketTable";
+import { CHECKOUT_ROUTE } from "@/utils/consts";
 
 const BasketList = observer(() => {
-  const { basket }: any = useContext(AppContext);
-  const [fetching, setFetching] = useState(false);
-
+  const { basket } = useContext(AppContext);
   const navigate = useNavigate();
 
-  // ! заглушка/загрузка данн.корзины. Мигает пустая корзина
-  // ^ решил - использ.доп.условн.рендер (fetching)
-  useEffect(() => {
-    basketAPI
-      .getOneBasket()
-      .then((data) => (basket.products = data.products))
-      .finally(() => setFetching(false));
-  }, []);
-
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
-
-  const handleIncrement = (id: number) => {
-    setFetching(true);
-    basketAPI
-      .incrementBasket(id)
-      .then((data) => {
-        basket.products = data.products;
-      })
-      .finally(() => setFetching(false));
-  };
-
-  const handleDecrement = (id: number) => {
-    setFetching(true);
-    basketAPI
-      .decrementBasket(id)
-      .then((data) => {
-        basket.products = data.products;
-      })
-      .finally(() => setFetching(false));
-  };
-
-  const handleRemove = (id: number, name?: string) => {
-    const confirmDel = confirm(`Удалить Позицию - «${name}»`);
-    if (confirmDel) {
-      setFetching(true);
-      basketAPI
-        .removeBasket(id)
-        .then((data) => {
-          basket.products = data.products;
-        })
-        .finally(() => setFetching(false));
-    }
-  };
+  if (!basket.count) return <EmptyBasket />;
 
   return (
-    <>
-      {/* // ! не раб. при перезагр. basket.count сброс на 0, вывод - Ваша корзина пуста. От того что basket|product|count при перезаг в сброс. Решение - 1. Есть заглушка usEf выше (загр.перед.рендер. но есть - мигание); 2. Загр.basket вернуть в App 3. использ.доп.условн.рендер (fetching) */}
-      {/* // ^ решил - использ.доп.условн.рендер (fetching) */}
-      {basket.count ? (
-        <>
-          <table className="mt-3 table--eg">
-            <thead>
-              <tr>
-                <th>Наименование</th>
-                <th>Количество</th>
-                <th>Цена</th>
-                <th>Сумма</th>
-                <th>Удалить</th>
-              </tr>
-            </thead>
-            <tbody>
-              {basket.products.map((item: any) => (
-                <BasketItem
-                  key={item.id}
-                  increment={handleIncrement}
-                  decrement={handleDecrement}
-                  remove={handleRemove}
-                  {...item}
-                />
-              ))}
-              <tr>
-                <th colSpan={3}>Итого</th>
-                <th>{basket.sum}</th>
-                <th>руб.</th>
-              </tr>
-            </tbody>
-          </table>
-          <button
-            onClick={() => navigate(CHECKOUT_ROUTE)}
-            className="btn--eg btn-primary--eg mt-3"
-          >
-            Оформить заказ
-          </button>
-        </>
-      ) : (
-        fetching && <p>Ваша корзина пуста</p>
-      )}
-    </>
+    <div className="basket-container">
+      <BasketTable />
+      <CheckoutButton
+        isLoading={basket.isLoading}
+        onClick={() => navigate(CHECKOUT_ROUTE)}
+      />
+    </div>
   );
 });
+// заглушка пустой Корзины
+const EmptyBasket = () => <p>Ваша Корзина пуста</p>;
+// кнп.Оформить Заказ
+const CheckoutButton = ({ isLoading, onClick }) => (
+  <button
+    onClick={onClick}
+    className="checkout-button btn--eg btn-primary--eg mt-3"
+    disabled={isLoading}
+  >
+    {isLoading ? "Обработка..." : "Оформить Заказ"}
+  </button>
+);
 
 export default BasketList;
