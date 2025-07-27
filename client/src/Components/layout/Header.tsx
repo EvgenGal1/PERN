@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
 
 import { AppContext } from "@/context/AppContext";
 
@@ -29,9 +28,10 @@ import { SHOP_ROUTE } from "@/utils/consts";
 
 // Компонент ссылок
 import NavBar from "./NavBar";
+import ExamplesMenu from "./ExamplesMenu";
 
 const Header = () => {
-  const { user }: any = useContext(AppContext);
+  const { user } = useContext(AppContext);
   // console.log("HDR user ", user);
 
   // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
@@ -97,47 +97,18 @@ const Header = () => {
           <div className="header__menu">
             {/* ВЕРХНЕЕ МЕНЮ */}
             <nav className="header__menu-top menu-top flex flex-wrap justify-between items-center text-white">
-              {/* NewPro */}
-              <span className="menu-top__items m-t-items">
-                <NavLink to="/NewPro" className="m-t-items__navlink activ-prob">
-                  NewPro
-                </NavLink>
-              </span>
-              {/* NRJWT */}
-              <span className="menu-top__items m-t-items">
-                <NavLink to="/NRJWT" className="m-t-items__navlink activ-prob">
-                  NRJWT
-                </NavLink>
-              </span>
-              {/* Prob0 */}
-              <span className="menu-top__items m-t-items">
-                <NavLink to="/Prob0" className="m-t-items__navlink activ-prob">
-                  Prob0
-                </NavLink>
-                {/* // ^ данная вложеность и переход на стр. возможен е/и сами влож.стр. добав. в общ. Routes, на один уровень с верхним NavLink */}
-                <ul className="m-t-items__ul m-t-its-ul">
-                  <li className="m-t-its-ul__li">
-                    <Link to="/Prob1" className="">
-                      Prob1
-                    </Link>
-                  </li>
-                  <li className="m-t-its-ul__li">
-                    <Link to="/Prob2" className="">
-                      Prob2
-                    </Link>
-                  </li>
-                </ul>
-              </span>
-              {/* AboutMe */}
-              <span className="menu-top__items m-t-items">
-                <NavLink to="AboutMe" className="m-t-items__navlink">
-                  AboutMe
-                </NavLink>
-              </span>
+              {/* доп.пункты примеров с высоким Уровнем доступа (ф.маршрутов нет) */}
+              {user.isAuth &&
+                user.hasAnyRole([
+                  { role: "USER", level: 5 },
+                  { role: "ADMIN", level: 5 },
+                  { role: "MODERATOR", level: 1 },
+                ]) && <ExamplesMenu />}
+              {/* пункты публичного меню */}
               <NavBar />
             </nav>
             {/* НИЖНЕЕ/ДОП.МЕНЮ */}
-            {pressCombine && (
+            {user.isAuth && pressCombine && (
               <nav className="header__menu-bottom menu-bottom flex flex-wrap justify-between items-center">
                 <span
                   className="menu-bottom__items m-b-items"
@@ -205,7 +176,7 @@ const Header = () => {
             )}
           </div>
           {/* врем.кнп.для упрощ.вкл.доп.меню */}
-          {!pressCombine && (
+          {user.isAuth && !pressCombine && (
             <>
               <div
                 className="miniArrow"
