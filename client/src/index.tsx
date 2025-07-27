@@ -7,34 +7,28 @@ import App from "@/App";
 import { AppContextProvider } from "@/context/AppContext";
 // перехватчик ошб.в дочер.Комп.
 import ErrorBoundary, {
-  FallbackComp,
+  FallbackCompProps,
 } from "@/Components/ErrorBoundary/ErrorBoundary";
-import { ApiError } from "@/utils/errorAPI";
 
 import "@/index.css";
 
 // подкл.логг. Sentry ()
-// Sentry.init({
-//   dsn: process.env.REACT_APP_SENTRY_DSN,
-//   environment: process.env.NODE_ENV,
-// });
+// Sentry.init({  dsn: process.env.REACT_APP_SENTRY_DSN,  environment: process.env.NODE_ENV  });
 
 // глобал.UI отката (fallback UI) от кретич.ошб.рендера
-const GlobalFallback: FallbackComp = ({
-  error,
-  onReset,
-}: {
-  error?: ApiError;
-  onReset?: () => void;
-}) => (
+const GlobalFallback: React.FC<FallbackCompProps> = ({ error, onReset }) => (
   <div className="global-error auth-error">
     <h1>Критическая ошибка</h1>
     <p>Приносим извинения за неудобства</p>
     <div className="error-details">
       <p>Сообщение: {error?.message}</p>
-      <p>Код: {error?.code}</p>
+      {process.env.NODE_ENV === "development" && <p>Код: {error?.code}</p>}
     </div>
-    <button className="reload-button" onClick={onReset}>
+    <button
+      className="reload-button"
+      onClick={onReset}
+      style={{ marginTop: "20px" }}
+    >
       Перезагрузить приложение
     </button>
   </div>
@@ -46,7 +40,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ErrorBoundary
-      // заклушка UI > отката при ошб.
+      // резервный UI > отката при ошб.
       FallbackComp={GlobalFallback}
     >
       <AppContextProvider>
