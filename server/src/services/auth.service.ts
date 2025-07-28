@@ -1,5 +1,5 @@
 // вкл.операторы > сложн.req
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 // подкл. библ. для шифрование пароля нов.польз.
 import bcrypt from 'bcrypt';
 // подкл.генир.уник.рандом.id
