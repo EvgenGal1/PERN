@@ -1,7 +1,7 @@
 // ^ документация Swagger (swg)
 
 import swaggerJSDoc from 'swagger-jsdoc';
-// import swaggerUi from 'swagger-ui-express';
+import swaggerUi from 'swagger-ui-express';
 import { Application } from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -20,7 +20,8 @@ const CSS_PATH_LOCAL = path.join(
   isDevelopment
     ? // ? `../../../${process.env.PUB_DIR}/swagger/theme.css`
       `../../../public/swagger/theme.css`
-    : `../../${process.env.PUB_DIR}/swagger/theme.css`,
+    : // `../../${process.env.PUB_DIR}/swagger/theme.css`,
+      `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
 );
 // подроб.логи >  тестирования
 const MEGA_TEST_SWG = false;
@@ -70,61 +71,65 @@ export const documentSwagger = (app: Application): void => {
       openapi: '3.0.0',
       info: {
         title: 'PERN Stack API',
-        version: '2.2.1',
+        version: '2.1.1',
         description: 'Описание методов интеграции API',
       },
       servers: [
         {
-          url: isDevelopment
-            ? `${process.env.SRV_URL}/${process.env.SRV_NAME}`
-            : // `http://localhost:5000/${process.env.SRV_NAME}`,
-              `${process.env.SRV_URL}`,
+          url:
+            `${process.env.SRV_URL}/${process.env.SRV_NAME}` ||
+            `http://localhost:5000/${process.env.SRV_NAME}`,
+          //
+          //   isDevelopment
+          //   ? `${process.env.SRV_URL}/${process.env.SRV_NAME}`
+          //   : `http://localhost:5000/${process.env.SRV_NAME}`,
+          // // `${process.env.SRV_URL}`,
         },
       ],
     },
     // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI. Пути настр.под src/, dist/ с использ. process.cwd() > надежности на Vercel
     apis: [
+      path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подходА
       // path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
       // path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
-      path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подход
     ],
   };
 
   // спецификация swg в JSON
-  const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
+  const swaggerDocs =
+    swaggerJSDoc(swaggerOptions); /* as any */ /* | SwaggerSpec */
 
   // import SWG_UI внутри fn от проблем.с import в верхн.уровне/Vercel
-  const swaggerUi = require('swagger-ui-express');
 
-  // проверка путей для отладки
-  if (MEGA_TEST_SWG && isDevelopment) {
-    console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
-    swaggerOptions.apis.forEach((pattern) => {
-      const files = require('glob').sync(pattern);
-      console.log(`[Swagger] файлы по паттерну ${pattern}:`, files);
-    });
-  }
-  // логг.сгенерир.спеки
-  if (MEGA_TEST_SWG && isDevelopment) {
-    console.log(
-      '[Swagger] Сгенерированная спека:',
-      JSON.stringify(swaggerDocs, null, 2),
-    );
-  }
-  // проверка путей в спеке
-  if (!swaggerDocs.paths || Object.keys(swaggerDocs.paths).length === 0) {
-    console.warn(
-      '[Swagger] ВНИМАНИЕ: Сгенерированная спека не содержит путей (paths). Проверьте аннотации JSDoc в файлах маршрутов.',
-    );
-  }
+  // // проверка путей для отладки
+  // if (MEGA_TEST_SWG && isDevelopment) {
+  //   console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
+  //   swaggerOptions.apis.forEach((pattern) => {
+  //     const files = require('glob').sync(pattern);
+  //     console.log(`[Swagger] файлы по паттерну ${pattern}:`, files);
+  //   });
+  // }
+  // // логг.сгенерир.спеки
+  // if (MEGA_TEST_SWG && isDevelopment) {
+  //   console.log(
+  //     '[Swagger] Сгенерированная спека:',
+  //     JSON.stringify(swaggerDocs, null, 2),
+  //   );
+  // }
+  // // проверка путей в спеке
+  // if (!swaggerDocs.paths || Object.keys(swaggerDocs.paths).length === 0) {
+  //   console.warn(
+  //     '[Swagger] ВНИМАНИЕ: Сгенерированная спека не содержит путей (paths). Проверьте аннотации JSDoc в файлах маршрутов.',
+  //   );
+  // }
 
   // подкл./кастомизация SWG UI
   app.use(
     '/swagger',
     // откл. serve передача масс.[] от обслуж.swagger-ui-express своих ф.
-    // swaggerUi.serve,
+    swaggerUi.serve,
     // использ. JS с CDN с null > локал.ф.
-    swaggerUi.serveFiles(null, { swaggerUrl: '/swagger' }), //
+    // swaggerUi.serveFiles(null, { swaggerUrl: '/swagger' }), //
     swaggerUi.setup(swaggerDocs, {
       // назв.стр. Swagger
       customSiteTitle: 'PERN API Docs (Swagger)',
@@ -152,7 +157,7 @@ export const documentSwagger = (app: Application): void => {
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
       ],
       // откл.UI explorer от подкл.доп.ф.JS
-      explorer: false,
+      // explorer: false,
     }),
   );
 };

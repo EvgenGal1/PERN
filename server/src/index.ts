@@ -79,6 +79,9 @@ app.get('/', (req: Request, res: Response) => {
   res.send(htmlContent);
 });
 
+// // документирование (Swagger)
+// documentSwagger(app);
+
 // обработка ошибок
 app.use(ErrorHandler);
 
