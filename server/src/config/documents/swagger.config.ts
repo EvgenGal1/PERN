@@ -174,10 +174,14 @@ let customCssContent: string = '';
 // URL/путь загр.ф.стилей
 const CSS_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css';
-const CSS_PATH_LOCAL = path.join(
-  __dirname,
-  `../../../${process.env.PUB_DIR}/swagger/theme.css`,
-  // `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
+// const CSS_PATH_LOCAL = path.join(
+//   __dirname,
+//   `../../../${process.env.PUB_DIR}/swagger/theme.css`,
+//   // `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
+// );
+const CSS_PATH_LOCAL = path.resolve(
+  process.cwd(),
+  `${process.env.PUB_DIR}/swagger/theme.css`,
 );
 // подроб.логи >  тестирования
 const MEGA_TEST_SWG = false;
@@ -185,31 +189,64 @@ const MEGA_TEST_SWG = false;
 /**
  * загр.стилей при старте до SWG UI
  */
+// export const loadSwaggerStyles = async () => {
+//   try {
+//     // загруз.Базового CSS
+//     const res = await fetch(CSS_URL);
+//     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+//     defaultSwaggerCss = await res.text();
+//     MEGA_TEST_SWG &&
+//       isDevelopment &&
+//       console.log('[Swagger] Базовые стили загружены.');
+//     // загруз.Кастомного CSS
+//     if (fs.existsSync(CSS_PATH_LOCAL)) {
+//       customCssContent = fs.readFileSync(CSS_PATH_LOCAL, 'utf8');
+//       MEGA_TEST_SWG &&
+//         isDevelopment &&
+//         console.log('[Swagger] Кастомные стили загружены.');
+//     } else {
+//       console.warn(
+//         '[Swagger] Кастомный ф.theme.css не найден по пути:',
+//         CSS_PATH_LOCAL,
+//       );
+//     }
+//   } catch (err) {
+//     console.error('[Swagger] ошб.загр.stl.SWG :', (err as Error).message);
+//     defaultSwaggerCss = '/* Базовые стили не загружены */';
+//     customCssContent = '/* Кастомные стили не загружены */';
+//   }
+// };
 export const loadSwaggerStyles = async () => {
+  console.log('[Swagger] Начало загрузки стилей...');
   try {
-    // загруз.Базового CSS
+    console.log('[Swagger] Загрузка базового CSS с', CSS_URL);
     const res = await fetch(CSS_URL);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     defaultSwaggerCss = await res.text();
-    MEGA_TEST_SWG &&
-      isDevelopment &&
-      console.log('[Swagger] Базовые стили загружены.');
-    // загруз.Кастомного CSS
+    console.log(
+      '[Swagger] Базовый CSS загружен, длина:',
+      defaultSwaggerCss.length,
+    );
+
+    console.log('[Swagger] Путь к кастомному CSS:', CSS_PATH_LOCAL);
     if (fs.existsSync(CSS_PATH_LOCAL)) {
+      console.log('[Swagger] Чтение кастомного CSS...');
       customCssContent = fs.readFileSync(CSS_PATH_LOCAL, 'utf8');
-      MEGA_TEST_SWG &&
-        isDevelopment &&
-        console.log('[Swagger] Кастомные стили загружены.');
-    } else {
-      console.warn(
-        '[Swagger] Кастомный ф.theme.css не найден по пути:',
-        CSS_PATH_LOCAL,
+      console.log(
+        '[Swagger] Кастомный CSS загружен, длина:',
+        customCssContent.length,
       );
+    } else {
+      console.warn('[Swagger] Кастомный файл theme.css не найден.');
     }
+    console.log('[Swagger] Объединение стилей завершено.');
   } catch (err) {
-    console.error('[Swagger] ошб.загр.stl.SWG :', (err as Error).message);
-    defaultSwaggerCss = '/* Базовые стили не загружены */';
-    customCssContent = '/* Кастомные стили не загружены */';
+    console.error(
+      '[Swagger] Критическая ошибка загрузки стилей:',
+      (err as Error).message,
+    );
+    defaultSwaggerCss = '/* Fallback: Базовые стили не загружены */';
+    customCssContent = '/* Fallback: Кастомные стили не загружены */';
   }
 };
 
@@ -298,7 +335,7 @@ export const documentSwagger = (app: Application): void => {
         // url: '/swagger',
       },
       // кастом.иконки в браузере
-      customfavIcon: `/public/swagger/icon.ico`, // ! предложил Бот
+      customfavIcon: `/${process.env.PUB_DIR}/swagger/icon.ico`, // ! предложил Бот
       // customfavIcon: `../../../${process.env.PUB_DIR}/img/ico/icon.ico`, // рекомендация
       // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
       // кастом ф.CSS
