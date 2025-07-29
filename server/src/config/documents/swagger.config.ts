@@ -82,8 +82,8 @@ export const documentSwagger = (app: Application): void => {
     },
     // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI. Пути настр.под src/, dist/ с использ. process.cwd() > надежности на Vercel
     apis: [
-      path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
-      path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
+      // path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
+      // path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
       path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подход
     ],
   };
