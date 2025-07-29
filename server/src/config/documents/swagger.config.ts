@@ -18,7 +18,8 @@ const CSS_URL =
 const CSS_PATH_LOCAL = path.join(
   __dirname,
   isDevelopment
-    ? `../../../${process.env.PUB_DIR}/swagger/theme.css`
+    ? // ? `../../../${process.env.PUB_DIR}/swagger/theme.css`
+      `../../../public/swagger/theme.css`
     : `../../${process.env.PUB_DIR}/swagger/theme.css`,
 );
 // подроб.логи >  тестирования
@@ -74,17 +75,18 @@ export const documentSwagger = (app: Application): void => {
       },
       servers: [
         {
-          url:
-            `${process.env.SRV_URL}/${process.env.SRV_NAME}` ||
-            `http://localhost:${process.env.SRV_PORT || 5000}/${process.env.SRV_NAME}`,
+          url: isDevelopment
+            ? `${process.env.SRV_URL}/${process.env.SRV_NAME}`
+            : // `http://localhost:5000/${process.env.SRV_NAME}`,
+              `${process.env.SRV_URL}`,
         },
       ],
     },
     // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI. Пути настр.под src/, dist/ с использ. process.cwd() > надежности на Vercel
     apis: [
-      path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
-      path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
-      // path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подход
+      // path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
+      // path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
+      path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подход
     ],
   };
 
