@@ -233,11 +233,13 @@ export const documentSwagger = (app: Application): void => {
         version: '2.2.1',
         description: 'Описание методов интеграции API',
       },
+      // URL > req
       servers: [
         {
-          url:
-            `${process.env.SRV_URL}/${process.env.SRV_NAME}` ||
-            `http://localhost:5000/${process.env.SRV_NAME}`,
+          url: isDevelopment
+            ? `${process.env.SRV_URL}/${process.env.SRV_NAME}`
+            : `${process.env.SRV_URL}`,
+          description: isDevelopment ? 'Development server' : '',
           //
           //   isDevelopment
           //   ? `${process.env.SRV_URL}/${process.env.SRV_NAME}`
@@ -296,7 +298,8 @@ export const documentSwagger = (app: Application): void => {
         // url: '/swagger',
       },
       // кастом.иконки в браузере
-      customfavIcon: `../../../${process.env.PUB_DIR}/img/ico/icon.ico`, // рекомендация
+      customfavIcon: `/public/swagger/icon.ico`, // ! предложил Бот
+      // customfavIcon: `../../../${process.env.PUB_DIR}/img/ico/icon.ico`, // рекомендация
       // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
       // кастом ф.CSS
       // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили

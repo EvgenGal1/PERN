@@ -20,7 +20,10 @@
   "routes": [
     {
       "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "dest": "/public/$1",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/(.*)",
