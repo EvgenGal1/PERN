@@ -176,10 +176,7 @@ const CSS_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css';
 const CSS_PATH_LOCAL = path.join(
   __dirname,
-  isDevelopment
-    ? // ? `../../../${process.env.PUB_DIR}/swagger/theme.css`
-      `../../../public/swagger/theme.css`
-    : `../../../${process.env.PUB_DIR}/swagger/theme.css`,
+  `../../../${process.env.PUB_DIR}/swagger/theme.css`,
   // `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
 );
 // подроб.логи >  тестирования
@@ -204,7 +201,10 @@ export const loadSwaggerStyles = async () => {
         isDevelopment &&
         console.log('[Swagger] Кастомные стили загружены.');
     } else {
-      console.warn('[Swagger] ф.theme.css не найден по пути:', CSS_PATH_LOCAL);
+      console.warn(
+        '[Swagger] Кастомный ф.theme.css не найден по пути:',
+        CSS_PATH_LOCAL,
+      );
     }
   } catch (err) {
     console.error('[Swagger] ошб.загр.stl.SWG :', (err as Error).message);
@@ -230,7 +230,7 @@ export const documentSwagger = (app: Application): void => {
       openapi: '3.0.0',
       info: {
         title: 'PERN Stack API',
-        version: '2.1.1',
+        version: '2.2.1',
         description: 'Описание методов интеграции API',
       },
       servers: [
@@ -255,40 +255,37 @@ export const documentSwagger = (app: Application): void => {
   };
 
   // спецификация swg в JSON
-  const swaggerDocs =
-    swaggerJSDoc(swaggerOptions); /* as any */ /* | SwaggerSpec */
+  const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
 
   // import SWG_UI внутри fn от проблем.с import в верхн.уровне/Vercel
 
-  // // проверка путей для отладки
-  // if (MEGA_TEST_SWG && isDevelopment) {
-  //   console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
-  //   swaggerOptions.apis.forEach((pattern) => {
-  //     const files = require('glob').sync(pattern);
-  //     console.log(`[Swagger] файлы по паттерну ${pattern}:`, files);
-  //   });
-  // }
-  // // логг.сгенерир.спеки
-  // if (MEGA_TEST_SWG && isDevelopment) {
-  //   console.log(
-  //     '[Swagger] Сгенерированная спека:',
-  //     JSON.stringify(swaggerDocs, null, 2),
-  //   );
-  // }
-  // // проверка путей в спеке
-  // if (!swaggerDocs.paths || Object.keys(swaggerDocs.paths).length === 0) {
-  //   console.warn(
-  //     '[Swagger] ВНИМАНИЕ: Сгенерированная спека не содержит путей (paths). Проверьте аннотации JSDoc в файлах маршрутов.',
-  //   );
-  // }
+  // проверка путей для отладки
+  if (MEGA_TEST_SWG && isDevelopment) {
+    console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
+    swaggerOptions.apis.forEach((pattern) => {
+      const files = require('glob').sync(pattern);
+      console.log(`[Swagger] файлы по паттерну ${pattern}:`, files);
+    });
+  }
+  // логг.сгенерир.спеки
+  if (MEGA_TEST_SWG && isDevelopment) {
+    console.log(
+      '[Swagger] Сгенерированная спека:',
+      JSON.stringify(swaggerDocs, null, 2),
+    );
+  }
+  // проверка путей в спеке
+  if (!swaggerDocs.paths || Object.keys(swaggerDocs.paths).length === 0) {
+    console.warn(
+      '[Swagger] ВНИМАНИЕ: Сгенерированная спека не содержит путей (paths). Проверьте аннотации JSDoc в файлах маршрутов.',
+    );
+  }
 
   // подкл./кастомизация SWG UI
   app.use(
     '/swagger',
     // откл. serve передача масс.[] от обслуж.swagger-ui-express своих ф.
     swaggerUi.serve,
-    // использ. JS с CDN с null > локал.ф.
-    // swaggerUi.serveFiles(null, { swaggerUrl: '/swagger' }), //
     swaggerUi.setup(swaggerDocs, {
       // назв.стр. Swagger
       customSiteTitle: 'PERN API Docs (Swagger)',
@@ -299,8 +296,8 @@ export const documentSwagger = (app: Application): void => {
         // url: '/swagger',
       },
       // кастом.иконки в браузере
-      // customfavIcon: `/${process.env.PUB_DIR}/img/ico/icon.ico`,  // рекомендация
-      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
+      customfavIcon: `../../../${process.env.PUB_DIR}/img/ico/icon.ico`, // рекомендация
+      // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
       // кастом ф.CSS
       // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили
       // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
@@ -315,8 +312,6 @@ export const documentSwagger = (app: Application): void => {
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
       ],
-      // откл.UI explorer от подкл.доп.ф.JS
-      // explorer: false,
     }),
   );
 };
