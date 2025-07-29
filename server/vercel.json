@@ -19,12 +19,12 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "src/index.ts"
-    },
-    {
       "src": "/public/(.*)",
       "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/index.ts"
     }
   ]
 }
