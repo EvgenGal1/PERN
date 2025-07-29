@@ -174,15 +174,34 @@ let customCssContent: string = '';
 // URL/путь загр.ф.стилей
 const CSS_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css';
-// const CSS_PATH_LOCAL = path.join(
-//   __dirname,
-//   `../../../${process.env.PUB_DIR}/swagger/theme.css`,
-//   // `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
-// );
-const CSS_PATH_LOCAL = path.resolve(
-  process.cwd(),
-  `${process.env.PUB_DIR}/swagger/theme.css`,
+const CSS_PATH_LOCAL = path.join(
+  __dirname,
+  `../../../${process.env.PUB_DIR}/swagger/theme.css`,
+  // `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
 );
+// const CSS_PATH_LOCAL = path.resolve(
+//   process.cwd(),
+//   `${process.env.PUB_DIR}/swagger/theme.css`,
+// ); // ! не загр.в  vercel
+console.log('[Swagger] process.cwd():', process.cwd());
+console.log('[Swagger] __dirname:', __dirname);
+console.log('[Swagger] Calculated CSS_PATH_LOCAL:', CSS_PATH_LOCAL);
+console.log('[Swagger] File exists:', fs.existsSync(CSS_PATH_LOCAL));
+const CSS_PATH_LOCAL_2 = path.resolve(
+  process.cwd(),
+  process.env.PUB_DIR!,
+  'swagger',
+  'theme.css',
+);
+console.log('CSS_PATH_LOCAL_2 : ', CSS_PATH_LOCAL_2);
+const pubDir = process.env.PUB_DIR || 'public';
+const CSS_PATH_LOCAL_3 = path.resolve(
+  process.cwd(),
+  pubDir,
+  'swagger',
+  'theme.css',
+);
+console.log('CSS_PATH_LOCAL_3 : ', CSS_PATH_LOCAL_3);
 // подроб.логи >  тестирования
 const MEGA_TEST_SWG = false;
 
@@ -335,9 +354,9 @@ export const documentSwagger = (app: Application): void => {
         // url: '/swagger',
       },
       // кастом.иконки в браузере
-      customfavIcon: `/${process.env.PUB_DIR}/swagger/icon.ico`, // ! предложил Бот
-      // customfavIcon: `../../../${process.env.PUB_DIR}/img/ico/icon.ico`, // рекомендация
-      // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
+      // customfavIcon: `/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб - проверил
+      customfavIcon: `../../../${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб
+      // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб
       // кастом ф.CSS
       // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили
       // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
