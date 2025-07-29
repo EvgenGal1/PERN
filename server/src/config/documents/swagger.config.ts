@@ -82,14 +82,17 @@ export const documentSwagger = (app: Application): void => {
     },
     // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI. Пути настр.под src/, dist/ с использ. process.cwd() > надежности на Vercel
     apis: [
-      // path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
-      // path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
-      path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подход
+      path.join(process.cwd(), 'src/routes/**/*.{js,ts}'), // DEV
+      path.join(process.cwd(), 'routes/**/*.{js,ts}'), // PROD/Vercel (е/и без src/)
+      // path.join(__dirname, '../../routes/**/*.{js,ts}'), // стар.подход
     ],
   };
 
   // спецификация swg в JSON
   const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
+
+  // import SWG_UI внутри fn от проблем.с import в верхн.уровне/Vercel
+  const swaggerUi = require('swagger-ui-express');
 
   // проверка путей для отладки
   if (MEGA_TEST_SWG && isDevelopment) {
@@ -116,13 +119,18 @@ export const documentSwagger = (app: Application): void => {
   // подкл./кастомизация SWG UI
   app.use(
     '/swagger',
-    swaggerUi.serve,
+    // откл. serve передача масс.[] от обслуж.swagger-ui-express своих ф.
+    // swaggerUi.serve,
+    // использ. JS с CDN с null > локал.ф.
+    swaggerUi.serveFiles(null, { swaggerUrl: '/swagger' }), //
     swaggerUi.setup(swaggerDocs, {
       // назв.стр. Swagger
       customSiteTitle: 'PERN API Docs (Swagger)',
       swaggerOptions: {
         // `постоянное разрешение` на использ.JWT Токен в swg
         persistAuthorization: true,
+        // указ.URL > получ.спеки
+        // url: '/swagger',
       },
       // кастом.иконки в браузере
       // customfavIcon: `/${process.env.PUB_DIR}/img/ico/icon.ico`,  // рекомендация
@@ -141,6 +149,8 @@ export const documentSwagger = (app: Application): void => {
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
       ],
+      // откл.UI explorer от подкл.доп.ф.JS
+      explorer: false,
     }),
   );
 };
