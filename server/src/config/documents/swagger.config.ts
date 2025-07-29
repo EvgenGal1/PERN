@@ -168,8 +168,8 @@ import fs from 'fs';
 import { isDevelopment } from '../envs/env.consts';
 
 // перем. > стилей Базовый/Кастомный в str
-let defaultSwaggerCss = '';
-let customCssContent = '';
+let defaultSwaggerCss: string = '';
+let customCssContent: string = '';
 
 // URL/путь загр.ф.стилей
 const CSS_URL =
@@ -215,6 +215,15 @@ export const loadSwaggerStyles = async () => {
 
 // fn подкл. SWG UI
 export const documentSwagger = (app: Application): void => {
+  // объедин.stl
+  const combinedCss = `
+    /* ===== Базовые стили Swagger UI ===== */
+    ${defaultSwaggerCss}
+
+    /* ===== Ваши кастомные стили ===== */
+    ${customCssContent}
+  `;
+
   // конфиг.swg
   const swaggerOptions = {
     swaggerDefinition: {
@@ -281,21 +290,26 @@ export const documentSwagger = (app: Application): void => {
     // использ. JS с CDN с null > локал.ф.
     // swaggerUi.serveFiles(null, { swaggerUrl: '/swagger' }), //
     swaggerUi.setup(swaggerDocs, {
-      // Название страницы Swagger
+      // назв.стр. Swagger
       customSiteTitle: 'PERN API Docs (Swagger)',
       swaggerOptions: {
         // `постоянное разрешение` на использ.JWT Токен в swg
         persistAuthorization: true,
+        // указ.URL > получ.спеки
+        // url: '/swagger',
       },
-      // кастом иконки в браузере
-      customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
+      // кастом.иконки в браузере
+      // customfavIcon: `/${process.env.PUB_DIR}/img/ico/icon.ico`,  // рекомендация
+      customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
       // кастом ф.CSS
-      // customCss: `${process.env.SRV_URL}/swagger/theme.css`,
-      customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`,
+      // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили
+      // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
-      //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`, // темы + своё
-      // ],  // ! ошб. - не раб.масс > css
+      //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
+      // ],  // ! ошб. - базовые + своё в setup не раб.масс > css
+      // объедин.стили Базовый/Кастомный
+      customCss: combinedCss,
       // кастом ф.JS (для отраб.статич.ф.на PROD - Vercel)
       customJs: [
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
