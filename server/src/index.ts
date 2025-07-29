@@ -26,12 +26,16 @@ import {
   requestLoggingMiddleware as reQLog,
 } from './middleware/logging/logging.middleware';
 // документирование/настр. Swagger
-import { documentSwagger } from './config/documents/swagger.config';
+import {
+  documentSwagger,
+  loadSwaggerStyles,
+} from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
 import initModels from './models/index';
 import { htmlContent } from './utils/varWelcom';
 
+// --- НАСТРОЙКА ОКРУЖЕНИЯ ---
 // загр.перем.окруж.из опред.ф.env
 config({ path: `.env.${process.env.NODE_ENV}` });
 // опред.среды запуска
@@ -42,6 +46,8 @@ const app: Application = express();
 // порт из перем.окруж. | умолч.
 const PORT = isDevelopment ? Number(process.env.SRV_PORT) : 5000;
 const PUB_DIR = process.env.PUB_DIR || 'public';
+
+// --- НАСТРОЙКА MIDDLEWARE (Синхронные) ---
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
 app.use(
   cors({
@@ -53,18 +59,19 @@ app.use(
     },
   }),
 );
-// MiddleWare > раб.с cookie
+// раб.с cookie
 app.use(cookieParser(process.env.SECRET_KEY));
-// MW возм.парсить json
+// возм.парсить json
 app.use(express.json());
-// MW логг.Winston вход.HTTP req
+// логг.Winston вход.HTTP req
 app.use(reSLog);
 app.use(reQLog);
-// MW > стат.ф. (img, css)
-app.use(express.static(path.join(__dirname, `../${PUB_DIR}`)));
-// MW > загр.ф.
+// стат.ф. (img, css)
+app.use(`/${PUB_DIR}`, express.static(path.join(__dirname, `../${PUB_DIR}`)));
+// загр.ф.
 app.use(fileUpload());
 
+// --- НАСТРОЙКА МАРШРУТОВ ---
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
 app.use(`/${process.env.SRV_NAME}`, router);
 // тест.маршрут
@@ -72,14 +79,18 @@ app.get('/', (req: Request, res: Response) => {
   res.send(htmlContent);
 });
 
-// документирование (Swagger)
-documentSwagger(app);
-
 // обработка ошибок
 app.use(ErrorHandler);
 
+// --- АСИНХРОННЫЙ ЗАПУСК СЕРВЕРА ---
 const start = async (): Promise<void> => {
   try {
+    // инициализ.SWG (загр.объедин.стилей)
+    await loadSwaggerStyles();
+    // настр.маршрутов/документации SWG
+    documentSwagger(app);
+
+    // --- ИНИЦИАЛИЗАЦИЯ БД ---
     // подкл.к БД.
     await sequelize.authenticate();
     // проверка подкл.к БД
@@ -95,6 +106,8 @@ const start = async (): Promise<void> => {
         })
         .then(() => console.log('Синхронизация завершена'))
         .catch((error) => console.error('Ошибка при синхронизации:', error));
+
+    // --- ЗАПУСК СЕРВЕРА ---
     // цвета запуска: DEV - зелённый, PROD - синий
     const mainColor = isDevelopment ? '\x1b[32m' : '\x1b[34m';
     // прослуш.подключ.PORT и fn()callback
