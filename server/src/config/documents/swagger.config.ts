@@ -179,8 +179,8 @@ const CSS_PATH_LOCAL = path.join(
   isDevelopment
     ? // ? `../../../${process.env.PUB_DIR}/swagger/theme.css`
       `../../../public/swagger/theme.css`
-    : // `../../${process.env.PUB_DIR}/swagger/theme.css`,
-      `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
+    : `../../../${process.env.PUB_DIR}/swagger/theme.css`,
+  // `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
 );
 // подроб.логи >  тестирования
 const MEGA_TEST_SWG = false;
