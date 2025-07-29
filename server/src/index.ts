@@ -28,7 +28,7 @@ import {
 // документирование/настр. Swagger
 import {
   documentSwagger,
-  loadSwaggerStyles,
+  // loadSwaggerStyles,
 } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
@@ -79,16 +79,19 @@ app.get('/', (req: Request, res: Response) => {
   res.send(htmlContent);
 });
 
+// документирование (Swagger)
+documentSwagger(app);
+
 // обработка ошибок
 app.use(ErrorHandler);
 
 // --- АСИНХРОННЫЙ ЗАПУСК СЕРВЕРА ---
 const start = async (): Promise<void> => {
   try {
-    // инициализ.SWG (загр.объедин.стилей)
-    await loadSwaggerStyles();
-    // настр.маршрутов/документации SWG
-    documentSwagger(app);
+    // // инициализ.SWG (загр.объедин.стилей)
+    // await loadSwaggerStyles();
+    // // настр.маршрутов/документации SWG
+    // documentSwagger(app);
 
     // --- ИНИЦИАЛИЗАЦИЯ БД ---
     // подкл.к БД.
