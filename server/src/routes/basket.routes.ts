@@ -29,7 +29,7 @@ router.get('/getone', BasketController.getOneBasket);
 /**
  * @swagger
  * /baskets/product/{productId}/append/{quantity}:
- *   put:
+ *   post:
  *     summary: Добавить Продукты в Корзину
  *     tags: [Basket]
  *     security:
@@ -125,7 +125,7 @@ router.put(
 /**
  * @swagger
  * /baskets/product/{productId}/remove:
- *   put:
+ *   delete:
  *     summary: Удалить Продукт из Корзины
  *     tags: [Basket]
  *     security:
@@ -148,7 +148,7 @@ router.put('/product/:productId([0-9]+)/remove', BasketController.removeBasket);
 /**
  * @swagger
  * /baskets/clear:
- *   put:
+ *   delete:
  *     summary: Очистить Корзину
  *     tags: [Basket]
  *     security:
@@ -164,7 +164,7 @@ router.put('/clear', BasketController.clearBasket);
 /**
  * @swagger
  * /baskets/product/{productId}/remove:
- *   put:
+ *   delete:
  *     summary: Удалить Корзину и Все Продукты
  *     tags: [Basket]
  *     security:
