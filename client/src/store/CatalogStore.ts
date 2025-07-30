@@ -80,7 +80,15 @@ class CatalogStore {
 
     try {
       const parsedData = JSON.parse(storedData);
-      Object.assign(this, parsedData);
+      runInAction(() => {
+        this.categories = parsedData.categories || [];
+        this.brands = parsedData.brands || [];
+        this.products = parsedData.products || [];
+        this.product = parsedData.product || null;
+        this.filters = parsedData.filters || {};
+        this.pagination = parsedData.pagination || {};
+        this.sortSettings = parsedData.sortSettings || {};
+      });
     } catch (error) {
       this.handleError(error, `Ошибка Загрузки CatalogStore из LS`);
       this.clearLocalStorage();
@@ -178,7 +186,7 @@ class CatalogStore {
       order,
       field
     );
-    if (this.isLoading && currentHash === this.lastUrlParamsHash) return;
+    if (currentHash === this.lastUrlParamsHash) return;
     this.lastUrlParamsHash = currentHash;
     // нач.загр.
     this.isLoading = true;
