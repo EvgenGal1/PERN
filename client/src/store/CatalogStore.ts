@@ -61,11 +61,12 @@ class CatalogStore {
     );
 
     // лог.измен.
-    // spy((event) => {
-    //   if (event.type === "action") {
-    //     console.log("CatalogStore Action:", event.name);
-    //   }
-    // });
+    process.env.NODE_ENV === "development" &&
+      spy((event) => {
+        if (event.type === "action" && event.object === this) {
+          console.log(`%cCatalogStore: ${event.name}`, "color: #cf6d1d;");
+        }
+      });
 
     // чтение данн.из localStorage при инициализации
     this.loadFromLocalStorage();

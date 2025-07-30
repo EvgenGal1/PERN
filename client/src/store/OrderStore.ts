@@ -1,6 +1,6 @@
 // ^ хранилище Заказов и их Позиция
 
-import { action, makeAutoObservable, observable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 
 import { orderAPI } from "@/api/shopping/orderAPI";
 import type { OrderData } from "@/types/shopping.types";
@@ -15,6 +15,12 @@ class OrderStore {
 
   constructor() {
     makeAutoObservable(this);
+    process.env.NODE_ENV === "development" &&
+      spy((event) => {
+        if (event.type === "action" && event.object === this) {
+          console.log(`%cOrderStore: ${event.name}`, "color: #4caf50;");
+        }
+      });
   }
 
   // LOCALSTORE ----------------------------------------------------------------------------------
@@ -25,7 +31,7 @@ class OrderStore {
   @action async loadOrders() {
     this.isLoading = true;
     try {
-      const orders = await orderAPI.getUserOrders();
+      const orders = await orderAPI.getAllOrdersUser();
       runInAction(() => {
         this.orders = orders;
       });
@@ -44,10 +50,10 @@ class OrderStore {
   @action async loadOrderDetails(id: number) {
     this.isLoading = true;
     try {
-      const order = await orderAPI.getOrderById(id);
-      runInAction(() => {
-        this.currentOrder = order;
-      });
+      // const order = await orderAPI.getOrderById(id);
+      // runInAction(() => {
+      //   this.currentOrder = order;
+      // });
     } catch (error) {
       this.handleError(error, "Не удалось Загрузить Детали Заказы");
     } finally {
@@ -63,7 +69,7 @@ class OrderStore {
   @action async createOrder(orderData: OrderData) {
     this.isLoading = true;
     try {
-      const newOrder = await orderAPI.createOrder(orderData);
+      const newOrder = await orderAPI.createOrderUser(orderData);
       runInAction(() => {
         this.orders.unshift(newOrder);
       });
@@ -103,13 +109,13 @@ class OrderStore {
   }
 
   // стоимость всех Продуктов в Корзины
-  get sum() {
-    return this.orders.reduce(
-      (sum, item: { price: number; quantity: number }) =>
-        sum + item.price * item.quantity,
-      0
-    );
-  }
+  // get sum() {
+  //   return this.orders.reduce(
+  //     (sum, item: { price: number; quantity: number }) =>
+  //       sum + item.price * item.quantity,
+  //     0
+  //   );
+  // }
 
   // СЕТТЕРЫ ----------------------------------------------------------------------------------
 

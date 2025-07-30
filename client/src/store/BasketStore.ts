@@ -16,6 +16,12 @@ class BasketStore {
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
+    process.env.NODE_ENV === "development" &&
+      spy((event) => {
+        if (event.type === "action" && event.object === this) {
+          console.log(`%cBasketStore: ${event.name}`, "color: #0070cc;");
+        }
+      });
     this.loadFromLocalStorage();
   }
 
