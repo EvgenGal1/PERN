@@ -51,7 +51,7 @@ class BasketStore {
         JSON.stringify({ products: this.products })
       );
     } catch (error) {
-      this.handleError(error, `Ошибка Сохранения BasketStore из LS`);
+      this.handleError(error, `Ошибка Сохранения basketStore из LS`);
     }
   }, 500);
 

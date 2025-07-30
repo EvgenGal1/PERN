@@ -15,7 +15,7 @@ import { ApiError } from "@/utils/errorAPI";
 
 // оборач.комп. в observer`наблюдатель` из mobx и отслеж.использ.знач.для renderа
 const Auth = observer(() => {
-  const { user } = useContext(AppContext);
+  const { user, basket } = useContext(AppContext);
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
@@ -62,6 +62,8 @@ const Auth = observer(() => {
           email: credentials.email,
           password: credentials.password,
         });
+        // раздел.загр.Корзины чтоб взять id из user
+        await basket.loadBasket();
       } else {
         await user.register({
           email: credentials.email,
