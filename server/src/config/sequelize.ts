@@ -26,7 +26,7 @@ const sequelize = new Sequelize(
       timestamps: true, // вкл.поля created_at и updated_at
       freezeTableName: true, // откл.авто.добав.множ-го числа
     },
-    logging: isDevelopment ? true : false, // лог.записей
+    logging: /* isDevelopment ? true : */ false, // лог.записей
     timezone: 'Europe/Moscow',
     dialectOptions: {
       // сертификаты не строг.проверка на PROD
