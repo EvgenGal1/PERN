@@ -25,12 +25,12 @@ const Shop: React.FC = observer(() => {
       // загр.данн.Каталога/Брендов при пустых масс.
       const promises: any = [];
       if (catalog.categories.length === 0)
-        promises.push(catalog.fetchCategories());
-      if (catalog.brands.length === 0) promises.push(catalog.fetchBrands());
+        promises.push(catalog.loadCategories());
+      if (catalog.brands.length === 0) promises.push(catalog.loadBrands());
       // попытка восстановить сессию
       const catalogStore = localStorage.getItem("catalogStore") ?? "";
       // Всегда загружаем Продукты, но с проверкой параметров
-      if (!catalogStore) promises.push(catalog.fetchAllProducts());
+      if (!catalogStore) promises.push(catalog.loadAllProducts());
       await Promise.all(promises);
     };
 

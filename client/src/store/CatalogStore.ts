@@ -122,7 +122,7 @@ class CatalogStore {
   // ASYNC ----------------------------------------------------------------------------------
 
   // мтд.получ.данн.с БД (получ.Все Категории ч/з внутр.API с настр. загр./обраб./ошб./логг.)
-  @action async fetchCategories(): Promise<void> {
+  @action async loadCategories(): Promise<void> {
     try {
       //  ч/з внутр.мтд.API req к БД
       const data = await categoryAPI.getAllCategories();
@@ -141,7 +141,7 @@ class CatalogStore {
     }
   }
 
-  @action async fetchBrands(): Promise<void> {
+  @action async loadBrands(): Promise<void> {
     try {
       const data = await brandAPI.getAllBrands();
       runInAction(() => {
@@ -156,12 +156,12 @@ class CatalogStore {
   }
 
   // объедин.мтд.загр.Категорий/Брендов
-  @action async fetchInitialCatalog(): Promise<void> {
+  @action async loadInitialCatalog(): Promise<void> {
     this.isLoading = true;
     try {
       const data = await Promise.all([
-        this.fetchCategories(),
-        this.fetchBrands(),
+        this.loadCategories(),
+        this.loadBrands(),
       ]);
     } catch (error) {
       this.handleError(error, `Ошибка загрузки данных Каталога`);
@@ -173,7 +173,7 @@ class CatalogStore {
   }
 
   // загр.Всех Продуктов
-  @action async fetchAllProducts(): Promise<void> {
+  @action async loadAllProducts(): Promise<void> {
     // созд.нов.хеш, сравн.с послед.хешем, обнов.хеш при изменен.
     const { category, brand } = this.filters;
     const { page, limit } = this.pagination;
@@ -216,7 +216,7 @@ class CatalogStore {
   }
 
   // загр.Одного Продукта
-  @action async fetchProductById(id: number): Promise<void> {
+  @action async loadProductById(id: number): Promise<void> {
     if (this.product?.id === id) return;
     this.isLoading = true;
     try {
@@ -238,7 +238,7 @@ class CatalogStore {
   }
 
   // загр.Св-ва Продукта
-  @action async fetchProductProperties(productId: number): Promise<void> {
+  @action async loadProductProperties(productId: number): Promise<void> {
     // возврат при наличии хеша
     if (this.propsCache.has(productId)) {
       this.updateProductProperties(productId);
@@ -262,7 +262,7 @@ class CatalogStore {
   }
 
   // обнов.Рейтинга Продукта
-  @action async fetchUpdateProductRating(
+  @action async updateProductRating(
     userId: number,
     productId: number,
     rating: number
@@ -371,7 +371,7 @@ class CatalogStore {
     if (this.filters.category !== category) {
       this.filters.category = category;
       this.resetPagination();
-      this.fetchAllProducts();
+      this.loadAllProducts();
       this.updateUrlParams();
     }
   }
@@ -381,7 +381,7 @@ class CatalogStore {
     if (this.filters.brand !== brand) {
       this.filters.brand = brand;
       this.resetPagination();
-      this.fetchAllProducts();
+      this.loadAllProducts();
       this.updateUrlParams();
     }
   }
@@ -390,7 +390,7 @@ class CatalogStore {
   @action setPage(page: number) {
     if (this.pagination.page !== page) {
       this.pagination.page = page;
-      this.fetchAllProducts();
+      this.loadAllProducts();
       this.updateUrlParams();
     }
   }
@@ -400,7 +400,7 @@ class CatalogStore {
     if (this.pagination.limit !== limit) {
       this.pagination.limit = limit;
       this.resetPagination();
-      this.fetchAllProducts();
+      this.loadAllProducts();
       this.updateUrlParams();
     }
   }
@@ -415,7 +415,7 @@ class CatalogStore {
     this.sortSettings.field = field;
     this.sortSettings.order = order;
     this.resetPagination();
-    this.fetchAllProducts();
+    this.loadAllProducts();
     this.updateUrlParams();
   }
 

@@ -26,11 +26,11 @@ const Product: React.FC = observer(() => {
       const existProduct = catalog.getProductById(productId);
       // загр.е/и нет Продукта
       if (!existProduct) {
-        await catalog.fetchProductById(productId);
+        await catalog.loadProductById(productId);
       }
       // загр.е/и нет Св-ва Продукта
       if (existProduct && !existProduct.props) {
-        await catalog.fetchProductProperties(productId);
+        await catalog.loadProductProperties(productId);
       }
     };
     loadProductData();
@@ -46,7 +46,7 @@ const Product: React.FC = observer(() => {
   const handleSubmit = async (rating: number) => {
     if (!user.isAuth || !product) return;
     try {
-      await catalog.fetchUpdateProductRating(user.id!, product.id!, rating);
+      await catalog.updateProductRating(user.id!, product.id!, rating);
     } catch (error) {
       console.error("Ошибка при создании Рейтинга:", error);
     }
