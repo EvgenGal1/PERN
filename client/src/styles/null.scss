@@ -632,7 +632,7 @@ button.btn--eg,
 select.select--eg {
   cursor: pointer;
   padding: var(--sz1) var(--sz2);
-  border: 1px solid #bd0000;
+  border: 1px solid var(--DarkRed);
   border-radius: var(--sz1);
   transition:
     background-color 200ms,
@@ -655,7 +655,7 @@ button.btn-danger--eg {
   justify-content: center;
   align-items: center;
   font-size: 16px;
-  border: 1px solid #bd0000;
+  border: 1px solid var(--DarkRed);
   transition: transform 0.2s;
 
   &:active {

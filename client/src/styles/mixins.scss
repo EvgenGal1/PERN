@@ -138,7 +138,7 @@ $color-schemes: (
 %color-scheme-base {
   @include adaptiv-val("padding", 10, 3);
   @include adaptiv-font(24, 10);
-  border: 1px solid #bd0000;
+  border: 1px solid var(--DarkRed);
   border-radius: var(--sz1);
   transition:
     background-color 200ms linear,
