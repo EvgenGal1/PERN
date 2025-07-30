@@ -103,7 +103,7 @@ const ProductItem: React.FC<ProductData> = (data) => {
           onClick={() => navigate(`${PRODUCT_ROUTE}/${data.id}`)}
           src={
             data.image
-              ? `${process.env.REACT_APP_IMG_URL_PERN}/img/shop/product/${data.image}`
+              ? `${process.env.REACT_APP_IMG_URL_PERN}/${process.env.REACT_APP_PUB_DIR}/img/shop/product/${data.image}`
               : "http://via.placeholder.com/200"
           }
           alt={data.name}

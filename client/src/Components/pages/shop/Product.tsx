@@ -56,13 +56,14 @@ const Product: React.FC = observer(() => {
   const handleClickAddToBasket = /* async */ () => {
     if (product && product.id) basket.addProduct(product.id);
   };
+
   return (
     <div className="product container" key={id}>
       <div className="df df-row">
         <div className="mr-3">
           <img
             style={{ width: "300px", height: "300px" }}
-            src={`${product?.image ? `${process.env.REACT_APP_IMG_URL_PERN}/img/shop/product/${product?.image}` : "http://via.placeholder.com/300"}`}
+            src={`${product?.image ? `${process.env.REACT_APP_IMG_URL_PERN}/${process.env.REACT_APP_PUB_DIR}/img/shop/product/${product?.image}` : "http://via.placeholder.com/300"}`}
           />
         </div>
         {/* Основная информация о продукте */}
