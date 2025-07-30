@@ -29,11 +29,12 @@ export default class UserStore {
   constructor() {
     makeAutoObservable(this);
     // лог.измен.
-    spy((event) => {
-      if (event.type === "action") {
-        console.log("UserStore Action:", event.name);
-      }
-    });
+    process.env.NODE_ENV === "development" &&
+      spy((event) => {
+        if (event.type === "action" && event.object === this) {
+          console.log(`%cUserStore: ${event.name}`, "color: #ffd700;");
+        }
+      });
     // инициализация с чтение данн.из LS и проверкой
     this.initializeSession();
   }
@@ -84,7 +85,6 @@ export default class UserStore {
     localStorage.removeItem("tokenAccess");
     localStorage.removeItem("userStore");
     localStorage.removeItem("basketStore");
-    localStorage.removeItem("catalogStore");
   }
 
   // SESSION ----------------------------------------------------------------------------------
@@ -100,12 +100,12 @@ export default class UserStore {
   }
 
   /**
-   * восстан.сессии из lS
+   * восстан.сессии из LS
    * @param tokenAccess - JWT Токен
    * @returns Promise<boolean> успех восстановления
    */
   async restoreSession(): Promise<boolean> {
-    this.setLoading(true);
+    this.isLoading = true;
     try {
       const tokenAccess = localStorage.getItem("tokenAccess") ?? "";
       if (!tokenAccess) return false;
@@ -124,7 +124,7 @@ export default class UserStore {
       this.logout();
       return false;
     } finally {
-      this.setLoading(false);
+      this.isLoading = false;
     }
   }
 
@@ -158,7 +158,7 @@ export default class UserStore {
   // ASYNC ----------------------------------------------------------------------------------
 
   @action async login(credentials: LoginCredentials): Promise<void> {
-    this.setLoading(true);
+    this.isLoading = true;
     try {
       const response = await authAPI.login(credentials);
       runInAction(() => {
@@ -169,13 +169,13 @@ export default class UserStore {
       throw error;
     } finally {
       runInAction(() => {
-        this.setLoading(false);
+        this.isLoading = false;
       });
     }
   }
 
   @action async register(credentials: RegisterCredentials): Promise<void> {
-    this.setLoading(true);
+    this.isLoading = true;
     try {
       const response = await authAPI.register(credentials);
       runInAction(() => {
@@ -186,7 +186,7 @@ export default class UserStore {
       throw error;
     } finally {
       runInAction(() => {
-        this.setLoading(false);
+        this.isLoading = false;
       });
     }
   }
@@ -194,7 +194,7 @@ export default class UserStore {
   // проверка Пользователя в БД
   @action async check(): Promise<boolean> {
     if (this.isLoading) return false;
-    this.setLoading(true);
+    this.isLoading = true;
     try {
       const { isValid, user } = await authAPI.check();
       runInAction(() => {
@@ -216,12 +216,12 @@ export default class UserStore {
       this.clearSession();
       return false;
     } finally {
-      this.setLoading(false);
+      this.isLoading = false;
     }
   }
 
   @action async refreshToken(): Promise<void> {
-    this.setLoading(true);
+    this.isLoading = true;
     try {
       const tokens = await authAPI.refresh();
       localStorage.setItem("tokenAccess", tokens.tokenAccess);
@@ -230,12 +230,12 @@ export default class UserStore {
       this.clearSession();
       throw error;
     } finally {
-      this.setLoading(false);
+      this.isLoading = false;
     }
   }
 
   @action async logout(): Promise<void> {
-    this.setLoading(true);
+    this.isLoading = true;
     try {
       await authAPI.logout();
     } catch (error) {
@@ -243,16 +243,12 @@ export default class UserStore {
     } finally {
       runInAction(() => {
         this.clearSession();
-        this.setLoading(false);
+        this.isLoading = false;
       });
     }
   }
 
   // ДОП.МТД. (ЗАГРУЗКА/РОЛИ/ОШИБКИ) ----------------------------------------------------------------------------------
-
-  @action private setLoading(state: boolean) {
-    this.isLoading = state;
-  }
 
   // проверка Роли с мин.Уровнем
   /**
