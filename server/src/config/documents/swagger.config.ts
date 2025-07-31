@@ -87,7 +87,7 @@ export const documentSwagger = (app: Application): void => {
       // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб
       // кастом ф.CSS
       // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили
-      customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
+      // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
       //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
@@ -96,6 +96,7 @@ export const documentSwagger = (app: Application): void => {
       // customCss: combinedCss,
       // объедин.стили Базовый/Кастомный в ф.
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
+      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `../../../public/swagger/theme.css`,
