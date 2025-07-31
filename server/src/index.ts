@@ -68,8 +68,10 @@ app.use(reSLog);
 app.use(reQLog);
 // стат.ф. (img, css)
 app.use(
-  `/${process.env.PUB_DIR}`,
-  express.static(path.join(__dirname, `../${PUB_DIR}`)),
+  // `/${PUB_DIR}`,
+  `/public`,
+  // express.static(path.join(__dirname, `../${PUB_DIR}`)),
+  express.static(path.join(__dirname, `../public`)),
 );
 // загр.ф.
 app.use(fileUpload());
