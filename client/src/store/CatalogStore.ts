@@ -14,7 +14,6 @@ import type {
   PropertyData,
 } from "@/types/catalog.types";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
-import { ApiError } from "@/utils/errorAPI";
 import { errorHandler } from "@/utils/errorHandler";
 
 class CatalogStore {
@@ -42,7 +41,6 @@ class CatalogStore {
   };
   // сост.загр., ошб.
   @observable isLoading = false;
-  @observable error: ApiError | null = null;
 
   // хеш URL параметров запроса (последний)
   private lastUrlParamsHash = "";
@@ -332,8 +330,7 @@ class CatalogStore {
   @action private handleError(error: unknown, context?: string) {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
-    // сохр./логг.
-    this.error = apiError;
+    // логг.
     console.error(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);

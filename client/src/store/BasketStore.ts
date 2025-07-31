@@ -5,14 +5,12 @@ import { debounce } from "lodash";
 
 import { basketAPI } from "@/api/shopping/basketAPI";
 import type { BasketData, BasketProduct } from "@/types/shopping.types";
-import { ApiError } from "@/utils/errorAPI";
 import { errorHandler } from "@/utils/errorHandler";
 
 class BasketStore {
   @observable products: BasketProduct[] = [];
   @observable total: number = 0;
   @observable isLoading = false;
-  @observable error: ApiError | null = null;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
@@ -66,7 +64,6 @@ class BasketStore {
   @action async loadBasket(): Promise<void> {
     if (this.isLoading) return;
     this.isLoading = true;
-    this.error = null;
     try {
       const basket = await basketAPI.getOneBasket();
       runInAction(() => this.updateBasket(basket));
@@ -82,7 +79,6 @@ class BasketStore {
   @action async addProduct(productId: number): Promise<void> {
     if (this.isLoading) return;
     this.isLoading = true;
-    this.error = null;
     try {
       const basket = await basketAPI.appendBasket(productId);
       runInAction(() => this.updateBasket(basket));
@@ -108,7 +104,6 @@ class BasketStore {
   ): Promise<void> {
     if (this.isLoading) return;
     this.isLoading = true;
-    this.error = null;
     try {
       const apiMethod =
         action === "increment"
@@ -126,7 +121,6 @@ class BasketStore {
   @action async fetchRemoveProduct(productId: number): Promise<void> {
     if (this.isLoading) return;
     this.isLoading = true;
-    this.error = null;
     try {
       const data = await basketAPI.removeBasket(productId);
       this.updateBasket(data);
@@ -160,7 +154,6 @@ class BasketStore {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
     // сохр./логг.
-    this.error = apiError;
     console.error(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);
@@ -190,7 +183,6 @@ class BasketStore {
   @action clearBasket(): void {
     this.products = [];
     this.total = 0;
-    this.error = null;
     this.saveToLocalStorage();
   }
 }

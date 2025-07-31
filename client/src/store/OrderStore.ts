@@ -4,14 +4,12 @@ import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 
 import { orderAPI } from "@/api/shopping/orderAPI";
 import type { OrderData } from "@/types/shopping.types";
-import { ApiError } from "@/utils/errorAPI";
 import { errorHandler } from "@/utils/errorHandler";
 
 class OrderStore {
   @observable orders: OrderData[] = [];
   @observable currentOrder: OrderData | null = null;
   @observable isLoading = false;
-  @observable error: ApiError | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -89,8 +87,7 @@ class OrderStore {
   @action private handleError(error: unknown, context?: string) {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
-    // сохр./логг.
-    this.error = apiError;
+    // логг.
     console.error(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);
