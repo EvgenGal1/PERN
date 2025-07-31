@@ -32,8 +32,9 @@ import { ApiError } from "./errorAPI";
 export const errorHandler = (error: unknown, context?: string): ApiError => {
   // логг.Sentry
   // if (process.env.NODE_ENV === "production") Sentry.captureException(error, { tags: { context } });
-  // Логирование контекста
-  console.error(`errorHandler [${context}] ОШБ: `, error);
+
+  // общ.тип ошб.
+  let apiError: ApiError;
 
   // обраб.ошб.axios
   if (isAxiosError(error)) {
@@ -41,15 +42,13 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
     const response = error.response;
     // ошб.сетевые (нет ответа)
     if (!response) {
-      return new ApiError(503, "Сервер недоступен", "NETWORK_ERROR", { error });
+      apiError = new ApiError(503, "Сервер недоступен", "NETWORK_ERROR", {
+        error,
+      });
     }
-
-    // при 401 Выход Пользователя
-    // if (response.status === 401) UserStore.prototype.logout();
-
     // ошб.БД формата ApiError
-    if (response?.data?.error) {
-      return new ApiError(
+    else if (response?.data?.error) {
+      apiError = new ApiError(
         response.status,
         response.data.error.message,
         response.data.error.code,
@@ -58,19 +57,30 @@ export const errorHandler = (error: unknown, context?: string): ApiError => {
       );
     }
     // стандарт ошб.БД
-    return new ApiError(
-      response.status,
-      response.data?.message || error.message || "нестандартная ошибка",
-      response.data?.code || "SERVER_ERROR"
-    );
+    else {
+      apiError = new ApiError(
+        response.status,
+        response.data?.message || error.message || "нестандартная ошибка",
+        response.data?.code || "API_ERROR"
+      );
+    }
   }
 
   // спец.доп.ошб.
-  if (error instanceof ApiError) return error;
+  else if (error instanceof ApiError) apiError = error;
   // натив.ошб.JS
-  if (error instanceof Error) return new ApiError(500, error.message);
+  else if (error instanceof Error) {
+    apiError = new ApiError(500, error.message, "JS_ERROR");
+  }
   // неизвестные ошб.
-  return new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", {
-    originalError: error,
-  });
+  else {
+    apiError = new ApiError(500, "Неизвестная ошибка", "UNKNOWN_ERROR", {
+      originalError: error,
+    });
+  }
+
+  // общ.логг.ошб.
+  console.error(`errorHandler [${context}] ОШБ.:`, apiError.message);
+
+  return apiError;
 };
