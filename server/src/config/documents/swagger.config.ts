@@ -82,12 +82,12 @@ export const documentSwagger = (app: Application): void => {
       },
       // кастом.иконки в браузере
       // customfavIcon: `/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб - проверил было - опять пропало
-      customfavIcon: `../../public/swagger/icon.ico`, //  ^ вроде все раб - проверил было - опять пропало
-      // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
+      // customfavIcon: `../../public/swagger/icon.ico`, //  ^ вроде все раб - проверил было - опять пропало
+      customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
       // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб
       // кастом ф.CSS
       // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили
-      // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
+      customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
       // customCssUrl: [
       //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
       //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
@@ -98,7 +98,7 @@ export const documentSwagger = (app: Application): void => {
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,
-      customCssUrl: `../../../public/swagger/theme.css`,
+      // customCssUrl: `../../../public/swagger/theme.css`,
       // кастом ф.JS (для отраб.статич.ф.на PROD - Vercel)
       customJs: [
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
