@@ -15,13 +15,19 @@ const Checkout = () => {
   // Заказ. Логика заказа
   const [order, setOrder] = useState(null);
 
-  // Авториз.Корзин.
+  // загр.Корзин.с услов.проверкой Авториз.
   useEffect(() => {
     if (!basket.count) return;
 
     const loadData = async () => {
-      await basket.loadBasket();
-      await user.check();
+      try {
+        await Promise.all([
+          basket.loadBasket(),
+          user.isAuth ? user.checkAuth() : Promise.resolve(),
+        ]);
+      } catch (error) {
+        console.error("Ошибка загрузки при оформлении Заказа:", error);
+      }
     };
 
     loadData();

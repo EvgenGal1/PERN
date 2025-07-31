@@ -74,13 +74,9 @@ const Auth = observer(() => {
       setErrors({ email: "", password: "", sms: "" });
     } catch (error: unknown) {
       resetForm();
-      const apiError = error as ApiError;
       setErrors((prev) => ({
         ...prev,
-        sms:
-          apiError.message === "Unauthorized"
-            ? "Произошла ошибка при Авторизации"
-            : apiError.message,
+        sms: (error as ApiError).message || "Ошибка авторизации",
       }));
     } finally {
       setIsSubmitting(false);

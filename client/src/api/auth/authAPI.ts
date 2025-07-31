@@ -47,7 +47,7 @@ export const authAPI = {
   /**
    * Проверка Токена Пользователя
    */
-  async check(): Promise<{ isValid: boolean; user?: User }> {
+  async checkAuth(): Promise<{ isValid: boolean; user?: User }> {
     const response = await handleRequest(
       () => authInstance.get<CheckRes>("auth/check"),
       "Auth/Check"
