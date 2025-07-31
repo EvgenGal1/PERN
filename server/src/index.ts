@@ -67,9 +67,7 @@ app.use(express.json());
 app.use(reSLog);
 app.use(reQLog);
 // стат.ф. (img, css)
-app.use(
-  /* `/${PUB_DIR}`, */ express.static(path.join(__dirname, `../${PUB_DIR}`)),
-);
+app.use(`/${PUB_DIR}`, express.static(path.join(__dirname, `../${PUB_DIR}`)));
 // загр.ф.
 app.use(fileUpload());
 
