@@ -96,9 +96,9 @@ export const documentSwagger = (app: Application): void => {
       // customCss: combinedCss,
       // объедин.стили Базовый/Кастомный в ф.
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
-      customCssUrl: `/public/swagger/combined.css`, // *
+      // customCssUrl: `/public/swagger/combined.css`, // ! нет никаких стилей. С нач.путём в index, app.use('public', express.static
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`, // ! нет никаких стилей. С нач.путём в index, app.use('public', express.static
-      // customCssUrl: `${process.env.SRV_URL}/swagger/combined.css`, // ^ раб.совмещ.варик стилей. Без нач.пути в index, сразу app.use(express.static
+      customCssUrl: `${process.env.SRV_URL}/swagger/combined.css`, // ^ раб.совмещ.варик стилей. Без нач.пути в index, сразу app.use(express.static
       // customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`, // ^ ! раб.ток.мои стили. Сбита разметка. Без нач.пути в index, сразу app.use(express.static
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,

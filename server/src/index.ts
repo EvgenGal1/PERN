@@ -45,7 +45,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const app: Application = express();
 // порт из перем.окруж. | умолч.
 const PORT = isDevelopment ? Number(process.env.SRV_PORT) : 5000;
-// const PUB_DIR = process.env.PUB_DIR || 'public';
+const PUB_DIR = process.env.PUB_DIR || 'public';
 
 // --- НАСТРОЙКА MIDDLEWARE (Синхронные) ---
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
@@ -68,10 +68,7 @@ app.use(reSLog);
 app.use(reQLog);
 // стат.ф. (img, css)
 app.use(
-  // `/${PUB_DIR}`,
-  `/public`,
-  // express.static(path.join(__dirname, `../${PUB_DIR}`)),
-  express.static(path.join(__dirname, `../public`)),
+  /* `/${PUB_DIR}`, */ express.static(path.join(__dirname, `../${PUB_DIR}`)),
 );
 // загр.ф.
 app.use(fileUpload());
