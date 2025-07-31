@@ -11,7 +11,6 @@ import type {
   LoginCredentials,
   RegisterCredentials,
 } from "@/types/auth.types";
-import { ApiError } from "@/utils/errorAPI";
 import { errorHandler } from "@/utils/errorHandler";
 
 export default class UserStore {
@@ -24,7 +23,6 @@ export default class UserStore {
   @observable activated = false;
   // загр., ошб.
   @observable isLoading = false;
-  @observable error: ApiError | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -92,11 +90,12 @@ export default class UserStore {
   @action private initializeSession() {
     this.loadFromLocalStorage();
 
-    // проверка Токена при инициализации
-    this.check().catch((error) => {
-      console.warn("проверка Сессии не удалась:", error);
-      this.logout();
-    });
+    // проверка Токена при Инициализации
+    if (this.isAuth) {
+      this.restoreSession().catch((error) =>
+        this.handleError(error, "ошибка Инициализации Сессии")
+      );
+    }
   }
 
   /**
@@ -104,8 +103,10 @@ export default class UserStore {
    * @param tokenAccess - JWT Токен
    * @returns Promise<boolean> успех восстановления
    */
-  async restoreSession(): Promise<boolean> {
+  @action async restoreSession(): Promise<boolean> {
+    if (this.isLoading) return false;
     this.isLoading = true;
+
     try {
       const tokenAccess = localStorage.getItem("tokenAccess") ?? "";
       if (!tokenAccess) return false;
@@ -117,10 +118,10 @@ export default class UserStore {
         this.logout();
         return false;
       }
-      this.isAuth = true;
-      return true;
+      // проверка User
+      return await this.checkAuth();
     } catch (error) {
-      this.handleError(error, "Ошибка восстановления сессии из LS : ");
+      this.handleError(error, "ошибка Восстановления Сессии из LS : ");
       this.logout();
       return false;
     } finally {
@@ -150,7 +151,6 @@ export default class UserStore {
     this.roles = [];
     this.isAuth = false;
     this.activated = false;
-    this.error = null;
 
     this.clearAllLocalStorage();
   }
@@ -192,25 +192,22 @@ export default class UserStore {
   }
 
   // проверка Пользователя в БД
-  @action async check(): Promise<boolean> {
-    if (this.isLoading) return false;
-    this.isLoading = true;
+  @action async checkAuth(): Promise<boolean> {
     try {
-      const { isValid, user } = await authAPI.check();
-      runInAction(() => {
-        if (isValid && user) {
+      const { isValid, user } = await authAPI.checkAuth();
+      if (isValid && user) {
+        runInAction(() => {
           this.id = user.id;
           this.email = user.email;
           this.username = user.username;
           this.isAuth = true;
-          user.isActivated ? (this.activated = user.isActivated) : false;
+          this.activated = user.isActivated ?? false;
           this.saveToLocalStorage();
-        } else {
-          this.clearSession();
-        }
-      });
-
-      return isValid;
+        });
+        return isValid;
+      }
+      this.clearSession();
+      return false;
     } catch (error) {
       this.handleError(error, "проверка сессии не удалась");
       this.clearSession();
@@ -276,8 +273,7 @@ export default class UserStore {
   @action private handleError(error: unknown, context: string) {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
-    // сохр./логг.
-    this.error = apiError;
+    // логг.
     console.error(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);

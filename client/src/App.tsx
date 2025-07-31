@@ -21,14 +21,19 @@ const App: React.FC = observer(() => {
 
   useEffect(() => {
     const initialize = async () => {
-      // попытка восстановить сессию
-      await user.restoreSession();
-      // после востанов.user загр.basket
-      if (user.isAuth) await basket.loadBasket();
-      setLoading(false);
+      try {
+        // попытка восстановить сессию
+        const sessionRestored = await user.restoreSession();
+        // после востанов.user загр.basket
+        if (sessionRestored) await basket.loadBasket();
+      } catch (error) {
+        console.error("App в ошб. Инициализации:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     initialize();
-  }, [user, basket]);
+  }, []);
 
   // показ LoadingAtom, при загр.данн.польз.с БД
   if (loading) return <LoadingAtom />;
