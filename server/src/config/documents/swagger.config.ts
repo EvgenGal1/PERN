@@ -95,8 +95,8 @@ export const documentSwagger = (app: Application): void => {
       // объедин.стили Базовый/Кастомный
       // customCss: combinedCss,
       // объедин.стили Базовый/Кастомный в ф.
-      // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
-      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
+      customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
+      // customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`,
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `../../../public/swagger/theme.css`,
