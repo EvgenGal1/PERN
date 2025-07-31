@@ -87,7 +87,7 @@ export const documentSwagger = (app: Application): void => {
       // кастом.иконки в браузере
       // customfavIcon: `/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб - проверил было - опять пропало
       customfavIcon:
-        `../../../${process.env.PUB_DIR}/swagger/icon.ico` ||
+        `${process.env.PUB_DIR}/swagger/icon.ico` ||
         `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico` ||
         `/${process.env.PUB_DIR}/swagger/icon.ico`, // ! не раб
       // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`, //  ^ вроде все раб
@@ -103,7 +103,7 @@ export const documentSwagger = (app: Application): void => {
       // объедин.стили Базовый/Кастомный в ф.
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
-      customCssUrl: `../../${process.env.PUB_DIR}/swagger/theme.css`,
+      customCssUrl: `${process.env.PUB_DIR}/swagger/theme.css`,
       // кастом ф.JS (для отраб.статич.ф.на PROD - Vercel)
       customJs: [
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
