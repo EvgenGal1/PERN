@@ -88,11 +88,6 @@ app.use(ErrorHandler);
 // --- АСИНХРОННЫЙ ЗАПУСК СЕРВЕРА ---
 const start = async (): Promise<void> => {
   try {
-    // // инициализ.SWG (загр.объедин.стилей)
-    // await loadSwaggerStyles();
-    // // настр.маршрутов/документации SWG
-    // documentSwagger(app);
-
     // --- ИНИЦИАЛИЗАЦИЯ БД ---
     // подкл.к БД.
     await sequelize.authenticate();

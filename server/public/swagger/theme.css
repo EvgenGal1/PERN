@@ -402,6 +402,7 @@
   .swagger-ui .opblock-summary-path {
     flex: 1 1 auto;
     max-width: 100% !important;
+    padding: 0 10px;
   }
   /* ссылка  */
   .opblock-summary > button > span.opblock-summary-path > a.nostyle {
@@ -416,6 +417,7 @@
     position: absolute;
     left: 500px;
     /* padding-left: 35%; */
+    right: 25px;
   }
   .swagger-ui .try-out .btn .try-out__btn {
     border-color: yellow;
