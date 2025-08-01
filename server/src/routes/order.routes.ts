@@ -53,7 +53,7 @@ router.get(
 // получить список всех Заказов магазина
 /**
  * @swagger
- * /orders/getall:
+ * /orders/getall/admin:
  *   get:
  *     summary: Получить список Всех Заказов Всех Пользователей как ADMIN
  *     tags: [Orders]
@@ -68,7 +68,7 @@ router.get('/getall/admin', authMW, adminMW, OrderController.getAllOrdersAdmin);
 // создать новый Заказ
 /**
  * @swagger
- * /orders/create:
+ * /orders/create/admin:
  *   post:
  *     summary: Создание Нового Заказа Администратором
  *     tags: [Orders]
@@ -118,7 +118,7 @@ router.post('/create/admin', authMW, adminMW, OrderController.createOrder);
 // обновить Заказ
 /**
  * @swagger
- * /orders/update/{id}:
+ * /orders/update/{id}/admin:
  *   put:
  *     summary: Обновить Заказ по ID
  *     tags: [Orders]
@@ -166,7 +166,7 @@ router.put(
 // удалить Заказ по id
 /**
  * @swagger
- * /orders/delete/{id}:
+ * /orders/delete/{id}/admin:
  *   delete:
  *     summary: Удалить Заказ по ID
  *     tags: [Orders]

@@ -164,7 +164,7 @@ router.delete(
 // список Продуктов выбранной Категории и выбранного Бренда
 /**
  * @swagger
- * /products/getall/categoryId/{categoryId}/brandId/{brandId}:
+ * /products/getall/categoryId/{id}/brandId/{id}:
  *   get:
  *     summary: Получить список Продуктов по Категории и Бренду
  *     tags: [Products]
@@ -195,7 +195,7 @@ router.get(
 // список Продуктов выбранной Категории
 /**
  * @swagger
- * /products/getall/categoryId/{categoryId}:
+ * /products/getall/categoryId/{id}:
  *   get:
  *     summary: Получить список Всех Продуктов выбранной Категории
  *     tags: [Products]
@@ -219,7 +219,7 @@ router.get(
 // список Продуктов выбранного бренда
 /**
  * @swagger
- * /products/getall/brandId/{brandId}:
+ * /products/getall/brandId/{id}:
  *   get:
  *     summary: Получить список Всех Продуктов выбранного Бренда
  *     tags: [Products]

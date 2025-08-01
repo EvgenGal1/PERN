@@ -28,7 +28,7 @@ router.get('/getone', BasketController.getOneBasket);
 
 /**
  * @swagger
- * /baskets/product/{productId}/append/{quantity}:
+ * /baskets/product/{id}/append/{quantity}:
  *   post:
  *     summary: Добавить Продукты в Корзину
  *     tags: [Basket]
@@ -60,7 +60,7 @@ router.put(
 
 /**
  * @swagger
- * /baskets/product/{productId}/increment/{quantity}:
+ * /baskets/product/{id}/increment/{quantity}:
  *   put:
  *     summary: Увеличить количество Продуктов в Корзине
  *     tags: [Basket]
@@ -92,7 +92,7 @@ router.put(
 
 /**
  * @swagger
- * /baskets/product/{productId}/decrement/{quantity}:
+ * /baskets/product/{id}/decrement/{quantity}:
  *   put:
  *     summary: Уменьшить количество Продуктов в Корзине
  *     tags: [Basket]
@@ -124,7 +124,7 @@ router.put(
 
 /**
  * @swagger
- * /baskets/product/{productId}/remove:
+ * /baskets/product/{id}/remove:
  *   delete:
  *     summary: Удалить Продукт из Корзины
  *     tags: [Basket]
@@ -163,7 +163,7 @@ router.put('/clear', BasketController.clearBasket);
 
 /**
  * @swagger
- * /baskets/product/{productId}/remove:
+ * /baskets/product/{id}/remove:
  *   delete:
  *     summary: Удалить Корзину и Все Продукты
  *     tags: [Basket]
