@@ -98,16 +98,16 @@ export const documentSwagger = (app: Application): void => {
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
       // customCssUrl: `/public/swagger/combined.css`, // ! нет никаких стилей. С нач.путём в index, app.use('public', express.static
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`, // ! нет никаких стилей. С нач.путём в index, app.use('public', express.static
-      customCssUrl: `${process.env.SRV_URL}/swagger/combined.css`, // ^ раб.совмещ.варик стилей. Без нач.пути в index, сразу app.use(express.static
-      // customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`, // ^ ! раб.ток.мои стили. Сбита разметка. Без нач.пути в index, сразу app.use(express.static
+      // customCssUrl: `${process.env.SRV_URL}/swagger/combined.css`, // ^ раб.совмещ.варик стилей. Без нач.пути в index, сразу app.use(express.static
+      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`, // ^ ! раб.ток.мои стили. Сбита разметка. Без нач.пути в index, сразу app.use(express.static
       // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `../../../public/swagger/theme.css`,
       // кастом ф.JS (для отраб.статич.ф.на PROD - Vercel)
-      customJs: [
-        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
-      ],
+      // customJs: [
+      //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
+      //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
+      // ],
     }),
   );
 };

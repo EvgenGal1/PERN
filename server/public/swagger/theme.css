@@ -363,7 +363,40 @@
     color: var(--secondary-text-color);
   }
 
-  /* СВОЁ */
+  /* СВОЁ ---------------------------------------------------------------------------------- */
+  .swagger-ui {
+    font-family: sans-serif;
+  }
+  .swagger-ui div {
+    box-sizing: border-box;
+  }
+  .swagger-ui select {
+    border: 2px solid #41444e;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 5px 40px 5px 10px;
+  }
+  .swagger-ui .btn {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 5px 23px;
+    transition: all 0.3s;
+  }
+  .swagger-ui button {
+    cursor: pointer;
+  }
+  .swagger-ui .servers-title {
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .swagger-ui .wrapper {
+    padding: 0 20px;
+  }
+  .swagger-ui .scheme-container .schemes .auth-wrapper .authorize {
+    display: flex;
+    padding-right: 20px;
+    background-color: transparent;
+  }
   /* общ.цвет  */
   .swagger-ui div.wrapper section.block div.opblock-tag-section.is-open div.opblock {
     color: rgba(255, 255, 255, 0.6);
@@ -373,7 +406,11 @@
     padding: 10px 0px;
   }
   .swagger-ui .scheme-container section.schemes {
+    display: flex;
+    align-items: flex-end;
     justify-content: space-between !important;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   .swagger-ui .scheme-container section.schemes div {
     display: flex;
@@ -390,19 +427,53 @@
   .swagger-ui .copy-to-clipboard {
     display: none;
   }
-  /* блок метода */
+  /* сервис */
   .swagger-ui .opblock-tag-section .opblock-summary {
     position: relative;
   }
-  /* кнп.мтд. */
-  .swagger-ui .opblock-summary-method {
-    margin-right: 5px;
+  /* большая кнп.управ.(мтд,путь,описание) */
+  .swagger-ui .opblock-summary-control {
+    all: inherit;
+    border-bottom: 0;
+    cursor: pointer;
+    flex: 1;
+    padding: 0;
+  }
+  /* путь и описание */
+  .swagger-ui .opblock .opblock-summary-path-description-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 10px;
+    padding: 0 10px;
+    width: 100%;
   }
   /* путь мтд./URL */
   .swagger-ui .opblock-summary-path {
-    flex: 1 1 auto;
+    /* flex: 1 1 auto;
     max-width: 100% !important;
-    padding: 0 10px;
+    padding: 0 10px; */
+    align-items: center;
+    display: flex;
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: 600;
+    word-break: break-word;
+    color: inherit !important;
+    /*  */
+    display: inline-block;
+    width: 400px;
+    vertical-align: top;
+  }
+  /* описание мтд. */
+  .swagger-ui .opblock-summary-description {
+    /* position: absolute;
+    left: 500px;
+    right: 25px; */
+    /* padding-left: 35%; */
+    display: inline-block;
+    /* margin-left: 20px; */
   }
   /* ссылка  */
   .opblock-summary > button > span.opblock-summary-path > a.nostyle {
@@ -412,12 +483,9 @@
   .is-open > .opblock-summary > button > span.opblock-summary-path > a.nostyle {
     color: var(--primary-text-color) !important;
   }
-  /* описание мтд. */
-  .swagger-ui .opblock-summary-description {
-    position: absolute;
-    left: 500px;
-    /* padding-left: 35%; */
-    right: 25px;
+  /* кнп.мтд. */
+  .swagger-ui .opblock-summary-method {
+    margin-right: 5px;
   }
   .swagger-ui .try-out .btn .try-out__btn {
     border-color: yellow;
