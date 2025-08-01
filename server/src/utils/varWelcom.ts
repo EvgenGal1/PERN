@@ -38,6 +38,12 @@ export const htmlContent = `
               color: #111;
             }
 
+            h2 {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+            }
+
             .container-link {
               padding: 10px;
             }
@@ -61,7 +67,7 @@ export const htmlContent = `
         </head>
         <body>
           <h1>Добро пожаловать в PERN!</h1>
-          <h2>API приложения PERN | Стек PERN</h2>
+          <h2>API приложения PERN&#160;<span>(стек PostgreSQL/Express/React/NodeJS)</span></h2>
           <p>Основная точка входа API. Ниже приведены некоторые полезные ссылки:</p>
           <div class="container">
             <div class="container-link">
@@ -101,6 +107,7 @@ export const htmlContent = `
                 })
                 .catch((error) => {
                   console.error('Ошибка welcome: ', error);
+                  document.getElementById('details-output').innerText = 'Ошибка загрузки данных';
                 });
             });
         </script>

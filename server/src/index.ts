@@ -76,9 +76,13 @@ app.use(fileUpload());
 // --- НАСТРОЙКА МАРШРУТОВ ---
 // обраб./прослуш. всех маршр.приложения (путь, Маршрутизатор)
 app.use(`/${process.env.SRV_NAME}`, router);
-// тест.маршрут
+// приветствие/детали подключения
 app.get('/', (req: Request, res: Response) => {
   res.send(htmlContent);
+});
+app.get('/details', (req: Request, res: Response) => {
+  const connectionDetails = `${isDevelopment ? 'DEV' : 'PROD'}    SRV: ${process.env.SRV_URL}    DB: ${isDevelopment ? `${process.env.DB_NAME}:${process.env.DB_PORT}` : process.env.DB_URL}`;
+  res.send(connectionDetails);
 });
 
 // документирование (Swagger)
