@@ -1,0 +1,372 @@
+@import './swagger-ui.min.css';
+@import './theme.css';
+
+/* === БАЗОВЫЕ СТИЛИ ДЛЯ КОНТЕЙНЕРА === */
+.swagger-ui .opblock-summary {
+  /* Убедимся, что контейнер может ограничивать ширину детей */
+  display: flex !important;
+  align-items: center;
+  /* Добавим минимальную ширину для кнопок в начале и конце */
+  /* Метод (PUT/GET и т.д.) имеет min-width: 80px по умолчанию */
+  /* Кнопки в конце имеют фиксированную ширину */
+  /* Основное пространство между ними */
+}
+
+/* === КОНТЕЙНЕР ДЛЯ URL И ОПИСАНИЯ === */
+.swagger-ui .opblock-summary-path-and-description {
+  /* Новый контейнер для гибкого управления */
+  display: flex !important;
+  align-items: center;
+  min-width: 0; /* Критично для flexbox text-overflow */
+  flex: 1 1 auto;
+  padding: 0 10px;
+  /* Занимает всё свободное пространство между кнопками */
+}
+
+/* === ССЫЛКА НА URL (ПУТЬ) === */
+.swagger-ui .opblock-summary-path {
+  /* Сбросим старые стили */
+  flex: 0 1 auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+  min-width: 0; /* Для text-overflow */
+  /* Сокращение текста */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Приоритет ниже, чем у описания */
+  flex-shrink: 1;
+  margin-right: 10px; /* Небольшой отступ от описания */
+}
+
+.swagger-ui .opblock-summary-path > a.nostyle {
+  /* Наследуем сокращение от родителя */
+  white-space: inherit;
+  overflow: inherit;
+  text-overflow: inherit;
+  /* Убираем стандартное поведение word-break */
+  word-break: normal !important;
+  /* Цвета из твоих стилей */
+  color: var(--secondary-text-color);
+}
+.swagger-ui .is-open .opblock-summary-path > a.nostyle {
+  color: var(--primary-text-color) !important;
+}
+
+/* === ОПИСАНИЕ === */
+.swagger-ui .opblock-summary-description {
+  /* Сбросим абсолютное позиционирование */
+  position: static !important;
+  left: auto !important;
+  padding-left: 0 !important;
+  /* Гибкий размер */
+  flex: 0 1 auto;
+  min-width: 0; /* Для text-overflow */
+  /* Сокращение текста */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Приоритет выше, чем у пути */
+  flex-shrink: 0;
+  /* Минимальная ширина, чтобы было видно, что это описание */
+  min-width: 50px;
+  font-size: 13px; /* Как в оригинале */
+  color: #3b4151; /* Как в оригинале */
+}
+
+/* === ПОВЕДЕНИЕ ПРИ НАВЕДЕНИИ НА ВСЮ СТРОКУ === */
+.swagger-ui .opblock-summary-control:hover .opblock-summary-path,
+.swagger-ui .opblock-summary-control:hover .opblock-summary-description {
+  /* При наведении на всю строку операции */
+  flex-shrink: 0;
+  /* Позволяем элементу занять столько места, сколько ему нужно для текста */
+  /* Но ограничиваем это пространство контейнером .opblock-summary-path-and-description */
+}
+.swagger-ui .opblock-summary-control:hover .opblock-summary-path {
+  /* При наведении путь может немного расшириться, если описание ужато */
+  flex-grow: 1;
+  /* Но всё равно ограничен общим контейнером */
+}
+.swagger-ui .opblock-summary-control:hover .opblock-summary-description {
+  /* При наведении описание может немного расшириться */
+  flex-grow: 1;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+  .swagger-ui .opblock-summary-path-and-description {
+    /* На маленьких экранах сначала убираем описание */
+    flex-wrap: wrap;
+  }
+  .swagger-ui .opblock-summary-description {
+    /* На маленьких экранах описание может переноситься на новую строку */
+    /* или становиться совсем маленьким */
+    min-width: 0;
+    flex-basis: 100%;
+    margin-top: 5px;
+    margin-left: 90px; /* Отступ под метод */
+    /* Или полностью скрыть, если места совсем нет */
+    /* display: none; */
+  }
+} /* === ХАК ДЛЯ ПЕРЕГРУППИРОВКИ ЭЛЕМЕНТОВ === */
+/* Позволяет дочерним элементам button вести себя как соседи button */
+.swagger-ui .opblock-summary-control {
+  display: contents !important;
+}
+/* Теперь мы можем стилизовать их как будто они все в .opblock-summary */
+.swagger-ui .opblock-summary {
+  /* Переопределяем display для самого контейнера */
+  display: flex !important;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+}
+/* Метод (PUT/GET) */
+.swagger-ui .opblock-summary-method {
+  flex: 0 0 auto; /* Не растягивается, не сжимается */
+  margin-right: 5px;
+}
+/* Новый контейнер для пути и описания */
+.swagger-ui .opblock-summary-path {
+  /* Используем его как контейнер */
+  display: flex !important;
+  align-items: center;
+  min-width: 0; /* Для text-overflow */
+  flex: 1 1 auto;
+  margin-right: 0; /* Убираем старый margin */
+}
+/* Ссылка внутри пути */
+.swagger-ui .opblock-summary-path > a.nostyle {
+  flex: 0 1 auto; /* Может сжиматься */
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px; /* Отступ от описания */
+}
+/* Описание */
+.swagger-ui .opblock-summary-description {
+  position: static !important;
+  left: auto !important;
+  padding-left: 0 !important;
+  flex: 0 1 auto; /* Может сжиматься */
+  min-width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: #3b4151;
+}
+/* Стрелка */
+.swagger-ui .opblock-summary-control .arrow {
+  flex: 0 0 auto; /* Не растягивается, не сжимается */
+  margin-left: auto; /* Прижимает вправо */
+}
+/* Кнопки справа */
+.swagger-ui .authorization__btn,
+.swagger-ui .view-line-link.copy-to-clipboard {
+  flex: 0 0 auto; /* Не растягивается, не сжимается */
+}
+
+/* v.2 ---------------------------------------------------------------------------------- */
+
+/* === ФИКСИРОВАННАЯ СЕТКА ДЛЯ СТРОКИ ОПЕРАЦИИ === */
+.swagger-ui .opblock-summary {
+  /* Создаем сетку: [Метод] [URL] [Описание] [Стрелка] [Кнопки] */
+  display: grid !important;
+  /* Определяем колонки:
+     1. Метод: авто-размер (min-content)
+     2. URL: занимает всё оставшееся пространство (1fr)
+     3. Описание: фиксированная ширина (например, 250px)
+     4. Стрелка: авто-размер (min-content)
+     5. Кнопки в конце: авто-размер (min-content)
+  */
+  grid-template-columns: min-content 1fr 250px min-content min-content min-content;
+  /* Отступы между колонками */
+  column-gap: 10px;
+  /* Выравнивание по вертикали */
+  align-items: center;
+  /* Ширина всей строки */
+  width: 100%;
+  /* Отключаем wrap */
+  flex-wrap: nowrap !important;
+}
+
+/* === МЕТОД (GET, POST...) === */
+.swagger-ui .opblock-summary-method {
+  /* Занимает первую колонку */
+  grid-column: 1;
+  /* Сохраняем стили */
+  margin-right: 0 !important; /* Убираем margin, так как сетка управляет отступами */
+  border-radius: var(--innner-block-border-radius);
+  min-width: 80px; /* Стандартная ширина */
+}
+
+/* === ПУТЬ (URL) === */
+.swagger-ui .opblock-summary-path {
+  /* Занимает вторую колонку */
+  grid-column: 2;
+  /* Убираем старые стили */
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: none !important;
+  /* Сокращение текста */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Выравнивание текста внутри */
+  text-align: left;
+  /* Цвета из твоих стилей */
+  color: var(--secondary-text-color);
+}
+.swagger-ui .opblock-summary-path > a.nostyle {
+  /* Наследуем сокращение */
+  white-space: inherit;
+  overflow: inherit;
+  text-overflow: inherit;
+  word-break: normal !important;
+  color: inherit;
+}
+.swagger-ui .is-open .opblock-summary-path > a.nostyle {
+  color: var(--primary-text-color) !important;
+}
+
+/* === ОПИСАНИЕ === */
+.swagger-ui .opblock-summary-description {
+  /* Занимает третью колонку */
+  grid-column: 3;
+  /* Убираем абсолютное позиционирование */
+  position: static !important;
+  left: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  /* Фиксированная ширина обеспечивается сеткой */
+  width: auto !important; /* Позволяем сетке управлять шириной */
+  /* Сокращение текста */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Выравнивание текста */
+  text-align: left;
+  /* Стили текста */
+  font-size: 13px;
+  color: #3b4151;
+  font-family: sans-serif;
+}
+
+/* === СТРЕЛКА === */
+.swagger-ui .opblock-summary-control .arrow {
+  /* Занимает четвертую колонку */
+  grid-column: 4;
+  /* Убираем margin-left: auto, так как сетка сама распределяет пространство */
+  margin-left: 0 !important;
+  opacity: var(--secondary-icon-opacity);
+}
+
+/* === КНОПКИ В КОНЦЕ === */
+.swagger-ui .authorization__btn {
+  /* Занимает пятую колонку */
+  grid-column: 5;
+  margin: 0 !important;
+}
+.swagger-ui .view-line-link.copy-to-clipboard {
+  /* Занимает шестую колонку */
+  grid-column: 6;
+  margin: 0 !important;
+  display: none; /* По твоему стилю */
+}
+
+/* === УПРАВЛЕНИЕ ПОВЕДЕНИЕМ ПРИ НАВЕДЕНИИ === */
+/* При наведении на всю строку (кнопку-контроллер) */
+.swagger-ui .opblock-summary-control:hover .opblock-summary-path,
+.swagger-ui .opblock-summary-control:hover .opblock-summary-description {
+  /* Отменяем сокращение только для URL */
+  /* Описание остается фиксированным и сокращенным */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip; /* Или убираем совсем */
+  /* Ограничиваем высоту, чтобы не "распирало" соседей */
+  max-height: 60px; /* Пример, подбирается вручную */
+  /* Добавляем скролл, если текст слишком длинный */
+  overflow-y: auto;
+  /* Или можно добавить тень, чтобы показать, что текст продолжается */
+  /* box-shadow: inset 0 -10px 5px -5px rgba(0,0,0,0.1); */
+}
+
+/* Возвращаем сокращение при уходе курсора */
+.swagger-ui .opblock-summary-path,
+.swagger-ui .opblock-summary-description {
+  /* Убедимся, что базовые стили сокращения применяются всегда,
+     кроме случая :hover на родителе */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === ХАК ДЛЯ СТАРОЙ СТРУКТУРЫ === */
+/* Так как оригинальная структура - всё внутри button.opblock-summary-control,
+   нам нужно "вытащить" элементы на уровень .opblock-summary.
+   display: contents на button не работает стабильно, поэтому
+   мы "имитируем" сетку, указывая элементам, в какой колонке они находятся.
+   К счастью, классы у элементов уникальны, и мы можем на них опереться.
+*/
+
+/* Перекрываем display для внутренней кнопки, чтобы она не мешала сетке */
+.swagger-ui .opblock-summary-control {
+  /* display: contents использовать нельзя, так как ломает семантику кнопки */
+  /* Вместо этого делаем её невидимой оберткой, которая занимает несколько колонок */
+  grid-column: 1 / span 4 !important; /* Занимает первые 4 колонки */
+  display: flex !important;
+  align-items: center;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer;
+  /* Убираем outline при фокусе, если нужно */
+  outline: none;
+}
+/* Стрелка внутри кнопки */
+.swagger-ui .opblock-summary-control .arrow {
+  grid-column: 4 !important; /* Возвращаем в 4-ю колонку */
+  margin-left: 0 !important;
+}
+/* Метод внутри кнопки */
+.swagger-ui .opblock-summary-method {
+  grid-column: 1 !important; /* Возвращаем в 1-ю колонку */
+  margin-right: 0 !important;
+}
+/* Путь внутри кнопки */
+.swagger-ui .opblock-summary-path {
+  grid-column: 2 !important; /* Возвращаем во 2-ю колонку */
+}
+/* Описание внутри кнопки */
+.swagger-ui .opblock-summary-description {
+  grid-column: 3 !important; /* Возвращаем в 3-ю колонку */
+}
+
+/* Кнопки вне основной кнопки-контроллера остаются в своих колонках */
+.swagger-ui .authorization__btn {
+  grid-column: 5 !important;
+}
+.swagger-ui .view-line-link.copy-to-clipboard {
+  grid-column: 6 !important;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+  .swagger-ui .opblock-summary {
+    /* На маленьких экранах меняем сетку */
+    grid-template-columns: min-content 1fr min-content min-content min-content;
+    /* Убираем описание или делаем его очень маленьким */
+  }
+  .swagger-ui .opblock-summary-description {
+    /* Можно скрыть описание */
+    /* display: none !important; */
+    /* Или сделать его очень узким */
+    grid-column: 3 !important;
+    flex: 0 0 100px !important;
+    font-size: 11px;
+  }
+}

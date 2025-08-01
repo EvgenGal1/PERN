@@ -35,14 +35,12 @@ export const documentSwagger = (app: Application): void => {
           ]
         : [{ url: `${process.env.SRV_URL}` }],
     },
-    // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI. Пути настр.под src/, dist/ с использ. process.cwd() > надежности на Vercel
+    // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI
     apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')],
   };
 
   // спецификация swg в JSON
   const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
-
-  // import SWG_UI внутри fn от проблем.с import в верхн.уровне/Vercel
 
   // проверка путей для отладки
   if (MEGA_TEST_SWG && isDevelopment) {
@@ -69,7 +67,6 @@ export const documentSwagger = (app: Application): void => {
   // подкл./кастомизация SWG UI
   app.use(
     '/swagger',
-    // откл. serve передача масс.[] от обслуж.swagger-ui-express своих ф.
     swaggerUi.serve,
     swaggerUi.setup(swaggerDocs, {
       // назв.стр. Swagger
@@ -81,29 +78,9 @@ export const documentSwagger = (app: Application): void => {
         // url: '/swagger',
       },
       // кастом.иконки в браузере
-      // customfavIcon: `/${process.env.PUB_DIR}/swagger/icon.ico`,
-      // customfavIcon: `../../public/swagger/icon.ico`,
-      customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`, // ^ раб.иконка. Без нач.пути в index, сразу app.use(express.static
-      // customfavIcon: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/icon.ico`,
-      // кастом ф.CSS
-      // customCss: `${process.env.SRV_URL}/swagger/theme.css`, // загр.ток.свои стили
-      // customCssUrl: `https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css`, // загр.ток.базовые стили
-      // customCssUrl: [
-      //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css', // для отраб.статич.ф.на PROD - Vercel
-      //   `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
-      // ],  // ! ошб. - базовые + своё в setup не раб.масс > css
+      customfavIcon: `${process.env.SRV_URL}/swagger/icon.ico`,
       // объедин.стили Базовый/Кастомный
-      // customCss: combinedCss,
-      // объедин.стили Базовый/Кастомный в ф.
-      // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`,
-      // customCssUrl: `/public/swagger/combined.css`, // ! нет никаких стилей. С нач.путём в index, app.use('public', express.static
-      // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/combined.css`, // ! нет никаких стилей. С нач.путём в index, app.use('public', express.static
-      // customCssUrl: `${process.env.SRV_URL}/swagger/combined.css`, // ^ раб.совмещ.варик стилей. Без нач.пути в index, сразу app.use(express.static
-      customCssUrl: `${process.env.SRV_URL}/swagger/theme.css`, // ^ ! раб.ток.мои стили. Сбита разметка. Без нач.пути в index, сразу app.use(express.static
-      // customCssUrl: `${process.env.SRV_URL}/${process.env.PUB_DIR}/swagger/theme.css`,
-      // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,
-      // customCssUrl: `../../../public/swagger/theme.css`,
-      // кастом ф.JS (для отраб.статич.ф.на PROD - Vercel)
+      customCssUrl: `${process.env.SRV_URL}/swagger/combined.css`,
       customJs: [
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
