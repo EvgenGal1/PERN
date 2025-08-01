@@ -2,10 +2,9 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import ApiError from '../errors/ApiError';
-import { DecodedToken } from '../../types/DecodedToken';
-import { AuthPayload } from '../../types/AuthPayload';
 import TokenService from '../../services/token.service';
+import { TokenDto } from '../../types/auth.interface';
+import ApiError from '../errors/ApiError';
 
 const authMW = async (
   req: Request,
@@ -17,32 +16,43 @@ const authMW = async (
 
   try {
     // проверка header на наличие поля authorization
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-      // ^ - throw. В MW express необход.использ. return - мгновен.заверщ., без лишнего перехода в catch, без выполн.след.кода
-      return next(ApiError.unauthorized('Требуется Авторизация'));
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      // ^ в MW express необход.использ. return next() - мгновен.выход с передачей ошб.в ErrorHandler. (не throw(> синхр.), не next(продолж.выполн.))
+      return next(
+        ApiError.unauthorized('Требуется Авторизация (заголовок отсутствует)'),
+      );
     }
 
     // достать токен из header (отделяя от типа `Носитель` передающегося по ind 0)
-    const tokenAccess = authorizationHeader?.split(' ')[1]; // Bearer token (asfasnfkajsfnjk)
-    if (!tokenAccess) {
-      return next(ApiError.forbidden('Токен отсутствует'));
+    const [bearer, tokenAccess] = authHeader?.split(' '); // Bearer | token (asfasnfkajsfnjk)
+    if (bearer !== 'Bearer' || !tokenAccess) {
+      return next(
+        ApiError.forbidden('Неверный формат Токена (ожидается Bearer <token>)'),
+      );
     }
 
     // раскодир.токен. `проверять` валидации ч/з services (токен)
-    const decoded = (await TokenService.validateAccessToken(
-      tokenAccess,
-    )) as DecodedToken;
+    const decoded = await TokenService.validateAccessToken(tokenAccess);
     if (!decoded || !decoded.id || !decoded.roles) {
       return next(ApiError.unauthorized('Токен не валиден'));
     }
 
+    // проверка на наличие Роли
+    if (!Array.isArray(decoded.roles) || decoded.roles.length === 0) {
+      throw ApiError.unauthorized('У Пользователя нет Ролей');
+    }
+
     // к req в auth добав.строг.тип.раскодир.данн и вызов след.middlware
-    req.auth = decoded as AuthPayload;
+    req.auth = decoded as TokenDto;
     next();
   } catch (error: unknown) {
-    // - throw. Перехват неизвестных ошб.
-    next(error);
+    // next(error);
+    next(
+      error instanceof ApiError
+        ? error
+        : ApiError.unauthorized('Ошибка проверки Токена'),
+    );
   }
 };
 
