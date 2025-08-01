@@ -104,10 +104,10 @@ export const documentSwagger = (app: Application): void => {
       // customCssUrl: `/${process.env.PUB_DIR}/swagger/theme.css`,
       // customCssUrl: `../../../public/swagger/theme.css`,
       // кастом ф.JS (для отраб.статич.ф.на PROD - Vercel)
-      // customJs: [
-      //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
-      //   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
-      // ],
+      customJs: [
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
+      ],
     }),
   );
 };
