@@ -2,16 +2,14 @@ import { Transaction } from 'sequelize';
 
 import RoleModel from '../models/RoleModel';
 import UserRoleModel from '../models/UserRoleModel';
-import ApiError from '../middleware/errors/ApiError';
-import {
-  NameUserRoles,
-  ROLE_HIERARCHY,
+import { ROLES_CONFIG } from '../config/api/roles.config';
+import type {
   RoleDTO,
   RoleID,
   RoleLevels,
   RoleName,
-  RolesIdsNames,
 } from '../types/role.interface';
+import ApiError from '../middleware/errors/ApiError';
 
 class RoleService {
   // ^ РОЛИ
@@ -77,7 +75,7 @@ class RoleService {
     transaction?: Transaction,
   ): Promise<UserRoleModel> {
     // по имени Роли из объ.взять ID
-    const roleId = RolesIdsNames[roleName].id;
+    const roleId = ROLES_CONFIG[roleName].id;
     // созд./обнов. связь user-role с защитой от дубликатов и возврат актуальной
     const [userRole] = await UserRoleModel.upsert(
       {
@@ -105,7 +103,7 @@ class RoleService {
     });
     if (!userRoles) throw ApiError.notFound('Связи Пользователя не найден');
     return userRoles.map((ur) => ({
-      role: ur.role!.value as NameUserRoles,
+      role: ur.role!.value as RoleName,
       level: ur.level,
     }));
   }
@@ -116,9 +114,12 @@ class RoleService {
     requiredRole: RoleName,
   ): Promise<boolean> {
     // нахождение макс.уровня из Ролей Пользователя
-    const userLevel = Math.max(...userRoles.map((rol) => ROLE_HIERARCHY[rol]));
+    const userLevel = Math.max(
+      ...userRoles.map((roleName) => ROLES_CONFIG[roleName].hierarchy),
+      -1 /* На случай, если массив пуст */,
+    );
     // сравнение с треб.уровнем
-    return userLevel >= ROLE_HIERARCHY[requiredRole];
+    return userLevel >= ROLES_CONFIG[requiredRole].hierarchy;
   }
 
   // обнов.уровень Роли Пользователя
@@ -127,7 +128,7 @@ class RoleService {
     roleName: RoleName,
     level: number,
   ): Promise<UserRoleModel> {
-    const roleId = RolesIdsNames[roleName].id;
+    const roleId = ROLES_CONFIG[roleName].id;
     const userRole = await UserRoleModel.findOne({
       where: { userId, roleId },
     });
@@ -137,7 +138,7 @@ class RoleService {
   }
 
   async removeUserRole(userId: number, roleName: RoleName): Promise<void> {
-    const roleId = RolesIdsNames[roleName].id;
+    const roleId = ROLES_CONFIG[roleName].id;
     await UserRoleModel.destroy({
       where: { userId, roleId },
     });

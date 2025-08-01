@@ -17,9 +17,11 @@ import TokenService from './token.service';
 import MailService from './mail.service';
 // утилиты/helpы
 import DatabaseUtils from '../utils/database.utils';
+// конфиг.Ролей
+import { ROLES_CONFIG } from '../config/api/roles.config';
 // type/dto
 import { AuthCombinedType, TokenDto, Tokens } from '../types/auth.interface';
-import { NameUserRoles, RoleLevels } from '../types/role.interface';
+import type { RoleLevels, RoleName } from '../types/role.interface';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
@@ -70,7 +72,7 @@ class AuthService {
     email: string,
     password: string,
     username = '',
-    role: NameUserRoles = NameUserRoles.USER,
+    role: RoleName = ROLES_CONFIG.USER.name,
   ): Promise<AuthCombinedType> {
     // проверка/отказ > существующего Пользователя
     const existingUser = await UserModel.findOne({

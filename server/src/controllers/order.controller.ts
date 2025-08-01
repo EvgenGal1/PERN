@@ -4,7 +4,7 @@ import OrderService from '../services/order.service';
 import BasketService from '../services/basket.service';
 import UserService from '../services/user.service';
 import { parseId, validateData } from '../utils/validators';
-import { NameUserRoles } from '../types/role.interface';
+import { ROLES_CONFIG } from '../config/api/roles.config';
 import ApiError from '../middleware/errors/ApiError';
 
 class OrderController {
@@ -24,8 +24,9 @@ class OrderController {
   async getOneOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseId(+req.params.id, this.name);
+      // использ.ROLES_CONFIG > знач.по умолчанию
       const isAdmin = req.auth?.roles?.some(
-        (r) => r.role === NameUserRoles.ADMIN,
+        (r) => r.role === ROLES_CONFIG.ADMIN.name,
       );
       const userId = isAdmin ? undefined : req.auth?.id;
       // по ID Заказа и Пользователя или Заказ > Admin
@@ -81,8 +82,8 @@ class OrderController {
       }
       let userRoles = roles.map((r) => r.role);
       if (
-        userRoles.includes(NameUserRoles.USER) ||
-        userRoles.includes(NameUserRoles.GUEST)
+        userRoles.includes(ROLES_CONFIG.USER.name) ||
+        userRoles.includes(ROLES_CONFIG.GUEST.name)
       ) {
         // проверка сущ. Пользователя
         if (userId) await UserService.getOneUser(userId);
@@ -93,7 +94,7 @@ class OrderController {
         if (!basket?.products.length)
           throw ApiError.badRequest('Корзина пуста');
         basketItems = basket.products;
-      } else if (userRoles.includes(NameUserRoles.ADMIN)) {
+      } else if (userRoles.includes(ROLES_CONFIG.ADMIN.name)) {
         throw ApiError.badRequest('Логика для ADMIN в разработке');
       }
       const order = await OrderService.createOrder({
@@ -105,7 +106,7 @@ class OrderController {
         comment,
         items: basketItems,
       });
-      if (!userRoles.includes(NameUserRoles.ADMIN))
+      if (!userRoles.includes(ROLES_CONFIG.ADMIN.name))
         await BasketService.clearBasketProducts(+req.signedCookies.basketId);
       res.status(201).json(order);
     } catch (error) {

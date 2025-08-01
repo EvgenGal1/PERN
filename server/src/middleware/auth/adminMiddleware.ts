@@ -2,16 +2,16 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import { NameUserRoles } from '../../types/role.interface';
+import { ROLES_CONFIG } from '../../config/api/roles.config';
 import ApiError from '../errors/ApiError';
 
 const adminMW = (req: Request, res: Response, next: NextFunction): void => {
   try {
     const isAdmin = req.auth?.roles?.some(
-      (r) => r.role === NameUserRoles.ADMIN,
+      (r) => r.role === ROLES_CONFIG.ADMIN.name,
     );
     if (!req.auth || isAdmin) {
-      throw ApiError.forbidden('Только для администратора');
+      throw ApiError.forbidden('Только для Администратора');
     }
     next();
   } catch (error: unknown) {

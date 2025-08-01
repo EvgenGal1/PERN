@@ -9,8 +9,9 @@ import {
   UserUpdateDto,
   UserData,
 } from '../types/user.interface';
-import { NameUserRoles } from '../types/role.interface';
+import { ROLES_CONFIG } from '../config/api/roles.config';
 // обраб.ошб.
+import type { RoleName } from '../types/role.interface';
 import ApiError from '../middleware/errors/ApiError';
 
 class UserService {
@@ -31,7 +32,12 @@ class UserService {
   }
 
   async createUser(data: UserCreateDto): Promise<UserData> {
-    const { email, password, username = '', role = NameUserRoles.USER } = data;
+    const {
+      email,
+      password,
+      username = '',
+      role = ROLES_CONFIG.USER.name,
+    } = data;
 
     const existingUser = await UserModel.findOne({ where: { email } });
     if (existingUser)
@@ -46,7 +52,7 @@ class UserService {
     // параллел.req > созд.Корзину по User.id, привязка к Роли
     await Promise.all([
       BasketService.createBasket(user.id),
-      RoleService.assignUserRole(user.id, role as NameUserRoles),
+      RoleService.assignUserRole(user.id, role as RoleName),
     ]);
 
     return user;
@@ -63,7 +69,7 @@ class UserService {
     // параллел.req > обнов.Пользователя, привязка к Роли
     await Promise.all([
       user.update(updatePayload),
-      data.role && RoleService.assignUserRole(id, data.role as NameUserRoles),
+      data.role && RoleService.assignUserRole(id, data.role as RoleName),
     ]);
 
     return this.getOneUser(id);
