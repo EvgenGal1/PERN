@@ -1,9 +1,11 @@
 import express from 'express';
 
 import authMW from '../middleware/auth/authMiddleware';
-import roleMW from '../middleware/auth/roleMiddleware';
+// ? чёт много проверок роли, разобрать
+// import roleMW from '../middleware/auth/roleMiddleware';
 import RatingController from '../controllers/rating.controller';
-import { NameUserRoles } from '../types/role.interface';
+import { rolesMW, roleLevelMW } from '../middleware/auth/roleMiddleware';
+// import { RoleName } from '../types/role.interface';
 
 const router = express.Router();
 
@@ -33,7 +35,12 @@ const router = express.Router();
  *       404:
  *         description: Рейтинг Продукта не найден
  */
-router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
+router.get(
+  '/product/:productId([0-9]+)',
+  // проверка на Роль/Уровень // перед нужен authMW (нет у GUEST)
+  // roleLevelMW('USER', 1),
+  RatingController.getOneRating,
+);
 
 /**
  * @swagger
@@ -66,12 +73,8 @@ router.get('/product/:productId([0-9]+)', RatingController.getOneRating);
 router.post(
   '/product/:productId([0-9]+)/rate/:rate([1-5])',
   authMW,
-  roleMW([
-    NameUserRoles.USER,
-    NameUserRoles.SUPER,
-    NameUserRoles.ADMIN,
-    NameUserRoles.MODER,
-  ]),
+  // проверка на одну из Ролей
+  rolesMW(['USER', 'SUPER', 'ADMIN', 'MODER']),
   RatingController.createRating,
 );
 

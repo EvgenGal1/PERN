@@ -1,44 +1,22 @@
-// константы/интерфейсы/типы Ролей/уровней
+// типы Ролей/Уровней/Доступов
 
-export interface RoleDTO {
-  value: string;
+import { ROLES_CONFIG } from '../config/api/roles.config';
+
+export type RoleDTO = {
+  value: RoleName;
   description?: string;
-}
-
-export interface RoleLevels {
-  role: NameUserRoles;
-  level: number;
-}
-
-export enum NameUserRoles {
-  GUEST = 'GUEST',
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-  MODER = 'MODER',
-  MELOMAN = 'MELOMAN',
-  VISUAL = 'VISUAL',
-  SUPER = 'SUPER',
-}
-
-export const RolesIdsNames = {
-  [NameUserRoles.GUEST]: { id: 0, name: NameUserRoles.GUEST },
-  [NameUserRoles.USER]: { id: 1, name: NameUserRoles.USER },
-  [NameUserRoles.ADMIN]: { id: 2, name: NameUserRoles.ADMIN },
-  [NameUserRoles.MODER]: { id: 3, name: NameUserRoles.MODER },
-  [NameUserRoles.MELOMAN]: { id: 4, name: NameUserRoles.MELOMAN },
-  [NameUserRoles.VISUAL]: { id: 5, name: NameUserRoles.VISUAL },
-  [NameUserRoles.SUPER]: { id: 6, name: NameUserRoles.SUPER },
-} as const;
-
-export const ROLE_HIERARCHY: Record<NameUserRoles, number> = {
-  [NameUserRoles.GUEST]: 0,
-  [NameUserRoles.USER]: 1,
-  [NameUserRoles.MELOMAN]: 1,
-  [NameUserRoles.VISUAL]: 1,
-  [NameUserRoles.MODER]: 2,
-  [NameUserRoles.ADMIN]: 3,
-  [NameUserRoles.SUPER]: 4,
 };
 
-export type RoleName = keyof typeof RolesIdsNames;
-export type RoleID = (typeof RolesIdsNames)[RoleName]['id'];
+export type RoleLevels = {
+  role: RoleName;
+  level: number;
+};
+
+// тип назв.Ролей (из ключей ROLES_CONFIG)
+export type RoleName = keyof typeof ROLES_CONFIG;
+
+// тип str.назв.Ролей (не enum)
+export type RoleNameString = (typeof ROLES_CONFIG)[RoleName]['name'];
+
+// тип ID Ролей
+export type RoleID = (typeof ROLES_CONFIG)[RoleName]['id'];
