@@ -17,7 +17,7 @@ import OrderItemModel from './OrderItemModel';
 import BasketProductModel from './BasketProductModel';
 import RatingModel from './RatingModel';
 // перем.окруж.
-import { isDevelopment } from '../config/envs/env.consts';
+// import { isDevelopment } from '../config/envs/env.consts';
 
 // масс.всех моделей
 const models = {
@@ -39,26 +39,42 @@ const models = {
 // fn инициализ.модулей/устан.ассоциация
 function initModels() {
   try {
-    // инициализ.всех модулей ч/з экземп.Sequelize
-    Object.values(models).forEach((model) => {
+    // устан.Моделей
+    Object.entries(models).forEach(([modelName, model]) => {
+      // проверка на undefined/null
+      if (!model) {
+        console.warn(`Модель ${modelName} не определена!`);
+        return;
+      }
+      // инициализ.всех модулей ч/з экземп.Sequelize
       if (typeof model.initModel === 'function') {
-        if (isDevelopment) console.log(`Инициализация модели: ${model.name}`);
+        // if (isDevelopment) console.log(`Инициализация модели: ${model.name}`);
         model.initModel(sequelize);
       }
     });
 
-    // устан.ассоциаций/связей м/у моделями
-    Object.values(models).forEach((model) => {
+    // устан.ассоциаций/связей м/у Моделями
+    Object.entries(models).forEach(([modelName, model]) => {
+      if (!model) {
+        console.warn(`Ассоцияция в Моделе ${modelName} не определена!`);
+        return;
+      }
       if (typeof model.associate === 'function') {
-        if (isDevelopment)
-          console.log(`Установка ассоциаций для: ${model.name}`);
+        // if (isDevelopment) console.log(`Установка ассоциаций для: ${model.name}`);
         model.associate(models);
       }
     });
-    if (isDevelopment)
-      console.log('Модели успешно инициализированы и ассоциации установлены.');
+
+    Object.values(models).forEach((model) => {
+      if (typeof model.associate === 'function') {
+        model.associate(models);
+      }
+    });
+    // if (isDevelopment)
+    // console.log('Модели успешно инициализированы и ассоциации установлены.');
   } catch (error) {
     console.error('Ошибка при инициализации моделей:', error);
+    throw error;
   }
 }
 
