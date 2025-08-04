@@ -9,7 +9,7 @@ import axios, {
 import { deleteCookie, getCookie } from "@/utils/cookies";
 
 // Базовый URL API
-const API_URL = process.env.REACT_APP_SRV_IURL;
+const API_URL = process.env.REACT_APP_SRV_URL;
 
 // 1. `гостевой экземпляр` axios (неавториз.польз., отправ.cookie в кажд.req ч/з withCredentials)
 const guestInstance = axios.create({ baseURL: API_URL, withCredentials: true });
