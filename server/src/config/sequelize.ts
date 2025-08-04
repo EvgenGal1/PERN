@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 // загр.перем.окруж.из ф..env
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 // перем.окруж.
-import { isDevelopment } from './envs/env.consts';
+// import { isDevelopment } from './envs/env.consts';
 
 // проверка наличия перем.окруж.
 if (!process.env.DB_USER || !process.env.DB_NAME) {
