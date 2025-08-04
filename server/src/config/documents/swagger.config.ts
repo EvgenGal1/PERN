@@ -22,7 +22,8 @@ export const documentSwagger = (app: Application): void => {
         description: 'Описание методов интеграции API',
       },
       // URL > req DEV/PROD
-      servers: isDevelopment
+      servers:
+        /* isDevelopment
         ? [
             {
               url: `${process.env.SRV_URL}/${process.env.SRV_NAME}`,
@@ -33,7 +34,14 @@ export const documentSwagger = (app: Application): void => {
               description: 'LOCAL server',
             },
           ]
-        : [{ url: `${process.env.SRV_URL}` }],
+        : [{ url: `${process.env.SRV_URL}` }], */
+        [
+          {
+            url: `${process.env.SRV_URL}/${process.env.SRV_NAME}`,
+            description: 'DEV server',
+          },
+          { url: `${process.env.SRV_URL}` },
+        ],
     },
     // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI
     apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')],

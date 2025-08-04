@@ -30,12 +30,12 @@ const sequelize = new Sequelize(
     timezone: 'Europe/Moscow',
     dialectOptions: {
       // сертификаты не строг.проверка на PROD
-      ...(!isDevelopment && {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      }),
+      // ...(!isDevelopment && {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+      // }),
     },
     // указ.диалект pg
     dialectModule: require('pg'),
