@@ -53,7 +53,11 @@ app.use(
   cors({
     credentials: true,
     origin: function (origin, callback) {
-      const allowedOrigins = [process.env.CLT_URL, process.env.CLT_URL_PROD];
+      const allowedOrigins = [
+        process.env.CLT_URL,
+        process.env.CLT_URL_DUBL,
+        process.env.CLT_URL_PROD,
+      ];
       if (!origin || allowedOrigins.includes(origin)) callback(null, true);
       else callback(new Error('Не разрешён CORS'));
     },
@@ -118,11 +122,11 @@ const start = async (): Promise<void> => {
     app.listen(PORT, () => {
       // вывод с цветом подкл.к БД от NODE_ENV
       console.log(
-        `\x1b[41m${NODE_ENV.toUpperCase()}\x1b[0m   MAIN   SRV: ${mainColor}${process.env.SRV_URL}\x1b[0m   DB: \x1b[33m${process.env.DB_NAME}:${process.env.DB_PORT}\x1b[0m`,
+        `\x1b[41m${NODE_ENV.toUpperCase()}\x1b[0m   MAIN   SRV: ${mainColor}${process.env.SRV_URL}\x1b[0m   DB: \x1b[33m${process.env.DB_HOST} / ${process.env.DB_PORT}\x1b[0m`,
       );
       if (isDevelopment) {
         logger.info(
-          `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_NAME}:${process.env.DB_PORT}`,
+          `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_HOST} / ${process.env.DB_PORT}`,
         );
       }
     });
