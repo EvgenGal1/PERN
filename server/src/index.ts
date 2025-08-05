@@ -14,6 +14,8 @@ import path from 'path';
 
 // конфиг.БД
 import sequelize, { connectToDatabase } from './config/sequelize';
+// подкл. БД/Модулей/табл.
+// import initModels from './models/index';
 // общ.ф.настр.маршрутизаторов
 import router from './routes/index.routes';
 // MW обраб.ошб.
@@ -21,10 +23,10 @@ import ErrorHandler from './middleware/errors/ErrorHandler';
 // логирование LH Winston
 import { LoggingWinston as logger } from './config/logging/log_winston.config';
 // MW логгирование входящих HTTP запросов
-import {
-  responseLoggingMiddleware as reSLog,
-  requestLoggingMiddleware as reQLog,
-} from './middleware/logging/logging.middleware';
+// import {
+//   responseLoggingMiddleware as reSLog,
+//   requestLoggingMiddleware as reQLog,
+// } from './middleware/logging/logging.middleware';
 // документирование/настр. Swagger
 import {
   documentSwagger,
@@ -32,7 +34,6 @@ import {
 } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
-// import initModels from './models/index';
 import { htmlContent } from './utils/varWelcom';
 
 // --- НАСТРОЙКА ОКРУЖЕНИЯ ---
@@ -68,8 +69,8 @@ app.use(cookieParser(process.env.SECRET_KEY));
 // возм.парсить json
 app.use(express.json());
 // логг.Winston вход.HTTP req
-app.use(reSLog);
-app.use(reQLog);
+// app.use(reSLog);
+// app.use(reQLog);
 // стат.ф. (img, css)
 app.use(
   /* `/${PUB_DIR}`, */ express.static(path.join(__dirname, `../${PUB_DIR}`)),
