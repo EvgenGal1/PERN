@@ -64,14 +64,7 @@ function initModels() {
         model.associate(models);
       }
     });
-
-    Object.values(models).forEach((model) => {
-      if (typeof model.associate === 'function') {
-        model.associate(models);
-      }
-    });
-    // if (isDevelopment)
-    // console.log('Модели успешно инициализированы и ассоциации установлены.');
+    // if (isDevelopment) console.log('Модели успешно инициализированы и ассоциации установлены.');
   } catch (error) {
     console.error('Ошибка при инициализации моделей:', error);
     throw error;
