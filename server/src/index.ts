@@ -32,7 +32,7 @@ import {
 } from './config/documents/swagger.config';
 // константы > команды запуска process.env.NODE_ENV
 import { isDevelopment } from './config/envs/env.consts';
-import initModels from './models/index';
+// import initModels from './models/index';
 import { htmlContent } from './utils/varWelcom';
 
 // --- НАСТРОЙКА ОКРУЖЕНИЯ ---
@@ -85,7 +85,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send(htmlContent);
 });
 app.get('/details', (req: Request, res: Response) => {
-  const connectionDetails = `${isDevelopment ? 'DEV' : 'PROD'}    SRV: ${process.env.SRV_URL}    DB: ${isDevelopment ? `${process.env.DB_NAME}:${process.env.DB_PORT}` : process.env.DB_URL}`;
+  const connectionDetails = `${isDevelopment ? 'DEV' : 'PROD'}    SRV: ${process.env.SRV_URL}    DB: ${process.env.DB_HOST} / ${process.env.DB_PORT}`;
   res.send(connectionDetails);
 });
 
@@ -104,7 +104,7 @@ const start = async (): Promise<void> => {
     // проверка подкл.к БД
     if (isDevelopment) await connectToDatabase();
     // инициализация моделей и связей табл.БД
-    initModels();
+    // initModels();
     // синхрониз.структуру БД со схемой данн.(опред.моделью)
     if (isDevelopment)
       await sequelize
