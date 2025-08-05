@@ -39,34 +39,50 @@ const models = {
 // fn инициализ.модулей/устан.ассоциация
 function initModels() {
   try {
-    // устан.Моделей
+    console.log('[DEBUG] Начало инициализации моделей');
+    console.log('[DEBUG] models object:', models);
+
+    // Защита от undefined
+    if (!models) {
+      throw new Error('[DEBUG] models object is undefined!');
+    }
+
+    // Проверим каждую модель отдельно
     Object.entries(models).forEach(([modelName, model]) => {
-      // проверка на undefined/null
+      console.log(`[DEBUG] Проверка модели ${modelName}:`, {
+        exists: !!model,
+        type: typeof model,
+        keys: model ? Object.keys(model) : 'N/A',
+      });
+
       if (!model) {
-        console.warn(`Модель ${modelName} не определена!`);
+        console.warn(`[WARN] Модель ${modelName} не определена!`);
         return;
       }
-      // инициализ.всех модулей ч/з экземп.Sequelize
+
       if (typeof model.initModel === 'function') {
-        // if (isDevelopment) console.log(`Инициализация модели: ${model.name}`);
+        console.log(`[DEBUG] Инициализация модели: ${modelName}`);
         model.initModel(sequelize);
+      } else {
+        console.warn(`[WARN] Модель ${modelName} не имеет метода initModel`);
       }
     });
 
-    // устан.ассоциаций/связей м/у Моделями
+    // Аналогично для ассоциаций
     Object.entries(models).forEach(([modelName, model]) => {
       if (!model) {
         console.warn(`Ассоцияция в Моделе ${modelName} не определена!`);
         return;
       }
       if (typeof model.associate === 'function') {
-        // if (isDevelopment) console.log(`Установка ассоциаций для: ${model.name}`);
+        console.log(`[DEBUG] Установка ассоциаций для: ${modelName}`);
         model.associate(models);
       }
     });
-    // if (isDevelopment) console.log('Модели успешно инициализированы и ассоциации установлены.');
+
+    console.log('[DEBUG] Модели успешно инициализированы');
   } catch (error) {
-    console.error('Ошибка при инициализации моделей:', error);
+    console.error('[ERROR] Ошибка при инициализации моделей:', error);
     throw error;
   }
 }
