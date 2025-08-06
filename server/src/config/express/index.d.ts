@@ -1,7 +1,7 @@
 import 'express';
-import { TokenDto } from './auth.interface';
+import { TokenDto } from '../../types/auth.interface';
 
-declare module 'express' {
+export declare module 'express' {
   export interface Request {
     auth?: TokenDto; // строго типизировано
   }

@@ -23,14 +23,16 @@
     // },
     "resolveJsonModule": true, // импорта JSON-ф
     "noUnusedLocals": true, // отчет о ошб.при ошб.чтения локал.перем.
-    "noImplicitReturns": true // отчет о ошб.при не возврат.в  fn кодов.путей
+    "noImplicitReturns": true, // отчет о ошб.при не возврат.в  fn кодов.путей
+    "experimentalDecorators": true, // вкл.подерж.декор-ов
   },
   // вкл.в компиляцию
   "include": [
     // "./src/**/*.js",
     "./src/**/*.ts",
     "./src/**/*.mts",
-    "./src/**/*.cts"
+    "./src/**/*.cts",
+    "src/config/express/index.d.ts"
   ],
   // откл.из компиляции
   "exclude": [
