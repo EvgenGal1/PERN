@@ -3,10 +3,11 @@
 import { Dialect, Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
-// загр.перем.окруж.из ф..env
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+// загр.перем.окруж.из ф..env с услов.от Vercel
+if (!process.env.VERCEL)
+  dotenv.config({ path: `.env.${process.env.NODE_ENV ?? 'production'}` });
 // перем.окруж.
-// import { isDevelopment } from './envs/env.consts';
+import { isDevelopment } from './envs/env.consts';
 
 // проверка наличия перем.окруж.
 if (!process.env.DB_USER || !process.env.DB_NAME) {
@@ -30,12 +31,12 @@ const sequelize = new Sequelize(
     timezone: 'Europe/Moscow',
     dialectOptions: {
       // сертификаты не строг.проверка на PROD
-      // ...(!isDevelopment && {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-      // }),
+      ...(!isDevelopment && {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }),
     },
     // указ.диалект pg
     dialectModule: require('pg'),
@@ -46,9 +47,9 @@ const sequelize = new Sequelize(
 export const connectToDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-    // console.log('Подключение к БД успешно.');
+    console.log('[DB] Подключение к БД успешно!');
   } catch (error) {
-    console.error('Не удалось подключиться к БД:', error);
+    console.error('[DB] Не удалось подключиться к БД:', error);
     throw new Error(`Ошибка подключения к БД: ${(error as Error).message}`);
   }
 };
