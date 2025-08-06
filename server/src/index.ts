@@ -1,5 +1,7 @@
 // ^ Запуск Сервера. Базов.конфиг для приёма запросов
 
+// расшир.типов > auth с принудит.загр.кода ч/з TS config
+/// <reference path="./config/express/index.d.ts" />
 // express ч/з require для прилож.
 import express, { Application, Request, Response } from 'express';
 // наст./перем.окруж.
@@ -15,7 +17,7 @@ import path from 'path';
 // конфиг.БД
 import sequelize, { connectToDatabase } from './config/sequelize';
 // подкл. БД/Модулей/табл.
-// import initModels from './models/index';
+import initModels from './models/index';
 // общ.ф.настр.маршрутизаторов
 import router from './routes/index.routes';
 // MW обраб.ошб.
@@ -42,11 +44,15 @@ config({ path: `.env.${process.env.NODE_ENV}` });
 // опред.среды запуска
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+// --- СОЗДАНИЕ EXPRESS-ПРИЛОЖЕНИЯ ---
 // созд.server
 const app: Application = express();
 // порт из перем.окруж. | умолч.
 const PORT = isDevelopment ? Number(process.env.SRV_PORT) : 5000;
 const PUB_DIR = process.env.PUB_DIR || 'public';
+
+// --- ИНИЦИАЛИЗАЦИЯ МОДЕЛЕЙ/СВЯЗЕЙ ТАБЛ.БД (синхр.до маршрт.от ошб.сборки Vercel) ---
+initModels();
 
 // --- НАСТРОЙКА MIDDLEWARE (Синхронные) ---
 // совместн.использ.ресурс.разн.источников client/server > разрещ.(url,cookie)
@@ -104,8 +110,6 @@ const start = async (): Promise<void> => {
     await sequelize.authenticate();
     // проверка подкл.к БД
     if (isDevelopment) await connectToDatabase();
-    // инициализация моделей и связей табл.БД
-    // initModels();
     // синхрониз.структуру БД со схемой данн.(опред.моделью)
     if (isDevelopment)
       await sequelize
@@ -141,7 +145,8 @@ const start = async (): Promise<void> => {
   }
 };
 
-// start() при прямом запуске > изоляции сервера при тестах
-/* if (require.main === module) */ start();
+// start() при прямом запуске > изоляции сервера при тестах с обраб.ошб.
+if (require.main === module) start().catch(console.error);
+
 // экспорт приложения > тестов
 export default app;
