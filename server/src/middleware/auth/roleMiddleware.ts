@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import ApiError from '../errors/ApiError';
 import { hasAnyRole } from '../../utils/roles';
-import type { RoleName } from '../../types/role.interface';
+import type { RoleLevels, RoleName } from '../../types/role.interface';
 
 /**
  * MW. проварка наличия у Пользователя одной из указанных Ролей
@@ -46,7 +46,7 @@ export const roleLevelMW = (roleName: string, minLevel: number = 1) => {
 
     // проверка наличия Роль с нужным Уровнем
     const hasRole = req.auth.roles.some(
-      (r) => r.role === roleName && r.level >= minLevel,
+      (r: RoleLevels) => r.role === roleName && r.level >= minLevel,
     );
 
     // Доступ Разрешён

@@ -6,6 +6,7 @@ import UserService from '../services/user.service';
 import { parseId, validateData } from '../utils/validators';
 import { ROLES_CONFIG } from '../config/api/roles.config';
 import ApiError from '../middleware/errors/ApiError';
+import type { RoleLevels } from '../types/role.interface';
 
 class OrderController {
   constructor() {
@@ -26,7 +27,7 @@ class OrderController {
       const id = parseId(+req.params.id, this.name);
       // использ.ROLES_CONFIG > знач.по умолчанию
       const isAdmin = req.auth?.roles?.some(
-        (r) => r.role === ROLES_CONFIG.ADMIN.name,
+        (r: { role: string }) => r.role === ROLES_CONFIG.ADMIN.name,
       );
       const userId = isAdmin ? undefined : req.auth?.id;
       // по ID Заказа и Пользователя или Заказ > Admin
@@ -80,7 +81,7 @@ class OrderController {
       if (!basketItems || basketItems.length === 0) {
         throw ApiError.badRequest('Не указаны Позиции Заказа');
       }
-      let userRoles = roles.map((r) => r.role);
+      let userRoles = roles.map((r: RoleLevels) => r.role);
       if (
         userRoles.includes(ROLES_CONFIG.USER.name) ||
         userRoles.includes(ROLES_CONFIG.GUEST.name)

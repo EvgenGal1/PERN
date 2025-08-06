@@ -13,7 +13,9 @@ export const hasMinRoleLevel = (
   requiredRole: RoleName,
   minLevel: number = 1,
 ): boolean => {
-  return userRoles.some((r) => r.role === requiredRole && r.level >= minLevel);
+  return userRoles.some(
+    (r: RoleLevels) => r.role === requiredRole && r.level >= minLevel,
+  );
 };
 
 /**
