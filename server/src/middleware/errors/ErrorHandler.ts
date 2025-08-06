@@ -16,25 +16,54 @@ const ErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  // преобраз.неизвест.ошб.в формат ApiError
-  if (!(err instanceof ApiError) && err instanceof Error) {
-    err = new ApiError(500, err.message || 'Неизвестная ОШБ.', err.name);
+  // > отладки е/и ошб.нестандарт
+  console.error('[ERROR HANDLER] Ошибка:', err);
+
+  // отраб.ошб.null/undefined
+  if (!err) {
+    res.status(500).json({
+      status: 500,
+      message: 'Неизвестная ошибка (null/undefined)',
+      errors: 'UnknownError',
+      code: 'UNKNOWN_ERROR',
+    });
+    return;
   }
 
-  const apiError = err as ApiError;
+  // перем.ошб.
+  let apiError: ApiError;
+
+  // обраб.ошб.с преобраз.ошб.в формат ApiError
+  if (err instanceof ApiError) apiError = err;
+  else if (err instanceof Error) {
+    apiError = new ApiError(500, err.message, {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+    });
+  } else {
+    apiError = new ApiError(500, 'Неизвестная ошибка', String(err));
+  }
+
+  // формат.ошб. > JSON
+  const formattedErrors: string | null = apiError.errors
+    ? typeof apiError.errors === 'string'
+      ? apiError.errors
+      : JSON.stringify(apiError.errors, null, 2)
+    : null;
 
   // лог.ошб.
   logger.error(
     `\nAPI Error: ${req.method} ${req.url} - ${apiError.status}\n` +
       `Message : ${apiError.message}  Code : ${apiError.code}\n` +
-      `Error : ${apiError.errors}`,
+      `Error : ${formattedErrors}`,
   );
 
   // стандарт.res
   res.status(apiError.status).json({
     status: apiError.status,
     message: apiError.message,
-    errors: apiError.errors || null,
+    errors: formattedErrors || null,
     code: apiError.code || 'UNKNOWN_ERROR',
   });
 };
