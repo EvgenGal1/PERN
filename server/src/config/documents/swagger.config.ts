@@ -31,9 +31,9 @@ export const documentSwagger = (app: Application): void => {
             },
           ]
         : [
-            { url: `${process.env.SRV_URL}` },
+            { url: `${process.env.SRV_URL}/${process.env.SRV_NAME}` },
             {
-              url: 'http://localhost:5000',
+              url: `http://localhost:5000/${process.env.SRV_NAME}`,
               description: 'LOCAL server',
             },
           ],
