@@ -7,9 +7,6 @@ import path from 'path';
 
 import { isDevelopment } from '../envs/env.consts';
 
-// подроб.логи > тестирования
-const MEGA_TEST_SWG = false;
-
 // fn подкл. SWG UI
 export const documentSwagger = (app: Application): void => {
   // конфиг.swg
@@ -22,8 +19,7 @@ export const documentSwagger = (app: Application): void => {
         description: 'Описание методов интеграции API',
       },
       // URL > req DEV/PROD
-      servers:
-        /* isDevelopment
+      servers: isDevelopment
         ? [
             {
               url: `${process.env.SRV_URL}/${process.env.SRV_NAME}`,
@@ -34,14 +30,13 @@ export const documentSwagger = (app: Application): void => {
               description: 'LOCAL server',
             },
           ]
-        : [{ url: `${process.env.SRV_URL}` }], */
-        [
-          {
-            url: `${process.env.SRV_URL}/${process.env.SRV_NAME}`,
-            description: 'DEV server',
-          },
-          { url: `${process.env.SRV_URL}` },
-        ],
+        : [
+            { url: `${process.env.SRV_URL}` },
+            {
+              url: 'http://localhost:5000',
+              description: 'LOCAL server',
+            },
+          ],
     },
     // абсол.путь ф.маршрута с коммент.JSON/JSDoc/OpenAPI
     apis: [path.join(__dirname, '../../routes/**/*.{js,ts}')],
@@ -51,7 +46,7 @@ export const documentSwagger = (app: Application): void => {
   const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
 
   // проверка путей для отладки
-  if (MEGA_TEST_SWG && isDevelopment) {
+  if (process.env.MEGA_TEST && isDevelopment) {
     console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
     swaggerOptions.apis.forEach((pattern) => {
       const files = require('glob').sync(pattern);
@@ -59,7 +54,7 @@ export const documentSwagger = (app: Application): void => {
     });
   }
   // логг.сгенерир.спеки
-  if (MEGA_TEST_SWG && isDevelopment) {
+  if (process.env.MEGA_TEST && isDevelopment) {
     console.log(
       '[Swagger] Сгенерированная спека:',
       JSON.stringify(swaggerDocs, null, 2),
