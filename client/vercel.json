@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "routes": [
-    { "src": "/favicon.ico", "dest": "/favicon.ico" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+  "routes": [{ "src": "/favicon.ico", "dest": "/favicon.ico" }],
+  "devCommand": "craco start"
 }

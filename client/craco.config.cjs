@@ -31,6 +31,7 @@ module.exports = {
               implementation: require("sass"), // использ.modern Dart Sass
               sassOptions: {
                 fiber: false, // откл.Fiber (необязательно)
+                quietDeps: true, // откл.предупреждения о deprecated API
               },
             };
           }
