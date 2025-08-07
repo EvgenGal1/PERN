@@ -115,21 +115,24 @@ const start = async (): Promise<void> => {
           // force: true, // удал./созд.табл.
           alter: true, // обнов.табл.
         })
-        .then(() => console.log('Синхронизация завершена'))
+        .then(() => {
+          if (process.env.MEGA_TEST === 'true' && isDevelopment)
+            console.log('Синхронизация завершена');
+        })
         .catch((error) => console.error('Ошибка при синхронизации:', error));
 
     // --- ЗАПУСК СЕРВЕРА ---
     // цвета запуска: DEV - зелённый, PROD - синий
-    const mainColor = isDevelopment ? '\x1b[32m' : '\x1b[34m';
+    const mainColor = isDevelopment ? '\x1b[36m' : '\x1b[34m';
     // прослуш.подключ.PORT и fn()callback
     app.listen(PORT, () => {
       // вывод с цветом подкл.к БД от NODE_ENV
       console.log(
-        `\x1b[41m${NODE_ENV.toUpperCase()}\x1b[0m   MAIN   SRV: ${mainColor}${process.env.SRV_URL}\x1b[0m   DB: \x1b[33m${process.env.DB_HOST} / ${process.env.DB_PORT}\x1b[0m`,
+        `\x1b[41m${NODE_ENV.toUpperCase()}\x1b[0m   MAIN   \x1b[41mSRV\x1b[0m ${mainColor}${process.env.SRV_URL}\x1b[0m   \x1b[41mDB\x1b[0m \x1b[33m${process.env.DB_HOST} : ${process.env.DB_PORT}\x1b[0m`,
       );
       if (isDevelopment) {
         logger.info(
-          `DEV   MAIN   SRV: ${process.env.SRV_URL}   DB: ${process.env.DB_HOST} / ${process.env.DB_PORT}`,
+          `DEV   MAIN   SRV ${process.env.SRV_URL}   DB ${process.env.DB_HOST} : ${process.env.DB_PORT}`,
         );
       }
     });

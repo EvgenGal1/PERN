@@ -39,7 +39,9 @@ const models = {
 // fn инициализ.модулей/устан.ассоциация
 function initModels() {
   try {
-    if (!process.env.MEGA_TEST && isDevelopment)
+    // перем.> boolean знач.подробного лога
+    const isMegaTest = process.env.MEGA_TEST === 'true';
+    if (isMegaTest && isDevelopment)
       console.log('[DEBUG] Начало Инициализации obj.Models', models);
 
     // защита от undefined
@@ -49,7 +51,7 @@ function initModels() {
 
     // устан.Моделей
     Object.entries(models).forEach(([modelName, model]) => {
-      if (!process.env.MEGA_TEST && isDevelopment) {
+      if (isMegaTest && isDevelopment) {
         console.log(`[DEBUG] Проверка модели ${modelName}:`, {
           exists: !!model,
           type: typeof model,
@@ -58,13 +60,13 @@ function initModels() {
       }
 
       if (!model) {
-        if (!process.env.MEGA_TEST && isDevelopment)
+        if (isMegaTest && isDevelopment)
           console.warn(`[WARN] Модель ${modelName} не определена!`);
         return;
       }
       // инициализ.всех модулей ч/з экземп.Sequelize
       if (typeof model.initModel === 'function') {
-        if (!process.env.MEGA_TEST && isDevelopment)
+        if (isMegaTest && isDevelopment)
           console.log(`[DEBUG] Инициализация модели: ${modelName}`);
         model.initModel(sequelize);
       } else {
@@ -79,13 +81,13 @@ function initModels() {
         return;
       }
       if (typeof model.associate === 'function') {
-        if (!process.env.MEGA_TEST && isDevelopment)
+        if (isMegaTest && isDevelopment)
           console.log(`[DEBUG] Установка ассоциаций для: ${modelName}`);
         model.associate(models);
       }
     });
 
-    if (!process.env.MEGA_TEST && isDevelopment)
+    if (isMegaTest && isDevelopment)
       console.log(
         '[DEBUG] Модели успешно инициализированы и ассоциации установлены',
       );

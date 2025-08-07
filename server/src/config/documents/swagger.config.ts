@@ -45,8 +45,10 @@ export const documentSwagger = (app: Application): void => {
   // спецификация swg в JSON
   const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
 
+  // перем.> boolean знач.подробного лога
+  const isMegaTest = process.env.MEGA_TEST === 'true';
   // проверка путей для отладки
-  if (!process.env.MEGA_TEST && isDevelopment) {
+  if (isMegaTest && isDevelopment) {
     console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
     swaggerOptions.apis.forEach((pattern) => {
       const files = require('glob').sync(pattern);
@@ -54,7 +56,7 @@ export const documentSwagger = (app: Application): void => {
     });
   }
   // логг.сгенерир.спеки
-  if (!process.env.MEGA_TEST && isDevelopment) {
+  if (isMegaTest && isDevelopment) {
     console.log(
       '[Swagger] Сгенерированная спека:',
       JSON.stringify(swaggerDocs, null, 2),

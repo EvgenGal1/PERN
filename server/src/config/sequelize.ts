@@ -47,7 +47,8 @@ const sequelize = new Sequelize(
 export const connectToDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-    if (isDevelopment) console.log('[DB] Подключение к БД успешно!');
+    if (process.env.MEGA_TEST === 'true' && isDevelopment)
+      console.log('[DB] Подключение к БД успешно!');
   } catch (error) {
     console.error('[DB] Не удалось подключиться к БД:', error);
     throw new Error(`Ошибка подключения к БД: ${(error as Error).message}`);

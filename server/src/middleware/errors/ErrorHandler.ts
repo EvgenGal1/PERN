@@ -18,7 +18,7 @@ const ErrorHandler = (
   next: NextFunction,
 ) => {
   // > отладки е/и ошб.нестандарт
-  if (!process.env.MEGA_TEST && isDevelopment)
+  if (process.env.MEGA_TEST === 'true' && isDevelopment)
     console.error('[ERROR HANDLER] Ошибка:', err);
 
   // отраб.ошб.null/undefined
