@@ -38,3 +38,4 @@ dist-ssr
 vr/
 .env*
 арх/
+.vercel
