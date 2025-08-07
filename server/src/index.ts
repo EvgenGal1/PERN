@@ -25,10 +25,10 @@ import ErrorHandler from './middleware/errors/ErrorHandler';
 // логирование LH Winston
 import { LoggingWinston as logger } from './config/logging/log_winston.config';
 // MW логгирование входящих HTTP запросов
-// import {
-//   responseLoggingMiddleware as reSLog,
-//   requestLoggingMiddleware as reQLog,
-// } from './middleware/logging/logging.middleware';
+import {
+  requestLoggingMiddleware as reQLog,
+  responseLoggingMiddleware as reSLog,
+} from './middleware/logging/logging.middleware';
 // документирование/настр. Swagger
 import {
   documentSwagger,
@@ -75,12 +75,10 @@ app.use(cookieParser(process.env.SECRET_KEY));
 // возм.парсить json
 app.use(express.json());
 // логг.Winston вход.HTTP req
-// app.use(reSLog);
-// app.use(reQLog);
+app.use(reQLog);
+app.use(reSLog);
 // стат.ф. (img, css)
-app.use(
-  /* `/${PUB_DIR}`, */ express.static(path.join(__dirname, `../${PUB_DIR}`)),
-);
+app.use(express.static(path.join(__dirname, `../${PUB_DIR}`)));
 // загр.ф.
 app.use(fileUpload());
 

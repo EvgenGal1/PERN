@@ -46,7 +46,7 @@ export const documentSwagger = (app: Application): void => {
   const swaggerDocs = swaggerJSDoc(swaggerOptions) as any; /* | SwaggerSpec */
 
   // проверка путей для отладки
-  if (process.env.MEGA_TEST && isDevelopment) {
+  if (!process.env.MEGA_TEST && isDevelopment) {
     console.log('[Swagger] аннотации в файлах:', swaggerOptions.apis);
     swaggerOptions.apis.forEach((pattern) => {
       const files = require('glob').sync(pattern);
@@ -54,7 +54,7 @@ export const documentSwagger = (app: Application): void => {
     });
   }
   // логг.сгенерир.спеки
-  if (process.env.MEGA_TEST && isDevelopment) {
+  if (!process.env.MEGA_TEST && isDevelopment) {
     console.log(
       '[Swagger] Сгенерированная спека:',
       JSON.stringify(swaggerDocs, null, 2),
