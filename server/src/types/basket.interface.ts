@@ -1,7 +1,3 @@
-import BasketModel from '../models/BasketModel';
-import BasketProductModel from '../models/BasketProductModel';
-import ProductModel from '../models/ProductModel';
-
 export interface BasketProduct {
   id: number;
   name: string;
@@ -16,8 +12,15 @@ export interface BasketResponse {
   total?: number;
 }
 
-export type BasketWithProducts = BasketModel & {
-  products?: (ProductModel & {
-    BasketProduct: BasketProductModel;
-  })[];
+export type BasketWithProducts = {
+  id: number;
+  userId: number;
+  products?: Array<{
+    id: number;
+    name: string;
+    price: number;
+    BasketProduct: {
+      quantity: number;
+    };
+  }>;
 };

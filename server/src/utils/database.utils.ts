@@ -6,8 +6,6 @@ import UserModel from '../models/UserModel';
 import RoleModel from '../models/RoleModel';
 import UserRoleModel from '../models/UserRoleModel';
 import BasketModel from '../models/BasketModel';
-import ProductModel from '../models/ProductModel';
-import BasketProductModel from '../models/BasketProductModel';
 import TokenModel from '../models/TokenModel';
 import OrderModel from '../models/OrderModel';
 import OrderItemModel from '../models/OrderItemModel';
@@ -77,14 +75,12 @@ class DatabaseUtils {
     };
     if (!basket.products || !basket.products.length) return base;
     // созд.масс.Продуктов > подсчёта общ.суммы
-    const products = basket.products.map(
-      (p: ProductModel & { BasketProduct: BasketProductModel }) => ({
-        id: p.id,
-        name: p.name,
-        price: p.price,
-        quantity: p.BasketProduct?.quantity || 0,
-      }),
-    );
+    const products = basket.products.map((p) => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      quantity: p.BasketProduct?.quantity || 0,
+    }));
     // подсчёт общ.суммы
     const total =
       products.reduce((sum, p) => sum + p.price * p.quantity, 0) || 0;

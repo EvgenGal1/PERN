@@ -8,7 +8,10 @@ import BasketProductModel from '../models/BasketProductModel';
 // утилиты/helpы/
 import DatabaseUtils from '../utils/database.utils';
 // type/dto
-import { BasketResponse, BasketWithProducts } from '../types/basket.interface';
+import type {
+  BasketResponse,
+  BasketWithProducts,
+} from '../types/basket.interface';
 // обраб.ошб.
 import ApiError from '../middleware/errors/ApiError';
 
@@ -46,8 +49,6 @@ class BasketService {
       throw ApiError.notFound(
         `Корзина ${basketId ? `с ID '${basketId}' ` : `Пользователя с ID ${userId}`} не найдена`,
       );
-
-    // ! разобраться с типом BasketWithProducts (много хочет)
 
     return DatabaseUtils.formatBasketResponse(basket as BasketWithProducts);
   }
