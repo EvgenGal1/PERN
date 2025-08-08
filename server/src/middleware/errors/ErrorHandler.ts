@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 // клс.польз.ошб.
 import ApiError from './ApiError';
 // логг.ошб.
-import { LoggingWinston as logger } from '../../config/logging/log_winston.config';
+import { logger } from '../../config/logging/log_winston.config';
 import { isDevelopment } from '../../config/envs/env.consts';
 
 /**

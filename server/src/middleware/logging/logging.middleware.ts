@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 
-import { LoggingWinston as logger } from '../../config/logging/log_winston.config';
+import { logger } from '../../config/logging/log_winston.config';
 import { isDevelopment } from '../../config/envs/env.consts';
 
 // масс.игнор. путь/url (содерж.часть/регуляр.выраж.>нач.стр.)
@@ -24,7 +24,7 @@ export function requestLoggingMiddleware(
     !ignoredPaths.some((path) => req.originalUrl.startsWith(path))
   ) {
     // перем.req основ.вход.данн./объ.данн.req
-    const HTTP_REQ = `${req.method} ${req.originalUrl} ^{${req.ip}}`;
+    const HTTP_REQ = `${req.method} \x1b[33m${req.originalUrl}\x1b[0m ^{${req.ip}}`;
     const requestData: Record<string, any> = {};
     // добав.полей со значениями е/и есть
     if (req.headers['authorization']) {
@@ -76,7 +76,7 @@ export function requestLoggingMiddleware(
     }
     // лог.req
     logger.debug(
-      `Входящий запрос: ${HTTP_REQ}${Object.keys(requestData).length > 0 ? ` ${JSON.stringify(requestData /*,null,2*/)}` : ''}`,
+      `\x1b[42mВходящий запрос\x1b[0m: ${HTTP_REQ}${Object.keys(requestData).length > 0 ? ` ${JSON.stringify(requestData)}` : ''}`,
     );
     // перехват res > лог.вр.выполн.req (перенесено в responseLoggingMiddleware)
     // res.on('finish', () => {
@@ -111,7 +111,7 @@ export function responseLoggingMiddleware(
       const startTime = res.locals.startTime || Date.now();
       const duration = Date.now() - startTime;
       // перем.res основ.ответ.данн./объ.данн.res
-      const HTTP_RES = `${req.method} ${req.originalUrl} ~[${res.statusCode}] (${duration} мс)`;
+      const HTTP_RES = `${req.method} \x1b[33m${req.originalUrl}\x1b[0m ~[${res.statusCode}] (${duration} мс)`;
       const responseData: Record<string, any> = {};
       // формир.тело res е/и есть
       if (body) {
@@ -132,7 +132,7 @@ export function responseLoggingMiddleware(
       }
       // лог.res
       logger.debug(
-        `Исходящий ответ: ${HTTP_RES}${responseData.body ? ` ${JSON.stringify(responseData /*,null,2*/)}` : ''}`,
+        `\x1b[45mИсходящий ответ\x1b[0m: ${HTTP_RES}${responseData.body ? ` ${JSON.stringify(responseData /*,null,2*/)}` : ''}`,
       );
       // отправка res ч/з вызов res.send
       return originalSend.call(this, body);

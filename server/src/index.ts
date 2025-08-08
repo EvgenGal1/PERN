@@ -23,7 +23,7 @@ import router from './routes/index.routes';
 // MW обраб.ошб.
 import ErrorHandler from './middleware/errors/ErrorHandler';
 // логирование LH Winston
-import { LoggingWinston as logger } from './config/logging/log_winston.config';
+import { logger } from './config/logging/log_winston.config';
 // MW логгирование входящих HTTP запросов
 import {
   requestLoggingMiddleware as reQLog,
