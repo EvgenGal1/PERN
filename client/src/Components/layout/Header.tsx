@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { AppContext } from "@/context/AppContext";
 
 // хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
-import { useAllKeysPress } from "@/scripts/hooks/useAllKeysPress";
+import useAllKeysPress from "@/scripts/hooks/useAllKeysPress";
 // переключатель видимости Доп.Меню
 import { Switcher1btn } from "@Comp/ui/switcher/Switcher1btn";
 
@@ -30,51 +30,54 @@ import { SHOP_ROUTE } from "@/utils/consts";
 import NavBar from "./NavBar";
 import ExamplesMenu from "./ExamplesMenu";
 
-const Header = () => {
+const Header: React.FC = () => {
   const { user } = useContext(AppContext);
-  // console.log("HDR user ", user);
 
-  // ЛОГИКА Опред.Комбин.Клвш. для вывода Доп.Меню
-  const saved = localStorage.getItem("--dopMenu");
-  const [pressCombine, setPressCombine] = useState(
-    saved ? JSON.parse(saved) : false
-  );
-  // массив букв после хука (возвращ true е/и переданные и нажатые равны)
-  const combinePress = useAllKeysPress({
+  // сост.видимости доп.меню ч/з LS от комбинации клавиш
+  const [isDopMenuVisible, setIsDopMenuVisible] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem("--dopMenu");
+      return saved ? JSON.parse(saved) : false;
+    } catch (e) {
+      console.warn("Не удалось прочитать '--dopMenu' из LS", e);
+      return false;
+    }
+  });
+
+  // лог.обраб.комбин.клвш показ/скрыт доп.меню
+  const showMenuPressed = useAllKeysPress({
     userKeys: ["d", "o", "p", "m", "n"],
     order: true,
   });
-  //  ----------------------------------------------------------------------------------
-  const combinePress_2 = useAllKeysPress({
+  const hideMenuPressed = useAllKeysPress({
     userKeys: ["d", "m", "n"],
     order: true,
   });
-  //  ----------------------------------------------------------------------------------
-  // отслеж. измен.с записью в LS
-  useEffect(() => {
-    if (combinePress === true) {
-      // console.log("HDR usEf combinePress ", combinePress);
-      // setPressCombine(true);
-      setPressCombine((prevState: any) => !prevState);
-      localStorage.setItem("--dopMenu", JSON.stringify(true));
-      if (pressCombine) localStorage.removeItem("--dopMenu");
-    }
-    /* else if (combinePress || pressCombine === false) { 
-      setPressCombine(false);
-      localStorage.setItem("--dopMenu", JSON.stringify(false));
-    } */
-  }, [combinePress /* , pressCombine */]);
 
+  // отслеж.обраб. показ/скрыт доп.меню с записью в LS
   useEffect(() => {
-    if (combinePress_2 === true && user?.isAuth) {
-      setPressCombine(false);
+    if (showMenuPressed) {
+      setIsDopMenuVisible(true);
+      localStorage.setItem("--dopMenu", JSON.stringify(true));
+    }
+  }, [showMenuPressed]);
+  useEffect(() => {
+    if (hideMenuPressed) {
+      setIsDopMenuVisible(false);
+      localStorage.setItem("--dopMenu", JSON.stringify(false));
+    }
+  }, [hideMenuPressed]);
+
+  // очистка LS доп.меню при выходе
+  useEffect(() => {
+    if (user && !user.isAuth) {
+      setIsDopMenuVisible(false);
       localStorage.removeItem("--dopMenu");
     }
-  }, [combinePress_2, user?.isAuth]);
+  }, [user]);
 
-  // сост. подсказки по наведению мыши
-  const [isHovering, setIsHovering] = useState("");
-  useEffect(() => {}, [isHovering]);
+  // сост.подсказки > доп.меню по наведению мыши
+  const [isHovering, setIsHovering] = useState<string>("");
 
   // подкл. логики переключателя Цветовых Тем (dark/light/natural)
   useTheme();
@@ -108,7 +111,7 @@ const Header = () => {
               <NavBar />
             </nav>
             {/* НИЖНЕЕ/ДОП.МЕНЮ */}
-            {user.isAuth && pressCombine && (
+            {isDopMenuVisible && (
               <nav className="header__menu-bottom menu-bottom flex flex-wrap justify-between items-center">
                 <span
                   className="menu-bottom__items m-b-items"
@@ -121,16 +124,21 @@ const Header = () => {
                   onClick={() => {
                     setIsHovering("");
                   }}
-                  role="button" // Добавление роли
-                  tabIndex={0} // Делаем элемент фокусируемым
+                  role="button"
+                  tabIndex={0} // эл.фокусируемый
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === "Space") {
-                      setIsHovering(""); // обработка нажатия клавиш для доступности
+                    if (
+                      e.key === "Enter" ||
+                      e.key === "Space" ||
+                      e.key === " "
+                    ) {
+                      e.preventDefault(); // от прокрутки при Space
+                      setIsHovering(""); // обраб.клик > доступности
                     }
                   }}
                 >
                   <Switcher1btn
-                    setPressCombine={setPressCombine}
+                    setIsDopMenuVisible={setIsDopMenuVisible}
                     setIsHovering={setIsHovering}
                   />
                   {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
@@ -176,12 +184,12 @@ const Header = () => {
             )}
           </div>
           {/* врем.кнп.для упрощ.вкл.доп.меню */}
-          {user.isAuth && !pressCombine && (
+          {!isDopMenuVisible && (
             <>
               <div
                 className="miniArrow"
                 onClick={() => {
-                  setPressCombine(!pressCombine);
+                  setIsDopMenuVisible(!isDopMenuVisible);
                   setIsHovering("");
                   localStorage.setItem("--dopMenu", JSON.stringify(true));
                 }}
@@ -193,7 +201,8 @@ const Header = () => {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
-                    setPressCombine(!pressCombine);
+                    e.preventDefault();
+                    setIsDopMenuVisible(!isDopMenuVisible);
                     setIsHovering("");
                     localStorage.setItem("--dopMenu", JSON.stringify(true));
                   }

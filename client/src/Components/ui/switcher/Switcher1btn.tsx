@@ -1,12 +1,12 @@
 import { SvgPath } from "../SvgPath";
 import "./Switcher1btn.scss";
 
-export const Switcher1btn = ({ setPressCombine, setIsHovering }: any) => {
+export const Switcher1btn = ({ setIsDopMenuVisible, setIsHovering }: any) => {
   return (
     <div className="sw1btn">
       <input
         onClick={() => {
-          setPressCombine(false);
+          setIsDopMenuVisible(false);
           setIsHovering("");
           localStorage.removeItem("--dopMenu");
         }}
