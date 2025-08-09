@@ -5,6 +5,8 @@ interface Options {
   userKeys: string[];
   // true - строгая послед.и точн.совпад.длины, false - любой порядок
   order?: boolean;
+  // Ref > fn сброса из Родителя (при одноврем.отслеж.разн.комбинаций)
+  onResetRef?: React.MutableRefObject<(() => void) | null>;
 }
 
 /**
@@ -12,7 +14,11 @@ interface Options {
  * @param options объ.с настр.: `userKeys` и `order`
  * @returns true - комбинация успешно нажата, иначе false
  */
-function useAllKeysPress({ userKeys, order = true }: Options): boolean {
+function useAllKeysPress({
+  userKeys,
+  order = true,
+  onResetRef,
+}: Options): boolean {
   // соответствует
   const [matched, setMatched] = useState(false);
   // нажал
@@ -44,6 +50,30 @@ function useAllKeysPress({ userKeys, order = true }: Options): boolean {
     }
   }, [userKeys, order]);
 
+  // fn сброса сост.
+  const resetState = useCallback(() => {
+    keysPressedRef.current = [];
+    setMatched(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
+  // передача fn сброса ч/з ref
+  useEffect(() => {
+    if (onResetRef) {
+      onResetRef.current = resetState;
+      // очистка ref при размонтировании
+      return () => {
+        if (onResetRef.current === resetState) {
+          onResetRef.current = null;
+        }
+      };
+    }
+  }, [onResetRef, resetState]);
+
+  // обраб.нажатий/очистки
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // пропуск событий без опред.ключа или повторяющиеся
@@ -61,8 +91,7 @@ function useAllKeysPress({ userKeys, order = true }: Options): boolean {
         setMatched(true);
         // сброс с задержкой > реакции Комп.
         timeoutRef.current = setTimeout(() => {
-          keysPressedRef.current = [];
-          setMatched(false);
+          resetState();
         }, 100);
         // return; // не вкл.таймер автоочистки
       }
@@ -86,7 +115,7 @@ function useAllKeysPress({ userKeys, order = true }: Options): boolean {
       // window.removeEventListener("keyup", handleKeyUp);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [userKeys, order, checkMatch]);
+  }, [userKeys, order, checkMatch, resetState]);
 
   return matched;
 }

@@ -44,14 +44,23 @@ const Header: React.FC = () => {
     }
   });
 
+  //  ref-ы > сброса комбинаций
+  const resetShowComboRef = useRef<(() => void) | null>(null);
+  const resetHideComboRef = useRef<(() => void) | null>(null);
+
   // лог.обраб.комбин.клвш показ/скрыт доп.меню
   const showMenuPressed = useAllKeysPress({
+    // комбинация клавиш
     userKeys: ["d", "o", "p", "m", "n"],
+    // режим проверки(строго)
     order: true,
+    // передача ref > fn сброса (одноврем.отслеж.разн.комбинаций)
+    onResetRef: resetShowComboRef,
   });
   const hideMenuPressed = useAllKeysPress({
     userKeys: ["d", "m", "n"],
     order: true,
+    onResetRef: resetHideComboRef,
   });
 
   // отслеж.обраб. показ/скрыт доп.меню с записью в LS
@@ -59,12 +68,15 @@ const Header: React.FC = () => {
     if (showMenuPressed) {
       setIsDopMenuVisible(true);
       localStorage.setItem("--dopMenu", JSON.stringify(true));
+      // сброс другой комбинации
+      if (resetHideComboRef.current) resetHideComboRef.current();
     }
   }, [showMenuPressed]);
   useEffect(() => {
     if (hideMenuPressed) {
       setIsDopMenuVisible(false);
       localStorage.setItem("--dopMenu", JSON.stringify(false));
+      if (resetShowComboRef.current) resetShowComboRef.current();
     }
   }, [hideMenuPressed]);
 
