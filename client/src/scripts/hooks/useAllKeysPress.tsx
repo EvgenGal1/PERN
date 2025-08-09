@@ -1,222 +1,94 @@
-// !!! https://codesandbox.io/s/multiple-keys-in-order-vpovi?file=/src/App.js
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Options {
-  userKeys: string | string[];
+  // масс.клвш. > нажатия
+  userKeys: string[];
+  // true - строгая послед.и точн.совпад.длины, false - любой порядок
   order?: boolean;
-  ref?: React.RefObject<HTMLElement> | Window;
 }
 
-interface Settings {
-  type: string | null;
-  objRef: React.RefObject<HTMLElement> | Window;
-  downHandler: ((event: KeyboardEvent) => void) | undefined;
-  upHandler: ((event: KeyboardEvent) => void) | undefined;
-  useEffect: (() => void) | null;
-  output: boolean | null;
-}
+/**
+ * Хук для отслеживания нажатия комбинации клавиш.
+ * @param options объ.с настр.: `userKeys` и `order`
+ * @returns true - комбинация успешно нажата, иначе false
+ */
+function useAllKeysPress({ userKeys, order = true }: Options): boolean {
+  // соответствует
+  const [matched, setMatched] = useState(false);
+  // нажал
+  const keysPressedRef = useRef<string[]>([]);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-function useAllKeysPress(options: Options): boolean | null {
-  // убедитесь, что «параметры» это объект
-  if (!options || Object.keys(options).length === 0) {
-    throw new Error(
-      `Параметр объекта не найден использование: {userkeys: ...}`
-    );
-  }
-
-  // Свойства «Параметры».
-  const userKeys = options.userKeys || null;
-  const order = options.order || false;
-  const ref = options.ref || window;
-
-  // Реагировать крючки.
-  const [keyPress, setKeyPress] = useState(false);
-  const [anyKeyPressed, setAnyKeyPressed] = useState<string[]>([]); // новое с массивами
-
-  // Ссылка, чтобы определить, была ли уже нажата клавиша.
-  const prevKey = useRef<string>("");
-
-  const settings: Settings = {
-    type: null,
-    objRef: ref,
-    downHandler: undefined,
-    upHandler: undefined,
-    useEffect: null,
-    output: null,
-  };
-
-  const setData = (settings: Settings): Settings => {
-    // Убедитесь, что у нас есть свойство «пользователя»
-    if (userKeys) {
-      // Проверьте, является ли объект строкой, если это так
-      // «Опция» объект.
-      if (typeof userKeys === "string") {
-        settings.output = keyPress;
-        settings.downHandler = downHandler;
-        settings.upHandler = upHandler;
-        settings.useEffect = Init;
-        settings.type = "STRING";
-      }
-      // Проверьте, является ли объект массивом, если это так, добавьте свойства Multikeys
-      // «Опция» объект.
-      if (Array.isArray(userKeys)) {
-        settings.output = areKeysPressed(userKeys, anyKeyPressed);
-        settings.downHandler = downMultiHandler;
-        settings.upHandler = upMultiHandler;
-        settings.useEffect = Init;
-        settings.type = "ARRAY";
-      }
-      if (Number.isInteger(userKeys)) {
-        throw new Error(
-          `Invalid 'userKeys' property: must be {userKeys:'KEY'} or {userKeys:[KEY, ...]}`
-        );
-      }
-    } else {
-      throw new Error(
-        `Invalid 'userKeys' property: must be {userKeys:'KEY'} or {userKeys:[KEY, ...]}`
+  // проверка нажатых клавиш с целевой последовательностью
+  const checkMatch = useCallback(() => {
+    // нажатая/целевая последовательность
+    const pressedSequence = keysPressedRef.current;
+    const targetSequence = userKeys;
+    // РЕЖИМ 1: строгая последовательность и точное совпадение
+    if (order) {
+      // соответствие комбинаций на длину и позиции клавиш
+      return (
+        pressedSequence.length === targetSequence.length &&
+        pressedSequence.every((key, index) => key === targetSequence[index])
       );
     }
+    // РЕЖИМ 2: наличие всех клавиш без учета порядка
+    else {
+      // false при другой длине
+      if (keysPressedRef.current.length !== userKeys.length) return false;
 
-    return settings;
-  };
-
-  const downHandler = ({ key }: { key: string }) => {
-    // Избежать этой функции, если эти два значения соответствуют
-    // (Доказательство, что клавиша уже нажата).
-    if (prevKey.current === userKeys) return;
-    if (key === userKeys) {
-      setKeyPress(true);
-      // Установите Prevkey для будущей ссылки.
-      prevKey.current = key;
+      // return userKeys.every((key) => keysPressedRef.current.includes(key));
+      // улучш.проверка ч/з Set
+      const targetSet = new Set(targetSequence);
+      return pressedSequence.every((key) => targetSet.has(key));
     }
-  };
+  }, [userKeys, order]);
 
-  const upHandler = ({ key }: { key: string }) => {
-    if (key === userKeys) {
-      setKeyPress(false);
-      // сбросить ценность предварительного
-      prevKey.current = "";
-    }
-  };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // пропуск событий без опред.ключа или повторяющиеся
+      if (!e.key || e.repeat) return;
 
-  const downMultiHandler = ({
-    key,
-    repeat,
-  }: {
-    key: string;
-    repeat: boolean;
-  }) => {
-    // Примечание: предотвращает запись двойного ключа в массиве
-    if (repeat) return;
+      // очистка пред.таймаут
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-    setAnyKeyPressed((prevState) => [...prevState, key]);
-  };
+      // добав.нажат.клвш(ниж.регистр) в сост.
+      // const key = e.key.toLowerCase();
+      keysPressedRef.current = [...keysPressedRef.current, e.key.toLowerCase()];
 
-  const upMultiHandler = ({ key }: { key: string }) => {
-    // Примечание: необходимо снова позвонить в Set State из-за того, как работает состояние.
-    // В противном случае потребуется, чтобы функция спешилась и переоценивает, что в порядке.
-    setAnyKeyPressed((prevState) => [...prevState]);
-    setAnyKeyPressed((prevState) => [
-      ...prevState.filter((item) => item !== key),
-    ]);
-  };
-
-  // `нажаты клавиши`
-  const areKeysPressed = (
-    keys: string[] = [], // массив клвш или 0 ?
-    Pressed: string[] = [] // сост ? anyKeyPressed `любая нажатая клавиша`. в консоле - нажимаемые клвш
-  ): boolean => {
-    // console.log("usKeyPress areKeysPressed keys ", keys);
-    // console.log(keys);
-    // console.log("usKeyPress areKeysPressed Pressed ", Pressed);
-    // console.log(Pressed);
-    // Создать новый массив
-    const required = [...keys];
-    // console.log("usKeyPress areKeysPressed required ", required);
-
-    // `любой порядок'. Вернуть массив, который не имеет соответствующих предметов
-    const anyOrder = required.filter((itemA) => {
-      // console.log("usKeyPress areKeysPressed  itemA ", itemA);
-      // console.log(itemA);
-      return !Pressed.some((itemB) => itemB === itemA);
-    });
-
-    // `порядок`. Проверяем, совпадают ли 'keys' и 'Pressed' и что входные записи для 'Pressed' идентичны по порядку.
-    const inOrder =
-      required.length === Pressed.length &&
-      required.every((value, index) => {
-        return value === Pressed[index];
-      });
-
-    // Если «Порядок» не был установлен, используйте расчет «А -А -А -ОРУК».
-    // В противном случае используйте расчет «inorder».
-    const result = !order ? anyOrder.length === 0 : inOrder;
-    return result;
-  };
-
-  function Init() {
-    useEffect(() => {
-      // Если «ref» после инициализации имеет свойство «текущего», то это относится
-      // к указанному элементу, в этом случае «элемент» должен ссылаться на это.
-      // В противном случае продолжайте состояние по умолчанию (объект окна).
-      const element = ref instanceof Window ? ref : ref.current;
-
-      // console.log("usKeyPress element ", element);
-      // console.log("usKeyPress ref ", ref);
-      // console.log("usKeyPress ref.current ", ref.current);
-
-      // Добавить слушателей событий
-      if (element) {
-        if (settings.downHandler) {
-          element.addEventListener(
-            "keydown",
-            settings.downHandler as EventListener
-          );
-        }
-        if (settings.upHandler) {
-          if (settings.downHandler) {
-            element.removeEventListener(
-              "keydown",
-              settings.downHandler as EventListener
-            );
-          }
-          if (settings.upHandler) {
-            element.removeEventListener(
-              "keyup",
-              settings.upHandler as EventListener
-            );
-          }
-        }
-        return () => {
-          element.removeEventListener(
-            "keydown",
-            settings.downHandler as EventListener
-          );
-          element.removeEventListener(
-            "keyup",
-            settings.upHandler as EventListener
-          );
-        };
+      // проверка совпадения комбинаций
+      if (checkMatch()) {
+        setMatched(true);
+        // сброс с задержкой > реакции Комп.
+        timeoutRef.current = setTimeout(() => {
+          keysPressedRef.current = [];
+          setMatched(false);
+        }, 100);
+        // return; // не вкл.таймер автоочистки
       }
-    }, []); // Пустое массив гарантирует, что эффект работает только на креплении и разоблачении
-  }
 
-  /**
-   * Настройте объект «Настройки».
-   */
-  setData(settings);
+      // автоочистка сост. ч/з 1.5 сек.бездействия
+      timeoutRef.current = setTimeout(() => {
+        keysPressedRef.current = [];
+      }, 1500);
+    };
 
-  /**
-   * Инициализировать слушателей событий
-   */
-  if (settings.useEffect) {
-    settings.useEffect();
-  }
+    // const handleKeyUp = (e: KeyboardEvent) => {
+    //   // Не удаляем сразу, чтобы успевать проверять комбинации
+    // };
 
-  /**
-   * Возвращает «логическое» значение с входов клавиатуры
-   */
-  return settings.output;
+    window.addEventListener("keydown", handleKeyDown);
+    // window.addEventListener("keyup", handleKeyUp);
+
+    // fn очистки эффекта
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      // window.removeEventListener("keyup", handleKeyUp);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [userKeys, order, checkMatch]);
+
+  return matched;
 }
 
-export { useAllKeysPress };
+export default useAllKeysPress;
