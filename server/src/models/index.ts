@@ -16,6 +16,7 @@ import OrderModel from './OrderModel';
 import OrderItemModel from './OrderItemModel';
 import BasketProductModel from './BasketProductModel';
 import RatingModel from './RatingModel';
+import SecretCommandModel from './SecretCommandModel';
 // перем.окруж.
 import { isDevelopment } from '../config/envs/env.consts';
 
@@ -34,6 +35,7 @@ const models = {
   OrderItemModel,
   BasketProductModel,
   RatingModel,
+  SecretCommandModel,
 };
 
 // fn инициализ.модулей/устан.ассоциация

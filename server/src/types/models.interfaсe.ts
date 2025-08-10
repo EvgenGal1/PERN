@@ -11,6 +11,7 @@ import OrderModel from '../models/OrderModel';
 import OrderItemModel from '../models/OrderItemModel';
 import BasketProductModel from '../models/BasketProductModel';
 import RatingModel from '../models/RatingModel';
+import SecretCommandModel from '../models/SecretCommandModel';
 
 export interface Models {
   UserModel: typeof UserModel;
@@ -26,4 +27,5 @@ export interface Models {
   OrderItemModel: typeof OrderItemModel;
   BasketProductModel: typeof BasketProductModel;
   RatingModel: typeof RatingModel;
+  SecretCommandModel: typeof SecretCommandModel;
 }
