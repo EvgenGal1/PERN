@@ -11,6 +11,14 @@ export interface OrderCreateDto {
   items: OrderItemCreateDto[];
 }
 
+export interface OrderItemAttributes {
+  id?: number;
+  name: string;
+  price: number;
+  quantity: number;
+  orderId?: number;
+}
+
 export interface OrderUpdateDto {
   username?: string;
   email?: string;

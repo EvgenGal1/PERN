@@ -5,6 +5,11 @@ export interface BasketProduct {
   quantity: number;
 }
 
+export interface BrandAttributes {
+  id?: number;
+  name: string;
+}
+
 export interface BasketResponse {
   id: number;
   products: BasketProduct[];

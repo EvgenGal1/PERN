@@ -1,7 +1,7 @@
-import { ProductAttributes } from '../models/sequelize-types';
 import RatingModel from '../models/RatingModel';
 import ProductModel from '../models/ProductModel';
 import UserModel from '../models/UserModel';
+import { ProductAttributes } from '../types/rating.interface';
 import ApiError from '../middleware/errors/ApiError';
 
 class RatingService {

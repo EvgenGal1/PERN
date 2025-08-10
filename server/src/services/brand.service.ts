@@ -1,6 +1,6 @@
-import { BrandAttributes } from '../models/sequelize-types';
-import ApiError from '../middleware/errors/ApiError';
 import BrandModel from '../models/BrandModel';
+import { BrandAttributes } from '../types/basket.interface';
+import ApiError from '../middleware/errors/ApiError';
 
 // // ^ КЭШ
 // import NodeCache from 'node-cache';

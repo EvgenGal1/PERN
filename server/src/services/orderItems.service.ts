@@ -4,8 +4,10 @@ import { Transaction } from 'sequelize';
 
 import OrderModel from '../models/OrderModel';
 import OrderItemModel from '../models/OrderItemModel';
-import type { OrderItemAttributes } from '../models/sequelize-types';
-import { OrderItemCreateDto } from '../types/order_item.interface';
+import {
+  OrderItemAttributes,
+  OrderItemCreateDto,
+} from '../types/order_item.interface';
 import ApiError from '../middleware/errors/ApiError';
 import DatabaseUtils from '../utils/database.utils';
 
