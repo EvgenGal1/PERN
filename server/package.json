@@ -19,6 +19,8 @@
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "prod": "tsc && cross-env NODE_ENV=production node dist/index.js",
     "vercel-build": "npm run build",
+    "db:seed": "ts-node src/db/scripts/seedAll.ts",
+    "db:seed:commands": "cross-env NODE_ENV=development ts-node src/db/scripts/seedSecretCommands.ts",
     "test": "cross-env NODE_ENV=development jest --detectOpenHandles"
   },
   "dependencies": {
