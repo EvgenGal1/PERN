@@ -1,70 +1,123 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Options {
-  // масс.клвш. > нажатия
-  userKeys: string[];
-  // true - строгая послед.и точн.совпад.длины, false - любой порядок
-  order?: boolean;
-  // Ref > fn сброса из Родителя (при одноврем.отслеж.разн.комбинаций)
+  /** масс.комбинации клвш. > нажатия */
+  keyCombination: string[];
+  /** режим последовательности. true (_S) - строгая проверка комбинации, false (_s) - любой порядок */
+  sequenceCode?: boolean;
+  /** режим удержания. true (_H) - зажатие/удержанией клвш., false (_h) - нажатие клвш. */
+  holdMode?: boolean;
+  /** ссылка > fn сброса из Родителя (при одноврем.отслеж.разн.комбинаций) */
   onResetRef?: React.MutableRefObject<(() => void) | null>;
 }
 
 /**
  * Хук для отслеживания нажатия комбинации клавиш.
- * @param options объ.с настр.: `userKeys` и `order`
- * @returns true - комбинация успешно нажата, иначе false
+ * @param options объ.с настр.: `keyCombination`, `sequenceCode`, `holdMode`, `onResetRef`
+ * @returns true - комбинация успешно зажата/нажата, иначе false
  */
 function useAllKeysPress({
-  userKeys,
-  order = true,
+  keyCombination,
+  sequenceCode = true,
+  holdMode = false,
   onResetRef,
 }: Options): boolean {
-  // соответствует
+  // возврат сост.`совпадения` нажатой комбинации
   const [matched, setMatched] = useState(false);
-  // нажал
+  /** ссы.на масс.нажатых клавиш > режима _h */
   const keysPressedRef = useRef<string[]>([]);
+  /** ссы.на набор зажатых клавиши > режима _H */
+  const keysHeldRef = useRef<Set<string>>(new Set());
+  /** ссы.на масс.порядка зажитых клавиш > режима _H + _S */
+  const keysClampedOrderRef = useRef<string[]>([]);
+  // ссы.на таймер автоочистки набора комбинации
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // проверка нажатых клавиш с целевой последовательностью
+  // доп.fn > проверки совпадений зажатых/нажатых клавиш с требуемой комбинацией клавиш
   const checkMatch = useCallback(() => {
-    // нажатая/целевая последовательность
-    const pressedSequence = keysPressedRef.current;
-    const targetSequence = userKeys;
-    // РЕЖИМ 1: строгая последовательность и точное совпадение
-    if (order) {
-      // соответствие комбинаций на длину и позиции клавиш
-      return (
-        pressedSequence.length === targetSequence.length &&
-        pressedSequence.every((key, index) => key === targetSequence[index])
-      );
+    // РЕЖИМ _H > _S_s
+    if (holdMode) {
+      // наборы зажатых/комбинаций клавиш
+      const heldKeys = keysHeldRef.current;
+      const targetKeys = new Set(keyCombination);
+
+      // РЕЖИМ _H_S
+      if (sequenceCode) {
+        console.log("heldKeys ", heldKeys);
+        // проверка кол-ва и наличия всех зажатых клвш.к комбинации
+        if (
+          targetKeys.size !== heldKeys.size ||
+          !Array.from(targetKeys).every((k) => heldKeys.has(k))
+        ) {
+          return false;
+        }
+        // масс. зажатых клвш.
+        const сlampedKeys = keysClampedOrderRef.current;
+        // проверка длины зажатых к комбинации (больше для будущих комбин.)
+        if (сlampedKeys.length >= keyCombination.length) {
+          // взять последние N зажатых клавиш. по длине комбинации
+          const lastNClampedKeys = сlampedKeys.slice(-keyCombination.length);
+          // проверка совпадения N зажатых к инд.комбинации
+          return lastNClampedKeys.every((key, i) => key === keyCombination[i]);
+        }
+        return false;
+      }
+      // РЕЖИМ _H_s
+      else {
+        // проверка зажатых клвш.по кол-ву и наличию к комбинации
+        return (
+          targetKeys.size === heldKeys.size &&
+          Array.from(targetKeys).every((k) => heldKeys.has(k))
+        );
+      }
     }
-    // РЕЖИМ 2: наличие всех клавиш без учета порядка
+    // РЕЖИМ _h > _S_s
     else {
-      // false при другой длине
-      if (keysPressedRef.current.length !== userKeys.length) return false;
+      // масс. нажатых клвш.
+      const pressedSequence = keysPressedRef.current;
 
-      // return userKeys.every((key) => keysPressedRef.current.includes(key));
-      // улучш.проверка ч/з Set
-      const targetSet = new Set(targetSequence);
-      return pressedSequence.every((key) => targetSet.has(key));
+      // РЕЖИМ _h_S
+      if (sequenceCode) {
+        // проверка нажатых на длину и позиции к комбинации
+        return (
+          pressedSequence.length === keyCombination.length &&
+          pressedSequence.every((key, index) => key === keyCombination[index])
+        );
+      }
+      // РЕЖИМ _h_s
+      else {
+        // false при другой длине
+        if (keysPressedRef.current.length !== keyCombination.length)
+          return false;
+        // проверка наличия нажатых в комбинации
+        const targetSet = new Set(keyCombination);
+        return pressedSequence.every((key) => targetSet.has(key));
+      }
     }
-  }, [userKeys, order]);
+  }, [keyCombination, sequenceCode, holdMode]);
 
-  // fn сброса сост.
+  /** fn сброса сост.хука (масс./Set/сост./таймер) */
   const resetState = useCallback(() => {
+    // очистка масс.нажатий, набора зажатий, порядка зажатий,
     keysPressedRef.current = [];
+    keysHeldRef.current.clear();
+    keysClampedOrderRef.current = [];
+    // сброс сост.совпадений
     setMatched(false);
+    // при запущенном таймере - остановка и обнул.ссы
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
   }, []);
 
-  // передача fn сброса ч/з ref
+  // передача fn сброса к Родителю ч/з ref
   useEffect(() => {
+    // передача ссы.
     if (onResetRef) {
+      // запись внутр.fn resetState в передан.ref
       onResetRef.current = resetState;
-      // очистка ref при размонтировании
+      // обнул.ref при размонтир./измен. resetState/onResetRef от утечки памяти
       return () => {
         if (onResetRef.current === resetState) {
           onResetRef.current = null;
@@ -73,50 +126,94 @@ function useAllKeysPress({
     }
   }, [onResetRef, resetState]);
 
-  // обраб.нажатий/очистки
+  // слушат.событ.клвш., обраб.нажатий/очистки
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // пропуск событий без опред.ключа или повторяющиеся
-      if (!e.key || e.repeat) return;
+    // РЕЖИМ _H (зажатия клавиш)
+    if (holdMode) {
+      /** обраб.нажатия клвш. Раб.брауз.при нажат.клвш. > регистр.и проверки совпадения */
+      const handleKeyDown = (e: KeyboardEvent) => {
+        // игнор событий без ключа или повторяющиеся
+        if (!e.key || e.repeat) return;
+        // клвш.в нижн.регистр
+        const key = e.key.toLowerCase();
+        // добав.клвш.в список зажатых
+        keysHeldRef.current.add(key);
+        // запись порядка зажатий > _S
+        keysClampedOrderRef.current = [...keysClampedOrderRef.current, key];
+        // очистка таймера при наличии
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        // проверка совпадения зажатых с комбинацией ч/з доп.fn
+        if (checkMatch()) {
+          // успех совпадения
+          setMatched(true);
+          // таймер от залипаний
+          timeoutRef.current = setTimeout(resetState, 100);
+        }
+      };
 
-      // очистка пред.таймаут
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      /** обраб.отпускания клвш. Раб.брауз.при отпуск.клвш. > удал.из сост.и сброса */
+      const handleKeyUp = (e: KeyboardEvent) => {
+        const releasedKey = e.key.toLowerCase();
+        // удал.клвш.из списка зажатых
+        keysHeldRef.current.delete(releasedKey);
+        // проверка совпадения > строгого набора (без бействий), иначе сброс
+        if (checkMatch()) {
+        } else resetState();
+        // мжн.остав.ток.сброс для жёсткого контроля отпусканий  >>  resetState();
+      };
 
-      // добав.нажат.клвш(ниж.регистр) в сост.
-      // const key = e.key.toLowerCase();
-      keysPressedRef.current = [...keysPressedRef.current, e.key.toLowerCase()];
+      // регистр.слушат.событ. > добав.обраб.к объ.window
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
 
-      // проверка совпадения комбинаций
-      if (checkMatch()) {
-        setMatched(true);
-        // сброс с задержкой > реакции Комп.
+      // очистка usEf. Возврат fn > вызова при размонтир./измен.зависим.usEf
+      return () => {
+        // удал.обраб.событий
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("keyup", handleKeyUp);
+        // остан.таймер при наличии
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      };
+    }
+    // РЕЖИМ _h (нажатия клавиш)
+    else {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (!e.key || e.repeat) return;
+        // очистка пред.таймер
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+        // добав.нажат.клвш(ниж.регистр) в сост.
+        // const key = e.key.toLowerCase();
+        keysPressedRef.current = [
+          ...keysPressedRef.current,
+          e.key.toLowerCase(),
+        ];
+
+        // проверка совпадения комбинаций
+        if (checkMatch()) {
+          setMatched(true);
+          // сброс с задержкой > реакции Комп.
+          timeoutRef.current = setTimeout(resetState, 100);
+          // прерывание от повторн.вкл.таймера автоочистки
+          return;
+        }
+
+        // автоочистка сост. ч/з 1.5 сек.бездействия
         timeoutRef.current = setTimeout(() => {
-          resetState();
-        }, 100);
-        // return; // не вкл.таймер автоочистки
-      }
+          keysPressedRef.current = [];
+        }, 1500);
+      };
 
-      // автоочистка сост. ч/з 1.5 сек.бездействия
-      timeoutRef.current = setTimeout(() => {
-        keysPressedRef.current = [];
-      }, 1500);
-    };
+      window.addEventListener("keydown", handleKeyDown);
 
-    // const handleKeyUp = (e: KeyboardEvent) => {
-    //   // Не удаляем сразу, чтобы успевать проверять комбинации
-    // };
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      };
+    }
+  }, [keyCombination, sequenceCode, holdMode, checkMatch, resetState]);
 
-    window.addEventListener("keydown", handleKeyDown);
-    // window.addEventListener("keyup", handleKeyUp);
-
-    // fn очистки эффекта
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      // window.removeEventListener("keyup", handleKeyUp);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [userKeys, order, checkMatch, resetState]);
-
+  // возврат текущее состояние совпадения
   return matched;
 }
 
