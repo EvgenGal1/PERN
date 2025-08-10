@@ -31,9 +31,10 @@ import NavBar from "./NavBar";
 import ExamplesMenu from "./ExamplesMenu";
 
 const Header: React.FC = () => {
+  // объ.Пользователя из Контекста приложения
   const { user } = useContext(AppContext);
 
-  // сост.видимости доп.меню ч/з LS от комбинации клавиш
+  // сост.видимости доп.меню из LS ч/з комбинации клавиш
   const [isDopMenuVisible, setIsDopMenuVisible] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("--dopMenu");
@@ -44,26 +45,29 @@ const Header: React.FC = () => {
     }
   });
 
-  //  ref-ы > сброса комбинаций
+  //  ссылки > сброса сост.др.комбинаций (показ/скрыт доп.меню)
   const resetShowComboRef = useRef<(() => void) | null>(null);
   const resetHideComboRef = useRef<(() => void) | null>(null);
 
-  // лог.обраб.комбин.клвш показ/скрыт доп.меню
+  // хук.обраб.нажат.комбин.клвш.
   const showMenuPressed = useAllKeysPress({
-    // комбинация клавиш
-    userKeys: ["d", "o", "p", "m", "n"],
-    // режим проверки(строго)
-    order: true,
-    // передача ref > fn сброса (одноврем.отслеж.разн.комбинаций)
+    // `комбинация клавиш`
+    keyCombination: ["d", "o", "p", "m", "n"],
+    // `режим последовательности` нажатия
+    sequenceCode: true,
+    // `режим удержание` клавиш
+    holdMode: true, // Включаем режим зажатия
+    // передача ссылки > fn сброса (одноврем.отслеж.разн.комбинаций)
     onResetRef: resetShowComboRef,
   });
   const hideMenuPressed = useAllKeysPress({
-    userKeys: ["d", "m", "n"],
-    order: true,
+    keyCombination: ["d", "m", "n"],
+    sequenceCode: true,
+    holdMode: true,
     onResetRef: resetHideComboRef,
   });
 
-  // отслеж.обраб. показ/скрыт доп.меню с записью в LS
+  // обраб.верной комбин.клвш. > показ/скрыт доп.меню с записью в LS
   useEffect(() => {
     if (showMenuPressed) {
       setIsDopMenuVisible(true);
