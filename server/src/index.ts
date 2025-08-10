@@ -113,7 +113,7 @@ const start = async (): Promise<void> => {
       await sequelize
         .sync({
           // force: true, // удал./созд.табл.
-          alter: true, // обнов.табл.
+          alter: true, // созд./обнов.табл.
         })
         .then(() => {
           if (process.env.MEGA_TEST === 'true' && isDevelopment)

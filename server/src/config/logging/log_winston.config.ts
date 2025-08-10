@@ -16,7 +16,7 @@ if (isDevelopment && logDir) {
 }
 
 // форматы логирования
-const { colorize, timestamp, combine, json, printf, errors } = format;
+const { colorize, timestamp, combine, printf, errors } = format;
 
 // формат для консоли (с цветами)
 const consoleFormat = combine(
