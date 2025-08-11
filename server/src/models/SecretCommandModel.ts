@@ -6,8 +6,6 @@ import {
   Sequelize,
 } from 'sequelize';
 
-import { Models } from 'src/types/models.interfaсe';
-
 class SecretCommandModel extends Model<
   InferAttributes<SecretCommandModel>,
   InferCreationAttributes<SecretCommandModel>
@@ -15,14 +13,14 @@ class SecretCommandModel extends Model<
   declare id: number;
   declare name: string;
   declare description: string | null;
-  declare keyCombination: 'sequence' | 'simultaneous' | 'touchpad';
+  // структура: { keys: string[], type: 'sequence' | 'simultaneous' | 'touchpad' }
+  declare keyCombination: object;
+  // Роли/Уровень доступа
   declare requiredRole: string;
   declare requiredLevel: number;
   declare isActive: boolean;
   declare createdAt: Date;
   declare updatedAt: Date;
-
-  static associate(models: Models) {}
 
   static initModel(sequelize: Sequelize) {
     SecretCommandModel.init(
@@ -44,6 +42,14 @@ class SecretCommandModel extends Model<
         keyCombination: {
           type: DataTypes.JSONB,
           allowNull: false,
+          // валидации в БД
+          validate: {
+            isValidJSON(value: any) {
+              if (typeof value !== 'object' || !value.keys || !value.type) {
+                throw new Error('keyCombination нужен как объ.с ключами/типом');
+              }
+            },
+          },
         },
         requiredRole: {
           type: DataTypes.STRING,
