@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 
-import SecretCommandModel from '../models/SecretCommandModel';
+import CommandModel from '../models/CommandModel';
 import { RoleLevels } from '../types/role.interface';
 
 interface FormattedCommand {
@@ -9,7 +9,7 @@ interface FormattedCommand {
   type: 'sequence' | 'simultaneous' | 'touchpad';
 }
 
-class SecretCommandService {
+class CommandService {
   /** получ.масс. кмд./комбин. доступных Пользователю по его Роли/Уровню */
   async getAvailableCommands(
     userRoles: RoleLevels[],
@@ -24,7 +24,7 @@ class SecretCommandService {
     }));
 
     // req кмд./комбин.из БД
-    const commands = await SecretCommandModel.findAll({
+    const commands = await CommandModel.findAll({
       where: { isActive: true, [Op.or]: orConditions },
       attributes: ['name', 'keyCombination'],
     });
@@ -39,4 +39,4 @@ class SecretCommandService {
   }
 }
 
-export default new SecretCommandService();
+export default new CommandService();

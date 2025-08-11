@@ -1,6 +1,6 @@
--- вставки в табл.secret_commands
+-- вставки в табл.commands
 INSERT INTO
-  secret_commands (
+  commands (
     name,
     description,
     key_combination,
