@@ -21,17 +21,17 @@ async function seedDatabase(
     const seedFilePath = path.join(
       __dirname,
       `../seeds/${targetTable}_test_connection.sql`, // тест подключения
-      // `../seeds/${targetTable}_seeds.sql`, // загр.данн.
+      // `../seeds/${targetTable}_seeds.sql`, // загр.данн. (посев семян)
     );
 
     if (!fs.existsSync(seedFilePath)) {
-      throw new Error(`ф.Посева не найден: ${seedFilePath}`);
+      throw new Error(`ф.скрита не найден: ${seedFilePath}`);
     }
 
     const seedSQL = fs.readFileSync(seedFilePath, 'utf8');
-    console.log(`Выполнение SQL скрипта > заполнения табл.'${targetTable}'`);
+    console.log(`Старт SQL скрипта > табл.'${targetTable}'`);
     await sequelize.query(seedSQL);
-    console.log(`табл.'${targetTable}' Наполнена или данн.существовали`);
+    console.log(`Скрипт '${path.basename(seedFilePath)}' Выполнен`);
   } catch (error: unknown) {
     console.error('! ОШИБКА ПРИ ПОСЕВЕ ДАННЫХ - ', (error as Error).message);
     throw error;
