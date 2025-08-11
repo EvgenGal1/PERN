@@ -14,6 +14,7 @@ import TokenModel from '../models/TokenModel';
 import RoleService from './role.service';
 import BasketService from './basket.service';
 import TokenService from './token.service';
+import SecretCommandService from './secretCommand.service';
 import MailService from './mail.service';
 // утилиты/helpы
 import DatabaseUtils from '../utils/database.utils';
@@ -188,6 +189,10 @@ class AuthService {
     ]);
     if (!basket) throw ApiError.notFound('Корзина не найдена');
 
+    // Получаем доступные команды для пользователя
+    const availableCmds =
+      await SecretCommandService.getAvailableCommands(userRoles);
+
     // объ.перед.данн. > id/email/username/role/level/basketId
     const tokenDto = await this.createTokenDto(user, userRoles, basket.id);
     // созд./получ. 2 токена. email/role
@@ -206,6 +211,7 @@ class AuthService {
       },
       isActivated: user.isActivated,
       roles: userRoles,
+      availableCommands: availableCmds,
     };
   }
 

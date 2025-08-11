@@ -23,4 +23,5 @@ export interface AuthCombinedType extends Tokens {
   user: UserProfile;
   isActivated: boolean;
   roles: RoleLevels[];
+  availableCommands?: object;
 }

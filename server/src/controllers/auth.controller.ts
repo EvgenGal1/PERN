@@ -97,6 +97,7 @@ class AuthController {
             },
             basket: userData.basketId,
             roles: userData.roles,
+            availableCommands: userData.availableCommands,
             isActivated: userData.isActivated,
           },
         });
