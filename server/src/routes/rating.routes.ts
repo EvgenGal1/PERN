@@ -1,11 +1,9 @@
 import express from 'express';
 
 import authMW from '../middleware/auth/authMiddleware';
-// ? чёт много проверок роли, разобрать
-// import roleMW from '../middleware/auth/roleMiddleware';
+
 import RatingController from '../controllers/rating.controller';
-import { rolesMW /* , roleLevelMW */ } from '../middleware/auth/roleMiddleware';
-// import { RoleName } from '../types/role.interface';
+import { rolesMW } from '../middleware/auth/roleMiddleware';
 
 const router = express.Router();
 

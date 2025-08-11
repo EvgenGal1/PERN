@@ -155,7 +155,6 @@ class AuthController {
       if (!user) {
         res.status(401).json({
           success: false,
-          // ? уточнить правильно так возвращать message ? вроде по стандарту ожидается error.response?.data?.message. Или error как-то обернёт ?
           message: 'Пользователь не найден',
         });
         return;
