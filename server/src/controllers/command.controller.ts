@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
-import SecretCommandService from '../services/secretCommand.service';
+import CommandService from '../services/command.service';
 import ApiError from '../middleware/errors/ApiError';
 
-class SecretCommandController {
+class CommandController {
   /** отдать масс. кмд./комбин. доступных Пользователю по его Роли/Уровню */
   async getAvailableCommands(req: Request, res: Response, next: NextFunction) {
     try {
@@ -11,7 +11,7 @@ class SecretCommandController {
 
       if (!userRoles) throw ApiError.internal('Роли Пользователя не найдены');
 
-      const сmds = await SecretCommandService.getAvailableCommands(userRoles);
+      const сmds = await CommandService.getAvailableCommands(userRoles);
 
       res.status(200).json({
         message: 'Доступные кмд. извлечены',
@@ -23,4 +23,4 @@ class SecretCommandController {
   }
 }
 
-export default new SecretCommandController();
+export default new CommandController();

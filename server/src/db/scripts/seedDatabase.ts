@@ -16,7 +16,7 @@ async function seedDatabase(
   closeConnectionAfter: boolean = false,
 ): Promise<void> {
   // назв.таблицы > req.SQL к БД
-  const targetTable = 'secret_commands';
+  const targetTable = 'commands';
   try {
     const seedFilePath = path.join(
       __dirname,

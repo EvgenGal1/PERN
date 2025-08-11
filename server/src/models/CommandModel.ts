@@ -6,9 +6,11 @@ import {
   Sequelize,
 } from 'sequelize';
 
-class SecretCommandModel extends Model<
-  InferAttributes<SecretCommandModel>,
-  InferCreationAttributes<SecretCommandModel>
+import { Models } from '../types/models.interfaсe';
+
+class CommandModel extends Model<
+  InferAttributes<CommandModel>,
+  InferCreationAttributes<CommandModel>
 > {
   declare id: number;
   declare name: string;
@@ -22,8 +24,10 @@ class SecretCommandModel extends Model<
   declare createdAt: Date;
   declare updatedAt: Date;
 
+  static associate(models: Models) {}
+
   static initModel(sequelize: Sequelize) {
-    SecretCommandModel.init(
+    CommandModel.init(
       {
         id: {
           type: DataTypes.INTEGER,
@@ -83,12 +87,12 @@ class SecretCommandModel extends Model<
       },
       {
         sequelize,
-        tableName: 'secret_commands', // имя таблицы в БД
-        // modelName: 'SecretCommand', // имя модели в коде (опционально)
+        tableName: 'commands', // имя таблицы в БД
+        // modelName: 'Command', // имя модели в коде (опционально)
         timestamps: false, // откл.вр.метки т.к. устан.вручную
       },
     );
   }
 }
 
-export default SecretCommandModel;
+export default CommandModel;
