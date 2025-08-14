@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { debounce } from "lodash";
 
 import { authAPI } from "@/api/auth/authAPI";
-import type { RoleLevel } from "@/types/user.types";
+import type { AvailableCommands, RoleLevel } from "@/types/user.types";
 import type {
   AuthResponse,
   LoginCredentials,
@@ -17,17 +17,20 @@ export default class UserStore {
   @observable id: number | null = null;
   @observable username: string | null = null;
   @observable email: string | null = null;
-  // масс.объ.Роль/Уровень
+  /** масс.объ.Роль/Уровень */
   @observable.deep roles: RoleLevel[] = [];
+  /** кмд./комбин. доступных Пользователю */
+  @observable.deep availableCommands: AvailableCommands[] = [];
   @observable isAuth = false;
   @observable activated = false;
-  // загр., ошб.
+  // загр.
   @observable isLoading = false;
 
   constructor() {
     makeAutoObservable(this);
     // лог.измен.
-    process.env.NODE_ENV === "development" &&
+    process.env.REACT_APP_MEGA_TEST === "true" &&
+      process.env.NODE_ENV === "development" &&
       spy((event) => {
         if (event.type === "action" && event.object === this) {
           console.log(`%cUserStore: ${event.name}`, "color: #ffd700;");
@@ -45,13 +48,15 @@ export default class UserStore {
     if (!storedData) return;
 
     try {
-      const { id, username, email, roles, isAuth } = JSON.parse(storedData);
+      const parsed = JSON.parse(storedData);
       runInAction(() => {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.roles = roles || [];
-        this.isAuth = !!isAuth;
+        this.id = parsed.id;
+        this.username = parsed.username;
+        this.email = parsed.email;
+        this.roles = parsed.roles || [];
+        this.isAuth = !!parsed.isAuth;
+        this.activated = parsed.activated;
+        this.availableCommands = parsed.availableCommands;
       });
     } catch (error) {
       this.handleError(error, `Ошибка Загрузки userStore из LS`);
@@ -71,8 +76,10 @@ export default class UserStore {
           roles: this.roles,
           isAuth: this.isAuth,
           activated: this.activated,
+          availableCommands: this.availableCommands,
         })
       );
+      localStorage.setItem("--dopMenu", JSON.stringify(false));
     } catch (error) {
       this.handleError(error, `Ошибка Сохранения userStore из LS`);
     }
@@ -83,6 +90,7 @@ export default class UserStore {
     localStorage.removeItem("tokenAccess");
     localStorage.removeItem("userStore");
     localStorage.removeItem("basketStore");
+    localStorage.removeItem("--dopMenu");
   }
 
   // SESSION ----------------------------------------------------------------------------------
@@ -137,6 +145,7 @@ export default class UserStore {
     this.roles = data.roles;
     this.isAuth = true;
     this.activated = data.isActivated;
+    this.availableCommands = data.availableCommands;
     // сохр. Токена в LS
     localStorage.setItem("tokenAccess", data.tokenAccess);
     // сохр.данн.в LS
@@ -151,6 +160,7 @@ export default class UserStore {
     this.roles = [];
     this.isAuth = false;
     this.activated = false;
+    this.availableCommands = [];
 
     this.clearAllLocalStorage();
   }
@@ -161,6 +171,7 @@ export default class UserStore {
     this.isLoading = true;
     try {
       const response = await authAPI.login(credentials);
+      console.log("response.data : ", response.data);
       runInAction(() => {
         this.saveSession(response.data);
       });

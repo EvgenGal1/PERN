@@ -1,7 +1,7 @@
 // типы Регистрации/Авторизации/Токенов
 
 import { ApiResponse } from "./api.types";
-import { User, UserProfile, RoleLevel } from "./user.types";
+import { User, UserProfile, RoleLevel, AvailableCommands } from "./user.types";
 
 export type AuthResponse = Token & {
   token?: Token;
@@ -9,6 +9,7 @@ export type AuthResponse = Token & {
   basket: number;
   roles: RoleLevel[];
   isActivated: boolean;
+  availableCommands: AvailableCommands[];
 };
 
 export type AuthRes = ApiResponse<AuthResponse>;

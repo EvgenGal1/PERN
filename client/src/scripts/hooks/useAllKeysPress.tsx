@@ -43,7 +43,6 @@ function useAllKeysPress({
 
       // РЕЖИМ _H_S
       if (sequenceCode) {
-        console.log("heldKeys ", heldKeys);
         // проверка кол-ва и наличия всех зажатых клвш.к комбинации
         if (
           targetKeys.size !== heldKeys.size ||

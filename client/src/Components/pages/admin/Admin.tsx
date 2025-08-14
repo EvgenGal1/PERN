@@ -12,7 +12,7 @@ import {
 import { AppContext } from "@/context/AppContext";
 
 const Admin = () => {
-  const { user }: any = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {

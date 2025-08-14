@@ -7,15 +7,9 @@ export type User = {
   isActivated?: boolean;
 };
 
-export type UserProfile = User & {
-  roles: RoleLevel[];
-  basket: number;
-};
+export type UserProfile = User & { roles: RoleLevel[]; basket: number };
 
-export type RoleLevel = {
-  role: NameUserRoles;
-  level: number;
-};
+export type RoleLevel = { role: NameUserRoles; level: number };
 
 export enum NameUserRoles {
   GUEST = "GUEST",
@@ -27,7 +21,10 @@ export enum NameUserRoles {
   SUPER = "SUPER",
 }
 
-export type UserSession = {
-  isAuth: boolean;
-  isAdmin: boolean;
-} & UserProfile;
+export type UserSession = { isAuth: boolean; isAdmin: boolean } & UserProfile;
+
+export type AvailableCommands = {
+  name: string;
+  keys: string[];
+  type: "sequence" | "simultaneous" | "touchpad";
+};
