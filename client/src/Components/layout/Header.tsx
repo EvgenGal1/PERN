@@ -1,9 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
 
 import { AppContext } from "@/context/AppContext";
 
-// хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш.
-import useAllKeysPress from "@/scripts/hooks/useAllKeysPress";
+// хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш. (Front/Full версии)
+// import { useAllKeysPress } from "@/scripts/hooks/useAllKeysPress";
+import { useCommands } from "@/scripts/hooks/useCommands";
 // переключатель видимости Доп.Меню
 import { Switcher1btn } from "@Comp/ui/switcher/Switcher1btn";
 
@@ -30,7 +32,7 @@ import { SHOP_ROUTE } from "@/utils/consts";
 import NavBar from "./NavBar";
 import ExamplesMenu from "./ExamplesMenu";
 
-const Header: React.FC = () => {
+const Header: React.FC = observer(() => {
   // объ.Пользователя из Контекста приложения
   const { user } = useContext(AppContext);
 
@@ -38,59 +40,24 @@ const Header: React.FC = () => {
   const [isDopMenuVisible, setIsDopMenuVisible] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("--dopMenu");
-      return saved ? JSON.parse(saved) : false;
+      const parsed = saved ? JSON.parse(saved) : false;
+      // boolean от пустого LS
+      return !!parsed;
     } catch (e) {
       console.warn("Не удалось прочитать '--dopMenu' из LS", e);
       return false;
     }
   });
 
-  //  ссылки > сброса сост.др.комбинаций (показ/скрыт доп.меню)
-  const resetShowComboRef = useRef<(() => void) | null>(null);
-  const resetHideComboRef = useRef<(() => void) | null>(null);
+  // использ.хук. > кмд./комбин. клвш. v.Full
+  useCommands({ setIsDopMenuVisible });
 
-  // хук.обраб.нажат.комбин.клвш.
-  const showMenuPressed = useAllKeysPress({
-    // `комбинация клавиш`
-    keyCombination: ["d", "o", "p", "m", "n"],
-    // `режим последовательности` нажатия
-    sequenceCode: true,
-    // `режим удержание` клавиш
-    holdMode: true, // Включаем режим зажатия
-    // передача ссылки > fn сброса (одноврем.отслеж.разн.комбинаций)
-    onResetRef: resetShowComboRef,
-  });
-  const hideMenuPressed = useAllKeysPress({
-    keyCombination: ["d", "m", "n"],
-    sequenceCode: true,
-    holdMode: true,
-    onResetRef: resetHideComboRef,
-  });
-
-  // обраб.верной комбин.клвш. > показ/скрыт доп.меню с записью в LS
+  // сброс.сост./удал.LS доп.меню при выходе
   useEffect(() => {
-    if (showMenuPressed) {
-      setIsDopMenuVisible(true);
-      localStorage.setItem("--dopMenu", JSON.stringify(true));
-      // сброс другой комбинации
-      if (resetHideComboRef.current) resetHideComboRef.current();
-    }
-  }, [showMenuPressed]);
-  useEffect(() => {
-    if (hideMenuPressed) {
+    if (user && user.isAuth === false) {
       setIsDopMenuVisible(false);
-      localStorage.setItem("--dopMenu", JSON.stringify(false));
-      if (resetShowComboRef.current) resetShowComboRef.current();
     }
-  }, [hideMenuPressed]);
-
-  // очистка LS доп.меню при выходе
-  useEffect(() => {
-    if (user && !user.isAuth) {
-      setIsDopMenuVisible(false);
-      localStorage.removeItem("--dopMenu");
-    }
-  }, [user]);
+  }, [user, user.isAuth]);
 
   // сост.подсказки > доп.меню по наведению мыши
   const [isHovering, setIsHovering] = useState<string>("");
@@ -127,77 +94,83 @@ const Header: React.FC = () => {
               <NavBar />
             </nav>
             {/* НИЖНЕЕ/ДОП.МЕНЮ */}
-            {isDopMenuVisible && (
-              <nav className="header__menu-bottom menu-bottom flex flex-wrap justify-between items-center">
-                <span
-                  className="menu-bottom__items m-b-items"
-                  onMouseEnter={() => {
-                    setIsHovering("sw1bnt");
-                  }}
-                  onMouseLeave={() => {
-                    setIsHovering("");
-                  }}
-                  onClick={() => {
-                    setIsHovering("");
-                  }}
-                  role="button"
-                  tabIndex={0} // эл.фокусируемый
-                  onKeyDown={(e) => {
-                    if (
-                      e.key === "Enter" ||
-                      e.key === "Space" ||
-                      e.key === " "
-                    ) {
-                      e.preventDefault(); // от прокрутки при Space
-                      setIsHovering(""); // обраб.клик > доступности
-                    }
-                  }}
-                >
-                  <Switcher1btn
-                    setIsDopMenuVisible={setIsDopMenuVisible}
-                    setIsHovering={setIsHovering}
-                  />
-                  {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
-                </span>
-                <span
-                  className="menu-bottom__items m-b-items"
-                  onMouseEnter={() => {
-                    setIsHovering("sw2bnt");
-                  }}
-                  onMouseLeave={() => {
-                    setIsHovering("");
-                  }}
-                >
-                  <Switcher2btn />
-                  {isHovering === "sw2bnt" && <TitleEl text={"не занят"} />}
-                </span>
-                {/* переключатель Цветовых Тем (dark/light/natural) */}
-                <span
-                  className="menu-bottom__items m-b-items"
-                  onMouseEnter={() => {
-                    setIsHovering("sw3bnt");
-                  }}
-                  onMouseLeave={() => {
-                    setIsHovering("");
-                  }}
-                >
-                  <Switcher3btn />
-                  {isHovering === "sw3bnt" && <TitleEl text={"Цв.Темы"} />}
-                </span>
-                <span
-                  className="menu-bottom__items m-b-items"
-                  onMouseEnter={() => {
-                    setIsHovering("sw4bnt");
-                  }}
-                  onMouseLeave={() => {
-                    setIsHovering("");
-                  }}
-                >
-                  <Switcher4btn />
-                  {isHovering === "sw4bnt" && <TitleEl text={"Размеры"} />}
-                </span>
-              </nav>
-            )}
+            <nav
+              className={`header__menu-bottom menu-bottom flex flex-wrap justify-between items-center ${
+                isDopMenuVisible ? "menu--open" : "menu--closed"
+              }`}
+            >
+              {isDopMenuVisible && (
+                <>
+                  <span
+                    className="menu-bottom__items m-b-items"
+                    onMouseEnter={() => {
+                      setIsHovering("sw1bnt");
+                    }}
+                    onMouseLeave={() => {
+                      setIsHovering("");
+                    }}
+                    onClick={() => {
+                      setIsHovering("");
+                    }}
+                    role="button"
+                    tabIndex={0} // эл.фокусируемый
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "Enter" ||
+                        e.key === "Space" ||
+                        e.key === " "
+                      ) {
+                        e.preventDefault(); // от прокрутки при Space
+                        setIsHovering(""); // обраб.клик > доступности
+                      }
+                    }}
+                  >
+                    <Switcher1btn
+                      setIsDopMenuVisible={setIsDopMenuVisible}
+                      setIsHovering={setIsHovering}
+                    />
+                    {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
+                  </span>
+                  <span
+                    className="menu-bottom__items m-b-items"
+                    onMouseEnter={() => {
+                      setIsHovering("sw2bnt");
+                    }}
+                    onMouseLeave={() => {
+                      setIsHovering("");
+                    }}
+                  >
+                    <Switcher2btn />
+                    {isHovering === "sw2bnt" && <TitleEl text={"не занят"} />}
+                  </span>
+                  {/* переключатель Цветовых Тем (dark/light/natural) */}
+                  <span
+                    className="menu-bottom__items m-b-items"
+                    onMouseEnter={() => {
+                      setIsHovering("sw3bnt");
+                    }}
+                    onMouseLeave={() => {
+                      setIsHovering("");
+                    }}
+                  >
+                    <Switcher3btn />
+                    {isHovering === "sw3bnt" && <TitleEl text={"Цв.Темы"} />}
+                  </span>
+                  <span
+                    className="menu-bottom__items m-b-items"
+                    onMouseEnter={() => {
+                      setIsHovering("sw4bnt");
+                    }}
+                    onMouseLeave={() => {
+                      setIsHovering("");
+                    }}
+                  >
+                    <Switcher4btn />
+                    {isHovering === "sw4bnt" && <TitleEl text={"Размеры"} />}
+                  </span>
+                </>
+              )}
+            </nav>
           </div>
           {/* врем.кнп.для упрощ.вкл.доп.меню */}
           {!isDopMenuVisible && (
@@ -242,6 +215,6 @@ const Header: React.FC = () => {
       </header>
     </>
   );
-};
+});
 
 export default Header;

@@ -42,7 +42,7 @@ const NavBar = observer(() => {
       },
       {
         path: ADMIN_ROUTE,
-        label: "admin панель",
+        label: "admin",
         show: user.hasRole("ADMIN", 3),
       },
     ],
