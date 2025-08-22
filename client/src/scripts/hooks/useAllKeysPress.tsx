@@ -26,18 +26,18 @@ function useAllKeysPress({
   const [matched, setMatched] = useState(false);
   /** ссы.на масс.нажатых клавиш > режима _h */
   const keysPressedRef = useRef<string[]>([]);
-  /** ссы.на набор зажатых клавиши > режима _H */
+  /** ссы.на множество зажатых клавиши > режима _H */
   const keysHeldRef = useRef<Set<string>>(new Set());
-  /** ссы.на масс.порядка зажитых клавиш > режима _H + _S */
+  /** ссы.на масс.порядка зажатых клавиш > режима _H + _S */
   const keysClampedOrderRef = useRef<string[]>([]);
-  // ссы.на таймер автоочистки набора комбинации
+  // ссы.на таймер автоочистки множества комбинации
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // доп.fn > проверки совпадений зажатых/нажатых клавиш с требуемой комбинацией клавиш
   const checkMatch = useCallback(() => {
     // РЕЖИМ _H > _S_s
     if (holdMode) {
-      // наборы зажатых/комбинаций клавиш
+      // множество зажатых/комбинаций клавиш
       const heldKeys = keysHeldRef.current;
       const targetKeys = new Set(keyCombination);
 
@@ -97,7 +97,7 @@ function useAllKeysPress({
 
   /** fn сброса сост.хука (масс./Set/сост./таймер) */
   const resetState = useCallback(() => {
-    // очистка масс.нажатий, набора зажатий, порядка зажатий,
+    // очистка масс.нажатий, множества зажатий, порядка зажатий,
     keysPressedRef.current = [];
     keysHeldRef.current.clear();
     keysClampedOrderRef.current = [];
@@ -153,9 +153,9 @@ function useAllKeysPress({
       /** обраб.отпускания клвш. Раб.брауз.при отпуск.клвш. > удал.из сост.и сброса */
       const handleKeyUp = (e: KeyboardEvent) => {
         const releasedKey = e.key.toLowerCase();
-        // удал.клвш.из списка зажатых
+        // удал.клвш.из множества зажатых
         keysHeldRef.current.delete(releasedKey);
-        // проверка совпадения > строгого набора (без бействий), иначе сброс
+        // проверка совпадения > строгого множества (без действий), иначе сброс
         if (checkMatch()) {
         } else resetState();
         // мжн.остав.ток.сброс для жёсткого контроля отпусканий  >>  resetState();
