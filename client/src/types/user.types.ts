@@ -23,8 +23,22 @@ export enum NameUserRoles {
 
 export type UserSession = { isAuth: boolean; isAdmin: boolean } & UserProfile;
 
+/**
+ * тип команд/комбинаций > user.availableCommands
+ * @param name - имя кмд./комбин.
+ * @param keys - масс.клавиш
+ * @param type - тип комбинации
+ */
 export type AvailableCommands = {
   name: string;
   keys: string[];
+  /** последовательность | одновременный | сенсорная панель */
   type: "sequence" | "simultaneous" | "touchpad";
+};
+
+/**
+ * расшир.конфиг. кмд./комбин. + onMatch как cb fn вызываемая при срабатывании кмд.
+ */
+export type CommandConfig = AvailableCommands & {
+  onMatch: () => void;
 };
