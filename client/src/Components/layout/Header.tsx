@@ -71,12 +71,16 @@ const Header: React.FC = observer(() => {
   return (
     <>
       <header className="header">
-        <div className="header-container">
+        <div
+          className={`header-container ${isDopMenuVisible ? "max-visible" : ""}`}
+        >
           {/* ЛОГО */}
           <div className="header__logo">
             <a href={SHOP_ROUTE} className="header__link">
               <h3 className="header__img">P</h3>
-              <h3 className="header__text">.E.R.N.</h3>
+              <span className="header__text-wrapper">
+                <h3 className="header__text">.E.R.N.</h3>
+              </span>
             </a>
           </div>
           {/* ОБЩ. МЕНЮ */}
@@ -96,80 +100,74 @@ const Header: React.FC = observer(() => {
             {/* НИЖНЕЕ/ДОП.МЕНЮ */}
             <nav
               className={`header__menu-bottom menu-bottom flex flex-wrap justify-between items-center ${
-                isDopMenuVisible ? "menu--open" : "menu--closed"
+                isDopMenuVisible ? "visible" : ""
               }`}
             >
-              {isDopMenuVisible && (
-                <>
-                  <span
-                    className="menu-bottom__items m-b-items"
-                    onMouseEnter={() => {
-                      setIsHovering("sw1bnt");
-                    }}
-                    onMouseLeave={() => {
-                      setIsHovering("");
-                    }}
-                    onClick={() => {
-                      setIsHovering("");
-                    }}
-                    role="button"
-                    tabIndex={0} // эл.фокусируемый
-                    onKeyDown={(e) => {
-                      if (
-                        e.key === "Enter" ||
-                        e.key === "Space" ||
-                        e.key === " "
-                      ) {
-                        e.preventDefault(); // от прокрутки при Space
-                        setIsHovering(""); // обраб.клик > доступности
-                      }
-                    }}
-                  >
-                    <Switcher1btn
-                      setIsDopMenuVisible={setIsDopMenuVisible}
-                      setIsHovering={setIsHovering}
-                    />
-                    {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
-                  </span>
-                  <span
-                    className="menu-bottom__items m-b-items"
-                    onMouseEnter={() => {
-                      setIsHovering("sw2bnt");
-                    }}
-                    onMouseLeave={() => {
-                      setIsHovering("");
-                    }}
-                  >
-                    <Switcher2btn />
-                    {isHovering === "sw2bnt" && <TitleEl text={"не занят"} />}
-                  </span>
-                  {/* переключатель Цветовых Тем (dark/light/natural) */}
-                  <span
-                    className="menu-bottom__items m-b-items"
-                    onMouseEnter={() => {
-                      setIsHovering("sw3bnt");
-                    }}
-                    onMouseLeave={() => {
-                      setIsHovering("");
-                    }}
-                  >
-                    <Switcher3btn />
-                    {isHovering === "sw3bnt" && <TitleEl text={"Цв.Темы"} />}
-                  </span>
-                  <span
-                    className="menu-bottom__items m-b-items"
-                    onMouseEnter={() => {
-                      setIsHovering("sw4bnt");
-                    }}
-                    onMouseLeave={() => {
-                      setIsHovering("");
-                    }}
-                  >
-                    <Switcher4btn />
-                    {isHovering === "sw4bnt" && <TitleEl text={"Размеры"} />}
-                  </span>
-                </>
-              )}
+              <>
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw1bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                  onClick={() => {
+                    setIsHovering("");
+                  }}
+                  role="button"
+                  tabIndex={0} // эл.фокусируемый
+                  onKeyDown={(e) => {
+                    if (["Enter", "Space", " "].includes(e.key)) {
+                      e.preventDefault(); // от прокрутки при Space
+                      setIsHovering(""); // обраб.клик > доступности
+                    }
+                  }}
+                >
+                  <Switcher1btn
+                    setIsDopMenuVisible={setIsDopMenuVisible}
+                    setIsHovering={setIsHovering}
+                  />
+                  {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
+                </span>
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw2bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                >
+                  <Switcher2btn />
+                  {isHovering === "sw2bnt" && <TitleEl text={"не занят"} />}
+                </span>
+                {/* переключатель Цветовых Тем (dark/light/natural) */}
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw3bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                >
+                  <Switcher3btn />
+                  {isHovering === "sw3bnt" && <TitleEl text={"Цв.Темы"} />}
+                </span>
+                <span
+                  className="menu-bottom__items m-b-items"
+                  onMouseEnter={() => {
+                    setIsHovering("sw4bnt");
+                  }}
+                  onMouseLeave={() => {
+                    setIsHovering("");
+                  }}
+                >
+                  <Switcher4btn />
+                  {isHovering === "sw4bnt" && <TitleEl text={"Размеры"} />}
+                </span>
+              </>
             </nav>
           </div>
           {/* врем.кнп.для упрощ.вкл.доп.меню */}
@@ -200,14 +198,7 @@ const Header: React.FC = observer(() => {
                 tabIndex={0} // Чтобы элемент был доступен для фокуса
               >
                 &lt;
-                {isHovering === "sw1bnt" && (
-                  <TitleEl
-                    // onClick={() => {
-                    //   localStorage.setItem("--dopMenu", JSON.stringify(true));
-                    // }}
-                    text={"Доп.Меню"}
-                  />
-                )}
+                {isHovering === "sw1bnt" && <TitleEl text={"Доп.Меню"} />}
               </div>
             </>
           )}

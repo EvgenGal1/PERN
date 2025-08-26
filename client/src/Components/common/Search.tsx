@@ -40,6 +40,7 @@ const Search: React.FC = observer(() => {
       <div className="search--eg">
         {/* INP.ПОИСКА */}
         <input
+          name="search"
           type="text"
           value={query}
           className="search--eg__inp bbb-1"
