@@ -54,8 +54,6 @@ body {
     var(--off, 25px);
   --head-pad: var(--big, 0.7%) var(--mid, 0.5%) var(--small, 0.3%)
     var(--off, 0%);
-  // --head-bot-top-mar: var(--big, 5%) var(--mid, 4%) var(--small, 3%)
-  //   var(--off, 3%);
   --head-bot-top-mar: var(--big, 15px) var(--mid, 12px) var(--small, 10px)
     var(--off, 7px);
   --font-size-big: var(--big, 22px) var(--mid, 18px) var(--small, 15px)
@@ -103,8 +101,8 @@ body {
     var(--off, 19.5px 8px 0 #707070);
   --sw4btn-top: var(--big, 4px) var(--mid, -2px) var(--small, -3px)
     var(--off, 5px);
-  --sw4btn-margin: var(--big, 0px 18px 0px 44px) var(--mid, 0px 14px 0px 42px)
-    var(--small, 0px 6px 0px 30px) var(--off, 0px 6px 0px 30px);
+  --sw4btn-margin: var(--big, 0px 23px 0px 44px) var(--mid, 0px 15px 0px 42px)
+    var(--small, 0px 8px 0px 30px) var(--off, 0px 8px 0px 30px);
   --sw4btn-left: var(--big, 0px) var(--mid, 0px) var(--small, -14px)
     var(--off, -14px);
   --bot-it-fir-mar: var(--big, 30px) var(--mid, 25px) var(--small, 20px)
@@ -121,47 +119,6 @@ hr.hr {
   margin-block-start: var(--mar-bl);
   margin-block-end: var(--mar-bl);
   border-width: var(--bor-wid);
-}
-// шапка
-header {
-  .header-container {
-    // padding: var(--head-pad) !important ;
-    padding-top: var(--head-pad) !important;
-    padding-bottom: var(--head-pad) !important;
-
-    // стили для лого е/и в контейнере есть нижнее меню
-    &:has(/* .header__menu >  */.header__menu-bottom) .header__logo > a.header__link > h3 {
-      font-size: var(--font-size-logo-big);
-      position: relative;
-      top: -5px;
-    }
-  }
-  .header__menu {
-    // общ. Верхнее/Нижнее меню
-    &-bottom .menu-bottom__items,
-    &-top .menu-top__items {
-      width: var(--width);
-      height: var(--height-btn);
-      font-size: var(--font-size-big);
-      // font-weight: var(--font-weight);
-      // border: var(--border);
-      border-radius: var(--border-radius);
-      margin: 0px 0px 0px var(--bot-it-fir-mar);
-      & > a {
-        width: 100%;
-        height: 100%;
-      }
-      // .sw4btn 4х кнп. (data-size - Размеры)
-      &:has([class$="sw4btn"]) {
-        // margin: 0px 14px 0px 30px;
-        margin: var(--sw4btn-margin);
-      }
-    }
-    // Нижнее меню
-    &-bottom {
-      margin-top: var(--head-bot-top-mar);
-    }
-  }
 }
 
 // ПРЯМЫЕ СТИЛИ > off
@@ -207,9 +164,7 @@ footer {
 }
 // 2х кнп. (черно белые)
 #sw2blwh {
-  // height: var(--height-btn);
   input {
-    // height: var(--height-btn);
     &:before {
       left: var(--sw2blwh-lef) !important;
       font-size: var(--sw2blwh-fo-si);
@@ -240,25 +195,16 @@ footer {
   .sw3btn-radio__neutral:checked ~ .sw3btn-slider:before {
     left: calc(100% / 3 - var(--sw3btn-neut));
   }
-  // .sw3btn-radio__dark ~ .sw3btn-slider:before {
-  //   left: calc(100% - var(--sw3btn-aft));
-  // }
 }
 // 4х кнп. (data-size - Размеры)
 .sw4btn {
   width: var(--width-btn);
   height: var(--height-btn);
-  // .sw4btn-rotate {
-  //   width: var(--width-btn);
-  //   height: var(--height-btn);
-  // }
-  // .sw4btn {
   & > input[type="radio"],
   & i {
     width: var(--width-btn) !important;
     height: var(--height-btn) !important;
   }
-  // !
   & i {
     &:before {
       box-shadow: var(--sw4btn-box-sh) !important;
