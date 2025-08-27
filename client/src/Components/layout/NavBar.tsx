@@ -35,16 +35,8 @@ const NavBar = observer(() => {
       },
       { path: DELIVERY_ROUTE, label: "Доставка", show: true },
       { path: CONTACTS_ROUTE, label: "Контакты", show: true },
-      {
-        path: ABOUTME_ROUTE,
-        label: "обо мне",
-        show: user.isAdmin,
-      },
-      {
-        path: ADMIN_ROUTE,
-        label: "admin",
-        show: user.hasRole("ADMIN", 3),
-      },
+      { path: ABOUTME_ROUTE, label: "обо мне", show: user.isAdmin },
+      { path: ADMIN_ROUTE, label: "admin", show: user.hasRole("ADMIN", 3) },
     ],
     [user.isAuth, basket.count]
   );
@@ -65,7 +57,6 @@ const NavBar = observer(() => {
             </NavLink>
           </span>
         ))}
-      {/* </nav> */}
     </>
   );
 });
