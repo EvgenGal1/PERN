@@ -26,3 +26,8 @@ $mdalg: 992px;
 $mdamd: 768px;
 // маленькие телефоны
 $mdaxc: 480px;
+
+:root {
+  --anim-duration: 0.3s;
+  --anim-timing: ease-in-out;
+}

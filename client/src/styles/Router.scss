@@ -62,29 +62,26 @@
         color: var(--PERN_blue);
         transform: translateY(0);
         transition:
-          opacity 0.3s ease-in-out,
-          font-size 0.3s ease-in-out,
-          transform 0.3s ease-in-out;
+          opacity var(--anim-duration) var(--anim-timing),
+          font-size var(--anim-duration) var(--anim-timing),
+          transform var(--anim-duration) var(--anim-timing),
+          color var(--anim-duration) var(--anim-timing);
       }
       .header__text-wrapper {
         display: inline-block;
         overflow: hidden;
         max-width: 0;
-        transition: max-width 0.3s ease-in-out;
+        transition: max-width var(--anim-duration) var(--anim-timing);
         vertical-align: top;
-        .header__text {
-          opacity: 0;
-        }
       }
 
       &:hover {
-        .header__img {
+        h3 {
           color: var(--Gold);
         }
         .header__text-wrapper {
           max-width: 112px;
           .header__text {
-            color: var(--Gold);
             opacity: 1;
           }
         }
@@ -164,7 +161,7 @@
           font-size: 16px;
           text-align: center;
           transform: translate(0px, 10%);
-          transition: all 0.3s ease 0s;
+          transition: all var(--anim-duration) var(--anim-timing) 0s;
           pointer-events: none;
           border: 2px solid #000;
           background: #ccc;
@@ -192,10 +189,10 @@
       opacity: 0;
       will-change: max-height, opacity, visibility, margin-top;
       transition:
-        max-height 0.3s ease-in-out,
-        opacity 0.3s ease-in-out,
-        visibility 0.3s ease-in-out,
-        margin-top 0.3s ease-in-out;
+        max-height var(--anim-duration) var(--anim-timing),
+        opacity var(--anim-duration) var(--anim-timing),
+        visibility var(--anim-duration) var(--anim-timing),
+        margin-top var(--anim-duration) var(--anim-timing);
 
       // аним.кнп.доп.меню
       &.visible {

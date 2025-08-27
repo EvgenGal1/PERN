@@ -106,7 +106,7 @@ body {
   --sw4btn-left: var(--big, 0px) var(--mid, 0px) var(--small, -14px)
     var(--off, -14px);
   --bot-it-fir-mar: var(--big, 30px) var(--mid, 25px) var(--small, 20px)
-    var(--off, 20px);
+    var(--off, 15px);
   --bot-it-las-mar-rig: var(--big, 14px) var(--mid, 12px) var(--small, 10px)
     var(--off, 10px);
   --bot-it-las-mar-lef: var(--big, 44px) var(--mid, 37px) var(--small, 30px)
@@ -128,7 +128,6 @@ body[data-size="off"] {
     &-top {
       span.menu-top__items {
         width: auto;
-        margin-left: 15px;
         a.m-t-items__navlink {
           border: 0;
           box-shadow: 0 0 0;
