@@ -145,8 +145,9 @@ export default class UserStore {
     this.isAuth = true;
     this.activated = data.isActivated;
     this.availableCommands = data.availableCommands;
-    // сохр. Токена в LS
+    // сохр. Токена/доп.меню в LS
     localStorage.setItem("tokenAccess", data.tokenAccess);
+    localStorage.setItem("--dopMenu", JSON.stringify(false));
     // сохр.данн.в LS
     this.saveToLocalStorage();
   }
