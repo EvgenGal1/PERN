@@ -79,7 +79,6 @@ export default class UserStore {
           availableCommands: this.availableCommands,
         })
       );
-      localStorage.setItem("--dopMenu", JSON.stringify(false));
     } catch (error) {
       this.handleError(error, `Ошибка Сохранения userStore из LS`);
     }

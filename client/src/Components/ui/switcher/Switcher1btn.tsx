@@ -8,7 +8,7 @@ export const Switcher1btn = ({ setIsDopMenuVisible, setIsHovering }: any) => {
         onClick={() => {
           setIsDopMenuVisible(false);
           setIsHovering("");
-          localStorage.removeItem("--dopMenu");
+          localStorage.setItem("--dopMenu", JSON.stringify(false));
         }}
         id="show"
         className="sw1btn-radio"
