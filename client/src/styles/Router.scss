@@ -11,17 +11,39 @@
 // HEADER (ШАПКА) =======================================================================================
 .header {
   position: relative;
-  .header-container {
-    padding: 0 5%; // 1% 3%;
+
+  &-container {
+    padding: 0 5%;
+    padding-top: var(--head-pad) !important;
+    padding-bottom: var(--head-pad) !important;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin: 0 auto;
+
+    // высокое меню > анимаций
+    &.max-visible {
+      .header__logo > a.header__link {
+        // > аним. увелич./уменьш. и центровки букв
+        & h3 {
+          font-size: var(--font-size-logo-big);
+          transform: translateY(-5px) !important;
+        }
+        // > аним. выезд/заезд доп.букв лого из под 1ой буквы
+        &:hover .header__text-wrapper {
+          max-width: 228px;
+        }
+      }
+      // > аним. растояния м/у верх./нижн. меню
+      .header__menu-bottom {
+        margin-top: var(--head-bot-top-mar);
+      }
+    }
   }
 
   // ЛОГО
-  .header__logo {
+  &__logo {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,146 +53,172 @@
       align-items: center;
       text-decoration: none;
       overflow: hidden;
-      &:hover {
-        .header__img {
-          color: var(--Gold);
-        }
-        .header__text {
-          display: block;
-          color: var(--Gold);
-          opacity: 1;
-          transform: translateX(0);
-          animation: logoh3Show var(--sec05) forwards;
-        }
-      }
-      .header__img {
-        font-size: var(--font-size-logo);
-        font-weight: bold;
-        color: var(--PERN_blue);
-        margin: 0px;
-        transition: color var(--sec05) ease;
-      }
-      .header__text {
-        display: none;
+
+      // все буквы лого
+      & h3 {
         font-size: var(--font-size-logo);
         font-weight: bold;
         margin: 0;
         color: var(--PERN_blue);
-        opacity: 0;
-        transform: translateX(-100%);
+        transform: translateY(0);
         transition:
-          opacity var(--sec05) ease,
-          transform var(--sec05) ease;
-        white-space: nowrap;
+          opacity 0.3s ease-in-out,
+          font-size 0.3s ease-in-out,
+          transform 0.3s ease-in-out;
       }
-    }
-  }
-  &__menu {
-    display: flex;
-    flex-direction: column;
-  }
-
-  // ВЕРХНЕЕ, НИЖНЕЕ МЕНЮ (общие стили) -------------------------------------------------
-  &__menu-top,
-  &__menu-bottom {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    .menu-top__items,
-    .menu-bottom__items {
-      width: 100px;
-      height: 30px;
-      font-size: 18px;
-      /* border-radius: var(--border-radius); */
-      margin-left: 30px;
-      margin: 0px 0px 0px 25px;
-      &:first-child {
-        margin-left: 15px;
-      }
-      &:has([class$="sw1btn"]) {
-        width: 30px;
-      }
-      // .sw4btn 4х кнп. (data-size - Размеры)
-      &:has([class$="sw4btn"]) {
-        width: 30px;
-        margin: 0px 14px 0px 30px;
-      }
-    }
-  }
-  // ВЕРХНЕЕ МЕНЮ -------------------------------------------------
-  &__menu-top {
-    // затемняет сосед. эл. при наведении (меню)
-    &:hover span:not(:hover) {
-      opacity: 0.5;
-    }
-    // затемняет сосед. эл. при наведении (подменю)
-    &:hover li:not(:hover) {
-      opacity: 0.3;
-      color: white !important;
-    }
-    .menu-top__items {
-      position: relative;
-      // margin-left: 15px;
-      // margin-bottom: 5px;
-
-      // НАВЕДЕНИЕ на дочерние эл-ты
-      &:hover {
-        // подменю при неведении
-        .m-t-items__ul {
-          opacity: 1;
-          visibility: visible;
-          transform: translate(0px, 0px);
-          pointer-events: all;
+      .header__text-wrapper {
+        display: inline-block;
+        overflow: hidden;
+        max-width: 0;
+        transition: max-width 0.3s ease-in-out;
+        vertical-align: top;
+        .header__text {
+          opacity: 0;
         }
       }
-      // ПОДМЕНЮ
-      .m-t-items__ul {
-        // частично из ЕжеСвет
-        width: 100%;
-        position: absolute;
-        padding: 1px 3px 3px;
-        opacity: 0;
-        visibility: hidden;
-        font-size: 16px;
-        text-align: center;
-        transform: translate(0px, 10%);
-        transition: all 0.3s ease 0s;
-        pointer-events: none;
-        border: 2px solid #000;
-        background: #ccc;
-        z-index: 3;
-        .m-t-its-ul__li {
-          a {
-            display: flex;
-            justify-content: center;
-            margin-top: 2px;
-            padding: 2px 0px;
-            color: yellow;
-            background: #8d0000;
+
+      &:hover {
+        .header__img {
+          color: var(--Gold);
+        }
+        .header__text-wrapper {
+          max-width: 112px;
+          .header__text {
+            color: var(--Gold);
+            opacity: 1;
           }
         }
       }
     }
   }
 
-  // НИЖНЕЕ МЕНЮ -------------------------------------------------
-  &__menu-bottom {
-    // display: flex;
-    // flex-wrap: wrap;
-    // justify-content: space-between;
-    margin-top: 7%;
-    // затемняет сосед. эл. при наведении (меню)
-    &:hover span > div:not(:hover) {
-      // &:hover span:not(:hover) {
-      opacity: 0.5;
+  // ВЕРХНЕЕ, НИЖНЕЕ МЕНЮ (общие стили) -------------------------------------------------
+  &__menu {
+    display: flex;
+    flex-direction: column;
+
+    &-top,
+    &-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      .menu-top__items,
+      .menu-bottom__items {
+        width: var(--width);
+        height: var(--height-btn);
+        font-size: var(--font-size-big);
+        /* border-radius: var(--border-radius); */
+        margin-left: 30px;
+        border-radius: var(--border-radius);
+        margin: 0px 0px 0px var(--bot-it-fir-mar);
+        & > a {
+          width: 100%;
+          height: 100%;
+        }
+        &:first-child {
+          margin-left: 15px;
+        }
+        &:has([class$="sw1btn"]) {
+          width: 30px;
+        }
+        // .sw4btn 4х кнп. (data-size - Размеры)
+        &:has([class$="sw4btn"]) {
+          width: 30px;
+          margin: var(--sw4btn-margin);
+        }
+      }
     }
-    // кнопки
-    div[id^="sw"] {
-      input {
-        border: 0px;
+
+    // ВЕРХНЕЕ МЕНЮ -------------------------------------------------
+    &-top {
+      // затемняет сосед. эл. при наведении (меню)
+      &:hover span:not(:hover) {
+        opacity: 0.5;
+      }
+      // затемняет сосед. эл. при наведении (подменю)
+      &:hover li:not(:hover) {
+        opacity: 0.3;
+        color: white !important;
+      }
+      .menu-top__items {
+        position: relative;
+
+        // НАВЕДЕНИЕ на дочерние эл-ты
+        &:hover {
+          // подменю при неведении
+          .m-t-items__ul {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(0px, 0px);
+            pointer-events: all;
+          }
+        }
+        // ПОДМЕНЮ
+        .m-t-items__ul {
+          // частично из ЕжеСвет
+          width: 100%;
+          position: absolute;
+          padding: 1px 3px 3px;
+          opacity: 0;
+          visibility: hidden;
+          font-size: 16px;
+          text-align: center;
+          transform: translate(0px, 10%);
+          transition: all 0.3s ease 0s;
+          pointer-events: none;
+          border: 2px solid #000;
+          background: #ccc;
+          z-index: 3;
+          .m-t-its-ul__li {
+            a {
+              display: flex;
+              justify-content: center;
+              margin-top: 2px;
+              padding: 2px 0px;
+              color: yellow;
+              background: #8d0000;
+            }
+          }
+        }
+      }
+    }
+
+    // НИЖНЕЕ МЕНЮ -------------------------------------------------
+    &-bottom {
+      display: flex;
+      max-height: 0;
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      will-change: max-height, opacity, visibility, margin-top;
+      transition:
+        max-height 0.3s ease-in-out,
+        opacity 0.3s ease-in-out,
+        visibility 0.3s ease-in-out,
+        margin-top 0.3s ease-in-out;
+
+      // аним.кнп.доп.меню
+      &.visible {
+        visibility: visible;
+        opacity: 1;
+        height: auto;
+        max-height: 50px;
+
+        // затемняет сосед. эл. при наведении (меню)
+        &:hover span > div:not(:hover) {
+          // &:hover span:not(:hover) {
+          opacity: 0.5;
+        }
+        // кнопки
+        div[id^="sw"] {
+          input {
+            border: 0px;
+          }
+        }
       }
     }
   }
+
   // МИНИ СТРЕЛКА (упрощ.откр.) -------------------------------------------------
   .miniArrow {
     position: absolute;
@@ -180,20 +228,6 @@
     span {
       width: auto !important;
       display: inline-block !important;
-    }
-  }
-}
-
-// АНИМАЦИЯ ЛОГОТИПА <logotTip(ЕжеСвет)>˅=============================================================˅
-.header__logo {
-  @keyframes logoh3Show {
-    0% {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
     }
   }
 }
