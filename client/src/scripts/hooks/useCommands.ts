@@ -1,89 +1,87 @@
-// hooks/useCommands.ts
-import { useCallback, useContext, useEffect, useMemo } from "react";
-import { debounce } from "lodash";
+import { useCallback, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { AppContext } from "../../context/AppContext";
-import { useCommandListener } from "./useCommandListener";
-import { AvailableCommands, CommandConfig } from "@/types/user.types";
+import { commandBus } from "./commandBus";
 
-interface UseCommandsProps {
-  /** сост.видимости доп.меню */
-  setIsDopMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-/**
- * Хук > управления командами/комбинациями
- * получает кмд.из user.availableCommands, преобразует в CommandConfig[], вызывает useCommandListener с передачей config > отслеживания, отложенно сохраняет в LS
- */
-export const useCommands = ({ setIsDopMenuVisible }: UseCommandsProps) => {
+/** Хук > подписка на события и обработка сработаных команд/комбинаций */
+export const useCommands = () => {
+  const navigate = useNavigate();
   const { user } = useContext(AppContext);
 
-  /** отложен.сохр.(от частых записей) в LS */
-  const debouncedSaveToLS = useMemo(
-    () =>
-      debounce((value: boolean) => {
-        try {
-          localStorage.setItem("--dopMenu", JSON.stringify(value));
-        } catch (e) {
-          console.error("[useCommands] не удалось сохранить 'dopMenu' в LS", e);
-        }
-      }, 300),
-    []
-  );
-
-  /** общ.обраб.отработки кмд. - действие */
-  const handleCommandTriggered = useCallback(
+  const handleCommand = useCallback(
     (commandName: string) => {
+      console.log(`[GlobalCommandHandler] Получена команда: ${commandName}`);
       switch (commandName) {
+        // кмд.откр.доп.меню
         case "dop_menu_on":
-          setIsDopMenuVisible(true);
-          debouncedSaveToLS(true);
+          console.log("[useGlobalKeyboardCommands] Открытие доп.меню");
+          try {
+            // обнов.сост.в LS
+            localStorage.setItem("--dopMenu", JSON.stringify(true));
+            // уведомл. Header ч/з commandBus о спец.событии (т.к. Header.addEventListener.storage не обнов.доп.меню)
+            commandBus.emit("dop_menu_state_change", true);
+          } catch (e) {
+            console.error(
+              "[useGlobalKeyboardCommands] Ошибка при сохранении '--dopMenu' в LS",
+              e
+            );
+          }
           break;
+
         case "dop_menu_off":
-          setIsDopMenuVisible(false);
-          debouncedSaveToLS(false);
+          console.log("[useGlobalKeyboardCommands] Закрытие доп. меню");
+          try {
+            localStorage.setItem("--dopMenu", JSON.stringify(false));
+            commandBus.emit("dop_menu_state_change", false);
+          } catch (e) {
+            console.error(
+              "[useGlobalKeyboardCommands] Ошибка при сохранении '--dopMenu' в LS",
+              e
+            );
+          }
           break;
+
+        case "admin_panel":
+          if (user.isAuth && user.roles.some((r) => r.role === "ADMIN")) {
+            console.log("[GlobalCommandHandler] Переход на /admin");
+            navigate("/admin");
+          } else {
+            console.log("[GlobalCommandHandler] Команда 'adm' недоступна");
+          }
+          break;
+
         case "quick_logout":
+          console.log("[GlobalCommandHandler] Быстрый выход");
           user.logout();
           break;
+
+        case "scroll_up":
+          window.scrollBy({ top: -100, behavior: "smooth" });
+          break;
+
+        case "scroll_down":
+          window.scrollBy({ top: 100, behavior: "smooth" });
+          break;
+
         default:
-          console.log(`[useCommands] необработанная Команда: ${commandName}`);
+          console.log(
+            `[GlobalCommandHandler] Неизвестная команда: ${commandName}`
+          );
       }
     },
-    [setIsDopMenuVisible, debouncedSaveToLS]
+    [navigate, user.isAuth, user.roles, user.logout]
   );
 
-  /** созд. config с данн.кмд. и cd отработки. Зависит от внутр.данн.user */
-  const commandConfigs: CommandConfig[] = useMemo(() => {
-    // проверка авторизации и команд
-    if (user.isAuth !== true || user.availableCommands.length === 0) {
-      console.log("[useCommands] нет Авторизации или Команды");
-      return [];
-    }
-
-    // преобраз.кмд.в config > useCommandListener
-    return user.availableCommands.map((command: AvailableCommands) => {
-      const config: CommandConfig = {
-        // база
-        name: command.name,
-        keys: command.keys,
-        type: command.type,
-        // cb обработчик на имя команды > реакции
-        onMatch: () => handleCommandTriggered(command.name),
-      };
-
-      return config;
-    });
-  }, [user, user?.isAuth, user?.availableCommands, handleCommandTriggered]);
-
-  /** инициализация слушателей клавиш с передачей config */
-  useCommandListener({ commands: commandConfigs });
-
-  /** очистка отлож.сохр.при размонтир.Комп. */
+  /** подписка на кмд. ч/з commandBus при монтировании */
   useEffect(() => {
+    console.log("[useGlobalKeyboardCommands] Подписка на команды");
+    // подписка на все команды
+    const unsubscribe = commandBus.subscribe(handleCommand);
+    // очистка usEf и отписка от commandBus при размонтировании
     return () => {
-      debouncedSaveToLS.cancel();
+      console.log("[useGlobalKeyboardCommands] Отписка от команд");
+      unsubscribe();
     };
-  }, [debouncedSaveToLS]);
-
-  return null;
+  }, [handleCommand]);
 };
