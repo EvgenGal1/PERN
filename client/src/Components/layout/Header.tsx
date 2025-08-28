@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { debounce } from "lodash";
 
 import { AppContext } from "@/context/AppContext";
 
-// хук для вывода Доп.Меню ч/з Опред.Кобин.Клвш. (Front/Full версии)
-// import { useAllKeysPress } from "@/scripts/hooks/useAllKeysPress";
-import { useCommands } from "@/scripts/hooks/useCommands";
+// класс посредник м/у слуш.событ. и подписчиками для вывода Доп.Меню ч/з Опред.Кобин.Клвш. (Full версии)
+import { commandBus } from "@/scripts/hooks/commandBus";
 // переключатель видимости Доп.Меню
 import { Switcher1btn } from "@Comp/ui/switcher/Switcher1btn";
 
@@ -28,7 +28,7 @@ import { TitleEl } from "@Comp/ui/hintTemplates/TitleEl";
 // константы/контекст
 import { SHOP_ROUTE } from "@/utils/consts";
 
-// Компонент ссылок
+// Компонент ссылок, примеры др.меню
 import NavBar from "./NavBar";
 import ExamplesMenu from "./ExamplesMenu";
 
@@ -36,21 +36,90 @@ const Header: React.FC = observer(() => {
   // объ.Пользователя из Контекста приложения
   const { user } = useContext(AppContext);
 
-  // сост.видимости доп.меню из LS ч/з комбинации клавиш
+  // ^ проработать полное отключение команд (тесты/ошибки/не нужно). предполагаю в availableCommands либо lenht 0? либо спец кмд.как запрет
+  /** сост.видимости доп.меню из LS ч/з комбинации клавиш */
   const [isDopMenuVisible, setIsDopMenuVisible] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("--dopMenu");
-      const parsed = saved ? JSON.parse(saved) : false;
-      // boolean от пустого LS
-      return !!parsed;
+      return saved ? JSON.parse(saved) : false;
     } catch (e) {
       console.warn("Не удалось прочитать '--dopMenu' из LS", e);
       return false;
     }
   });
 
-  // использ.хук. > кмд./комбин. клвш. v.Full
-  useCommands({ setIsDopMenuVisible });
+  /** отложен.сохр.(от частых записей) в LS */
+  const debouncedSaveToLS = useMemo(
+    () =>
+      debounce((value: boolean) => {
+        try {
+          localStorage.setItem("--dopMenu", JSON.stringify(value));
+        } catch (e) {
+          console.error("[Header] не удалось сохранить 'dopMenu' в LS", e);
+        }
+      }, 300),
+    []
+  );
+
+  /** сохр.сост.доп.меню в LS и очистка отлож.сохр.при размонтир.Комп. */
+  useEffect(() => {
+    debouncedSaveToLS(isDopMenuVisible);
+    return () => debouncedSaveToLS.cancel();
+  }, [isDopMenuVisible, debouncedSaveToLS]);
+
+  /** fn обёртка над setIsDopMenuVisible > использ.в usEf со стибльньным обнов.сост.меню при измен. */
+  const updateDopMenuVisibility = useCallback((isVisible: boolean) => {
+    console.log(`[Header] updateDopMenuVisibility вызван с ${isVisible}`);
+    setIsDopMenuVisible(isVisible);
+  }, []);
+
+  // синхрон.внутри вкладки ч/з commandBus (> обнов.setIsDopMenuVisible в Header ч/з commandBus при отраб.мкд./измен. LS в useCommands)
+  useEffect(() => {
+    console.log("[Header] Подписка на внутр.измен.меню ч/з commandBus");
+    // подписка на спец.событие
+    const unsubscribeInternal = commandBus.subscribe((eventName, data) => {
+      // проверка на имя кмд. и спец.имя события
+      if (eventName === "dop_menu_state_change") {
+        console.log("[Header] Есть внутр.измен.сост.меню ч/з commandBus", data);
+        // data в boolean и обнов.сост.
+        const isVisible = data as boolean;
+        updateDopMenuVisibility(isVisible);
+      }
+    });
+    // отписка при размонтир.
+    return () => {
+      console.log("[Header] Отписка от внутр.измен.сост.меню");
+      unsubscribeInternal();
+    };
+  }, [updateDopMenuVisibility]);
+
+  // сихрон.обнов.сост.LS м/у неск.вкладками в брауз.
+  useEffect(() => {
+    console.log("[Header] Подписка на изменения localStorage (м/у вкладками)");
+    // обраб.измен.хранилища по необходим.ключю (--dopMenu)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "--dopMenu") {
+        console.log(
+          "[Header] Изменение '--dopMenu' в LS (из др.вкладки) обнаружено",
+          e.newValue
+        );
+        try {
+          const newValue = e.newValue !== null ? JSON.parse(e.newValue) : false;
+          // обнов.сост.
+          updateDopMenuVisibility(newValue);
+        } catch (err) {
+          console.error("[Header] Ошибка парсинга знач.из LS", err);
+        }
+      }
+    };
+    // подписка на событ.брауз.
+    window.addEventListener("storage", handleStorageChange);
+    // отписка при размонтир.
+    return () => {
+      console.log("[Header] Отписка от события storage");
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [updateDopMenuVisibility]);
 
   // сброс.сост./удал.LS доп.меню при выходе
   useEffect(() => {
@@ -155,6 +224,7 @@ const Header: React.FC = observer(() => {
                   <Switcher3btn />
                   {isHovering === "sw3bnt" && <TitleEl text={"Цв.Темы"} />}
                 </span>
+                {/* переключатель Размеров (big/mid/small/off) */}
                 <span
                   className="menu-bottom__items m-b-items"
                   onMouseEnter={() => {
