@@ -15,6 +15,8 @@ import type {
 } from "@/types/catalog.types";
 import { SHOP_CATALOG_ROUTE, SHOP_ROUTE } from "@/utils/consts";
 import { errorHandler } from "@/utils/errorHandler";
+import { MEGA_DEBUG } from "@/utils/constDebug";
+import { log, logErr } from "@/utils/logger";
 
 class CatalogStore {
   // масс.данн.Категории/Бренды/Продукты с авто отслеж./обновл.данн.у наблюдателей
@@ -59,10 +61,11 @@ class CatalogStore {
     );
 
     // лог.измен.
-    process.env.NODE_ENV === "development" &&
+    MEGA_DEBUG &&
+      process.env.NODE_ENV === "development" &&
       spy((event) => {
         if (event.type === "action" && event.object === this) {
-          console.log(`%cCatalogStore: ${event.name}`, "color: #cf6d1d;");
+          log(`%cCatalogStore: ${event.name}`, "color: #cf6d1d;");
         }
       });
 
@@ -331,7 +334,7 @@ class CatalogStore {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
     // логг.
-    console.error(`Ошб.в UserStore [${context}]`, apiError);
+    logErr(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);
   }

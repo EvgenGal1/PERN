@@ -5,6 +5,8 @@ import { action, makeAutoObservable, observable, runInAction, spy } from "mobx";
 import { orderAPI } from "@/api/shopping/orderAPI";
 import type { OrderData } from "@/types/shopping.types";
 import { errorHandler } from "@/utils/errorHandler";
+import { MEGA_DEBUG } from "@/utils/constDebug";
+import { log, logErr } from "@/utils/logger";
 
 class OrderStore {
   @observable orders: OrderData[] = [];
@@ -13,10 +15,11 @@ class OrderStore {
 
   constructor() {
     makeAutoObservable(this);
-    process.env.NODE_ENV === "development" &&
+    MEGA_DEBUG &&
+      process.env.NODE_ENV === "development" &&
       spy((event) => {
         if (event.type === "action" && event.object === this) {
-          console.log(`%cOrderStore: ${event.name}`, "color: #4caf50;");
+          log(`%cOrderStore: ${event.name}`, "color: #4caf50;");
         }
       });
   }
@@ -88,7 +91,7 @@ class OrderStore {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
     // логг.
-    console.error(`Ошб.в UserStore [${context}]`, apiError);
+    logErr(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);
   }

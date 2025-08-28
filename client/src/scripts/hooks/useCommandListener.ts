@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 
 import { commandBus } from "./commandBus";
 import { AvailableCommands } from "@/types/user.types";
+import { log } from "@/utils/logger";
 
 interface UseCommandListenerOptions {
   /** масс.config кмд. */
@@ -87,14 +88,14 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
         }
       } else if (command.type === "touchpad") {
         // заглушка для touchpad
-        console.log(
+        log(
           `[useCommandListener] Команда TouchPad '${command.name}' (заглушка).`
         );
       }
 
       // если совпало
       if (isMatch) {
-        console.log(`[useCommandListener] Команда сработала: ${command.name}`);
+        log(`[useCommandListener] Команда сработала: ${command.name}`);
         // оповещение подписчиков ч/з шину событий
         commandBus.emit(command.name);
         // отметка любого совпадения

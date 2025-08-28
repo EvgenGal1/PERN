@@ -12,6 +12,9 @@ import type {
   RegisterCredentials,
 } from "@/types/auth.types";
 import { errorHandler } from "@/utils/errorHandler";
+// перем.отладки и логгер
+import { MEGA_DEBUG } from "@/utils/constDebug";
+import { log, logErr, logWarn } from "@/utils/logger";
 
 export default class UserStore {
   @observable id: number | null = null;
@@ -29,11 +32,11 @@ export default class UserStore {
   constructor() {
     makeAutoObservable(this);
     // лог.измен.
-    process.env.REACT_APP_MEGA_TEST === "true" &&
+    MEGA_DEBUG &&
       process.env.NODE_ENV === "development" &&
       spy((event) => {
         if (event.type === "action" && event.object === this) {
-          console.log(`%cUserStore: ${event.name}`, "color: #ffd700;");
+          log(`%cUserStore: ${event.name}`, "color: #ffd700;");
         }
       });
     // инициализация с чтение данн.из LS и проверкой
@@ -171,7 +174,7 @@ export default class UserStore {
     this.isLoading = true;
     try {
       const response = await authAPI.login(credentials);
-      console.log("response.data : ", response.data);
+      log("response.data : ", response.data);
       runInAction(() => {
         this.saveSession(response.data);
       });
@@ -247,7 +250,7 @@ export default class UserStore {
     try {
       await authAPI.logout();
     } catch (error) {
-      console.warn("Предупреждение о выходе из системы : ", error);
+      logWarn("Предупреждение о выходе из системы : ", error);
     } finally {
       runInAction(() => {
         this.clearSession();
@@ -285,7 +288,7 @@ export default class UserStore {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
     // логг.
-    console.error(`Ошб.в UserStore [${context}]`, apiError);
+    logErr(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);
   }

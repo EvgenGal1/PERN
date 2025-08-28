@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { debounce } from "lodash";
 
+// контекст и Store ч/з MobX
 import { AppContext } from "@/context/AppContext";
 
 // класс посредник м/у слуш.событ. и подписчиками для вывода Доп.Меню ч/з Опред.Кобин.Клвш. (Full версии)
@@ -28,9 +29,12 @@ import { TitleEl } from "@Comp/ui/hintTemplates/TitleEl";
 // константы/контекст
 import { SHOP_ROUTE } from "@/utils/consts";
 
-// Компонент ссылок, примеры др.меню
+// Компоненты: меню страниц, примеры др.меню
 import NavBar from "./NavBar";
 import ExamplesMenu from "./ExamplesMenu";
+
+// логгер
+import { log, logErr, logWarn } from "@/utils/logger";
 
 const Header: React.FC = observer(() => {
   // объ.Пользователя из Контекста приложения
@@ -43,7 +47,7 @@ const Header: React.FC = observer(() => {
       const saved = localStorage.getItem("--dopMenu");
       return saved ? JSON.parse(saved) : false;
     } catch (e) {
-      console.warn("Не удалось прочитать '--dopMenu' из LS", e);
+      logWarn("Не удалось прочитать '--dopMenu' из LS", e);
       return false;
     }
   });
@@ -55,7 +59,7 @@ const Header: React.FC = observer(() => {
         try {
           localStorage.setItem("--dopMenu", JSON.stringify(value));
         } catch (e) {
-          console.error("[Header] не удалось сохранить 'dopMenu' в LS", e);
+          logErr("[Header] не удалось сохранить 'dopMenu' в LS", e);
         }
       }, 300),
     []
@@ -69,18 +73,18 @@ const Header: React.FC = observer(() => {
 
   /** fn обёртка над setIsDopMenuVisible > использ.в usEf со стибльньным обнов.сост.меню при измен. */
   const updateDopMenuVisibility = useCallback((isVisible: boolean) => {
-    console.log(`[Header] updateDopMenuVisibility вызван с ${isVisible}`);
+    log(`[Header] updateDopMenuVisibility вызван с ${isVisible}`);
     setIsDopMenuVisible(isVisible);
   }, []);
 
   // синхрон.внутри вкладки ч/з commandBus (> обнов.setIsDopMenuVisible в Header ч/з commandBus при отраб.мкд./измен. LS в useCommands)
   useEffect(() => {
-    console.log("[Header] Подписка на внутр.измен.меню ч/з commandBus");
+    log("[Header] Подписка на внутр.измен.меню ч/з commandBus");
     // подписка на спец.событие
     const unsubscribeInternal = commandBus.subscribe((eventName, data) => {
       // проверка на имя кмд. и спец.имя события
       if (eventName === "dop_menu_state_change") {
-        console.log("[Header] Есть внутр.измен.сост.меню ч/з commandBus", data);
+        log("[Header] Есть внутр.измен.сост.меню ч/з commandBus", data);
         // data в boolean и обнов.сост.
         const isVisible = data as boolean;
         updateDopMenuVisibility(isVisible);
@@ -88,18 +92,18 @@ const Header: React.FC = observer(() => {
     });
     // отписка при размонтир.
     return () => {
-      console.log("[Header] Отписка от внутр.измен.сост.меню");
+      log("[Header] Отписка от внутр.измен.сост.меню");
       unsubscribeInternal();
     };
   }, [updateDopMenuVisibility]);
 
   // сихрон.обнов.сост.LS м/у неск.вкладками в брауз.
   useEffect(() => {
-    console.log("[Header] Подписка на изменения localStorage (м/у вкладками)");
+    log("[Header] Подписка на изменения localStorage (м/у вкладками)");
     // обраб.измен.хранилища по необходим.ключю (--dopMenu)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "--dopMenu") {
-        console.log(
+        log(
           "[Header] Изменение '--dopMenu' в LS (из др.вкладки) обнаружено",
           e.newValue
         );
@@ -108,7 +112,7 @@ const Header: React.FC = observer(() => {
           // обнов.сост.
           updateDopMenuVisibility(newValue);
         } catch (err) {
-          console.error("[Header] Ошибка парсинга знач.из LS", err);
+          logErr("[Header] Ошибка парсинга знач.из LS", err);
         }
       }
     };
@@ -116,7 +120,7 @@ const Header: React.FC = observer(() => {
     window.addEventListener("storage", handleStorageChange);
     // отписка при размонтир.
     return () => {
-      console.log("[Header] Отписка от события storage");
+      log("[Header] Отписка от события storage");
       window.removeEventListener("storage", handleStorageChange);
     };
   }, [updateDopMenuVisibility]);

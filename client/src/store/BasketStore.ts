@@ -6,6 +6,8 @@ import { debounce } from "lodash";
 import { basketAPI } from "@/api/shopping/basketAPI";
 import type { BasketData, BasketProduct } from "@/types/shopping.types";
 import { errorHandler } from "@/utils/errorHandler";
+import { MEGA_DEBUG } from "@/utils/constDebug";
+import { log, logErr } from "@/utils/logger";
 
 class BasketStore {
   @observable products: BasketProduct[] = [];
@@ -14,10 +16,11 @@ class BasketStore {
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: false, deep: false });
-    process.env.NODE_ENV === "development" &&
+    MEGA_DEBUG &&
+      process.env.NODE_ENV === "development" &&
       spy((event) => {
         if (event.type === "action" && event.object === this) {
-          console.log(`%cBasketStore: ${event.name}`, "color: #0070cc;");
+          log(`%cBasketStore: ${event.name}`, "color: #0070cc;");
         }
       });
     this.loadFromLocalStorage();
@@ -154,7 +157,7 @@ class BasketStore {
     // обраб. ч/з универ.fn обраб.ошб.
     const apiError = errorHandler(error, `UserStore: ${context}`);
     // сохр./логг.
-    console.error(`Ошб.в UserStore [${context}]`, apiError);
+    logErr(`Ошб.в UserStore [${context}]`, apiError);
     // отправка ошб.в Sentry
     // captureException(apiError);
   }

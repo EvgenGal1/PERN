@@ -1,28 +1,29 @@
 import { useCallback, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AppContext } from "../../context/AppContext";
+import { AppContext } from "@/context/AppContext";
 import { commandBus } from "./commandBus";
+import { log, logErr, logWarn } from "@/utils/logger";
 
-/** Хук > подписка на события и обработка сработаных команд/комбинаций */
+/** Хук > подписки на события и логика сработаных команд/комбинаций */
 export const useCommands = () => {
   const navigate = useNavigate();
   const { user } = useContext(AppContext);
 
   const handleCommand = useCallback(
     (commandName: string) => {
-      console.log(`[GlobalCommandHandler] Получена команда: ${commandName}`);
+      log(`[GlobalCommandHandler] Получена команда: ${commandName}`);
       switch (commandName) {
         // кмд.откр.доп.меню
         case "dop_menu_on":
-          console.log("[useGlobalKeyboardCommands] Открытие доп.меню");
+          log("[useGlobalKeyboardCommands] Открытие доп.меню");
           try {
             // обнов.сост.в LS
             localStorage.setItem("--dopMenu", JSON.stringify(true));
             // уведомл. Header ч/з commandBus о спец.событии (т.к. Header.addEventListener.storage не обнов.доп.меню)
             commandBus.emit("dop_menu_state_change", true);
           } catch (e) {
-            console.error(
+            logErr(
               "[useGlobalKeyboardCommands] Ошибка при сохранении '--dopMenu' в LS",
               e
             );
@@ -30,12 +31,12 @@ export const useCommands = () => {
           break;
 
         case "dop_menu_off":
-          console.log("[useGlobalKeyboardCommands] Закрытие доп. меню");
+          log("[useGlobalKeyboardCommands] Закрытие доп. меню");
           try {
             localStorage.setItem("--dopMenu", JSON.stringify(false));
             commandBus.emit("dop_menu_state_change", false);
           } catch (e) {
-            console.error(
+            logErr(
               "[useGlobalKeyboardCommands] Ошибка при сохранении '--dopMenu' в LS",
               e
             );
@@ -44,15 +45,15 @@ export const useCommands = () => {
 
         case "admin_panel":
           if (user.isAuth && user.roles.some((r) => r.role === "ADMIN")) {
-            console.log("[GlobalCommandHandler] Переход на /admin");
+            log("[GlobalCommandHandler] Переход на /admin");
             navigate("/admin");
           } else {
-            console.log("[GlobalCommandHandler] Команда 'adm' недоступна");
+            logWarn("[GlobalCommandHandler] Команда 'adm' недоступна");
           }
           break;
 
         case "quick_logout":
-          console.log("[GlobalCommandHandler] Быстрый выход");
+          log("[GlobalCommandHandler] Быстрый выход");
           user.logout();
           break;
 
@@ -65,9 +66,7 @@ export const useCommands = () => {
           break;
 
         default:
-          console.log(
-            `[GlobalCommandHandler] Неизвестная команда: ${commandName}`
-          );
+          log(`[GlobalCommandHandler] Неизвестная команда: ${commandName}`);
       }
     },
     [navigate, user.isAuth, user.roles, user.logout]
@@ -75,12 +74,12 @@ export const useCommands = () => {
 
   /** подписка на кмд. ч/з commandBus при монтировании */
   useEffect(() => {
-    console.log("[useGlobalKeyboardCommands] Подписка на команды");
+    log("[useGlobalKeyboardCommands] Подписка на команды");
     // подписка на все команды
     const unsubscribe = commandBus.subscribe(handleCommand);
     // очистка usEf и отписка от commandBus при размонтировании
     return () => {
-      console.log("[useGlobalKeyboardCommands] Отписка от команд");
+      log("[useGlobalKeyboardCommands] Отписка от команд");
       unsubscribe();
     };
   }, [handleCommand]);
