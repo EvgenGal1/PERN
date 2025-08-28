@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { publicRoutes, authRoutes, adminRoutes } from "./routes";
 import { AppContext } from "@/context/AppContext";
 import LoadingAtom from "@Comp/ui/loader/LoadingAtom";
+import { useCommands } from "@/scripts/hooks/useCommands";
 
 type RouteConfig = {
   path: string;
@@ -36,6 +37,9 @@ const AppRouter: React.FC = observer(() => {
     ],
     [user.isAuth, user.roles]
   );
+
+  // подкл.обраб.кмд. внутри BrowserRouter > доступа к useNavigate
+  useCommands();
 
   return (
     <main className="main">
