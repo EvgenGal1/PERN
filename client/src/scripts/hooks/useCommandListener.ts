@@ -1,25 +1,24 @@
 import { useEffect, useRef, useCallback } from "react";
-import { CommandConfig } from "@/types/user.types";
+
+import { commandBus } from "./commandBus";
+import { AvailableCommands } from "@/types/user.types";
 
 interface UseCommandListenerOptions {
   /** масс.config кмд. */
-  commands: CommandConfig[];
+  commands: AvailableCommands[];
 }
 
 /**
- * Хук > отслеживания множества комбинаций клавиш.
+ * Хук > прослушки/отслеживания множества комбинаций клавиш, определения совпадений и вызов уведомл.подписчикам
  * Режим "зажатия в строгом порядке" (_H_S) из useAllKeysPress > 'sequence'/'simultaneous', 'touchpad' - заглушка
  *
  * Принцип работы (_H_S):
- * 1. При нажатии клавиши (keydown) она добавляется в список зажатых (keysHeldRef)
- *    и в историю порядка зажатия (keysClampedOrderRef).
- * 2. При отпускании любой клавиши (keyup) состояние сбрасывается.
- * 3. При каждом keydown проверяются все команды.
- * 4. Совпадение определяется как:
- *    - Все клавиши команды зажаты (keysHeldRef).
- *    - Последние N зажатых клавиш (keysClampedOrderRef) совпадают
- *      с клавишами команды в том же порядке.
- * 5. При совпадении вызывается onMatch() команды и состояние сбрасывается.
+ * 1. При Монтировании добавляет глобальные слушатели событий 'keydown' и 'keyup'
+ * 2. При Нажатии клавиши (keydown) она добавляется в множество зажатых `keysHeldRef`, в историю порядка зажатия `keysClampedOrderRef` и запуск проверки совпадений с любой кмд.
+ * 3. При Отпускании клавиши (keyup) она удал.из множества `keysHeldRef` и очистка состояние/сброс таймера
+ * 4. При Совпадение вызов `commandBus.emit(commandName)` > уведомления подписчиков и сброс состояние задержкой
+ *
+ * @param options объ.с парам.масс.кмд > отслеживания
  */
 export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
   /** множество зажатых клавиш */
@@ -28,7 +27,7 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
   const keysClampedOrderRef = useRef<string[]>([]);
   /** таймер автоочистки набора комбинации */
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  /** флаг обработки Ю предотвращения множест.срабатываний */
+  /** флаг обработки > предотвращения множест.срабатываний */
   const isProcessingRef = useRef(false);
 
   /** сброса состояния */
@@ -67,37 +66,45 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
     return false;
   }, []);
 
-  /** обработка любых совпадений для разных типов */
+  /** обработка по списку любых совпадений разных типов > выдачи события ч/з commandBus */
   const processMatches = useCallback(() => {
     // защита от множественных вызовов и пустого списка команд
-    if (isProcessingRef.current || commands.length === 0) {
-      return;
-    }
-
+    if (isProcessingRef.current || commands.length === 0) return;
+    // флаг обраб.от множ.вызывов
     isProcessingRef.current = true;
+    // флаг отслеживания совпадения
     let anyMatched = false;
 
     // итерация по всем командам
     for (const command of commands) {
-      // обраб.зажатие sequence/simultaneous
+      // перем.совпадения
+      let isMatch = false;
+      // обраб.зажатие типов sequence/simultaneous
       if (command.type === "sequence" || command.type === "simultaneous") {
         if (checkHoldSequenceMatch(command.keys)) {
-          // вызов обработчик команды
-          command.onMatch();
-          anyMatched = true;
-
-          // сброс
-          if (timeoutRef.current) clearTimeout(timeoutRef.current);
-          // таймер от залипаний
-          timeoutRef.current = setTimeout(resetState, 100);
-          // прерыв после первого совпадения
-          break;
+          // проверка совпадений
+          isMatch = checkHoldSequenceMatch(command.keys);
         }
       } else if (command.type === "touchpad") {
         // заглушка для touchpad
         console.log(
           `[useCommandListener] Команда TouchPad '${command.name}' (заглушка).`
         );
+      }
+
+      // если совпало
+      if (isMatch) {
+        console.log(`[useCommandListener] Команда сработала: ${command.name}`);
+        // оповещение подписчиков ч/з шину событий
+        commandBus.emit(command.name);
+        // отметка любого совпадения
+        anyMatched = true;
+        // сброс сост.ч/з короткий таймаут для предотвращения залипаний
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        // таймер от залипаний
+        timeoutRef.current = setTimeout(resetState, 100);
+        // прерыв после первого совпадения
+        break;
       }
     }
 
@@ -119,7 +126,7 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
       keysClampedOrderRef.current = [...keysClampedOrderRef.current, key];
       // очистка предыдущего таймера сброса при наличии
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      // проверка совпадения зажатых с комбинацией ч/з доп.fn
+      // запуск проверки совпадения зажатых с комбинацией ч/з доп.fn
       processMatches();
     };
 
@@ -131,9 +138,8 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
       // удал.клвш.из множества зажатых
       keysHeldRef.current.delete(key);
       // сброс комбинации при отпускании
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
       // мгновенный сброс
       resetState();
     };
@@ -150,8 +156,8 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
       // финальный сброс при размонтировании
       resetState();
     };
-  }, [commands, processMatches, resetState]);
+  }, [processMatches, resetState]);
 
-  // возврат resetState > сброса извне
+  // возврат fn сброса > вызова извне
   return { resetState };
 };
