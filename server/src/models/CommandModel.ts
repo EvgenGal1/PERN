@@ -7,6 +7,7 @@ import {
 } from 'sequelize';
 
 import { Models } from '../types/models.interfaсe';
+import { KeyCombination } from '../types/command.interface';
 
 class CommandModel extends Model<
   InferAttributes<CommandModel>,
@@ -16,9 +17,9 @@ class CommandModel extends Model<
   declare name: string;
   declare description: string | null;
   // структура: { keys: string[], type: 'sequence' | 'simultaneous' | 'touchpad' }
-  declare keyCombination: object;
+  declare keyCombination: KeyCombination;
   // Роли/Уровень доступа
-  declare requiredRole: string;
+  declare requiredRole: string; // | null > общ.доступ.кмд.
   declare requiredLevel: number;
   declare isActive: boolean;
   declare createdAt: Date;
@@ -49,15 +50,25 @@ class CommandModel extends Model<
           // валидации в БД
           validate: {
             isValidJSON(value: any) {
-              if (typeof value !== 'object' || !value.keys || !value.type) {
-                throw new Error('keyCombination нужен как объ.с ключами/типом');
+              if (
+                typeof value !== 'object' ||
+                !Array.isArray(value.keys) ||
+                !value.type ||
+                !['sequence', 'simultaneous', 'touchpad'].includes(value.type)
+              ) {
+                throw new Error(
+                  'keyCombination должен быть объ.с клавишими/типом',
+                );
+              }
+              if (!value.keys.every((k: any) => typeof k === 'string')) {
+                throw new Error('keyCombination.keys должны быть строками');
               }
             },
           },
         },
         requiredRole: {
           type: DataTypes.STRING,
-          allowNull: false,
+          allowNull: false, // true для общ.доступ.кмд.
           field: 'required_role',
         },
         requiredLevel: {
@@ -88,8 +99,8 @@ class CommandModel extends Model<
       {
         sequelize,
         tableName: 'commands', // имя таблицы в БД
-        // modelName: 'Command', // имя модели в коде (опционально)
         timestamps: false, // откл.вр.метки т.к. устан.вручную
+        // modelName: 'Command', // имя модели в коде (опционально)
       },
     );
   }
