@@ -26,11 +26,12 @@ class UserModel extends Model<
   declare id: CreationOptional<number>;
   declare username: string;
   declare email: string;
+  declare phoneNumber: string | null;
+  // внешний уникальный идентификатор клиента
+  declare clientId: string;
   declare password: string;
   declare isActivated: CreationOptional<boolean>;
   declare activationLink: CreationOptional<string>;
-  // declare createdAt?: Date;
-  // declare updatedAt?: Date | null;
 
   // Ассоциации. Cвязанные моделей ток.чтен.со Мн.данн.
   public readonly roles?: RoleModel[];
@@ -86,15 +87,6 @@ class UserModel extends Model<
     });
   }
 
-  // мтд.устан.доп.хуков (дубль из init)
-  // static hooks() {
-  //   this.addHook('beforeCreate', (user: UserModel) => {
-  //     if (!user.username) {
-  //       user.username = `User__${user.email.split('@')[0]}-${user.email.split('.').pop()}`;
-  //     }
-  //   });
-  // }
-
   // мтд.инициализации модели, опред.структуры
   static initModel(sequelize: Sequelize) {
     UserModel.init(
@@ -108,11 +100,11 @@ class UserModel extends Model<
         },
         username: { type: DataTypes.STRING, allowNull: false, unique: true },
         email: { type: DataTypes.STRING, allowNull: false, unique: true },
+        phoneNumber: { type: DataTypes.STRING, allowNull: true },
+        clientId: { type: DataTypes.STRING, allowNull: false, unique: true },
         password: { type: DataTypes.STRING, allowNull: false },
         isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
         activationLink: { type: DataTypes.STRING, defaultValue: 'нет ссылки' },
-        // createdAt: { type: DataTypes.DATE, allowNull: false },
-        // updatedAt: { type: DataTypes.DATE, allowNull: true },
       },
       // конфигурация модели
       {
@@ -123,10 +115,15 @@ class UserModel extends Model<
         // отдел.вкл.в выборку
         scopes: { withPassword: { attributes: { include: ['password'] } } },
         hooks: {
-          // преднастр.пуст.имени
+          // преднастр.при создании
           beforeCreate: async (user) => {
+            // пустое имя
             if (!user.username) {
               user.username = `User__${user.email.split('@')[0]}-${user.email.slice(user.email.lastIndexOf('.') + 1)}`;
+            }
+            // генерация clientId
+            if (!user.clientId) {
+              user.clientId = `USR_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
             }
           },
         },
