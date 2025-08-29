@@ -40,7 +40,6 @@ const Header: React.FC = observer(() => {
   // объ.Пользователя из Контекста приложения
   const { user } = useContext(AppContext);
 
-  // ^ проработать полное отключение команд (тесты/ошибки/не нужно). предполагаю в availableCommands либо lenht 0? либо спец кмд.как запрет
   /** сост.видимости доп.меню из LS ч/з комбинации клавиш */
   const [isDopMenuVisible, setIsDopMenuVisible] = useState<boolean>(() => {
     try {

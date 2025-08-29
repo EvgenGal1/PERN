@@ -57,7 +57,7 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
 
     // проверка последовательности зажатия (последние N). Масс.зажатых клвш.
     const clampedKeys = keysClampedOrderRef.current;
-    // проверка длины зажатых к комбинации (больше для будущих комбин.)
+    // проверка длины зажатых к комбинации (больше для будущих комбин.совпадающих в начале с отсечкой времени для ввода)
     if (clampedKeys.length >= targetCombination.length) {
       // взять последние N зажатых клавиш. по длине комбинации
       const lastNClampedKeys = clampedKeys.slice(-targetCombination.length);
@@ -82,9 +82,10 @@ export const useCommandListener = ({ commands }: UseCommandListenerOptions) => {
       let isMatch = false;
       // обраб.зажатие типов sequence/simultaneous
       if (command.type === "sequence" || command.type === "simultaneous") {
-        if (checkHoldSequenceMatch(command.keys)) {
-          // проверка совпадений
-          isMatch = checkHoldSequenceMatch(command.keys);
+        // проверка совпадений
+        const matchResult = checkHoldSequenceMatch(command.keys);
+        if (matchResult) {
+          isMatch = matchResult;
         }
       } else if (command.type === "touchpad") {
         // заглушка для touchpad
