@@ -17,7 +17,15 @@ import ApiError from '../middleware/errors/ApiError';
 class UserService {
   async getOneUser(id: number): Promise<UserModel> {
     const user = await UserModel.findByPk(id, {
-      attributes: ['id', 'username', 'email', 'isActivated', 'activationLink'],
+      attributes: [
+        'id',
+        'username',
+        'email',
+        'phoneNumber',
+        'clientId',
+        'isActivated',
+        'activationLink',
+      ],
     });
     if (!user) throw ApiError.notFound(`Пользователь с ID '${id}' не найден`);
     return user;
@@ -25,7 +33,15 @@ class UserService {
 
   async getAllUsers(): Promise<UserData[]> {
     const users = await UserModel.findAll({
-      attributes: ['id', 'username', 'email', 'isActivated', 'activationLink'],
+      attributes: [
+        'id',
+        'username',
+        'email',
+        'phoneNumber',
+        'clientId',
+        'isActivated',
+        'activationLink',
+      ],
     });
     if (!users.length) throw ApiError.notFound('Пользователи не найдены');
     return users;
@@ -37,6 +53,7 @@ class UserService {
       password,
       username = '',
       role = ROLES_CONFIG.USER.name,
+      phoneNumber = '',
     } = data;
 
     const existingUser = await UserModel.findOne({ where: { email } });
@@ -47,6 +64,8 @@ class UserService {
       email,
       password,
       username,
+      phoneNumber,
+      clientId: '',
     });
 
     // параллел.req > созд.Корзину по User.id, привязка к Роли
@@ -66,6 +85,7 @@ class UserService {
     if (data.email) updatePayload.email = data.email;
     if (data.password) updatePayload.password = data.password;
     if (data.username) updatePayload.username = data.username;
+    if (data.phoneNumber) updatePayload.phoneNumber = data.phoneNumber;
     // параллел.req > обнов.Пользователя, привязка к Роли
     await Promise.all([
       user.update(updatePayload),

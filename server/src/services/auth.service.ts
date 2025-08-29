@@ -74,6 +74,7 @@ class AuthService {
     password: string,
     username = '',
     role: RoleName = ROLES_CONFIG.USER.name,
+    phoneNumber = '',
   ): Promise<AuthCombinedType> {
     // проверка/отказ > существующего Пользователя
     const existingUser = await UserModel.findOne({
@@ -104,6 +105,8 @@ class AuthService {
           id: smallestFreeId,
           email,
           username,
+          phoneNumber,
+          clientId: '',
           password: hashedPassword,
           activationLink,
         },
@@ -149,6 +152,8 @@ class AuthService {
           id: user.id,
           email: user.email,
           username: user.username,
+          phoneNumber: user.phoneNumber,
+          clientId: user.clientId,
         },
         isActivated: false,
         // общ.масс.объ.
@@ -207,6 +212,8 @@ class AuthService {
         id: user.id,
         email: user.email,
         username: user.username,
+        phoneNumber: user.phoneNumber,
+        clientId: user.clientId,
       },
       isActivated: user.isActivated,
       roles: userRoles,
