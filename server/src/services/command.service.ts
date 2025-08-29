@@ -2,12 +2,7 @@ import { Op } from 'sequelize';
 
 import CommandModel from '../models/CommandModel';
 import { RoleLevels } from '../types/role.interface';
-
-interface FormattedCommand {
-  name?: string;
-  keys: string[];
-  type: 'sequence' | 'simultaneous' | 'touchpad';
-}
+import { FormattedCommand } from '../types/command.interface';
 
 class CommandService {
   /** получ.масс. кмд./комбин. доступных Пользователю по его Роли/Уровню */
